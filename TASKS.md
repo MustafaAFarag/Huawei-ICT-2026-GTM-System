@@ -4,9 +4,9 @@
 
 ## Current documentation task — Revenue Workspace PRD
 
-- [x] Write the expanded English-only PRD with 106 feature requirements and acceptance criteria.
+- [x] Write the expanded English-only PRD with 112 feature requirements and acceptance criteria.
 - [x] Define persistent assistant context/navigation/actions, Twenty reuse and OpenDesign integration.
-- [x] Define phase gates and Azure month-one / Huawei month-two migration.
+- [x] Define phase gates and all phases on Azure / conditional post-qualification Huawei migration.
 - [x] Review feature coverage, Markdown tables, local links and documentation-only changes.
 - [x] Complete documentation; no application changes, provisioning, deployment or outreach.
 

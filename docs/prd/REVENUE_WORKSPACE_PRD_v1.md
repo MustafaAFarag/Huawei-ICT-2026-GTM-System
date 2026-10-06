@@ -1,6 +1,6 @@
 # Revenue Workspace — Product Requirements v1
 
-**Status:** proposed build specification for review. **Date:** 6 October 2026. **Working name:** Revenue Workspace. **Planning horizon:** two months, delivered in tested phases. **Language:** English only. **Current authorization:** documentation only.
+**Status:** proposed build specification for review. **Date:** 6 October 2026. **Working name:** Revenue Workspace. **Planning horizon:** two months on Azure, delivered in tested phases for the December 2026 Huawei demo. **Language:** English only. **Current authorization:** documentation only.
 
 This PRD supersedes the earlier GTM-only, bilingual, standalone-demo and Huawei-first directions for future development. It covers the complete product roadmap: CRM, GTM, sales, marketing, campaigns, relationships, design assets, AI assistance, automation and reporting. The existing local demonstrator remains historical evidence of some workflow behaviors; it does not establish native Twenty, OpenDesign, provider or cloud readiness.
 
@@ -32,7 +32,7 @@ Buyer demand, willingness to pay and performance improvement remain hypotheses. 
 4. **CRM logic can be customized.** Use supported objects, fields, views, workflows, apps, APIs and front components first. Make scoped core changes when a required behavior cannot be achieved through those interfaces. Core changes must have tests, a documented upstream patch and an upgrade strategy; a complete parallel CRM is not the default.
 5. **Persistent actionable assistant.** Its launcher stays at the bottom right throughout authenticated application pages. Conversation and work continue across route changes. Collapsing the popup does not discard its context or jobs.
 6. **OpenDesign inside the assistant.** A Design mode and expandable preview/editor expose the existing engine. Integrate its actual tools, jobs, templates and artifacts; do not implement a replacement design engine.
-7. **Azure during month one; Huawei during month two.** Azure credit availability is user-reported. Build on Azure first. Begin the Huawei migration at the month-one boundary when credits arrive; credit timing and regional service availability are operational dependencies. Huawei is the intended destination, not the initial primary platform.
+7. **All product phases on Azure; Huawei only after qualification.** Build, test and demonstrate P0–P4 on Azure using available credits. The Huawei demo is in December 2026. Migration starts only if the project passes the first section and Huawei credits are awarded and activated; regional service compatibility must also be verified. There is no automatic month-two cloud move. If the project does not pass or credits are unavailable, continue on Azure.
 8. **All discussed features are in this PRD.** A feature's phase establishes its delivery order. Inclusion does not mean all phases will be finished in eight weeks. A phase completes only after its acceptance gate passes; unfinished work carries forward visibly.
 9. **Commercial actions are real only when reconciled.** A generated document, exported CSV, paused draft, provider submission and confirmed delivery are different states. Fixtures are always identified as simulated.
 10. **Source-backed AI and authoritative rules.** AI researches, proposes, drafts, designs and helps act. Permissions, deduplication, exclusions, approved versions, send readiness and reconciliation remain enforced by the application.
@@ -112,7 +112,7 @@ Each action has workspace, user/role, target IDs, expected record version, reque
 
 ## 5. Feature inventory and phase assignments
 
-**Phase codes:** P0 foundation; P1 GTM; P2 sales; H Huawei migration; P3 marketing and broader campaigns; P4 advanced operations/integrations. “P1 → P3” means a limited first release followed by the explicitly described expansion. All rows below belong to the full PRD; none imply existing production readiness.
+**Phase codes:** P0 foundation; P1 GTM; P2 sales; P3 marketing and broader campaigns; P4 advanced operations/integrations; H conditional post-qualification Huawei migration. “P1 → P3” means a limited first release followed by the explicitly described expansion. All rows below belong to the full PRD; none imply existing production readiness.
 
 ### 5.1 CRM, workspaces and the shared design system
 
@@ -150,6 +150,7 @@ Each action has workspace, user/role, target IDs, expected record version, reque
 | AI-12 | Context changes, stale records and untrusted retrieved instructions | P0 onward | A pending action cannot target a different client's record; retrieved text cannot grant tools or bypass exclusions |
 | AI-13 | Model selection, prompt/version records and usage observability | P1 → P4 | Each run records model/configuration, sources, latency, cost and outcome without exposing secrets |
 | AI-14 | Workflow automation assistance and plain-English rule editing | P4 | A proposed rule has a preview/test case; activation is distinct from rule generation |
+| AI-15 | Connector-backed analytics explanations and proposed improvements | P3 → P4 | Assistant cites property/project, campaign, date range and refresh time; a proposed CRM update or campaign/design revision uses the normal action/approval contract |
 
 ### 5.3 GTM research, preparation and targeting
 
@@ -207,6 +208,7 @@ Each action has workspace, user/role, target IDs, expected record version, reque
 | MKT-12 | UTM/source attribution, funnel reporting and client summaries | P3 | Captured source, campaign, lead, opportunity and revenue links are traceable; unattributed records remain unknown |
 | MKT-13 | Controlled experiments and creative/message variants | P4 | Variant assignment and exposure are recorded; fixture replies cannot establish commercial lift |
 | MKT-14 | Marketing operations dashboard and priorities | P3 | Displays current readiness, blocked work, approvals, tasks and real campaign results with refresh timestamps |
+| MKT-15 | Campaign measurement plans connecting website behavior to CRM outcomes | P3 | Brief defines UTMs, key events, conversion goals and ownership; report distinguishes visits, form submissions, qualified leads, deals and revenue with explicit join/attribution limits |
 
 ### 5.6 Design system, OpenDesign and sales assets
 
@@ -235,11 +237,15 @@ Each action has workspace, user/role, target IDs, expected record version, reque
 | INT-05 | WhatsApp prepared copy/manual tasks; authorized business API expansion | P1 → P4 | MVP is an explicit manual handoff; later automation requires supported account/templates/policies |
 | INT-06 | Email and calendar synchronization through native Twenty capabilities | P2 | Supported account consent, sync and record linkage pass tests against the selected release |
 | INT-07 | Professional data/enrichment providers | P1 → P4 | Results include provider/time/provenance, confidence/ambiguity and budget usage |
-| INT-08 | Salesforce/Odoo/other CRM imports, then selective continuous sync | P1 → P4 | Initial mapped imports reconcile; later sync has system-of-record/conflict/deletion policies |
+| INT-08 | External CRM connectors: HubSpot, Salesforce, Odoo and other supported CRMs; mapped imports, then selective API/webhook sync | P1 → P4 | Imports reconcile first; each live connector declares supported objects, read/write directions, plan/API dependencies and system-of-record/conflict/deletion policies |
 | INT-09 | Make/webhooks as optional integration bridges | P4 | Scenario creation/activation are distinct; bridge retries preserve action keys and client scope |
 | INT-10 | Forms, events and supported social/ad platform connectors | P3 → P4 | Each connector has a tested capability matrix and ownership/credential mapping |
 | INT-11 | Provider-event inbox, reconciliation ledger and visible handoffs | P1 onward | Duplicate/out-of-order events do not create duplicate actions or regress terminal state |
 | INT-12 | Credential health, rate limits, reconnect and connector status | P1 → P4 | Expired credentials pause affected jobs; other eligible channels remain usable |
+| INT-13 | Connector catalog and per-client connection setup | P1 → P4 | Admin sees implemented/planned/manual capabilities, account/property/project, granted scopes, field mappings, refresh schedule, last success/error and disconnect controls; no universal connector claim |
+| INT-14 | GA4 read-only reporting connector | P3 | Authorized property reports campaign/source/medium, traffic, engagement and supported key-event metrics with date range/timezone/freshness; totals reconcile with equivalent property queries and known reporting limits |
+| INT-15 | Microsoft Clarity dashboard-data connector and native-view handoffs | P3 | Authorized project imports supported engagement/friction metrics with source/campaign/page dimensions; quota/window/truncation are visible; heatmaps/recordings open authorized native views where available |
+| INT-16 | Cross-source identifiers, attribution mappings and metric normalization | P3 → P4 | Campaign/UTM/property/project/CRM IDs are mapped explicitly; replayed imports do not double-count; unmatched records remain unknown; anonymous sessions are not automatically identified as CRM contacts |
 
 ### 5.8 Automation, administration, reporting and AI evaluation
 
@@ -251,7 +257,7 @@ Each action has workspace, user/role, target IDs, expected record version, reque
 | OPS-04 | Audit log and assistant action receipts | P0 onward | Actor, client, record version, approval and outcome reconstruct the change |
 | OPS-05 | User/team settings, integrations, client brands and offer administration | P0 → P2 | Settings changes have role checks and appropriate downstream invalidation |
 | OPS-06 | Usage, provider/model budgets, quotas and cost reporting | P1 → P4 | Jobs obey workspace caps; estimated and actual costs are distinct |
-| OPS-07 | Backups, restore, retention, export and scoped deletion | P0 → H → P4 | Restore test reproduces records/assets; deletion handles linked assets and prevents unwanted reimport |
+| OPS-07 | Backups, restore, retention, export and scoped deletion | P0 → P4 → H | Restore test reproduces records/assets; deletion handles linked assets and prevents unwanted reimport |
 | OPS-08 | Client reporting/sharing; expanded client review portal | P3 → P4 | Shared output exposes only approved scope; portal access is revocable and tested |
 | OPS-09 | Operational/model monitoring and incident recovery | P0 onward | Failures can be traced by job/correlation ID without exposing provider secrets |
 | EVAL-01 | Account–role–offer ranking experiment | P1 → P4 | Rules baseline is frozen; independent held-out relevance results exist before an improvement claim |
@@ -259,6 +265,25 @@ Each action has workspace, user/role, target IDs, expected record version, reque
 | EVAL-03 | Assistant navigation/action correctness and adversarial tests | P0 onward | Wrong-client, stale-record, ambiguous request and retrieved-instruction cases cannot bypass application policy |
 | EVAL-04 | Model adaptation/fine-tuning where useful | P4 | Compare frozen embeddings/reranker and bounded adaptation on company-held-out data; keep the stronger baseline |
 | EVAL-05 | Commercial-performance experiments once real outcomes exist | P4 | Response/conversion claims use identified real cohorts and limitations, never synthetic provider fixtures |
+
+### 5.9 How external connectors support GTM and campaigns
+
+External systems are part of the product's operating model. Twenty remains the local CRM foundation; customers may also keep an existing CRM as the authority for selected objects/fields. Connector-specific mappings define which system owns each field, permitted write directions and conflict resolution. Start with imports/read-only access; add reviewed write-back and continuous sync per tested connector. HubSpot is one concrete example of APIs for CRM objects and webhooks for synchronization. Salesforce/Odoo and further vendors remain individually capability-verified targets. [HubSpot integration APIs](https://developers.hubspot.com/integrate-with-hubspot), [webhook configuration](https://developers.hubspot.com/docs/apps/developer-platform/build-apps/features/configure-webhooks)
+
+| Connected source | Role in GTM/campaign workflow | Product use |
+| --- | --- | --- |
+| External CRM | Customer/account context, ownership, existing opportunities and downstream sales outcomes | Targeting exclusions, qualification, handoff, selective sync and campaign-to-deal reporting |
+| GA4 | Website/app traffic, engagement and supported event/conversion reporting | Campaign/source/medium reports, landing-page performance and acquisition analysis |
+| Microsoft Clarity | Behavior and friction on instrumented pages | Identify poor engagement or click friction, review native heatmaps/recordings and propose asset/page improvements |
+| Ad, social, email, form and event platforms | Channel execution, spend, delivery and captured leads | Coordinate approved campaigns and reconcile actual outcomes through the corresponding adapters |
+
+GA4's Data API provides programmatic report access; campaign conversion reports are documented. Property configuration, compatible metrics/dimensions, quota and reporting/attribution settings constrain results. Reporting access does not install website tracking or configure key events: include a separate verified instrumentation checklist for customer pages. [GA4 Data API](https://developers.google.com/analytics/devguides/reporting/data/v1), [campaign conversion reporting](https://developers.google.com/analytics/devguides/reporting/data/v1/conversions-api-basics)
+
+Clarity's dashboard export API currently allows ten requests per project per day, the previous one to three days, at most three dimensions, and 1,000 rows without pagination. Schedule bounded snapshots, retain observed history, and expose gaps/truncation. Its export does not establish full session-recording/heatmap retrieval or arbitrary historical backfill; use authorized native-view handoffs for those surfaces. Clarity also documents a Google Analytics integration. [Clarity export API](https://learn.microsoft.com/en-us/clarity/setup-and-installation/clarity-data-export-api), [Google Analytics integration](https://learn.microsoft.com/en-us/clarity/ga-integration/)
+
+Example workflow: launch reviewed outreach with campaign-tagged links → measure website engagement/key events in GA4 → inspect landing-page friction in Clarity → reconcile a captured lead and opportunity in CRM → ask the assistant to explain performance and draft a revised page/asset through OpenDesign. The revision is reviewed before publishing. Correlated campaign metrics are evidence for investigation, not proof of causation or individual identity.
+
+Additional connectors use INT-13's catalog and capability contract; API/account availability, scopes, rate limits and provider plans are verified before delivery. Only authorized client properties/projects are connected. Analytics collection respects configured consent/masking; raw emails, credentials and sensitive CRM fields are not inserted into analytics identifiers or URLs.
 
 ## 6. Core records and consistency rules
 
@@ -272,7 +297,7 @@ Each action has workspace, user/role, target IDs, expected record version, reque
 | Execution/action/event | Idempotency key, provider IDs, actor/client, target/version, approved input, due time, submission/terminal state, event source and simulation flag |
 | Design/project/asset | OpenDesign project/job/artifact IDs, brand/template/brief versions, source CRM records, editable source, export locations, lineage and review state |
 | Assistant/session/context | User/client scope, conversation, current route/selection, tool calls, pending work, context version and durable receipts |
-| Analytics/evaluation | Metric definition, actual input references, collection window, provenance, model/dataset revision, labels, split and limitations |
+| Analytics/evaluation | Metric definition, connector/property/project/campaign IDs, actual input references, collection window/timezone/freshness, join policy, provenance, model/dataset revision, labels, split and limitations |
 
 Cross-record rules: workspace scope is carried through every query/job/tool; original source rows remain traceable; provider IDs map back to intended CRM records; current approved version is checked at execution; replies/opt-outs cancel applicable future touches; unknown attribution stays unknown. A customer reference cannot substantiate a different service without reviewed proof.
 
@@ -287,15 +312,20 @@ Every phase has a demonstrable vertical workflow, a feature checklist, tests and
 | P0 — Foundation | Week 1 / Azure | Twenty baseline CRM, English-only design-system adaptation, roles/client scope, persistent context-aware assistant shell, navigation, backup/job architecture | Two client workspaces; assistant remains present across native routes; context/navigation/access tests pass; release/capability inventory recorded |
 | P1 — GTM | Weeks 2–3 / Azure | Research/imports, offers/knowledge, evidence ranking, English drafts, reviewed sequences, QA, exports, manual channels, four OpenDesign assets and actionable assistant tools | One supported campaign and one exception campaign complete preparation; real OpenDesign integration works; retries/holds/approvals/source/asset checks pass |
 | P2 — GTM + sales | Week 4 / Azure | Qualification, pipelines, tasks/communications, meetings, proposals/basic quotes, opportunity outcomes and first supported approved email execution | Reviewed lead → opportunity → proposal → follow-up → outcome; assistant acts on CRM; provider fixture suite and any claimed live integration pass |
-| H — Huawei migration | Start of month 2 / target Week 5 | Move the completed Azure release, durable data/assets/jobs and required infrastructure to verified Huawei services | Restore/reconciliation/access/assistant/design/provider tests pass on Huawei; controlled cutover and rollback rehearsal; migration evidence saved |
-| P3 — GTM + sales + marketing | Weeks 6–7 / Huawei after H | Marketing calendar/content, segments/nurture, events/partnerships, asset library, attribution and client reporting; phased form/social capabilities | A cross-channel campaign with content/assets, captured/assigned leads and traceable opportunity/report outcomes; each external capability separately verified |
-| P4 — Expanded operations | Week 8 target, remaining work continues beyond week 8 | Advanced automations, additional providers/CRM sync, paid/social launch, renewals, portal, experiments, deeper evaluation/adaptation and expanded asset editing | Deliver tested feature groups individually; incomplete IDs remain visible in the roadmap; no blanket “all features done” claim |
+| P3 — GTM + sales + marketing | Weeks 5–6 / Azure | Marketing calendar/content, segments/nurture, events/partnerships, asset library, GA4/Clarity connectors, attribution and client reporting; phased form/social capabilities | A cross-channel campaign with content/assets, captured/assigned leads and traceable opportunity/report outcomes; each external capability separately verified |
+| P4 — Expanded operations | Weeks 7–8 / Azure; remaining work tracked | Advanced automations, additional providers/CRM sync, paid/social launch, renewals, portal, experiments, deeper evaluation/adaptation and expanded asset editing | Deliver tested feature groups individually; incomplete IDs remain visible in the roadmap; no blanket “all features done” claim |
 
-The two-month target is a usable, rehearsed integrated product with clearly accepted phases. P0–P2 and migration planning are the first delivery priorities; H is conditional on available Huawei credits/services. P3/P4 progress depends on those gates and team capacity. All P4 requirements remain in scope even if their implementation continues after the two-month window.
+The delivery goal is to finish and test all product phases P0–P4 on Azure for the December 2026 Huawei demonstration. Native reuse and dependency-based sequencing support that goal; individual feature completion still requires evidence. Track any unfinished feature explicitly rather than declare a phase complete by date. The exact December demo date and competition submission requirements remain to be confirmed.
 
-If Huawei credits arrive late, continue the accepted release on Azure and retain its tested features. Keep H pending and report the revised cutover date; do not switch to an untested cloud environment solely to meet a date. Marketing development may continue on the same portable architecture while infrastructure work is resolved.
+The demo shows the accepted Azure release: CRM → researched GTM campaign → assistant actions/OpenDesign → sales opportunity → marketing measurement through connected sources, plus an exception/failure path. Present real versus fixture integrations and measured AI results distinctly. Huawei cloud availability is not a prerequisite for the demo or any product phase.
 
-## 8. Azure first, Huawei second
+| Conditional phase | Trigger/platform | Scope | Exit gate |
+| --- | --- | --- | --- |
+| H — Huawei migration | After the December demo: pass the first section, receive/activate credits, verify compatible services | Migrate the full accepted Azure release, including P3/P4 features, connectors, data, assets and jobs | Full accepted-phase regression and reconciliation suite passes; controlled cutover and rollback rehearsal recorded |
+
+If qualification is unsuccessful or credits are delayed/unavailable, keep the complete product operating on Azure. H remains conditional and has no fixed month-two date. Maintain cloud portability during development without consuming the pre-demo schedule on an unapproved destination cutover.
+
+## 8. Azure through the demo; Huawei after qualification
 
 ### 8.1 Portability from day one
 
@@ -303,7 +333,7 @@ Containerize the pinned Twenty deployment and product workers. Keep PostgreSQL a
 
 These are candidate service mappings, not verified provisioning or interoperability claims:
 
-| Capability | Month-one Azure candidate | Month-two Huawei candidate | Verification requirement |
+| Capability | Azure development/demo candidate | Conditional Huawei destination | Verification requirement |
 | --- | --- | --- | --- |
 | Application/worker compute | Azure VM/container deployment; managed containers if compatible | ECS/container deployment; managed alternative only when needed | Same images, CPU architecture, network/job behavior and persistent engine workspaces |
 | PostgreSQL | Azure Database for PostgreSQL or managed-compatible deployment | Huawei RDS PostgreSQL or verified equivalent | Versions, required extensions, export/restore, identity and indexing parity |
@@ -315,7 +345,7 @@ These are candidate service mappings, not verified provisioning or interoperabil
 
 ### 8.2 Migration procedure and acceptance
 
-1. Before the end of month one, inventory service versions, data volume, models, credentials, callback URLs, engine jobs and provider webhook routes. Verify Huawei credit activation, region, quotas and compatible services.
+1. Maintain a portability inventory during Azure development: service versions, data volume, models, credentials, connector/property mappings, callback URLs, engine jobs and provider webhook routes. Begin destination provisioning only after passing the first section and receiving/activating Huawei credits; verify region, quotas and compatible services.
 2. Deploy the same accepted application/worker images and schema to Huawei staging. Validate storage, database, queue, secrets, network access, OpenDesign and model adapters independently.
 3. Copy a consistent database snapshot and documents/assets. Compare record counts, relationships, source IDs and asset hashes; rebuild or transfer indexes as appropriate. Do not treat a database-row count alone as proof of a complete migration.
 4. Run the full accepted-phase suite and representative assistant/design/provider workflows on Huawei. If the inference provider/model changes, rerun affected AI quality and tool-contract checks; changing clouds does not establish model equivalence.
@@ -324,7 +354,7 @@ These are candidate service mappings, not verified provisioning or interoperabil
 7. Validate on the destination and rehearse rollback. Keep the Azure source recoverable for an agreed period; after destination writes occur, rollback must reconcile that delta rather than simply restoring a stale source snapshot.
 8. Decommission Azure resources only after destination acceptance and explicit operational authorization. Record final monthly cost, retained backups and migration outcome.
 
-Target migration checks: zero unexplained record/asset loss; unchanged client access boundaries; no duplicate outbound action; scheduled jobs and assistant sessions recover as designed; all accepted P0–P2 scenarios pass on the destination. Actual downtime/RPO/RTO targets are set from Phase 0 measurements and recorded before cutover; none are assumed from a cloud brand.
+Target migration checks: zero unexplained record/asset loss; unchanged client access boundaries; no duplicate outbound action; scheduled jobs and assistant sessions recover as designed; all accepted P0–P4 scenarios and connector contracts pass on the destination. Actual downtime/RPO/RTO targets are set from Phase 0 measurements and recorded before cutover; none are assumed from a cloud brand.
 
 ## 9. AI contribution and measurement
 
@@ -365,6 +395,9 @@ Set numerical release thresholds after the first frozen baseline and before the 
 | Sales action | Assistant qualifies a lead, updates a deal and creates a follow-up task within permission | P2 |
 | Provider outcome | Preparation, paused draft, submission and confirmed delivery are distinguishable | P1/P2 |
 | Marketing lifecycle | Segment → content → reviewed nurture/event → captured lead → opportunity/report remains traceable | P3 |
+| Analytics connectors | Authorized GA4/Clarity queries retain scope/date/freshness, reconcile supported totals, expose quota gaps and cannot identify anonymous visitors by assumption | P3 |
+| External CRM sync | Mapped import/sync preserves IDs, respects field ownership and exclusions, rejects conflicting updates and does not loop or duplicate records | P1/P4 |
+| December demonstration | Accepted P0–P4 workflows run on Azure; real/fixture capabilities and any unfinished requirements are explicit | Pre-demo gate |
 | Cloud cutover | Data/assets/approvals/jobs reconcile on Huawei; replayed webhooks cannot trigger duplicate sends | H |
 | AI benchmark | Independent labels, frozen baselines and held-out results accompany any improvement claim | EVAL phase |
 | Failure recovery | Provider outage, source conflict, engine failure and worker restart produce visible, recoverable states | Every affected phase |
@@ -392,8 +425,9 @@ Testing is proportional: native unchanged behavior receives targeted integration
 | Exact Twenty/OpenDesign release | Prior demo has Twenty SDK source, no native install or real OpenDesign execution | Pin compatible releases; complete native/extension/license capability inventory in P0 |
 | Global assistant integration | Required behavior; Twenty front components have a constrained host | P0 spike chooses extension/host-shell patch and tests global context/navigation |
 | OpenDesign inline editor/tools | Engine embedding is desired; exact surface not verified | P0/P1 capability spike; use existing engine/editor with authenticated project access |
-| Azure credits/resources | User reports available credits | Verify account/services/quota before provisioning; no balance is asserted here |
-| Huawei credits/region | Expected after month one | Verify activation, available services and migration staging before H |
+| Azure credits/resources | User reports available credits; all product phases and December demo remain on Azure | Verify account/services/quota and capacity through demo; no balance is asserted here |
+| Huawei credits/region | Conditional on passing the first section after the December demo | Verify award/activation, available services and migration staging before H; remain on Azure otherwise |
+| Analytics and external CRM access | APIs exist, but customer accounts/properties/projects are not connected | Verify consent/scopes, mappings, provider limits and current contracts per connector |
 | Models/datasets/reviewers | Prior demo has rules/template code and synthetic unlabeled scaffold | Obtain reviewed evidence and independent labels; run actual baselines |
 | Smartlead/Dripify/other accounts | Prior chats describe a stack, not session access | Verify authorized account capabilities, schema, sender and API limits |
 | Original campaign artifacts | Requested earlier but not available in the implementation record | Audit when available; synthetic demo can proceed with visible origin |
