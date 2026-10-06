@@ -1,0 +1,65 @@
+{
+  "provider": "smartlead",
+  "mode": "fixture",
+  "paused": true,
+  "campaign_name": "Regional growth · successful path",
+  "lead_list": [
+    {
+      "email": "noura@example.org",
+      "first_name": "Noura Ahmed",
+      "company_name": "Foodics-style Demo Co",
+      "custom_fields": {
+        "message_1": "Hello Noura Ahmed,\n\nOur reviewed brief for Foodics-style Demo Co says: The synthetic company brief describes regional expansion and operational capacity planning.\n\nWould it be useful to explore operations capacity review with the appropriate owner? This is a hypothesis for discussion, not an assumption about your internal needs.\n\nLara",
+        "message_2": "Hello Noura Ahmed, would it be helpful to revisit the proposal below?\n\nHello Noura Ahmed,\n\nOur reviewed brief for Foodics-style Demo Co says: The synthetic company brief describes regional expansion and operational capacity planning.\n\nWould it be useful to explore operations capacity review with the appropriate owner? This is a hypothesis for discussion, not an assumption about your internal needs.\n\nLara",
+        "message_3": "Hello Noura Ahmed, would it be helpful to revisit the proposal below?\n\nHello Noura Ahmed,\n\nOur reviewed brief for Foodics-style Demo Co says: The synthetic company brief describes regional expansion and operational capacity planning.\n\nWould it be useful to explore operations capacity review with the appropriate owner? This is a hypothesis for discussion, not an assumption about your internal needs.\n\nLara"
+      },
+      "source_contact_id": "84c12543-5375-5de9-a09e-65fbb24eec19"
+    },
+    {
+      "email": "maya@example.org",
+      "first_name": "Maya Karim",
+      "company_name": "Demo Systems",
+      "custom_fields": {
+        "message_1": "Hello Maya Karim,\n\nOur reviewed brief for Demo Systems says: The synthetic company announced a partnerships and integration program.\n\nWould it be useful to explore partnership development with the appropriate owner? This is a hypothesis for discussion, not an assumption about your internal needs.\n\nLara",
+        "message_2": "Hello Maya Karim, would it be helpful to revisit the proposal below?\n\nHello Maya Karim,\n\nOur reviewed brief for Demo Systems says: The synthetic company announced a partnerships and integration program.\n\nWould it be useful to explore partnership development with the appropriate owner? This is a hypothesis for discussion, not an assumption about your internal needs.\n\nLara",
+        "message_3": "Hello Maya Karim, would it be helpful to revisit the proposal below?\n\nHello Maya Karim,\n\nOur reviewed brief for Demo Systems says: The synthetic company announced a partnerships and integration program.\n\nWould it be useful to explore partnership development with the appropriate owner? This is a hypothesis for discussion, not an assumption about your internal needs.\n\nLara"
+      },
+      "source_contact_id": "a6c586d3-44f6-5dd9-b5c4-7b11d30f90bb"
+    }
+  ],
+  "reconciliation": [
+    {
+      "source_row_ids": "A01",
+      "contact_id": "84c12543-5375-5de9-a09e-65fbb24eec19",
+      "name": "Noura Ahmed",
+      "company": "Foodics-style Demo Co",
+      "email": "noura@example.org",
+      "linkedin_url": "https://www.linkedin.com/in/demo-noura",
+      "phone": "+201000000001",
+      "status": "prepared",
+      "reasons": "",
+      "message_1": "Hello Noura Ahmed,\n\nOur reviewed brief for Foodics-style Demo Co says: The synthetic company brief describes regional expansion and operational capacity planning.\n\nWould it be useful to explore operations capacity review with the appropriate owner? This is a hypothesis for discussion, not an assumption about your internal needs.\n\nLara",
+      "message_2": "Hello Noura Ahmed, would it be helpful to revisit the proposal below?\n\nHello Noura Ahmed,\n\nOur reviewed brief for Foodics-style Demo Co says: The synthetic company brief describes regional expansion and operational capacity planning.\n\nWould it be useful to explore operations capacity review with the appropriate owner? This is a hypothesis for discussion, not an assumption about your internal needs.\n\nLara",
+      "message_3": "Hello Noura Ahmed, would it be helpful to revisit the proposal below?\n\nHello Noura Ahmed,\n\nOur reviewed brief for Foodics-style Demo Co says: The synthetic company brief describes regional expansion and operational capacity planning.\n\nWould it be useful to explore operations capacity review with the appropriate owner? This is a hypothesis for discussion, not an assumption about your internal needs.\n\nLara",
+      "copy_version": 2,
+      "simulated": true
+    },
+    {
+      "source_row_ids": "A04",
+      "contact_id": "a6c586d3-44f6-5dd9-b5c4-7b11d30f90bb",
+      "name": "Maya Karim",
+      "company": "Demo Systems",
+      "email": "maya@example.org",
+      "linkedin_url": "https://www.linkedin.com/in/demo-maya",
+      "phone": "",
+      "status": "prepared",
+      "reasons": "",
+      "message_1": "Hello Maya Karim,\n\nOur reviewed brief for Demo Systems says: The synthetic company announced a partnerships and integration program.\n\nWould it be useful to explore partnership development with the appropriate owner? This is a hypothesis for discussion, not an assumption about your internal needs.\n\nLara",
+      "message_2": "Hello Maya Karim, would it be helpful to revisit the proposal below?\n\nHello Maya Karim,\n\nOur reviewed brief for Demo Systems says: The synthetic company announced a partnerships and integration program.\n\nWould it be useful to explore partnership development with the appropriate owner? This is a hypothesis for discussion, not an assumption about your internal needs.\n\nLara",
+      "message_3": "Hello Maya Karim, would it be helpful to revisit the proposal below?\n\nHello Maya Karim,\n\nOur reviewed brief for Demo Systems says: The synthetic company announced a partnerships and integration program.\n\nWould it be useful to explore partnership development with the appropriate owner? This is a hypothesis for discussion, not an assumption about your internal needs.\n\nLara",
+      "copy_version": 2,
+      "simulated": true
+    }
+  ],
+  "note": "Preparation contract only. No live API request is made."
+}

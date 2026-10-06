@@ -1,0 +1,19 @@
+{
+  "mode": "synthetic fixture only",
+  "contacts_prepared": 2,
+  "scheduled_before_reply": 12,
+  "scheduled_after_reply": 6,
+  "cancelled_for_replied_contact": 6,
+  "live_campaign_actions": 0,
+  "exports": [
+    "CSV",
+    "XLSX",
+    "Smartlead fixture JSON"
+  ],
+  "assets": [
+    "brief",
+    "onepager",
+    "summary",
+    "card"
+  ]
+}

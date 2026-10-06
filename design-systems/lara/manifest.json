@@ -1,0 +1,9 @@
+{
+  "schemaVersion": "od-design-system-project/v1",
+  "id": "lara",
+  "name": "Lara Advisory",
+  "category": "Productivity & SaaS",
+  "description": "Corporate campaign briefs and proposals in navy and gold.",
+  "source": {"type": "local", "path": "/mnt/data/Personal Projects/Huawei ICT 2026/gtm-command-center/design-systems/lara"},
+  "files": {"design": "DESIGN.md", "tokens": "tokens.css"}
+}

@@ -1,0 +1,58 @@
+test_board_and_workspaces (test_api.ApiTests.test_board_and_workspaces) ... ok
+test_csv_mapping_and_empty_import (test_api.ApiTests.test_csv_mapping_and_empty_import) ... ok
+test_end_to_end_review_and_reply (test_api.ApiTests.test_end_to_end_review_and_reply) ... ok
+test_exports_and_assets (test_api.ApiTests.test_exports_and_assets) ... ok
+test_reject_foreign_origin_and_host (test_api.ApiTests.test_reject_foreign_origin_and_host) ... ok
+test_unknown_paths_and_invalid_requests (test_api.ApiTests.test_unknown_paths_and_invalid_requests) ... ok
+test_480_empty_slots_and_company_split (test_evaluation.EvaluationTests.test_480_empty_slots_and_company_split) ... ok
+test_duplicate_judgment_rejected (test_evaluation.EvaluationTests.test_duplicate_judgment_rejected) ... ok
+test_duplicate_sources_cross_split_rejected (test_evaluation.EvaluationTests.test_duplicate_sources_cross_split_rejected) ... ok
+test_ndcg_formula (test_evaluation.EvaluationTests.test_ndcg_formula) ... ok
+test_perfect_synthetic_predictions_only_for_metric_verification (test_evaluation.EvaluationTests.test_perfect_synthetic_predictions_only_for_metric_verification) ... ok
+test_brand_and_qr_validation (test_knowledge.KnowledgeTests.test_brand_and_qr_validation) ... ok
+test_case_insensitive_exclusion_flags (test_knowledge.KnowledgeTests.test_case_insensitive_exclusion_flags) ... ok
+test_offering_changes_invalidate_only_this_client (test_knowledge.KnowledgeTests.test_offering_changes_invalidate_only_this_client) ... ok
+test_strict_readiness_decisions (test_knowledge.KnowledgeTests.test_strict_readiness_decisions) ... ok
+test_asset_injection_escaped (test_workflow.WorkflowTests.test_asset_injection_escaped) ... ok
+test_bad_evidence_has_row_outcome (test_workflow.WorkflowTests.test_bad_evidence_has_row_outcome) ... ok
+test_campaign_collision (test_workflow.WorkflowTests.test_campaign_collision) ... ok
+test_changed_event_id_rejected (test_workflow.WorkflowTests.test_changed_event_id_rejected) ... ok
+test_conflicting_evidence_cannot_approve (test_workflow.WorkflowTests.test_conflicting_evidence_cannot_approve) ... ok
+test_cross_workspace_record_access_fails (test_workflow.WorkflowTests.test_cross_workspace_record_access_fails) ... ok
+test_csv_formula_safety (test_workflow.WorkflowTests.test_csv_formula_safety) ... ok
+test_edit_invalidates_approval_and_actions (test_workflow.WorkflowTests.test_edit_invalidates_approval_and_actions) ... ok
+test_every_row_recorded (test_workflow.WorkflowTests.test_every_row_recorded) ... ok
+test_evidence_change_invalidates_approval (test_workflow.WorkflowTests.test_evidence_change_invalidates_approval) ... ok
+test_existing_client_and_optout_excluded (test_workflow.WorkflowTests.test_existing_client_and_optout_excluded) ... ok
+test_four_assets_and_onepager_approval (test_workflow.WorkflowTests.test_four_assets_and_onepager_approval) ... ok
+test_identity_collision_not_auto_merged (test_workflow.WorkflowTests.test_identity_collision_not_auto_merged) ... ok
+test_import_retry_and_changed_batch (test_workflow.WorkflowTests.test_import_retry_and_changed_batch) ... ok
+test_imported_approval_never_trusted (test_workflow.WorkflowTests.test_imported_approval_never_trusted) ... ok
+test_missing_email_only_blocks_email (test_workflow.WorkflowTests.test_missing_email_only_blocks_email) ... ok
+test_no_duplicate_enrollment (test_workflow.WorkflowTests.test_no_duplicate_enrollment) ... ok
+test_optout_from_new_import_cancels (test_workflow.WorkflowTests.test_optout_from_new_import_cancels) ... ok
+test_persistence_and_concurrent_event_retry (test_workflow.WorkflowTests.test_persistence_and_concurrent_event_retry) ... ok
+test_prepare_retry_is_idempotent (test_workflow.WorkflowTests.test_prepare_retry_is_idempotent) ... ok
+test_provider_fixture_and_blocked_exports (test_workflow.WorkflowTests.test_provider_fixture_and_blocked_exports) ... ok
+test_provider_transition_and_event_retry (test_workflow.WorkflowTests.test_provider_transition_and_event_retry) ... ok
+test_qr_deterministic_and_bounded (test_workflow.WorkflowTests.test_qr_deterministic_and_bounded) ... ok
+test_requires_claim_review (test_workflow.WorkflowTests.test_requires_claim_review) ... ok
+test_retrieval_provenance_and_support (test_workflow.WorkflowTests.test_retrieval_provenance_and_support) ... ok
+test_role_mismatch_needs_review (test_workflow.WorkflowTests.test_role_mismatch_needs_review) ... ok
+test_sender_hold (test_workflow.WorkflowTests.test_sender_hold) ... ok
+test_source_update_becomes_conflict (test_workflow.WorkflowTests.test_source_update_becomes_conflict) ... ok
+test_stale_version_rejected (test_workflow.WorkflowTests.test_stale_version_rejected) ... ok
+test_template_has_grounded_hypothesis (test_workflow.WorkflowTests.test_template_has_grounded_hypothesis) ... ok
+test_title_does_not_substitute_evidence (test_workflow.WorkflowTests.test_title_does_not_substitute_evidence) ... ok
+test_workspace_scoped_reply (test_workflow.WorkflowTests.test_workspace_scoped_reply) ... ok
+test_xlsx_is_complete_ooxml (test_workflow.WorkflowTests.test_xlsx_is_complete_ooxml) ... ok
+
+----------------------------------------------------------------------
+Ran 48 tests in 0.471s
+
+OK
+80 synthetic packs; 480 unlabelled judgments; split 56/12/12. No benchmark run.
+80 synthetic packs; 480 unlabelled judgments; split 56/12/12. No benchmark run.
+80 synthetic packs; 480 unlabelled judgments; split 56/12/12. No benchmark run.
+80 synthetic packs; 480 unlabelled judgments; split 56/12/12. No benchmark run.
+80 synthetic packs; 480 unlabelled judgments; split 56/12/12. No benchmark run.

@@ -1,0 +1,2 @@
+source_row_id,name,company,role,email,linkedin,phone,evidence,opt_out,existing_client
+T01,Alex Example,Demo Company,Partnerships manager,alex@example.org,https://www.linkedin.com/in/demo-alex,,,false,false

@@ -1,0 +1,346 @@
+{
+  "origin": "All companies, contacts and evidence are synthetic. No commercial performance claims.",
+  "offers": [
+    {
+      "id": "workforce",
+      "name": "Workforce advisory",
+      "name_ar": "استشارات تخطيط القوى العاملة",
+      "terms": [
+        "workforce",
+        "hiring",
+        "القوى",
+        "توظيف"
+      ],
+      "role_terms": [
+        "hr",
+        "people",
+        "talent",
+        "موارد",
+        "بشرية"
+      ],
+      "approved_claims": []
+    },
+    {
+      "id": "operations",
+      "name": "Operations capacity review",
+      "name_ar": "مراجعة القدرة التشغيلية",
+      "terms": [
+        "operations",
+        "operational",
+        "expansion",
+        "capacity",
+        "تشغيل",
+        "توسع"
+      ],
+      "role_terms": [
+        "operations",
+        "procurement",
+        "operational",
+        "تشغيل",
+        "مشتريات"
+      ],
+      "approved_claims": []
+    },
+    {
+      "id": "partnerships",
+      "name": "Partnership development",
+      "name_ar": "تطوير الشراكات",
+      "terms": [
+        "partnerships",
+        "integration",
+        "partner",
+        "شراكات",
+        "تكامل"
+      ],
+      "role_terms": [
+        "partnerships",
+        "business",
+        "alliances",
+        "شراكات",
+        "أعمال"
+      ],
+      "approved_claims": []
+    }
+  ],
+  "workspaces": [
+    {
+      "id": "advisory",
+      "name": "Lara · Advisory demo",
+      "brand": {
+        "name": "Lara · Advisory",
+        "navy": "#14283f",
+        "gold": "#a37b2d",
+        "profile_name": "Lara",
+        "profile_role": "Campaign & partnerships lead",
+        "profile_url": "https://example.org/lara?client=advisory",
+        "direction": "Polished corporate, navy and gold, clear editorial typography."
+      },
+      "campaigns": [
+        {
+          "id": "launch",
+          "name": "Regional growth · successful path",
+          "sender_ready": true,
+          "rows": [
+            {
+              "source_row_id": "A01",
+              "name": "Noura Ahmed",
+              "company": "Foodics-style Demo Co",
+              "role": "Operations director",
+              "email": "noura@example.org",
+              "linkedin": "https://www.linkedin.com/in/demo-noura",
+              "phone": "+201000000001",
+              "evidence": [
+                {
+                  "id": "A01",
+                  "text": "The synthetic company brief describes regional expansion and operational capacity planning.",
+                  "source": "fixture://demo/A01",
+                  "date": "2026-10-01",
+                  "origin": "synthetic",
+                  "license": "CC0-1.0 (original project fixture)",
+                  "approved": false,
+                  "conflict": false
+                }
+              ],
+              "origin": "synthetic"
+            },
+            {
+              "source_row_id": "A04",
+              "name": "Maya Karim",
+              "company": "Demo Systems",
+              "role": "Partnerships manager",
+              "email": "maya@example.org",
+              "linkedin": "https://www.linkedin.com/in/demo-maya",
+              "phone": "",
+              "evidence": [
+                {
+                  "id": "A04",
+                  "text": "The synthetic company announced a partnerships and integration program.",
+                  "source": "fixture://demo/A04",
+                  "date": "2026-10-01",
+                  "origin": "synthetic",
+                  "license": "CC0-1.0 (original project fixture)",
+                  "approved": false,
+                  "conflict": false
+                }
+              ],
+              "origin": "synthetic"
+            }
+          ]
+        },
+        {
+          "id": "exceptions",
+          "name": "Account outreach · exceptions",
+          "sender_ready": false,
+          "sender_reason": "Domain and sender review is incomplete.",
+          "rows": [
+            {
+              "source_row_id": "A01",
+              "name": "Noura Ahmed",
+              "company": "Foodics-style Demo Co",
+              "role": "Operations director",
+              "email": "noura@example.org",
+              "linkedin": "https://www.linkedin.com/in/demo-noura",
+              "phone": "+201000000001",
+              "evidence": [
+                {
+                  "id": "A01",
+                  "text": "The synthetic company brief describes regional expansion and operational capacity planning.",
+                  "source": "fixture://demo/A01",
+                  "date": "2026-10-01",
+                  "origin": "synthetic",
+                  "license": "CC0-1.0 (original project fixture)",
+                  "approved": false,
+                  "conflict": false
+                }
+              ],
+              "origin": "synthetic"
+            },
+            {
+              "source_row_id": "A02",
+              "name": "Noura Ahmed",
+              "company": "Foodics-style Demo Co",
+              "role": "Operations director",
+              "email": "noura@example.org",
+              "linkedin": "https://www.linkedin.com/in/demo-noura",
+              "phone": "+201000000001",
+              "evidence": [
+                {
+                  "id": "A01",
+                  "text": "The synthetic company brief describes regional expansion and operational capacity planning.",
+                  "source": "fixture://demo/A01",
+                  "date": "2026-10-01",
+                  "origin": "synthetic",
+                  "license": "CC0-1.0 (original project fixture)",
+                  "approved": false,
+                  "conflict": false
+                }
+              ],
+              "origin": "synthetic"
+            },
+            {
+              "source_row_id": "A03",
+              "name": "Omar Saleh",
+              "company": "Demo Bank",
+              "role": "HR director",
+              "email": "",
+              "linkedin": "https://www.linkedin.com/in/demo-omar",
+              "phone": "",
+              "evidence": [
+                {
+                  "id": "A03",
+                  "text": "The synthetic bank brief describes workforce hiring. Offshore operations require regulatory review.",
+                  "source": "fixture://demo/A03",
+                  "date": "2026-10-01",
+                  "origin": "synthetic",
+                  "license": "CC0-1.0 (original project fixture)",
+                  "approved": false,
+                  "conflict": true
+                }
+              ],
+              "origin": "synthetic"
+            },
+            {
+              "source_row_id": "A04",
+              "name": "Maya Karim",
+              "company": "Demo Systems",
+              "role": "Partnerships manager",
+              "email": "maya@example.org",
+              "linkedin": "https://www.linkedin.com/in/demo-maya",
+              "phone": "",
+              "evidence": [
+                {
+                  "id": "A04",
+                  "text": "The synthetic company announced a partnerships and integration program.",
+                  "source": "fixture://demo/A04",
+                  "date": "2026-10-01",
+                  "origin": "synthetic",
+                  "license": "CC0-1.0 (original project fixture)",
+                  "approved": false,
+                  "conflict": false
+                }
+              ],
+              "origin": "synthetic"
+            },
+            {
+              "source_row_id": "A05",
+              "name": "Samir Ali",
+              "company": "Existing Client Demo",
+              "role": "HR director",
+              "email": "samir@example.org",
+              "linkedin": "",
+              "phone": "",
+              "evidence": [
+                {
+                  "id": "A05",
+                  "text": "Synthetic workforce hiring update.",
+                  "source": "fixture://demo/A05",
+                  "date": "2026-10-01",
+                  "origin": "synthetic",
+                  "license": "CC0-1.0 (original project fixture)",
+                  "approved": false,
+                  "conflict": false
+                }
+              ],
+              "existing_client": true,
+              "origin": "synthetic"
+            },
+            {
+              "source_row_id": "A06",
+              "name": "Dina Hassan",
+              "company": "Opt-out Demo",
+              "role": "Operations director",
+              "email": "dina@example.org",
+              "linkedin": "",
+              "phone": "",
+              "evidence": [
+                {
+                  "id": "A06",
+                  "text": "Synthetic expansion update.",
+                  "source": "fixture://demo/A06",
+                  "date": "2026-10-01",
+                  "origin": "synthetic",
+                  "license": "CC0-1.0 (original project fixture)",
+                  "approved": false,
+                  "conflict": false
+                }
+              ],
+              "opt_out": true,
+              "origin": "synthetic"
+            },
+            {
+              "source_row_id": "A07",
+              "name": "Hana Youssef",
+              "company": "No-email Demo",
+              "role": "Partnerships manager",
+              "email": "",
+              "linkedin": "https://www.linkedin.com/in/demo-hana",
+              "phone": "+201000000002",
+              "evidence": [
+                {
+                  "id": "A07",
+                  "text": "Synthetic partnerships and integration program.",
+                  "source": "fixture://demo/A07",
+                  "date": "2026-10-01",
+                  "origin": "synthetic",
+                  "license": "CC0-1.0 (original project fixture)",
+                  "approved": false,
+                  "conflict": false
+                }
+              ],
+              "origin": "synthetic"
+            },
+            {
+              "source_row_id": "A08",
+              "name": "Missing company",
+              "origin": "synthetic"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "studio",
+      "name": "Client B · Studio demo",
+      "brand": {
+        "name": "Studio B",
+        "navy": "#233830",
+        "gold": "#596e44",
+        "profile_name": "Lara",
+        "profile_role": "Campaign & partnerships lead",
+        "profile_url": "https://example.org/lara?client=studio",
+        "direction": "Polished corporate, navy and gold, clear editorial typography."
+      },
+      "campaigns": [
+        {
+          "id": "studio-launch",
+          "name": "Studio partner outreach",
+          "sender_ready": true,
+          "rows": [
+            {
+              "source_row_id": "A01",
+              "name": "Noura Ahmed",
+              "company": "Foodics-style Demo Co",
+              "role": "Operations director",
+              "email": "noura@example.org",
+              "linkedin": "https://www.linkedin.com/in/demo-noura",
+              "phone": "+201000000001",
+              "evidence": [
+                {
+                  "id": "A01",
+                  "text": "The synthetic company brief describes regional expansion and operational capacity planning.",
+                  "source": "fixture://demo/A01",
+                  "date": "2026-10-01",
+                  "origin": "synthetic",
+                  "license": "CC0-1.0 (original project fixture)",
+                  "approved": false,
+                  "conflict": false
+                }
+              ],
+              "origin": "synthetic"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "status": "passed",
+  "transport": "Playwright route replay of real Python domain transitions; in-memory HTTP handler suite tested separately",
+  "checks": [
+    "initial overview loaded from real domain fixture",
+    "evidence review, bilingual draft and exact-version approval",
+    "successful preparation preserves blocked recipient",
+    "four editable asset types generated",
+    "unsaved edits block approval; saved edits invalidate previous approval",
+    "reply cancellation and duplicate provider-event reconciliation",
+    "exception scenario retains duplicates, rejected row, exclusions and sender hold",
+    "all six tabs at desktop/phone widths in Arabic and English without page overflow",
+    "client switch shows only client B records",
+    "malformed column mapping shows local import error",
+    "load error and retry recovered",
+    "new campaign empty state",
+    "client-specific offer and brand changes save through the review UI"
+  ],
+  "mutations": 16,
+  "page_errors": []
+}

@@ -1,0 +1,9 @@
+__pycache__/
+*.pyc
+data/
+node_modules/
+.twenty/
+evaluation/data/
+evaluation/rules-predictions.json
+verification/browser-check.js
+verification/browser-data.json
