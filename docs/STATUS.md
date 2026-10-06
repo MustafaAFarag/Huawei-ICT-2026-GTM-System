@@ -1,5 +1,7 @@
 # Delivery status against the eight-week plan
 
+> **Current product direction:** [Revenue Workspace PRD v1](prd/REVENUE_WORKSPACE_PRD_v1.md) defines the expanded English-only Twenty-based product, persistent AI assistant with OpenDesign, phased delivery and Azure-to-Huawei migration. The implementation details below describe the earlier local prototype; this PRD task changes documentation only.
+
 ## Locally implemented
 
 The end-to-end campaign state machine, SQLite persistence, bilingual review UI, imports, client knowledge/brand editing, four asset types, preparation exports, execution history and synthetic provider failure/reply events are implemented. Every listed acceptance scenario has local domain coverage; HTTP handlers and browser replay provide additional checks. Commercial demand remains unvalidated.

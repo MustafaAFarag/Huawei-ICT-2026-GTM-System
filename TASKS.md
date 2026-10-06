@@ -1,5 +1,17 @@
 # GTM Campaign Command Center
 
+> **Current product direction:** [Revenue Workspace PRD v1](docs/prd/REVENUE_WORKSPACE_PRD_v1.md) defines the expanded English-only Twenty-based product, persistent AI assistant with OpenDesign, phased delivery and Azure-to-Huawei migration. The implementation details below describe the earlier local prototype; this PRD task changes documentation only.
+
+## Current documentation task — Revenue Workspace PRD
+
+- [x] Write the expanded English-only PRD with 106 feature requirements and acceptance criteria.
+- [x] Define persistent assistant context/navigation/actions, Twenty reuse and OpenDesign integration.
+- [x] Define phase gates and Azure month-one / Huawei month-two migration.
+- [x] Review feature coverage, Markdown tables, local links and documentation-only changes.
+- [x] Complete documentation; no application changes, provisioning, deployment or outreach.
+
+## Historical prototype work
+
 Goal: implement the supplied Eight-week MVP plan in an isolated product directory.
 Full done criteria: native Twenty workflow in two client workspaces; approved-evidence bilingual campaigns; four OpenDesign assets; reconciled exports/execution events; independent held-out AI evaluation on verified compute; rehearsed success and exception paths.
 Stop: no deployment, live outreach or push without separate authorization.

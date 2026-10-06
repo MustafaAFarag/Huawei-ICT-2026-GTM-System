@@ -1,5 +1,7 @@
 # GTM Campaign Command Center
 
+> **Current product direction:** [Revenue Workspace PRD v1](docs/prd/REVENUE_WORKSPACE_PRD_v1.md) defines the expanded English-only Twenty-based product, persistent AI assistant with OpenDesign, phased delivery and Azure-to-Huawei migration. The implementation details below describe the earlier local prototype; this PRD task changes documentation only.
+
 Local, persistent campaign demonstrator implementing the supplied GTM plan. Run the full workflow with Python; open [preview.html](preview.html) for a read-only offline overview. No deployment, messages, enrichment calls or real campaign actions occurred.
 
 ## Run
