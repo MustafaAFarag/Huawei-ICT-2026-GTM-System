@@ -9,7 +9,7 @@ Local, persistent campaign demonstrator implementing the supplied GTM plan. Run 
 Python 3.12+; no third-party runtime dependencies.
 
 ```bash
-cd '/mnt/data/Personal Projects/Huawei ICT 2026/gtm-command-center'
+cd '/mnt/ssd/Personal Projects/Huawei ICT 2026/gtm-command-center'
 python3 -m gtm.server
 ```
 
