@@ -2,7 +2,7 @@
 
 **Status:** current. **Date:** 13 October 2026. **Supersedes:** [PRD v2](REVENUE_WORKSPACE_PRD_v2.md) (12 October 2026) and [PRD v1](REVENUE_WORKSPACE_PRD_v1.md) (6 October 2026). **Inputs:** the product owner's answers of 13 October 2026, the Lara meeting transcript, and ten research reports in [`docs/research/`](../research/README.md). **Current authorization:** documentation only.
 
-v3 records the product owner's decisions on the v2 proposals, adds the business model, the "one place" component plan, the out-of-the-box plays, the Asset Studio and the competition deliverables. It keeps every feature from v1 and v2 in the catalogue (§7 and Appendix A) so the team can pull work forward if it finishes early.
+v3 records the product owner's decisions on the v2 proposals and adds the business model, the "one place" component plan, the out-of-the-box plays and the Asset Studio. This document is about the product; competition rules live in [research 06](../research/06-huawei-ict-2026-27-rules.md). Every feature from v1 and v2 stays in the catalogue (§7 and Appendix A) so the team can pull work forward if it finishes early.
 
 ## 0. Summary
 
@@ -14,67 +14,40 @@ Revenue Workspace is **one place where non-technical go-to-market (GTM) people r
 
 Underneath sit the parts that personal automations lack: team connectors and vault, spend caps, approvals, suppression, audit, and Egypt/Saudi/UAE compliance gates.
 
-**Language:** English is the default for the interface and content. Arabic content (Egyptian first, Gulf as beta, business Arabic) is a first-class option and the main advantage when we pitch in MENA later. **Business model:** freemium, like Supabase: a useful free tier with hard limits, then Solo, Team, Agency and Enterprise plans with pooled credits and spend caps. **Cloud:** we build on Azure now (our only credits). The 2026–27 rules for our region say every entry "must be deployed on Huawei Cloud and use at least one Huawei Cloud service" (§2), so the judged deployment moves to Huawei Cloud (ECS, RDS, DCS, OBS, ModelArts MaaS) as soon as we have an account or vouchers. Portability is designed in from day one.
+**Language:** English is the default for the interface and content. Arabic content (Egyptian first, Gulf as beta, business Arabic) is a first-class option and the main advantage when we pitch in MENA later. **Business model:** freemium, like Supabase: a useful free tier with hard limits, then Solo, Team, Agency and Enterprise plans with pooled credits and spend caps. **Cloud:** Azure is a placeholder because it is the only cloud where we have credits. We use it to test the demo with real services. Huawei Cloud comes only if we pass the December phase; then we migrate. Every provider-specific service sits behind an adapter so the move is configuration, not code. **Source:** the code will be open source.
 
 ## 1. Decision log (settled 13 October 2026)
 
-All decisions below are settled by the product owner unless marked **Proposed**. Do not reopen a settled decision without new facts.
+All decisions below are settled by the product owner. Do not reopen a settled decision without new facts.
 
 | # | Topic | Decision | Source / reason |
 | --- | --- | --- | --- |
 | D1 | Language | English is the main language: default UI, default generated content, competition material. Arabic content (Egyptian, Gulf beta, business Arabic) is supported in drafts and assets. Arabic UI later through Twenty's native RTL | Owner. Judges are international; Arabic is the MENA startup pitch. GoHighLevel's Arabic request has 308 votes open since 2023 (research 10) |
 | D2 | Users and business model | Freemium. Free tier for solopreneurs with hard limits; paid tiers for founder-led teams (1–10) and small agencies. Tier table in §4 | Owner ("learn the Supabase model"). Research 07 |
 | D3 | Scope | Keep the full feature catalogue (§7, Appendix A). Build the outbound loop first; pull later features forward if time allows | Owner |
-| D4 | Cloud | Build on **Azure** (only credits). **New fact, 13 Oct:** the 2026–27 Northern Africa and MECA topic page says "All entries must be deployed on Huawei Cloud and use at least one Huawei Cloud service". So the judged deployment runs on Huawei Cloud; Azure stays for development. Open a Huawei Cloud account now, ask for vouchers at registration, and move the demo before any deployed demo is judged | Owner (Azure build). Rule verified on the Huawei Talent portal (§2). The owner's timing ("Huawei after December") still works only if the first phase is the entry form alone — **to confirm with Huawei Egypt** |
+| D4 | Cloud | **Azure is a placeholder** for the December demo, so the demo runs on real services; we have credits only there. If we pass the December phase, we receive Huawei Cloud resources and migrate (§8.3). The December submission is a PDF only; the demo is a bonus and we do not submit the repository | Owner, 13 Oct |
 | D5 | Thesis | "Gather, tune and deliver in one place" for non-technical GTM users: plays + assistant + Asset Studio + governed connectors | Owner. Research 08 (8 tools per team, 42% overwhelmed), research 10 (learning curve and setup time are the top complaints) |
 | D6 | Asset Studio | OpenDesign is a major pillar, not a side feature. Ship a template library (§5.4) | Owner. Research 09 (OpenDesign 0.24.1, Apache-2.0, 116 templates, brand-from-URL) |
-| D7 | LinkedIn | Official and licensed paths in the product: manual tasks, own-profile posting (`w_member_social`), licensed data providers, customer CSV exports. **Agent-Reach / `linkedin-mcp-server` only as an internal research tool, and later at most as an opt-in local power-user connector** (§7.7) | **Proposed** (pushback on the owner's idea; see §9 item 1). Research 09 |
+| D7 | LinkedIn | In the product: manual LinkedIn tasks with copy-ready text, own-profile posting (`w_member_social`), licensed data providers and customer CSV exports. No crawling in the product or the demo. A lower-risk method for deeper LinkedIn data is decided when we reach it (§7.7, §9 item 1) | Owner, 13 Oct. Research 09 |
 | D8 | WhatsApp | Opt-in only, after a reply or a form; official Cloud API; never cold | Settled in the meeting |
 | D9 | Autonomy | AI researches and drafts; a human approves; a sender platform sends at capped volume. No autonomous AI SDR | Settled. Research 01 (11x case) |
 | D10 | Compliance gates | Lawful basis, country channel rules, opt-out, suppression and residency flags are in the product | Owner confirmed |
-| D11 | Credits and keys | Hybrid: each paid plan includes pooled AI and enrichment credits; bring-your-own-key (BYOK) for data providers removes the data-credit charge | **Proposed** (research 07) |
+| D11 | Credits and keys | Hybrid: each paid plan includes pooled AI and enrichment credits; bring-your-own-key (BYOK) for data providers removes the data-credit charge. Tier prices in §4.2 are used now and hardened with the business model later | Owner, 13 Oct. Research 07 |
 | D12 | Competition data | Synthetic or consented data only in every competition artifact | Settled |
 | D13 | Assistant | Spike Twenty's native AI chat, skills and MCP before building a custom shell | Settled from v2 |
 | D14 | Evidence | Build the business case from public market data (§3). Do not quote unverified figures (for example "6,000 / 130 GTM engineers") | Owner: no follow-ups with Lara; use internet research |
-| D15 | Huawei technology | The owner is right that MindSpore, CANN and ModelArts are no longer named as mandatory (they were in 2023–24). The 2026–27 minimum is Huawei **Cloud** (at least one service, e.g. ECS + RDS + DCS). The Manual also says teams "need to use Huawei's AI technologies in combination with other technologies", so we also serve the drafting model from ModelArts Studio (MaaS) in the judged deployment | 2026–27 Manual (27 Aug 2026) and regional topic page, both verified (§2) |
+| D15 | Huawei technology | Huawei services are the post-December target: ModelArts Studio (MaaS) for the model, ECS/CCE, RDS, DCS and OBS (§8.3). Not used before December | Owner, 13 Oct |
 | D16 | Team eligibility | Confirmed by the owner. Not an open question | Owner |
-| D17 | Open source | Entries shortlisted for the Regional Competition "must be open-sourced on communities like Gitee or GitHub". Plan an **open-core** model like Supabase and Twenty: the product repo is public; revenue comes from the hosted service, credits and agency features | **Proposed.** Topic page, verified. Licence choice (Apache-2.0 vs AGPL for our code) to decide before the repo goes public |
+| D17 | Open source | The project is open source: the code is public on GitHub; revenue comes from the hosted service, credits and agency features (open core, like Supabase and Twenty). Our licence (Apache-2.0 or AGPL) is chosen before the repository goes public. Keep secrets and customer data out of the repository from day one | Owner, 13 Oct |
 
-## 2. Competition track (Huawei ICT Competition 2026–2027, Innovation)
+## 2. Delivery context
 
-Source: [research 06](../research/06-huawei-ict-2026-27-rules.md). The lead reviewer re-read the 2026–27 Manual (27 Aug 2026) and loaded the Northern Africa topic page on the Huawei Talent portal on 13 Oct 2026.
+The product is built for the market first; the Huawei ICT Competition (Innovation) is the first milestone. What matters for the product:
 
-### 2.0 Rules that shape the product (verified)
-
-| Rule | Exact wording | Effect on us |
-| --- | --- | --- |
-| Topic (Northern Africa and MECA) | "Creating Innovative AI Applications Powered by Huawei Cloud" | Our entry is an AI application; Huawei Cloud must be visible in it |
-| Huawei Cloud | "All entries must be deployed on Huawei Cloud and use at least one Huawei Cloud service … ECS, RDS, and DCS for Redis" | Judged deployment on Huawei (D4). Azure-only fails |
-| Huawei AI | "participants need to use Huawei's AI technologies in combination with other technologies such as generative AI, big data, cloud computing…" (Manual). Agents, MCP and skills are named as allowed areas (Roadshow) | Serve the model from ModelArts MaaS; present our product MCP server and plays as agent work |
-| Presentation | "Deploy the app on the cloud and showcase its core functions and interaction flow on a visual demo page." "Demonstrate the value of Huawei Cloud products in requirement understanding, code generation, project building, bug fixing, and deployment" | The demo website is expected at some stage, and a short "how we built it with Huawei Cloud tools" story helps |
-| Open source | "Entries shortlisted for the Regional Competition and Global Final must be open-sourced on communities like Gitee or GitHub" | Open-core model (D17); keep secrets and customer data out of the repo from day one |
-| Team | "one instructor and up to three students, all of whom must be full-time university students" | Confirmed by the owner (D16) |
-| Privacy | Entries must not "infringe on others' privacy" | Synthetic data only (D12) |
-| Dates | Registration and roadshow Sep–Nov 2026; National Final Nov–Dec 2026; Regional Final Feb–Apr 2027 (Northern Africa and MECA listed); Global Final May 2027, Shenzhen | Innovation registration deadline for Northern Africa and MECA is **not published yet** on the portal |
-
-**Not confirmed for 2026–27:** the scoring rubric (2023–24: Creativity 30, Technical 25, Social value 15, Completeness 15, Presentation 15; a 2025–26 North Africa guide shows Innovation 60% / Application value 40% including commercial potential — secondary source), page limits and file formats of the first submission, whether the demo is judged in the first phase, and when vouchers arrive (in 2023–24 they came after registration review, before any judged round). Egypt is most likely in the Northern Africa region (verified for the Practice track only).
-
-**Owner's view vs the rules.** The owner expects the first (December) phase to judge only the idea document, with the architecture plan and demo website as bonuses. The template list fits this: Template 1 is an "Entry Information Form" and Template 2 is "Presentation Slides (Regional Stage)". But the Manual says teams submit "technical documents, code files, and a demonstration video", and the topic requires a Huawei Cloud deployment. Plan: write the proposal first, build on Azure, and move the demo to Huawei Cloud as early as an account allows, so a deployed demo is ready whichever phase asks for it.
-
-### 2.1 What we submit in December
-
-| Deliverable | Required? | Content | Owner of content |
-| --- | --- | --- | --- |
-| Entry Information Form / idea proposal | Required (Template 1; format per template, PDF export kept) | Problem and evidence (§3), users, solution (§5), business model (§4), market, moat (§9), social value (SME inclusion in Arabic-speaking markets), measurable indicators (§10), roadmap, team | Product |
-| Architecture plan | Bonus in the owner's reading; "technical documents" in the Manual | Component diagram (§8) with **Huawei Cloud as the deployment** (ECS/CCE, RDS, DCS, OBS, ModelArts MaaS) and Azure as development; data flow; security and compliance; AI evaluation plan | Engineering |
-| Demo website | Bonus in the owner's reading; required "visual demo page" at some stage | Deployed app with synthetic data: play P1 from template to approved drafts, one Asset Studio output, cost and approval gates. On Huawei Cloud if the account exists in time; otherwise Azure, labelled as staging | Engineering |
-| Demo video | Required in past seasons (~5 min preliminary, ≤ 3 min final) | Recorded walkthrough of the demo website | Engineering |
-
-The proposal must stand on its own: judges may never open the demo. Every number in it comes from the "safe numbers" list in research 08 §7, with the publisher named. Past Egyptian and MENA winners were health, culture and accessibility projects (Manetho, Evana); no B2B sales tool was found among winners, so the proposal must make the social value explicit: Arabic-speaking small businesses get a sales capability that today needs an English-first expert stack.
-
-### 2.2 After the first phase
-
-Move the full build to Huawei Cloud (§8.3), complete phase **N**, open-source the repository if shortlisted for the Regional Competition (D17), and prepare the English presentation and Q&A.
+- **December:** we send a PDF of the idea (problem, users, solution, business model, market, moat, roadmap). An architecture plan and a demo website are bonuses; we want both, and the demo runs on real services on Azure. We do not submit the repository.
+- **If we pass:** we receive Huawei Cloud resources, migrate (§8.3) and build phase **N** toward the regional stage.
+- **What judges reward:** assume the 2023–24 rubric unless a newer one is published: Creativity 30, Technical complexity 25, Social value 15, Functional completeness 15, Presentation 15. For the product this means: lead with what is new (plays for non-technical users, Arabic content, MENA compliance), show real technical depth (scoring, cost-controlled waterfall, governed agent tools, Arabic evaluation), state the social value (Arabic-speaking small businesses get a sales capability that today needs an English-first expert stack), and make every shown flow complete.
+- **Evidence:** every number in the PDF comes from the "safe numbers" list in [research 08 §7](../research/08-market-data.md), with the publisher named. Data in every artifact is synthetic or consented.
 
 ## 3. Problem and evidence
 
@@ -108,7 +81,7 @@ Use these numbers in competition material only as written here, with the caution
 | Accelerators and VCs | Channel (startup discount code) | Access to founder cohorts |
 | SMEs with 10–50 people | Team / Enterprise later | Bigger budgets, longer cycles |
 
-### 4.2 Tiers (Proposed; to test with 5–10 founders and a real cost log)
+### 4.2 Tiers (in use now; hardened later with the business model and a real cost log)
 
 Modelled on Supabase (hard-limited free tier, base fee plus usage, spend cap on by default) and on GTM tools that combine seats with a pooled credit meter. Details and cost reasoning: [research 07 §6](../research/07-pricing-and-freemium.md).
 
@@ -196,7 +169,7 @@ Lara's outbound process, with transcript timestamps, as recorded in v2:
 
 ## 7. Requirements
 
-Phase codes: **D** = December demo website (Azure). **D+** = stretch before December. **N** = after passing December (Huawei migration and national/regional build). **L** = later (startup roadmap). Requirement IDs from v2 are kept; new v3 IDs are marked *(new)*. Appendix A lists every v1 feature with its v3 phase.
+Phase codes: **D** = December demo website (Azure). **D+** = stretch before December. **N** = only if we pass December (Huawei migration and the regional build). **L** = later (startup roadmap). Requirement IDs from v2 are kept; new v3 IDs are marked *(new)*. Appendix A lists every v1 feature with its v3 phase.
 
 ### 7.1 Onboarding and plays
 
@@ -289,7 +262,7 @@ Phase codes: **D** = December demo website (Azure). **D+** = stretch before Dece
 | LI-02 *(new)* | Customer-uploaded LinkedIn data (connections export, Sales Navigator CSV) through SIG-01 | D | Source labelled; consent basis recorded |
 | LI-03 *(new)* | Own-profile posting via official `w_member_social` (plays P6, P7) | N | Founder's OAuth; 150 requests/member/day respected |
 | LI-04 *(new)* | Licensed people data (Crustdata, Apollo, etc.) through BYOK | D+ | Provider and date stored per field |
-| LI-05 *(new)* | Local power-user connector (Agent-Reach / `linkedin-mcp-server`): runs only on the user's computer with the user's own session; one profile per click; no search harvesting, no background crawl, no automated messages; warning screen; daily cap; kill switch; pinned version | L, only after a legal opinion | Cookie never leaves the user's machine; only user-chosen fields are saved, with source and deletion path |
+| LI-05 *(new)* | Local power-user connector (Agent-Reach / `linkedin-mcp-server`): runs only on the user's computer with the user's own session; one profile per click; no search harvesting, no background crawl, no automated messages; warning screen; daily cap; kill switch; pinned version | L — the lower-risk method is chosen when we need deeper LinkedIn data; licensed providers (LI-04) first | Cookie never leaves the user's machine; only user-chosen fields are saved, with source and deletion path |
 | LI-06 *(new)* | Internal team use of Agent-Reach for non-LinkedIn research (web, RSS, YouTube, GitHub) on team laptops | Now (internal) | Not part of the product or the demo |
 
 ### 7.8 Assistant
@@ -380,7 +353,7 @@ Every v1 module stays in the product roadmap. Detailed rows and acceptance crite
 
 Do not use: n8n as an embedded engine; Windmill, Firecrawl, Plausible, Listmonk, DocuSeal or Documenso as modified hosted forks (AGPL); any scraper or auto-updating (`@latest`) code with access to customer credentials; shared-IP sending or warm-up networks; open-source "Clay clones" as a base. Reasons: [research 09](../research/09-building-blocks-and-agent-reach.md).
 
-### 8.2 Azure for development (now)
+### 8.2 Azure placeholder (until December)
 
 | Function | Azure service |
 | --- | --- |
@@ -390,9 +363,9 @@ Do not use: n8n as an embedded engine; Windmill, Firecrawl, Plausible, Listmonk,
 | Files and assets | Azure Blob Storage (Twenty S3-compatible storage settings through an adapter) |
 | Secrets | Azure Key Vault |
 
-### 8.3 Huawei Cloud for the judged deployment (as soon as an account exists)
+### 8.3 Huawei Cloud (after passing December)
 
-Minimum to meet the rule: ECS (or CCE) + RDS + DCS. Target for scoring: all rows below, with the model served from ModelArts MaaS.
+We receive Huawei Cloud resources only if we pass the December phase. Then every row below replaces its Azure placeholder.
 
 | Function | Huawei service | Portability rule |
 | --- | --- | --- |
@@ -403,18 +376,17 @@ Minimum to meet the rule: ECS (or CCE) + RDS + DCS. Target for scoring: all rows
 | Secrets | DEW / KMS | Same vault interface |
 | Evaluation and any fine-tuning | ModelArts notebooks and jobs | Results record model, region and date |
 
-The architecture plan shows Huawei Cloud as the deployment, Azure as development, and the cut-over steps from v1 §8.2. Every provider-specific service sits behind an adapter (model gateway, S3-compatible storage, Postgres, Redis, vault) so the switch is configuration, not code.
+The December architecture plan shows the Azure placeholder, the Huawei target and the cut-over steps from v1 §8.2. Every provider-specific service sits behind an adapter (model gateway, S3-compatible storage, Postgres, Redis, vault) so the switch is configuration, not code.
 
 ## 9. Moat and pushback
 
 The product owner asked for pushback. Points where the evidence disagrees, and what we do about each:
 
-0. **Huawei is not fully optional.** The owner is right that MindSpore, CANN and ModelArts are no longer named as mandatory. But the 2026–27 regional topic says "All entries must be deployed on Huawei Cloud and use at least one Huawei Cloud service", and the Manual says teams "need to use Huawei's AI technologies in combination with other technologies". An Azure-only entry fails the stated rule. The cost is small (ECS + RDS + DCS meets it), so get a Huawei Cloud account and vouchers early instead of waiting for December results. Also: shortlisted entries must be open-sourced (D17), and the 2025–26 regional rubric weighted "innovation" at 60%, including algorithmic work, so a thin LLM wrapper scores low there. Our technical depth must show in the scoring engine, the waterfall with cost control, the Arabic evaluation and the governed agent/MCP layer.
-1. **LinkedIn crawling with Agent-Reach.** Agent-Reach itself is an installer and router (MIT). For LinkedIn it runs `stickerdaniel/linkedin-mcp-server`, which drives a real browser with the user's own logged-in session and can also send messages and connection requests. Its own FAQ says: "LinkedIn's User Agreement prohibits automated access, and accounts using automated tools can be restricted or banned." Running it on our servers with customers' cookies and storing the results is the fact pattern LinkedIn won against in hiQ, Proxycurl and ProAPIs, and it creates personal-data duties under Egypt and Saudi PDPL. Decision D7 keeps it out of the product and the demo; it stays an internal research tool and a possible local opt-in connector later.
+1. **Do we need LinkedIn? Yes as a channel, no as a scraper.** LinkedIn is where B2B buyers in Egypt and the Gulf are reachable, and Lara's sequence uses it twice (invite and follow-up). The product needs three LinkedIn things: (a) manual steps with copy-ready text, (b) posting from the founder's own profile through the official API (plays P6, P7), and (c) people and company data, which licensed providers (Crustdata, Apollo, etc.) and customer exports already give without touching LinkedIn. None of these needs crawling. Agent-Reach routes LinkedIn to `stickerdaniel/linkedin-mcp-server`, which drives the user's logged-in browser and can send messages; its own FAQ says accounts "can be restricted or banned". Run on our servers with customers' cookies, it repeats the hiQ, Proxycurl and ProAPIs fact pattern and adds PDPL duties. So: nothing LinkedIn-automated before December; when we need deeper LinkedIn data, compare the lower-risk options in §7.7 (licensed providers first, then a local one-profile-per-click connector).
 2. **"Gather in one place" is not a moat by itself.** GoHighLevel owns "all-in-one", and every vendor ships MCP connectors. Salesforce's own survey says 84% of teams want to consolidate, so incumbents chase the same demand. Our moat must be what accumulates: the play library tuned for MENA, Arabic evaluation data, compliance rules as data, asset templates that work in Arabic, and reply outcomes per play.
 3. **Design assets are a bet.** No independent study shows that one-pagers, audits or carousels raise B2B replies; the only side-by-side test found was small, vendor-run and mixed. Keep the Asset Studio as a major pillar (D6), but ship every asset play with an asset-vs-no-asset holdout and lead the pitch with the stronger pains (first campaign without learning a tool, cost control, safe setup).
 4. **Free tiers cost money and convert poorly.** The best public figure is a median 8% free-to-paid (self-reported, vendor co-produced); plan for 2–4%. The free tier must hard-stop at quota and cost under about $2–3 per active user per month worst case.
-5. **Payments are hard from Egypt and KSA.** Stripe does not list either country. Billing is mocked for the competition; seller eligibility must be confirmed before launch.
+5. **Payments are hard from Egypt and KSA.** Stripe does not list either country. Billing is mocked in the demo; seller eligibility must be confirmed before launch.
 6. **Licences can bite.** Twenty is AGPL: build on its API/SDK, never fork it. n8n cannot be embedded in a multi-tenant SaaS.
 7. **English default lowers the Arabic advantage in the competition.** Show Arabic as a toggle in the demo (one Egyptian draft and one Arabic asset), and keep the Arabic evaluation for phase N and the MENA pitch.
 8. **Cold outbound is legally constrained.** Egypt enforces its PDPL from 31 October 2026, with a licence and consent for electronic direct marketing; Saudi Article 28 already requires consent for marketing to people with no prior interaction. Plays lead with warm paths, lead magnets and consent; cold email is one play type behind country gates.
@@ -433,20 +405,19 @@ The product owner asked for pushback. Points where the evidence disagrees, and w
 
 ## 11. Plan
 
-The National Final window is Nov–Dec 2026; the Innovation registration deadline for Northern Africa is not published yet. Dates below assume a December first submission; adjust when Huawei Egypt confirms.
+The December deadline is a date in December; the plan aims to finish by 30 November.
 
 | Window | Work | Exit gate |
 | --- | --- | --- |
-| 13–19 Oct | Register the team on the Huawei Talent portal (Innovation, region confirmed); open a Huawei Cloud account and ask for vouchers; assistant spike (AST-01); Twenty + OpenDesign running on Azure; data model for plays, signals, assets, ledger; 5–10 founder/agency interviews start | Registered; spike decision written; both engines run in Azure dev |
-| 20 Oct – 9 Nov | ONB-01/02, plays P1–P2, scoring, waterfall (fixtures + one sandbox), research, English/Egyptian drafts, approvals, compliance gates, metering and caps; proposal first draft | Play P1 runs end to end on fixtures |
-| 10–30 Nov | Plays P3–P4, Asset Studio (STU-01–03, 07–08), sequence via sandbox sender, LinkedIn/call tasks, audit, plans page; deploy to Huawei Cloud (ECS + RDS + DCS, MaaS model) if the account is ready | Demo website shows one play and two assets with gates |
-| 1 Dec – submission | Entry form / proposal, architecture plan, demo polish, video; D+ items if time | Submitted |
-| After the first phase | Full Huawei deployment (§8.3), phase N plays and templates, agency mode, Arabic evaluation, WhatsApp opt-in, public repository if shortlisted | Per regional dates (Feb–Apr 2027) |
+| 13–19 Oct | Assistant spike (AST-01); Twenty + OpenDesign running on Azure; data model for plays, signals, assets and the usage ledger; 5–10 founder/agency interviews start | Spike decision written; both engines run on Azure |
+| 20 Oct – 9 Nov | ONB-01/02, plays P1–P2, scoring, waterfall (fixtures + one sandbox), research, English/Egyptian drafts, approvals, compliance gates, metering and caps; idea PDF first draft | Play P1 runs end to end on fixtures |
+| 10–30 Nov | Plays P3–P4, Asset Studio (STU-01–03, 07–08), sequence via sandbox sender, LinkedIn/call tasks, audit, plans page | Demo website on Azure shows one play and two assets with gates |
+| 1 Dec – deadline | Idea PDF final, architecture plan, demo polish and recording; D+ items if time | PDF sent |
+| If we pass | Huawei migration (§8.3), phase N plays and templates, agency mode, Arabic evaluation, WhatsApp opt-in, public repository (D17) | Regional stage |
 
 ## 12. Open questions
 
-1. Ask Huawei Egypt (Talent Manager or ICT Academy): Innovation region (Northern Africa or MECA) and registration deadline; first-phase deliverables, format and page limits; whether the demo is judged in the first phase; whether a model hosted outside Huawei is allowed if hosting and database are on Huawei Cloud; the 2026–27 rubric; voucher timing and amount.
-2. Interview list: which 5–10 founders and agencies (Cairo, Riyadh/Dubai) can we talk to before the proposal is written?
+1. Interview list: which 5–10 founders and agencies (Cairo, Riyadh/Dubai) can we talk to before the PDF is written?
 2. Which sender (Instantly or Smartlead) and which signal provider (PredictLeads or Crustdata) gives us a sandbox?
 3. Who reviews Gulf Arabic in phase N?
 4. Is a legal opinion on Egypt PDPL B2B direct marketing available (university, ITIDA or a mentor) before any live pilot?

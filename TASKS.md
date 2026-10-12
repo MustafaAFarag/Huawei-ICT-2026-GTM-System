@@ -13,10 +13,10 @@ Stop: documentation only. No code, provisioning, outreach, credit-spending calls
 - [x] Spot checks: 2026–27 Manual quote (PDF), Northern Africa topic page (browser), Agent-Reach / linkedin-mcp-server READMEs, n8n and Twenty licences, OpenDesign release.
 - [x] Write PRD v3; supersede notes on v2 and report 05; README/STATUS/PRD README/research README pointers; `.playwright-mcp/` ignored.
 
-Decisions settled 13 Oct (owner): English default + Arabic content; freemium; full catalogue kept, outbound loop first; Azure build; team eligibility confirmed; no Lara follow-ups; OpenDesign Asset Studio is a major pillar; compliance gates in.
-New facts that change an owner decision: 2026–27 regional topic requires deployment on Huawei Cloud (≥1 service) and open-sourcing if shortlisted (PRD v3 D4, D15, D17, §2).
-Proposed, awaiting owner: D7 (Agent-Reach not in product; internal/local opt-in only), D11 (hybrid credits + BYOK), D17 (open-core), tier prices in §4.2.
-Next (needs the owner): confirm D7/D11/D17 and tiers; contact Huawei Egypt with the §12 questions; register the team; open a Huawei Cloud account; name 5–10 interviewees.
+- [x] Owner follow-up (13 Oct): Azure is the December demo placeholder, Huawei only if we pass; December = PDF only; project is open source; pricing used now; LinkedIn needs no crawling before December; assume 2023–24 rubric. PRD v3 updated and competition-rules detail moved out of the PRD (kept in research 06).
+
+Decisions settled 13 Oct (owner): English default + Arabic content; freemium with §4.2 tiers in use; full catalogue kept, outbound loop first; Azure placeholder until December, Huawei migration only if we pass; open source (open core); LinkedIn as channel with no crawling, lower-risk data method chosen later; team eligibility confirmed; no Lara follow-ups; OpenDesign Asset Studio is a major pillar; compliance gates in.
+Next (needs the owner): build instruction to start the 13–19 Oct items in PRD v3 §11; names for 5–10 interviews; sandbox accounts (sender, signal provider).
 
 ## Previous task — PRD v2 from Lara meeting + deep research (2026-10-12)
 
