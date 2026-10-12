@@ -7,3 +7,4 @@ evaluation/data/
 evaluation/rules-predictions.json
 verification/browser-check.js
 verification/browser-data.json
+.playwright-mcp/

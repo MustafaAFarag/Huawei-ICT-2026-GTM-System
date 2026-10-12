@@ -1,5 +1,7 @@
 # Revenue Workspace — Product Requirements v2
 
+> **Superseded on 13 October 2026 by [PRD v3](REVENUE_WORKSPACE_PRD_v3.md)**, which records the product owner's decisions on the proposals below.
+
 **Status:** proposed for review. **Date:** 12 October 2026. **Supersedes:** [PRD v1](REVENUE_WORKSPACE_PRD_v1.md) (6 October 2026) for direction, scope, segment, language and cloud. **Inputs:** the Lara meeting transcript (`Lara Meeting transcript.txt`), its English explanation (`Lara Meeting - Analysis - English.pdf`) and five research reports in [`docs/research/`](../research/README.md). **Current authorization:** documentation only.
 
 Decisions marked **Proposed** reopen v1 decisions because the meeting and the research brought new facts. They need the product owner's confirmation before build work starts. Sections of v1 that v2 does not change stay in force (§10).

@@ -1,6 +1,6 @@
 # Delivery status against the eight-week plan
 
-> **Current product direction:** [Revenue Workspace PRD v2](prd/REVENUE_WORKSPACE_PRD_v2.md) (12 Oct 2026) focuses the December build on a shared, governed outbound workspace with Arabic/English content and a Huawei Cloud demo path; research is in [docs/research](research/README.md). [PRD v1](prd/REVENUE_WORKSPACE_PRD_v1.md) is kept as history. The implementation details below describe the earlier local prototype.
+> **Current product direction:** [Revenue Workspace PRD v3](prd/REVENUE_WORKSPACE_PRD_v3.md) (13 Oct 2026): one place where non-technical GTM people run outbound with ready-made plays, an AI assistant and an OpenDesign Asset Studio; English first with Arabic content; freemium; built on Azure, deployed on Huawei Cloud for the competition. Research is in [docs/research](research/README.md). PRD [v2](prd/REVENUE_WORKSPACE_PRD_v2.md) and [v1](prd/REVENUE_WORKSPACE_PRD_v1.md) are kept as history. The implementation details below describe the earlier local prototype.
 
 ## Locally implemented
 

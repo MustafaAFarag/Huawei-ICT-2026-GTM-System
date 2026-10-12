@@ -1,8 +1,24 @@
 # GTM Campaign Command Center
 
-> **Current product direction:** [Revenue Workspace PRD v2](docs/prd/REVENUE_WORKSPACE_PRD_v2.md) (12 Oct 2026). v1 is kept as history.
+> **Current product direction:** [Revenue Workspace PRD v3](docs/prd/REVENUE_WORKSPACE_PRD_v3.md) (13 Oct 2026). v2 and v1 are kept as history.
 
-## Current task — PRD v2 from Lara meeting + deep research (started 2026-10-12)
+## Current task — PRD v3 from owner decisions + second research round (started 2026-10-13)
+
+Goal: apply the product owner's 13 Oct answers to the v2 proposals; research the latest Huawei rules, freemium pricing, market data, building blocks (incl. Agent-Reach) and non-technical user pain; write PRD v3 with the full feature catalogue.
+Done when: reports 06–10 exist with sources; key claims spot-checked; PRD v3 written (decisions, competition rules, business model, plays, Asset Studio, architecture, pushback, plan, catalogue); pointers updated; committed locally.
+Stop: documentation only. No code, provisioning, outreach, credit-spending calls or push.
+
+- [x] Record owner decisions (memory + PRD v3 §1).
+- [x] Research (5 Sonnet subagents): 06 Huawei 2026–27 rules, 07 pricing/freemium, 08 market data, 09 building blocks + Agent-Reach, 10 user pain + out-of-box.
+- [x] Spot checks: 2026–27 Manual quote (PDF), Northern Africa topic page (browser), Agent-Reach / linkedin-mcp-server READMEs, n8n and Twenty licences, OpenDesign release.
+- [x] Write PRD v3; supersede notes on v2 and report 05; README/STATUS/PRD README/research README pointers; `.playwright-mcp/` ignored.
+
+Decisions settled 13 Oct (owner): English default + Arabic content; freemium; full catalogue kept, outbound loop first; Azure build; team eligibility confirmed; no Lara follow-ups; OpenDesign Asset Studio is a major pillar; compliance gates in.
+New facts that change an owner decision: 2026–27 regional topic requires deployment on Huawei Cloud (≥1 service) and open-sourcing if shortlisted (PRD v3 D4, D15, D17, §2).
+Proposed, awaiting owner: D7 (Agent-Reach not in product; internal/local opt-in only), D11 (hybrid credits + BYOK), D17 (open-core), tier prices in §4.2.
+Next (needs the owner): confirm D7/D11/D17 and tiers; contact Huawei Egypt with the §12 questions; register the team; open a Huawei Cloud account; name 5–10 interviewees.
+
+## Previous task — PRD v2 from Lara meeting + deep research (2026-10-12)
 
 Goal: turn the Lara meeting (actual GTM process) and web research into an updated, challenged PRD.
 Done when: five research reports exist in `docs/research/` with sources; PRD v2 written with the meeting's process, connector layer, AI role, pushback and changed decisions flagged for the user; v1 kept as history; README pointers updated; committed locally.

@@ -1,5 +1,7 @@
 # 05. Huawei ICT Competition and Huawei Cloud fit
 
+> **Partly superseded by [report 06](06-huawei-ict-2026-27-rules.md) (2026–27 rules).** "MindSpore/CANN/ModelArts mandatory" is out of date for our region; the 2026–27 rule is deployment on Huawei Cloud with at least one Huawei Cloud service, plus Huawei AI "in combination with other technologies".
+
 Research date: 2026-10-12. Web research only. Label key: **Verified** = read on the cited page or document. **Unverified** = search-snippet only, third-party, inferred, or from an older season.
 
 ## 0. Bottom line (read this first)
