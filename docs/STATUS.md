@@ -1,6 +1,6 @@
 # Delivery status against the eight-week plan
 
-> **Current product direction:** [Revenue Workspace PRD v1](prd/REVENUE_WORKSPACE_PRD_v1.md) defines the expanded English-only Twenty-based product, persistent AI assistant with OpenDesign, phased delivery and Azure-to-Huawei migration. The implementation details below describe the earlier local prototype; this PRD task changes documentation only.
+> **Current product direction:** [Revenue Workspace PRD v2](prd/REVENUE_WORKSPACE_PRD_v2.md) (12 Oct 2026) focuses the December build on a shared, governed outbound workspace with Arabic/English content and a Huawei Cloud demo path; research is in [docs/research](research/README.md). [PRD v1](prd/REVENUE_WORKSPACE_PRD_v1.md) is kept as history. The implementation details below describe the earlier local prototype.
 
 ## Locally implemented
 

@@ -1,7 +1,9 @@
 # Revenue Workspace PRD
 
-The canonical product specification is [Revenue Workspace — Product Requirements v1](REVENUE_WORKSPACE_PRD_v1.md). Download the [PDF edition](REVENUE_WORKSPACE_PRD_v1.pdf).
+The current product specification is [Revenue Workspace — Product Requirements v2](REVENUE_WORKSPACE_PRD_v2.md) (12 October 2026). It is based on the Lara meeting and five research reports in [`docs/research/`](../research/README.md).
 
-It covers the English-only Twenty-based CRM, GTM, sales, marketing and campaign workspace; a persistent actionable assistant with OpenDesign; phased delivery over a two-month planning horizon; and all product phases and the December 2026 demo on Azure, with Huawei migration only after passing the first section and receiving credits.
+v2 narrows the December build to the outbound loop (playbook, signals, scoring, enrichment, research, Arabic/English drafts, approvals, sequences, governance and compliance). It proposes Arabic content with an English UI, founder-led teams and small agencies as users, and a Huawei Cloud demo path. Decisions marked **Proposed** need the product owner's confirmation.
 
-This specification supersedes the earlier prototype direction for future development. The existing application and its historical verification results have not been changed by this documentation task. Implementation requires a separate build instruction.
+[PRD v1](REVENUE_WORKSPACE_PRD_v1.md) ([PDF](REVENUE_WORKSPACE_PRD_v1.pdf)) is kept as history. The v1 sections listed in v2 §10 remain the reference for the assistant action contract, core records and AI measurement rules.
+
+These documents change no application code. Implementation requires a separate build instruction.

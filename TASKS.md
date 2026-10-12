@@ -1,8 +1,23 @@
 # GTM Campaign Command Center
 
-> **Current product direction:** [Revenue Workspace PRD v1](docs/prd/REVENUE_WORKSPACE_PRD_v1.md) defines the expanded English-only Twenty-based product, persistent AI assistant with OpenDesign, phased delivery and Azure-to-Huawei migration. The implementation details below describe the earlier local prototype; this PRD task changes documentation only.
+> **Current product direction:** [Revenue Workspace PRD v2](docs/prd/REVENUE_WORKSPACE_PRD_v2.md) (12 Oct 2026). v1 is kept as history.
 
-## Current documentation task — Revenue Workspace PRD
+## Current task — PRD v2 from Lara meeting + deep research (started 2026-10-12)
+
+Goal: turn the Lara meeting (actual GTM process) and web research into an updated, challenged PRD.
+Done when: five research reports exist in `docs/research/` with sources; PRD v2 written with the meeting's process, connector layer, AI role, pushback and changed decisions flagged for the user; v1 kept as history; README pointers updated; committed locally.
+Stop: documentation only. No code, provisioning, outreach, credit-spending tool calls or push.
+
+- [x] Read transcript, PRD v1 and meeting analysis PDF.
+- [x] Research (5 Sonnet subagents): 01 GTM process + AI, 02 competitors, 03 connectors/APIs, 04 MENA market/regulation/Arabic AI, 05 Huawei ICT competition + cloud.
+- [x] Verify research reports: spot-checked Huawei brief, Egypt PDPL, Saudi draft, Saudi benchmark, Twenty RTL. One correction made in report 04 (Saudi Art. 28 consent already in force).
+- [x] Write `docs/prd/REVENUE_WORKSPACE_PRD_v2.md`; update PRD README, v1 supersede note, README/STATUS pointers; commit.
+
+Next (needs the user): confirm D1–D12 in PRD v2 §1; answer §11 open questions (roster eligibility, Saudi reviewers, sandbox accounts, Lara follow-ups, legal opinion); get the 2026–27 rulebook and Egypt dates from Huawei Egypt.
+
+Decisions reopened by the meeting and research (proposed in PRD v2 §1, need user confirmation): English-only → Arabic content + English UI; users → founder-led teams 1–10 and small agencies (solopreneurs = free tier); all-modules scope → outbound loop first; Azure demo → Huawei Cloud demo path (ModelArts MaaS, OBS, ECS).
+
+## Previous documentation task — Revenue Workspace PRD v1
 
 - [x] Write the expanded English-only PRD with 112 feature requirements and acceptance criteria.
 - [x] Define persistent assistant context/navigation/actions, Twenty reuse and OpenDesign integration.

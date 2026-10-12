@@ -1,5 +1,7 @@
 # Revenue Workspace — Product Requirements v1
 
+> **Superseded on 12 October 2026 by [PRD v2](REVENUE_WORKSPACE_PRD_v2.md)** for direction, scope, segment, language and cloud. The sections listed in v2 §10 remain the reference.
+
 **Status:** proposed build specification for review. **Date:** 6 October 2026. **Working name:** Revenue Workspace. **Planning horizon:** two months on Azure, delivered in tested phases for the December 2026 Huawei demo. **Language:** English only. **Current authorization:** documentation only.
 
 This PRD supersedes the earlier GTM-only, bilingual, standalone-demo and Huawei-first directions for future development. It covers the complete product roadmap: CRM, GTM, sales, marketing, campaigns, relationships, design assets, AI assistance, automation and reporting. The existing local demonstrator remains historical evidence of some workflow behaviors; it does not establish native Twenty, OpenDesign, provider or cloud readiness.
