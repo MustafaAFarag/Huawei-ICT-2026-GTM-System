@@ -1,0 +1,39 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "location": {
+      "value": "REVIEW_REGION"
+    },
+    "prefix": {
+      "value": "revenue-demo"
+    },
+    "registryName": {
+      "value": "REVIEW_REGISTRY"
+    },
+    "imageTag": {
+      "value": "REVIEW_COMMIT_SHA"
+    },
+    "postgresPassword": {
+      "value": "SUPPLY_SECURELY"
+    },
+    "authSecret": {
+      "value": "SUPPLY_SECURELY"
+    },
+    "twentySecret": {
+      "value": "SUPPLY_SECURELY"
+    },
+    "openDesignTokenA": {
+      "value": "SUPPLY_SECURELY"
+    },
+    "openDesignTokenB": {
+      "value": "SUPPLY_SECURELY"
+    },
+    "providerMode": {
+      "value": "fixture"
+    },
+    "demoPassword": {
+      "value": "SUPPLY_SECURELY"
+    }
+  }
+}

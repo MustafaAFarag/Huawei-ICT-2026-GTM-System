@@ -1,0 +1,48 @@
+services:
+  api:
+    image: revenue-api:local
+    profiles: ["product"]
+    env_file: .env
+    environment: &product-env
+      DATABASE_URL: postgresql://revenue:${POSTGRES_PASSWORD}@postgres:5432/revenue
+      REDIS_URL: redis://redis:6379/0
+      QUEUE_NAME: revenue-packaging
+      WEB_ORIGIN: http://localhost:3110
+      BETTER_AUTH_URL: http://localhost:3110
+      SMTP_HOST: mailpit
+      SMTP_PORT: 1025
+      TWENTY_A_URL: http://twenty:3000
+      TWENTY_B_URL: http://twenty:3000
+      OPEN_DESIGN_A_URL: http://open-design-a:7456
+      OPEN_DESIGN_B_URL: http://open-design-b:7456
+      STORAGE_PATH: /app/.local/assets
+    ports: ["127.0.0.1:4110:4100"]
+    volumes: ["./.local/assets:/app/.local/assets", "./.local/vault:/app/.local/vault"]
+    depends_on:
+      postgres: { condition: service_healthy }
+      redis: { condition: service_healthy }
+    mem_limit: 384m
+    security_opt: ["no-new-privileges:true"]
+    cap_drop: ["ALL"]
+  worker:
+    image: revenue-worker:local
+    profiles: ["product"]
+    env_file: .env
+    environment: *product-env
+    volumes: ["./.local/assets:/app/.local/assets", "./.local/vault:/app/.local/vault"]
+    depends_on:
+      api: { condition: service_healthy }
+    mem_limit: 1024m
+    security_opt: ["no-new-privileges:true"]
+    cap_drop: ["ALL"]
+  web:
+    image: revenue-web:local
+    profiles: ["product"]
+    environment:
+      API_URL: http://api:4100
+    ports: ["127.0.0.1:3110:3100"]
+    depends_on:
+      api: { condition: service_healthy }
+    mem_limit: 512m
+    security_opt: ["no-new-privileges:true"]
+    cap_drop: ["ALL"]

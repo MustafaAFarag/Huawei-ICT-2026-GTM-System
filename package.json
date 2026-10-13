@@ -22,7 +22,10 @@
     "twenty:build": "node scripts/twenty-build.mjs",
     "check:links": "python3 scripts/check_links.py",
     "setup": "node scripts/setup.mjs",
-    "check:engines": "tsx scripts/check-engines.ts"
+    "check:engines": "tsx scripts/check-engines.ts",
+    "check:roles": "tsx scripts/verify-roles.ts",
+    "check:performance": "tsx scripts/measure-local.ts",
+    "backup:local": "node scripts/backup-local.mjs"
   },
   "devDependencies": {
     "@playwright/test": "1.64.0",

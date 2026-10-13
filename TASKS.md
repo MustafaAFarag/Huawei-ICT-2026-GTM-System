@@ -1,14 +1,15 @@
 ## Active implementation — Revenue Workspace (13 October 2026)
 
 Goal: implement the approved Next.js/NestJS December release from PRD v3.
-Done: four plays, governed assistant/tools, isolated Twenty/OpenDesign, durable jobs, bilingual assets and local browser/integration checks pass; Azure deployment package is reviewed.
+Done: a verified local fixture release with four plays, governed assistant/tools, isolated Twenty/OpenDesign, durable jobs and bilingual assets; local browser/integration checks pass and the Azure deployment package is reviewed. Real providers/models and Azure validation remain external gates.
 Stop: before push, Azure deployment, live outbound or unapproved external spending.
 
 - [x] Foundation: archive links, licences, pinned Node/pnpm, installed dependencies, PostgreSQL migration and local services.
-- [ ] In progress: native integration and assistant spike documentation. App installs in both workspaces pass. Workspace A app install and real CRM CRUD/retry pass; two-workspace CRM isolation passes. OpenDesign auth/file isolation and Next.js UI primitives pass; real BYOK model call waits for credentials.
-- [ ] In progress: backend/workers, workspace policy, persisted cost approvals and atomic reservations; six real PostgreSQL governance tests pass; verify P1–P4.
-- [ ] In progress: product screens, persistent fixture assistant and Asset Studio; sign-in/seven-screen/narrow browser smoke passes; first complete browser workflow passes (P1, P2 and P3/P4 research, Arabic PDF, cancellation and isolation); broader checks pending.
-- [ ] Local integration/browser/failure checks, Azure package and final review.
+- [x] Native integration and assistant spike documentation complete; App installs in both workspaces pass. Workspace A app install and real CRM CRUD/retry pass; two-workspace CRM isolation passes. OpenDesign auth/file isolation and Next.js UI primitives pass; real BYOK model call waits for credentials.
+- [x] Backend/workers, workspace policy, persisted cost approvals and atomic reservations; thirteen real PostgreSQL/Redis governance and recovery tests pass.
+- [x] Product screens, persistent fixture assistant and Asset Studio: all four plays, bilingual drafts/PDFs, native CRM links, approval invalidation, cancellation and isolation pass against the packaged application.
+- [x] Local release verification and deployment package: three packaged Playwright tests, mapped XLSX retries, delayed workspace switching, HTTP permission checks and non-root migration checks pass. API/web/worker containers are healthy; Bicep compiles and manual workflow syntax/output references pass. Product backup restore rehearsed. Packaged fixture dashboard p95 30 ms; job acknowledgement p95 76 ms.
+- [ ] External activation: validate Azure networking/storage/restore, real model/BYOK generation, and remaining live-provider submission/webhook/billing contracts when accounts and deployment authorization are available.
 
 Decisions: Next.js owns the UI; NestJS owns product policy; Twenty owns CRM records; OpenDesign is isolated per workspace; our code Apache-2.0. pnpm 12.10.1. Preserve the Python prototype and unrelated sample edits.
 External blockers: Azure access, sender/provider sandboxes, reviewer/legal inputs before live pilots.

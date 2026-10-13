@@ -9,3 +9,5 @@ Twenty's local and S3 drivers do not make Blob Storage S3-compatible. Use Azure 
 Before deployment, build all product images locally, validate Bicep, back up and rehearse restore, configure private upstream ingress and approve the concrete deployment package. After deployment run the changed workflows with Playwright against Azure. Huawei migration later requires data/files transfer and compatibility tests.
 
 See [architecture](ARCHITECTURE.md), [PRD v3](prd/REVENUE_WORKSPACE_PRD_v3.md) and [implementation status](STATUS.md).
+
+The concrete [deployment package](AZURE_DEPLOYMENT.md), [Bicep](../infra/azure/main.bicep), [manual workflow](../.github/workflows/deploy-azure.yaml) and [backup/restore guide](OPERATIONS.md) are prepared for review. Local Bicep compilation does not validate a subscription deployment.

@@ -1,0 +1,23 @@
+.git
+.local
+.env
+.env.*
+!.env.example
+**/node_modules
+**/.next
+**/dist
+**/.twenty
+**/__pycache__
+**/*.tsbuildinfo
+.playwright-mcp
+playwright-report
+test-results
+Lara Meeting*
+data
+evaluation/data
+
+samples
+evaluation
+verification
+gtm
+tests

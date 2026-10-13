@@ -6,7 +6,7 @@ import sys
 root = Path(__file__).resolve().parents[1]
 failures = []
 for path in root.rglob('*.md'):
-    if any(part in {'.git', '.local', 'node_modules', 'dist', '.next'} for part in path.parts):
+    if any(part in {'.git', '.local', 'node_modules', 'dist', '.next', '.twenty', 'test-results', 'playwright-report'} for part in path.parts):
         continue
     for link in re.findall(r'\]\(([^)]+)\)', path.read_text()):
         target = link.split('#', 1)[0]

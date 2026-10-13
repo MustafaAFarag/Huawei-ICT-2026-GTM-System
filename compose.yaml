@@ -67,11 +67,11 @@ services:
       <<: *twenty-env
       DISABLE_DB_MIGRATIONS: "true"
       DISABLE_CRON_JOBS_REGISTRATION: "true"
-      NODE_OPTIONS: --max-old-space-size=512
+      NODE_OPTIONS: --max-old-space-size=1024
     volumes: ["twenty-files:/app/packages/twenty-server/.local-storage"]
     depends_on:
       twenty: { condition: service_healthy }
-    mem_limit: 768m
+    mem_limit: 1536m
   open-design-a:
     image: ghcr.io/nexu-io/od:0.24.1
     profiles: ["engines"]

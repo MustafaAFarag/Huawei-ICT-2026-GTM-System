@@ -39,7 +39,9 @@ Twenty owns CRM companies, contacts and tasks. Product data references native ID
 
 ## Current validation
 
-Foundation installs, product type checks, native Twenty SDK build, local service health and OpenDesign token/file isolation have passed. Native CRM CRUD, complete browser workflows and the deployment package are still being verified. See [TASKS.md](TASKS.md) and [status](docs/STATUS.md) for the current acceptance state.
+The local fixture release passes thirteen PostgreSQL/Redis governance checks and three Playwright workflows, including all four plays, CSV/XLSX retries, approval invalidation, reply cancellation, workspace isolation and Arabic PDF export. Native Twenty app installation/CRM writes and OpenDesign token/file isolation use real local upstream services. See [validation](docs/VALIDATION.md), [status](docs/STATUS.md) and [TASKS.md](TASKS.md) for evidence and remaining external checks.
+
+The Docker-packaged product runs at [localhost:3110](http://localhost:3110). [Operations](docs/OPERATIONS.md) covers builds, startup and backup/restore; [the Azure deployment package](docs/AZURE_DEPLOYMENT.md) covers the manual release workflow and required cloud inputs. Bicep compilation is verified locally; Azure deployment and real-service acceptance remain pending.
 
 Fixture mode is explicit: enrichment, assistant suggestions, template generation and sender results are synthetic. It makes no live outbound submission. Paid/model provider validation waits for authorized credentials. Changing `PROVIDER_MODE` does not enable an unverified sender.
 
@@ -52,6 +54,8 @@ pnpm check:engines
 pnpm twenty:build
 pnpm test
 pnpm test:e2e
+TEST_BASE_URL=http://localhost:3110 pnpm check:roles
+TEST_BASE_URL=http://localhost:3110 pnpm check:performance
 ```
 
 The Apache-2.0 licence covers our code. Preserve [third-party notices](THIRD_PARTY_NOTICES.md). Archived [PRD v1/v2](docs/prd/archive/) retain contracts referenced by v3; [research](docs/research/README.md) records the product evidence. No repository push or deployment is part of local implementation authorization.
