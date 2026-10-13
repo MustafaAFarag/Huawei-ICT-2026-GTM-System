@@ -1,0 +1,372 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id            String   @id
+  name          String
+  email         String   @unique
+  emailVerified Boolean  @default(false)
+  image         String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  sessions      Session[]
+  accounts      Account[]
+  memberships   Membership[]
+}
+
+model Session {
+  id        String   @id
+  expiresAt DateTime
+  token     String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  ipAddress String?
+  userAgent String?
+  userId    String
+  user      User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@index([userId])
+}
+
+model Account {
+  id                     String @id
+  accountId              String
+  providerId             String
+  userId                 String
+  user                   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken            String?
+  refreshToken           String?
+  idToken                String?
+  accessTokenExpiresAt   DateTime?
+  refreshTokenExpiresAt  DateTime?
+  scope                  String?
+  password               String?
+  createdAt              DateTime @default(now())
+  updatedAt              DateTime @updatedAt
+  @@index([userId])
+}
+
+model Verification {
+  id         String @id
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  @@index([identifier])
+}
+
+model RateLimit {
+  id          String @id @default(uuid())
+  key         String @unique
+  count       Int
+  lastRequest BigInt
+}
+
+model Workspace {
+  id          String @id @default(uuid())
+  name        String
+  plan        String @default("Free")
+  planLimits  Json @default("{}")
+  company     Json @default("{}")
+  brand       Json @default("{}")
+  offers      Json @default("[]")
+  preflight   Json @default("{}")
+  timezone    String @default("Africa/Cairo")
+  crmBinding  String
+  assetBinding String
+  createdAt   DateTime @default(now())
+  memberships Membership[]
+}
+
+model Membership {
+  id          String @id @default(uuid())
+  workspaceId String
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  userId      String
+  user        User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role        String
+  @@unique([workspaceId, userId])
+}
+
+model PlayVersion {
+  id          String @id @default(uuid())
+  workspaceId String
+  play        String
+  version     Int
+  config      Json
+  createdAt   DateTime @default(now())
+  @@unique([workspaceId, play, version])
+}
+
+model Prospect {
+  id          String @id @default(uuid())
+  workspaceId String
+  sourceKey   String
+  crmPersonId String?
+  crmCompanyId String?
+  snapshot    Json
+  evidence    Json @default("[]")
+  score       Int?
+  breakdown   Json @default("[]")
+  language    String @default("en")
+  ownerId     String
+  lawfulBasis String?
+  consentAt   DateTime?
+  country     String @default("EG")
+  excluded    Boolean @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  @@unique([workspaceId, sourceKey])
+  @@index([workspaceId])
+}
+
+model ImportBatch {
+  id          String @id @default(uuid())
+  workspaceId String
+  requestKey  String
+  digest      String
+  outcomes    Json
+  createdAt   DateTime @default(now())
+  @@unique([workspaceId, requestKey])
+}
+
+model Run {
+  id            String @id @default(uuid())
+  workspaceId   String
+  userId        String
+  playVersionId String?
+  tool          String
+  queueName     String @default("revenue-runs")
+  requestKey    String
+  inputDigest   String
+  input         Json
+  output        Json?
+  state         String @default("queued")
+  error         String?
+  nextAction    String?
+  estimate      Int
+  actualCost    Int @default(0)
+  attempt       Int @default(0)
+  cancelledAt   DateTime?
+  leaseUntil    DateTime?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  events        RunEvent[]
+  @@unique([workspaceId, requestKey])
+  @@index([workspaceId, createdAt])
+}
+
+model RunEvent {
+  id          Int @id @default(autoincrement())
+  runId       String
+  run         Run @relation(fields: [runId], references: [id], onDelete: Cascade)
+  kind        String
+  message     String
+  details     Json @default("{}")
+  createdAt   DateTime @default(now())
+  @@index([runId, id])
+}
+
+model Outbox {
+  id          String @id @default(uuid())
+  runId       String @unique
+  queueName   String @default("revenue-runs")
+  publishedAt DateTime?
+  createdAt   DateTime @default(now())
+}
+
+model Draft {
+  id          String @id @default(uuid())
+  workspaceId String
+  prospectId  String
+  playVersionId String
+  runId       String
+  version     Int @default(1)
+  content     Json
+  evidenceDigest String
+  approvedVersion Int?
+  approvedBy  String?
+  approvedAt  DateTime?
+  assetId     String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  @@index([workspaceId, prospectId])
+}
+
+model Asset {
+  id          String @id @default(uuid())
+  workspaceId String
+  prospectId  String?
+  runId       String
+  template    String
+  language    String
+  version     Int @default(1)
+  engineVersion String
+  engineProjectId String?
+  title       String
+  htmlKey     String
+  pdfKey      String?
+  evidenceDigest String
+  approvedAt  DateTime?
+  approvedBy  String?
+  createdAt   DateTime @default(now())
+  @@index([workspaceId])
+}
+
+model Sequence {
+  id          String @id @default(uuid())
+  workspaceId String
+  prospectId  String
+  draftId     String
+  draftVersion Int
+  approvalDigest String
+  sender      String
+  state       String @default("queued")
+  holdout     Boolean @default(false)
+  nextAt      DateTime?
+  steps       Json
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  @@index([workspaceId, prospectId])
+}
+
+model Suppression {
+  id          String @id @default(uuid())
+  workspaceId String
+  identity    String
+  reason      String
+  createdAt   DateTime @default(now())
+  @@unique([workspaceId, identity])
+}
+
+model Connector {
+  id          String @id @default(uuid())
+  workspaceId String
+  provider    String
+  mode        String @default("fixture")
+  status      String @default("simulated")
+  secretRef   String?
+  lastSuccess DateTime?
+  lastError   String?
+  config      Json @default("{}")
+  @@unique([workspaceId, provider])
+}
+
+model Budget {
+  id          String @id
+  workspaceId String
+  userId      String?
+  month       String
+  cap         Int
+  used        Int @default(0)
+  reserved    Int @default(0)
+  @@index([workspaceId, month])
+}
+
+model Usage {
+  id          String @id @default(uuid())
+  workspaceId String
+  userId      String
+  runId       String @unique
+  action      String
+  reserved    Int
+  actual      Int?
+  state       String @default("reserved")
+  plan        String
+  createdAt   DateTime @default(now())
+}
+
+model SpendApproval {
+  id          String @id @default(uuid())
+  workspaceId String
+  userId      String
+  digest      String
+  estimate    Int
+  approvedAt  DateTime?
+  expiresAt   DateTime
+  runId       String? @unique
+  createdAt   DateTime @default(now())
+  @@index([workspaceId, userId])
+}
+
+model Audit {
+  id          Int @id @default(autoincrement())
+  workspaceId String
+  userId      String
+  action      String
+  targetId    String?
+  details     Json @default("{}")
+  createdAt   DateTime @default(now())
+  @@index([workspaceId, id])
+}
+
+model ProviderEvent {
+  id          String @id
+  workspaceId String
+  sequenceId  String
+  kind        String
+  occurredAt  DateTime
+  receivedAt  DateTime @default(now())
+}
+
+model ChatMessage {
+  id          String @id @default(uuid())
+  workspaceId String
+  userId      String
+  role        String
+  content     String
+  runId       String?
+  context     Json @default("{}")
+  createdAt   DateTime @default(now())
+  @@index([workspaceId, userId, createdAt])
+}
+
+model Schedule {
+  id          String @id @default(uuid())
+  workspaceId String
+  userId      String
+  play        String
+  input       Json
+  nextAt      DateTime
+  intervalDays Int @default(7)
+  enabled     Boolean @default(true)
+}
+
+model CacheEntry {
+  id          String @id
+  workspaceId String
+  field       String
+  result      Json
+  expiresAt   DateTime
+}
+
+model RateWindow {
+  id          String @id
+  count       Int @default(0)
+  expiresAt   DateTime
+}
+
+model Quota {
+  id          String @id
+  workspaceId String
+  month       String
+  kind        String
+  cap         Int
+  used        Int @default(0)
+  reserved    Int @default(0)
+  @@index([workspaceId, month])
+}
+model QuotaReservation {
+  id          String @id @default(uuid())
+  runId       String
+  workspaceId String
+  kind        String
+  reserved    Int
+  actual      Int?
+  @@unique([runId, kind])
+}

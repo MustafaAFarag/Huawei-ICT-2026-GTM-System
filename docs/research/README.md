@@ -1,6 +1,6 @@
 # Research for PRD v2 and v3 (12–13 October 2026)
 
-Ten web-research reports, written by separate research agents, feed [Revenue Workspace PRD v3](../prd/REVENUE_WORKSPACE_PRD_v3.md) (reports 01–05 also fed [v2](../prd/REVENUE_WORKSPACE_PRD_v2.md)). Each claim is tagged Verified or Unverified with sources. No credit-spending tools were called and nothing was sent.
+Ten web-research reports, written by separate research agents, feed [Revenue Workspace PRD v3](../prd/REVENUE_WORKSPACE_PRD_v3.md) (reports 01–05 also fed [v2](../prd/archive/REVENUE_WORKSPACE_PRD_v2.md)). Each claim is tagged Verified or Unverified with sources. No credit-spending tools were called and nothing was sent.
 
 | Report | Question it answers |
 | --- | --- |

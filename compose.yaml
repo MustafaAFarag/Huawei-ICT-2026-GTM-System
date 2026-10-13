@@ -1,0 +1,118 @@
+name: revenue-workspace
+
+x-twenty-env: &twenty-env
+  PG_DATABASE_URL: postgres://revenue:${POSTGRES_PASSWORD:?Run setup}@postgres:5432/twenty
+  SERVER_URL: http://localhost:3200
+  REDIS_URL: redis://redis:6379/1
+  ENCRYPTION_KEY: ${TWENTY_ENCRYPTION_KEY:?Run setup}
+  APP_SECRET: ${TWENTY_ENCRYPTION_KEY}
+  STORAGE_TYPE: local
+  IS_MULTIWORKSPACE_ENABLED: "true"
+  SIGN_IN_PREFILLED: "false"
+  NODE_OPTIONS: --max-old-space-size=1024
+
+services:
+  postgres:
+    image: postgres:16.10-alpine
+    environment:
+      POSTGRES_USER: revenue
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Run setup}
+      POSTGRES_DB: revenue
+    ports: ["127.0.0.1:5546:5432"]
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./infra/local/init.sql:/docker-entrypoint-initdb.d/02-twenty.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U revenue -d revenue"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    mem_limit: 256m
+  redis:
+    image: redis:7.2.11-alpine
+    command: ["redis-server", "--appendonly", "yes", "--maxmemory-policy", "noeviction"]
+    ports: ["127.0.0.1:6386:6379"]
+    volumes: ["redis-data:/data"]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    mem_limit: 128m
+  mailpit:
+    image: axllent/mailpit:v1.27.9
+    ports: ["127.0.0.1:8026:8025", "127.0.0.1:1026:1025"]
+    mem_limit: 128m
+  twenty:
+    image: twentycrm/twenty:v2.46.0
+    profiles: ["engines"]
+    environment: *twenty-env
+    ports: ["127.0.0.1:3200:3000"]
+    volumes: ["twenty-files:/app/packages/twenty-server/.local-storage"]
+    depends_on:
+      postgres: { condition: service_healthy }
+      redis: { condition: service_healthy }
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "http://localhost:3000/healthz"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+      start_period: 60s
+    mem_limit: 1600m
+  twenty-worker:
+    image: twentycrm/twenty:v2.46.0
+    profiles: ["engines"]
+    command: ["yarn", "worker:prod"]
+    environment:
+      <<: *twenty-env
+      DISABLE_DB_MIGRATIONS: "true"
+      DISABLE_CRON_JOBS_REGISTRATION: "true"
+      NODE_OPTIONS: --max-old-space-size=512
+    volumes: ["twenty-files:/app/packages/twenty-server/.local-storage"]
+    depends_on:
+      twenty: { condition: service_healthy }
+    mem_limit: 768m
+  open-design-a:
+    image: ghcr.io/nexu-io/od:0.24.1
+    profiles: ["engines"]
+    build:
+      context: .local/upstream/open-design
+      dockerfile: deploy/Dockerfile
+    environment:
+      NODE_ENV: production
+      NODE_OPTIONS: --max-old-space-size=256
+      OD_BIND_HOST: 0.0.0.0
+      OD_PORT: 7456
+      OD_API_TOKEN: ${OPEN_DESIGN_A_TOKEN:?Run setup}
+      OD_DATA_DIR: /app/.od
+    ports: ["127.0.0.1:7456:7456"]
+    volumes: ["open-design-a:/app/.od"]
+    read_only: true
+    tmpfs: ["/tmp"]
+    security_opt: ["no-new-privileges:true"]
+    pids_limit: 256
+    mem_limit: 384m
+  open-design-b:
+    image: ghcr.io/nexu-io/od:0.24.1
+    profiles: ["engines"]
+    environment:
+      NODE_ENV: production
+      NODE_OPTIONS: --max-old-space-size=256
+      OD_BIND_HOST: 0.0.0.0
+      OD_PORT: 7456
+      OD_API_TOKEN: ${OPEN_DESIGN_B_TOKEN:?Run setup}
+      OD_DATA_DIR: /app/.od
+    ports: ["127.0.0.1:7457:7456"]
+    volumes: ["open-design-b:/app/.od"]
+    read_only: true
+    tmpfs: ["/tmp"]
+    security_opt: ["no-new-privileges:true"]
+    pids_limit: 256
+    mem_limit: 384m
+
+volumes:
+  postgres-data:
+  redis-data:
+  twenty-files:
+  open-design-a:
+  open-design-b:

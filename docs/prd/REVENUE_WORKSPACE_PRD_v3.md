@@ -1,6 +1,6 @@
 # Revenue Workspace — Product Requirements v3
 
-**Status:** current. **Date:** 13 October 2026. **Supersedes:** [PRD v2](REVENUE_WORKSPACE_PRD_v2.md) (12 October 2026) and [PRD v1](REVENUE_WORKSPACE_PRD_v1.md) (6 October 2026). **Inputs:** the product owner's answers of 13 October 2026, the Lara meeting transcript, and ten research reports in [`docs/research/`](../research/README.md). **Current authorization:** documentation only.
+**Status:** current. **Date:** 13 October 2026. **Supersedes:** [PRD v2](archive/REVENUE_WORKSPACE_PRD_v2.md) (12 October 2026) and [PRD v1](archive/REVENUE_WORKSPACE_PRD_v1.md) (6 October 2026). **Inputs:** the product owner's answers of 13 October 2026, the Lara meeting transcript, and ten research reports in [`docs/research/`](../research/README.md). **Current authorization:** local implementation, installation, verification and focused commits; no push, deployment or live outreach.
 
 v3 records the product owner's decisions on the v2 proposals and adds the business model, the "one place" component plan, the out-of-the-box plays and the Asset Studio. This document is about the product; competition rules live in [research 06](../research/06-huawei-ict-2026-27-rules.md). Every feature from v1 and v2 stays in the catalogue (§7 and Appendix A) so the team can pull work forward if it finishes early.
 
@@ -323,7 +323,7 @@ Not legal advice; a local lawyer reviews before any live outbound.
 
 ### 7.13 Later modules (full catalogue)
 
-Every v1 module stays in the product roadmap. Detailed rows and acceptance criteria are in [v1 §5](REVENUE_WORKSPACE_PRD_v1.md); their v3 phases are in Appendix A.
+Every v1 module stays in the product roadmap. Detailed rows and acceptance criteria are in [v1 §5](archive/REVENUE_WORKSPACE_PRD_v1.md); their v3 phases are in Appendix A.
 
 | Module | v1 IDs | v3 phase |
 | --- | --- | --- |

@@ -8,3 +8,15 @@ evaluation/rules-predictions.json
 verification/browser-check.js
 verification/browser-data.json
 .playwright-mcp/
+.local/
+.env
+.env.*
+!.env.example
+.next/
+dist/
+coverage/
+test-results/
+playwright-report/
+*.tsbuildinfo
+Lara Meeting*.pdf
+Lara Meeting transcript.txt

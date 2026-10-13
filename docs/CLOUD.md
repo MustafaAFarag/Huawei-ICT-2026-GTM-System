@@ -1,17 +1,11 @@
-# ModelArts primary path; Azure development fallback
+# Cloud preparation
 
-No cloud account, region, balance, quota, weight artifact or endpoint has been verified in this session. There is no deployed cloud service.
+The December demo targets Azure after local acceptance. Deployment requires subscription, region, credits/model access and separate authorization. No cloud deployment has occurred.
 
-Week-one operator checks: available ModelArts region and PyTorch training image; accepted local model format; GPU memory for the chosen BGE weights; storage bucket permissions; approved evidence/label location; training budget and output location. Confirm the selected model license and freeze its repository revision and SHA256 weights in the run record. If any check fails, use the same offline scripts in Azure development compute and record the reason. Do not divide a single experiment between two primary paths.
+The planned package uses Container Apps for web/API/workers and upstream engines; separate PostgreSQL product/CRM databases; queue-compatible Managed Redis; Blob Storage for product assets; Azure Files for Twenty's native local-storage driver and isolated OpenDesign volumes; Key Vault for connector secrets; a configured model endpoint behind a gateway.
 
-Upload the project, the independently reviewed dataset, and frozen model directories to the selected job. Use Python 3.11+ and explicitly pinned PyTorch/transformers builds compatible with that image; version selection is pending a real compute environment. The runtime application itself requires only the Python standard library.
+Twenty's local and S3 drivers do not make Blob Storage S3-compatible. Use Azure Files for native CRM engine files and link product-owned Blob assets through the CRM API. Model, storage, secrets and provider code lives behind adapters.
 
-Example job entry point, after local labels and model paths exist:
+Before deployment, build all product images locally, validate Bicep, back up and rehearse restore, configure private upstream ingress and approve the concrete deployment package. After deployment run the changed workflows with Playwright against Azure. Huawei migration later requires data/files transfer and compatibility tests.
 
-```bash
-python evaluation/train.py --data /data/labels --model-path /data/bge-reranker-v2-m3 --output /outputs/adapted-bge --device cuda --steps 60
-python evaluation/predict.py --data /data/labels --method cross-encoder --model-path /outputs/adapted-bge --output /outputs/adapted-predictions.json
-python evaluation/evaluate.py --data /data/labels --predictions /outputs/adapted-predictions.json --output /outputs/adapted-results.json
-```
-
-Run the same predictor/evaluator for pretrained and embedding baselines. Compare held-out reports and preserve stronger baseline behavior. No gain is assumed. These commands have not been executed with neural weights here.
+See [architecture](ARCHITECTURE.md), [PRD v3](prd/REVENUE_WORKSPACE_PRD_v3.md) and [implementation status](STATUS.md).

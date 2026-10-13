@@ -1,25 +1,19 @@
-# Delivery status against the eight-week plan
+# Implementation status
 
-> **Current product direction:** [Revenue Workspace PRD v3](prd/REVENUE_WORKSPACE_PRD_v3.md) (13 Oct 2026): one place where non-technical GTM people run outbound with ready-made plays, an AI assistant and an OpenDesign Asset Studio; English first with Arabic content; freemium; open source; Azure as the demo placeholder until the December phase, Huawei Cloud after passing it. Research is in [docs/research](research/README.md). PRD [v2](prd/REVENUE_WORKSPACE_PRD_v2.md) and [v1](prd/REVENUE_WORKSPACE_PRD_v1.md) are kept as history. The implementation details below describe the earlier local prototype.
+The active specification is [PRD v3](prd/REVENUE_WORKSPACE_PRD_v3.md); the approved implementation uses Next.js, NestJS, PostgreSQL/Prisma, BullMQ/Redis, Twenty and per-workspace OpenDesign instances.
 
-## Locally implemented
+## Verified foundation
 
-The end-to-end campaign state machine, SQLite persistence, bilingual review UI, imports, client knowledge/brand editing, four asset types, preparation exports, execution history and synthetic provider failure/reply events are implemented. Every listed acceptance scenario has local domain coverage; HTTP handlers and browser replay provide additional checks. Commercial demand remains unvalidated.
+- Pinned Node 24.18.0 and pnpm 12.10.1; reproducible dependency installation.
+- PostgreSQL schema/migration and local Redis/Mailpit services.
+- Twenty v2.46.0 SDK build and native app installs in two workspaces. Real company/contact CRUD, idempotent retries and CRM workspace isolation pass.
+- OpenDesign 0.24.1 image (upstream commit `89e64d813bb1c7a11519b3f668f011f7017637d7`), authentication and separate artifact-volume checks. Its health endpoint reports package version 0.23.1; the verified image/revision is the pin.
+- Twenty UI primitives render in Next.js.
 
-## Environment-limited work
+## In progress
 
-- Twenty: package resolution failed (`EAI_AGAIN registry.npmjs.org`); Node 22.23.3 is below the documented 24.5+ prerequisite; Docker socket access failed (`permission denied while trying to connect to the docker API`). Source is checked structurally, but no app is installed. The native read-only panel is source only. Native campaign mutation workflows and existing contact/task reconciliation remain unfinished.
-- OpenDesign: conventions/templates are implemented with an independent isolated HTML renderer; the upstream daemon, full token schema, release pin and integration have not been run. No shared client daemon or isolation assertion is made.
-- Local HTTP transport: sandbox socket creation failed (`PermissionError: [Errno 1] Operation not permitted`). The real handlers were tested in memory; Playwright uses domain-generated response replay. Run the local server outside this restricted tool environment to finish transport verification.
-- AI: no torch/transformers or pretrained weights are installed. Two human reviewers and adjudicated labels are unavailable. The evaluator stopped with `Independent human labels and adjudication are incomplete. No benchmark reported.` No NDCG, ranking gain, Recall@5, factuality, Arabic quality or commercial-response claim is made. The 80 packs are synthetic harness fixtures; independently curated evidence is still needed.
-- Providers/cloud: no approved Smartlead/Dripify account, actual capabilities, ModelArts region/compute/model compatibility or Azure resources have been verified. All adapters are preparation fixtures and all events are visibly simulated.
+Six PostgreSQL governance tests and the first complete Playwright workflow pass, including an Arabic sandboxed asset/PDF, reply cancellation and cross-workspace access rejection. Broader failure checks, model/provider activation and Azure Docker/Bicep preparation are in progress.
 
-## Remaining implementation before the full plan is complete
+The implementation contains fixture tools and clearly labelled synthetic results. Real model BYOK validation, sender submission and signal-provider validation require external credentials. No Azure resource or live outreach has been created.
 
-1. Build and install the app in two development Twenty workspaces; map accounts, contacts, tasks and permissions; implement the native campaign editing/action boundary and verify all acceptance flows there.
-2. Freeze/install OpenDesign; validate the brand package against its current token contract and run isolated jobs through the real engine.
-3. Audit the original campaign CSV/workbook when provided. Curate the eighty dated company packs, label/adjudicate 480 judgments with two independent reviewers, and record dataset/model provenance.
-4. Run multilingual baselines and bounded adaptation on verified ModelArts compute (Azure fallback); run retrieval and generation evaluations with independent gold. Retain the stronger baseline.
-5. Verify approved provider capabilities and paused-draft preparation. Rehearse both campaigns against the actual integrations; obtain separate authorization before deployment or live outreach.
-
-These are explicit unfinished requirements, not demonstrated by source stubs or synthetic fixture tests.
+The Python prototype is preserved as a reference. Its historical verification is described in [the review report](../verification/REVIEW.md); it does not verify the new application. Root [TASKS.md](../TASKS.md) tracks current completion and blockers.

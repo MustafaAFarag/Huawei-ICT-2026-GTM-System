@@ -1,8 +1,8 @@
 # Revenue Workspace — Product Requirements v2
 
-> **Superseded on 13 October 2026 by [PRD v3](REVENUE_WORKSPACE_PRD_v3.md)**, which records the product owner's decisions on the proposals below.
+> **Superseded on 13 October 2026 by [PRD v3](../REVENUE_WORKSPACE_PRD_v3.md)**, which records the product owner's decisions on the proposals below.
 
-**Status:** proposed for review. **Date:** 12 October 2026. **Supersedes:** [PRD v1](REVENUE_WORKSPACE_PRD_v1.md) (6 October 2026) for direction, scope, segment, language and cloud. **Inputs:** the Lara meeting transcript (`Lara Meeting transcript.txt`), its English explanation (`Lara Meeting - Analysis - English.pdf`) and five research reports in [`docs/research/`](../research/README.md). **Current authorization:** documentation only.
+**Status:** proposed for review. **Date:** 12 October 2026. **Supersedes:** [PRD v1](REVENUE_WORKSPACE_PRD_v1.md) (6 October 2026) for direction, scope, segment, language and cloud. **Inputs:** the Lara meeting transcript (`Lara Meeting transcript.txt`), its English explanation (`Lara Meeting - Analysis - English.pdf`) and five research reports in [`docs/research/`](../../research/README.md). **Current authorization:** documentation only.
 
 Decisions marked **Proposed** reopen v1 decisions because the meeting and the research brought new facts. They need the product owner's confirmation before build work starts. Sections of v1 that v2 does not change stay in force (§10).
 
@@ -79,7 +79,7 @@ A second track was discussed: content for founders (brand guidelines, deep resea
 | Owned Arabic evaluation: native-reviewed corpus and rubric per dialect and sector, with reply data per variant | Waterfall enrichment, signal alerts, AI personalization (standard in Clay, Unify, lemlist) |
 | Honest MENA data-coverage report per provider and country | Low price alone (Unify and Attio have free tiers) |
 
-Closest competitors: GoHighLevel (agency all-in-one, $97–497), HubSpot Breeze Prospecting Agent (~$1 per lead), Unify (free tier), Clay ($185+), and MENA claimants Sulsaly, Mawsool, SalesMind AI and Edesy (vendor claims only). Details: [research 02](../research/02-competitors-and-positioning.md).
+Closest competitors: GoHighLevel (agency all-in-one, $97–497), HubSpot Breeze Prospecting Agent (~$1 per lead), Unify (free tier), Clay ($185+), and MENA claimants Sulsaly, Mawsool, SalesMind AI and Edesy (vendor claims only). Details: [research 02](../../research/02-competitors-and-positioning.md).
 
 ## 4. Product concept: plays
 
@@ -311,4 +311,4 @@ These v1 sections remain the reference unless a v2 decision above changes them: 
 
 ## 12. Sources
 
-Meeting: `Lara Meeting transcript.txt` (Arabic, ~49 minutes) and `Lara Meeting - Analysis - English.pdf`. Research and the lead reviewer's spot checks: [docs/research/README.md](../research/README.md). Key primary sources: [Huawei ICT Competition 2023–24 Innovation brief](https://erzurum.edu.tr/Content/duyuru/dosya/0c8ce51f-7ee5-4ace-aac5-a614a0b4ae2c.pdf), [Egypt PDPL executive regulations (Clyde & Co)](https://www.clydeco.com/en/insights/2026/01/egypt-regulatory-update-on-data-privacy), [Saudi PDPL draft amendments (Clyde & Co)](https://www.clydeco.com/en/insights/2026/10/sdaia-publishes-draft-amendments-to-the-pdpl), [Saudi dialect benchmark (arXiv 2608.29990)](https://arxiv.org/abs/2608.29990), [Twenty releases](https://twenty.com/releases), [LinkedIn User Agreement](https://www.linkedin.com/legal/user-agreement), [WhatsApp Business Policy](https://whatsappbusiness.com/policy/), [Google sender guidelines](https://support.google.com/a/answer/81126).
+Meeting: `Lara Meeting transcript.txt` (Arabic, ~49 minutes) and `Lara Meeting - Analysis - English.pdf`. Research and the lead reviewer's spot checks: [docs/research/README.md](../../research/README.md). Key primary sources: [Huawei ICT Competition 2023–24 Innovation brief](https://erzurum.edu.tr/Content/duyuru/dosya/0c8ce51f-7ee5-4ace-aac5-a614a0b4ae2c.pdf), [Egypt PDPL executive regulations (Clyde & Co)](https://www.clydeco.com/en/insights/2026/01/egypt-regulatory-update-on-data-privacy), [Saudi PDPL draft amendments (Clyde & Co)](https://www.clydeco.com/en/insights/2026/10/sdaia-publishes-draft-amendments-to-the-pdpl), [Saudi dialect benchmark (arXiv 2608.29990)](https://arxiv.org/abs/2608.29990), [Twenty releases](https://twenty.com/releases), [LinkedIn User Agreement](https://www.linkedin.com/legal/user-agreement), [WhatsApp Business Policy](https://whatsappbusiness.com/policy/), [Google sender guidelines](https://support.google.com/a/answer/81126).

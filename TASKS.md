@@ -1,3 +1,21 @@
+## Active implementation — Revenue Workspace (13 October 2026)
+
+Goal: implement the approved Next.js/NestJS December release from PRD v3.
+Done: four plays, governed assistant/tools, isolated Twenty/OpenDesign, durable jobs, bilingual assets and local browser/integration checks pass; Azure deployment package is reviewed.
+Stop: before push, Azure deployment, live outbound or unapproved external spending.
+
+- [x] Foundation: archive links, licences, pinned Node/pnpm, installed dependencies, PostgreSQL migration and local services.
+- [ ] In progress: native integration and assistant spike documentation. App installs in both workspaces pass. Workspace A app install and real CRM CRUD/retry pass; two-workspace CRM isolation passes. OpenDesign auth/file isolation and Next.js UI primitives pass; real BYOK model call waits for credentials.
+- [ ] In progress: backend/workers, workspace policy, persisted cost approvals and atomic reservations; six real PostgreSQL governance tests pass; verify P1–P4.
+- [ ] In progress: product screens, persistent fixture assistant and Asset Studio; sign-in/seven-screen/narrow browser smoke passes; first complete browser workflow passes (P1, P2 and P3/P4 research, Arabic PDF, cancellation and isolation); broader checks pending.
+- [ ] Local integration/browser/failure checks, Azure package and final review.
+
+Decisions: Next.js owns the UI; NestJS owns product policy; Twenty owns CRM records; OpenDesign is isolated per workspace; our code Apache-2.0. pnpm 12.10.1. Preserve the Python prototype and unrelated sample edits.
+External blockers: Azure access, sender/provider sandboxes, reviewer/legal inputs before live pilots.
+Environment: Node 24.18.0 is already installed through mise; system default is Node 22. Docker and npm registry access work. Earlier documentation's sandbox errors no longer describe this environment.
+
+---
+
 # GTM Campaign Command Center
 
 > **Current product direction:** [Revenue Workspace PRD v3](docs/prd/REVENUE_WORKSPACE_PRD_v3.md) (13 Oct 2026). v2 and v1 are kept as history.
@@ -27,7 +45,7 @@ Stop: documentation only. No code, provisioning, outreach, credit-spending tool 
 - [x] Read transcript, PRD v1 and meeting analysis PDF.
 - [x] Research (5 Sonnet subagents): 01 GTM process + AI, 02 competitors, 03 connectors/APIs, 04 MENA market/regulation/Arabic AI, 05 Huawei ICT competition + cloud.
 - [x] Verify research reports: spot-checked Huawei brief, Egypt PDPL, Saudi draft, Saudi benchmark, Twenty RTL. One correction made in report 04 (Saudi Art. 28 consent already in force).
-- [x] Write `docs/prd/REVENUE_WORKSPACE_PRD_v2.md`; update PRD README, v1 supersede note, README/STATUS pointers; commit.
+- [x] Write `docs/prd/archive/REVENUE_WORKSPACE_PRD_v2.md`; update PRD README, v1 supersede note, README/STATUS pointers; commit.
 
 Next (needs the user): confirm D1–D12 in PRD v2 §1; answer §11 open questions (roster eligibility, Saudi reviewers, sandbox accounts, Lara follow-ups, legal opinion); get the 2026–27 rulebook and Egypt dates from Huawei Egypt.
 
