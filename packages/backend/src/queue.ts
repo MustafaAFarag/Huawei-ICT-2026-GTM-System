@@ -17,6 +17,29 @@ function getQueue() {
   return (queue ??= new Queue(config.queueName, { connection }));
 }
 export async function dispatchOutbox() {
+  // PostgreSQL is the durable source; reconstruct queued jobs after Redis loss.
+  for (const run of await db.run.findMany({
+    where: { queueName: config.queueName, state: "queued" },
+    take: 100,
+    orderBy: { createdAt: "asc" },
+  })) {
+    const existing = await getQueue().getJob(run.id);
+    const state = existing ? await existing.getState() : null;
+    if (existing && ["failed", "completed"].includes(state!))
+      await existing.remove();
+    if (!existing || ["failed", "completed"].includes(state!))
+      await getQueue().add(
+        "execute",
+        { runId: run.id },
+        {
+          jobId: run.id,
+          attempts: 1,
+          removeOnComplete: 1000,
+          removeOnFail: 1000,
+        },
+      );
+  }
+
   for (const item of await db.outbox.findMany({
     where: { publishedAt: null, queueName: config.queueName },
     take: 100,
@@ -68,7 +91,16 @@ export function startWorker() {
   return async () => {
     clearInterval(interval);
     await worker.close();
-    await queue?.close();
+    await closeQueue();
     await db.$disconnect();
   };
+}
+export async function workerHealth() {
+  await db.$queryRaw`SELECT 1`;
+  await getQueue().getJobCounts("waiting");
+}
+
+export async function closeQueue() {
+  await queue?.close();
+  queue = undefined;
 }

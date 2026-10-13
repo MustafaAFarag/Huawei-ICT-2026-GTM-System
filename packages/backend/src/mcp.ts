@@ -26,6 +26,7 @@ export async function handleMcp(
           language: z.enum(["en", "ar-EG", "ar-Gulf", "ar"]).optional(),
           template: z.enum(["offer-one-pager", "mini-audit"]).optional(),
           website: z.url().optional(),
+          message: z.string().min(1).max(3000).optional(),
         },
       },
       async (input) => {

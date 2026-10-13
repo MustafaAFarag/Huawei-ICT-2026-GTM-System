@@ -14,7 +14,7 @@ import type {
 import { Vault } from "./vault.js";
 import { db } from "./database.js";
 import { config, required } from "./config.js";
-import { escapeHtml } from "./policy.js";
+import { escapeHtml, digest } from "./policy.js";
 import { publicPage } from "./public-web.js";
 
 export class Crm {
@@ -58,7 +58,16 @@ export class Crm {
       await this.request(`${plural}/${id}`, "PATCH", body);
       return id;
     }
-    await this.request(plural, "POST", { ...body, id });
+    try {
+      await this.request(plural, "POST", { ...body, id });
+    } catch (error) {
+      // A concurrent/retried create uses the same native ID. Reconcile rather than create another record.
+      const again = await this.request<{
+        data: Record<string, { id: string }[]>;
+      }>(`${plural}?filter=${encodeURIComponent(`id[eq]:${id}`)}&limit=1`);
+      if (!again.data[plural]?.length) throw error;
+      await this.request(`${plural}/${id}`, "PATCH", body);
+    }
     return id;
   }
   async task(id: string, title: string, body: string) {
@@ -75,7 +84,11 @@ export class Crm {
   async upsertPerson(
     sourceKey: string,
     snapshot: ProspectSnapshot,
-    existing?: { crmPersonId: string | null; crmCompanyId: string | null },
+    existing?: {
+      crmPersonId: string | null;
+      crmCompanyId: string | null;
+      snapshot?: unknown;
+    },
   ) {
     // Search by the native email/domain first so a retried import does not create duplicate CRM records.
     const companySearch = await this.request<{
@@ -84,12 +97,18 @@ export class Crm {
       `companies?filter=${encodeURIComponent(`name[eq]:${snapshot.company}`)}&limit=1`,
     );
     let companyId =
-      existing?.crmCompanyId ?? companySearch.data.companies[0]?.id;
+      companySearch.data.companies[0]?.id ??
+      (existing?.snapshot &&
+      (existing.snapshot as ProspectSnapshot).company !== snapshot.company
+        ? undefined
+        : existing?.crmCompanyId);
     if (!companyId) {
-      const created = await this.request<{
-        data: { createCompany: { id: string } };
-      }>("companies", "POST", { name: snapshot.company });
-      companyId = created.data.createCompany.id;
+      companyId = nativeId(
+        `${this.workspace.id}:company:${snapshot.company.toLowerCase()}`,
+      );
+      await this.upsertObject("companies", "Company", companyId, {
+        name: snapshot.company,
+      });
     }
     const people = snapshot.email
       ? await this.request<{ data: { people: { id: string }[] } }>(
@@ -104,13 +123,16 @@ export class Crm {
       companyId,
     };
     if (!personId) {
-      const created = await this.request<{
-        data: { createPerson: { id: string } };
-      }>("people", "POST", body);
-      personId = created.data.createPerson.id;
+      personId = nativeId(`${this.workspace.id}:person:${sourceKey}`);
+      await this.upsertObject("people", "Person", personId, body);
     } else await this.request(`people/${personId}`, "PATCH", body);
     return { crmPersonId: personId!, crmCompanyId: companyId! };
   }
+}
+
+function nativeId(value: string) {
+  const hash = digest(value);
+  return `${hash.slice(0, 8)}-${hash.slice(8, 12)}-5${hash.slice(13, 16)}-a${hash.slice(17, 20)}-${hash.slice(20, 32)}`;
 }
 
 export class Providers {
@@ -141,41 +163,91 @@ export class Providers {
           approved: false,
           source: "Simulated PredictLeads fixture",
         },
+        {
+          id: randomUUID(),
+          claim: `${snapshot.company} has a synthetic funding signal for this demonstration.`,
+          url: "https://example.com/synthetic-fixture-funding",
+          date: new Date().toISOString(),
+          kind: "fact",
+          approved: false,
+          source: "Simulated PredictLeads fixture",
+        },
       ];
     const { value } = await this.credential(workspaceId, "predictleads");
-    const { key, token } = JSON.parse(value) as { key: string; token: string };
-    const domain = new URL(snapshot.website).hostname;
-    const response = await fetch(
-      `https://predictleads.com/api/v3/companies/${encodeURIComponent(domain)}/job_openings`,
-      {
-        headers: { "X-Api-Key": key, "X-Api-Token": token },
-        signal: AbortSignal.timeout(20000),
-      },
-    );
-    if (!response.ok)
+    let credentials: { key: string; token: string };
+    try {
+      credentials = z
+        .object({ key: z.string().min(1), token: z.string().min(1) })
+        .parse(JSON.parse(value));
+    } catch {
       throw new Error(
-        `Signal provider returned ${response.status}. Check its quota and connection.`,
+        "PredictLeads credentials must contain a key and token. Update the connection in settings.",
       );
-    const data = (await response.json()) as {
-      data?: {
-        attributes: { title?: string; url?: string; first_seen_at?: string };
-      }[];
-    };
-    return (data.data ?? [])
-      .slice(0, 5)
-      .filter(
-        (record) => record.attributes.url && record.attributes.first_seen_at,
-      )
-      .map((record) => ({
-        id: randomUUID(),
-        claim: `${snapshot.company} advertised ${record.attributes.title ?? "a position"}.`,
-        url: record.attributes.url!,
-        date: record.attributes.first_seen_at!,
-        kind: "fact",
-        approved: false,
-        source: "PredictLeads",
-      }));
+    }
+    const { key, token } = credentials;
+    const domain = new URL(snapshot.website).hostname;
+    const sources: Evidence[] = [];
+    // Each endpoint is one documented response credit; no discovery or uncontrolled pagination.
+    for (const endpoint of ["job_openings", "financing_events"] as const) {
+      const response = await fetch(
+        `https://predictleads.com/api/v3/companies/${encodeURIComponent(domain)}/${endpoint}?limit=5`,
+        {
+          headers: { "X-Api-Key": key, "X-Api-Token": token },
+          signal: AbortSignal.timeout(20000),
+        },
+      );
+      if (!response.ok)
+        throw new Error(
+          `Signal provider returned ${response.status}. Check its quota and connection.`,
+        );
+      const data = (await response.json()) as {
+        data?: {
+          attributes: {
+            title?: string;
+            url?: string;
+            first_seen_at?: string;
+            source_url?: string;
+            source_urls?: string[];
+            effective_date?: string;
+            found_at?: string;
+            financing_type?: string;
+          };
+        }[];
+      };
+      for (const record of (data.data ?? []).slice(0, 5)) {
+        const a = record.attributes;
+        const url =
+          endpoint === "job_openings"
+            ? a.url
+            : (a.source_urls?.[0] ?? a.source_url);
+        const date =
+          endpoint === "job_openings"
+            ? a.first_seen_at
+            : (a.effective_date ?? a.found_at);
+        if (
+          !url ||
+          !date ||
+          !/^https?:\/\//.test(url) ||
+          !Number.isFinite(Date.parse(date))
+        )
+          continue;
+        sources.push({
+          id: randomUUID(),
+          claim:
+            endpoint === "job_openings"
+              ? `${snapshot.company} advertised ${a.title ?? "a position"}.`
+              : `${snapshot.company} has a reported ${a.financing_type ?? "financing"} event.`,
+          url,
+          date: new Date(date).toISOString(),
+          kind: "fact",
+          approved: false,
+          source: "PredictLeads",
+        });
+      }
+    }
+    return sources;
   }
+
   async enrich(workspaceId: string, snapshot: ProspectSnapshot, tier: string) {
     // Phase D has one real signal provider; enrichment fixtures implement the full bounded waterfall.
     if (!config.fixture)
@@ -262,7 +334,7 @@ export class Providers {
     const fact = facts[0];
     if (!fact)
       throw new Error("Review a dated factual source before drafting.");
-    if (!config.fixture) {
+    if (!config.modelFixture) {
       const schema = z.object({
         touches: z
           .array(
@@ -397,10 +469,13 @@ export class OpenDesign {
       evidence,
       template,
       language,
-      config.fixture,
+      config.modelFixture,
+      (this.workspace.offers as { text: string; approved: boolean }[]).find(
+        (o) => o.approved,
+      )?.text,
     );
     let html = base;
-    if (!config.fixture) {
+    if (!config.modelFixture) {
       const { url, token } = this.settings();
       const response = await fetch(`${url}/api/proxy/openai/stream`, {
         method: "POST",
@@ -471,8 +546,17 @@ export function assetHtml(
   template: string,
   language: string,
   simulated: boolean,
+  offer?: string,
 ) {
   const arabic = language !== "en";
+  if (template === "offer-one-pager" && !offer)
+    throw new Error(
+      "Approve an offer in company context before generating its one-pager.",
+    );
+  const offerSection =
+    template === "offer-one-pager"
+      ? `<section class="offer"><h2>${arabic ? "العرض المقترح" : "The proposed offer"}</h2><p dir="auto">${escapeHtml(offer ?? "")}</p><p>${arabic ? "نناقش مع بعض إذا كان العرض مناسبًا لفريقكم." : "Let’s discuss whether this offer fits your team."}</p></section>`
+      : `<section class="offer"><h2>${arabic ? "الخطوة التالية" : "Next step"}</h2><p>${arabic ? "راجعوا الملاحظات والمصادر وحددوا الأولويات قبل إجراء أي تغيير." : "Review these observations and sources, then choose priorities before making changes."}</p></section>`;
   const color = /^#[0-9a-f]{6}$/i.test(brand.primary)
     ? brand.primary
     : "#242424";
@@ -491,12 +575,17 @@ export function assetHtml(
         `<section><span class="number">${String(index + 1).padStart(2, "0")}</span><p dir="auto">${escapeHtml(item.claim)}</p><a dir="ltr" href="${escapeHtml(item.url)}">${escapeHtml(new URL(item.url).hostname)} · ${escapeHtml(item.date.slice(0, 10))}</a></section>`,
     )
     .join("");
-  return `<!doctype html><html lang="${arabic ? "ar" : "en"}" dir="${arabic ? "rtl" : "ltr"}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${escapeHtml(title)}</title><style>@page{size:A4;margin:16mm}*{box-sizing:border-box}body{font:16px/1.8 Arial,sans-serif;color:#242424;background:#fff;margin:0}.sheet{max-width:760px;margin:auto;padding:36px}header{display:flex;justify-content:space-between;gap:24px;border-bottom:3px solid ${color};padding-bottom:16px}.brand{font-weight:bold;color:${color}}.eyebrow{font-size:12px;color:#666}h1{font-size:42px;line-height:1.3;margin:36px 0 16px}h2{font-size:22px}section{break-inside:avoid;padding:20px 0;border-top:1px solid #ddd}.number{font-size:12px;color:#777}section p{margin:8px 0}a{font-size:12px;color:#555;word-break:break-all;display:inline-block}footer{border-top:2px solid ${color};margin-top:32px;padding-top:12px;font-size:12px;color:#666}.label{font-size:12px;color:#8a4c00}bdi{unicode-bidi:isolate}@media print{.sheet{padding:0}a{text-decoration:none}}</style></head><body><article class="sheet"><header><span class="brand">${escapeHtml(brand.name || "Revenue Workspace")}</span><span class="eyebrow">${arabic ? "مُعد خصيصًا لفريقك" : "PREPARED FOR YOUR TEAM"}</span></header>${simulated ? `<p class="label">${arabic ? "بيانات تجريبية مصطنعة · ليست توصية تجارية حقيقية" : "Synthetic demonstration data · template generation is simulated"}</p>` : ""}<h1>${title}</h1><h2 dir="auto">${escapeHtml(snapshot.company)}</h2><p>${arabic ? "الملاحظات دي مبنية على المصادر اللي راجعناها سوا ومحتاجة مراجعتك قبل المشاركة" : "These observations come from the reviewed sources below. Review this document before sharing it."}</p>${rows}<footer><span dir="auto">${escapeHtml(brand.name)}</span> · <bdi>${escapeHtml(brand.website)}</bdi> · ${arabic ? "المصدر والتاريخ موضحين تحت كل ملاحظة" : "Sources and dates accompany each observation"}</footer></article></body></html>`;
+  return `<!doctype html><html lang="${arabic ? "ar" : "en"}" dir="${arabic ? "rtl" : "ltr"}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${escapeHtml(title)}</title><style>@page{size:A4;margin:16mm}*{box-sizing:border-box}body{font:16px/1.8 "Noto Sans Arabic",Arial,sans-serif;color:#242424;background:#fff;margin:0}.sheet{max-width:760px;margin:auto;padding:36px}header{display:flex;justify-content:space-between;gap:24px;border-bottom:3px solid ${color};padding-bottom:16px}.brand{font-weight:bold;color:${color}}.eyebrow{font-size:12px;color:#666}h1{font-size:42px;line-height:1.3;margin:36px 0 16px}h2{font-size:22px}section{break-inside:avoid;padding:20px 0;border-top:1px solid #ddd}.number{font-size:12px;color:#777}section p{margin:8px 0}a{font-size:12px;color:#555;word-break:break-all;display:inline-block}footer{border-top:2px solid ${color};margin-top:32px;padding-top:12px;font-size:12px;color:#666}.label{font-size:12px;color:#8a4c00}bdi{unicode-bidi:isolate}.offer{background:#f5f5f2;padding:20px;margin-top:24px}html[dir=rtl] header{display:block;text-align:right}html[dir=rtl] .eyebrow{display:block;margin-top:8px}html[dir=rtl] h1{font-size:36px;line-height:1.7}html[dir=ltr] section:not(.offer){display:grid;grid-template-columns:32px 1fr;gap:0 12px}html[dir=ltr] section a{grid-column:2}@media print{.sheet{padding:0}a{text-decoration:none}}</style></head><body><article class="sheet"><header><span class="brand">${escapeHtml(brand.name || "Revenue Workspace")}</span><span class="eyebrow">${arabic ? "مُعد خصيصًا لفريقك" : "PREPARED FOR YOUR TEAM"}</span></header>${simulated ? `<p class="label">${arabic ? "بيانات تجريبية مصطنعة · ليست توصية تجارية حقيقية" : "Synthetic demonstration data · template generation is simulated"}</p>` : ""}<h1>${title}</h1><h2 dir="auto">${escapeHtml(snapshot.company)}</h2><p>${arabic ? "الملاحظات دي مبنية على المصادر اللي راجعناها سوا ومحتاجة مراجعتك قبل المشاركة" : "These observations come from the reviewed sources below. Review this document before sharing it."}</p>${rows}${offerSection}<footer><span dir="auto">${escapeHtml(brand.name)}</span> · <bdi>${escapeHtml(brand.website)}</bdi> · ${arabic ? "المصدر والتاريخ موضحين تحت كل ملاحظة" : "Sources and dates accompany each observation"}</footer></article></body></html>`;
 }
 
 export async function renderPdf(html: string) {
   const browser = await chromium.launch({
     headless: true,
+    env: {
+      PATH: process.env.PATH ?? "/usr/bin:/bin",
+      HOME: "/tmp",
+      LANG: "C.UTF-8",
+    },
     executablePath: process.env.CHROME_PATH ?? "/usr/bin/google-chrome-stable",
   });
   try {

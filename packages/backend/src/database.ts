@@ -1,4 +1,5 @@
 import { createDatabase, Prisma, type PrismaClient } from "@revenue/database";
+import { setTimeout as pause } from "node:timers/promises";
 
 export const db: PrismaClient = createDatabase();
 export const json = (value: unknown): Prisma.InputJsonValue =>
@@ -14,12 +15,27 @@ export async function serializable<T>(
         timeout: 30000,
       });
     } catch (error) {
+      const meta =
+        error instanceof Prisma.PrismaClientKnownRequestError
+          ? (error.meta as
+              | {
+                  code?: string;
+                  driverAdapterError?: { cause?: { originalCode?: string } };
+                }
+              | undefined)
+          : undefined;
+      const sqlState =
+        meta?.code ?? meta?.driverAdapterError?.cause?.originalCode;
       if (
         error instanceof Prisma.PrismaClientKnownRequestError &&
-        ["P2034", "P2002"].includes(error.code) &&
+        (["P2034", "P2002"].includes(error.code) ||
+          (error.code === "P2010" &&
+            ["40001", "40P01"].includes(sqlState ?? ""))) &&
         attempt < 4
-      )
+      ) {
+        await pause(10 * 2 ** attempt + Math.floor(Math.random() * 10));
         continue;
+      }
       throw error;
     }
   }

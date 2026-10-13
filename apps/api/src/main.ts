@@ -1,4 +1,5 @@
 import "reflect-metadata";
+import { toolRequest } from "@revenue/contracts";
 import {
   Controller,
   Get,
@@ -10,6 +11,7 @@ import {
   Body,
   Module,
   HttpException,
+  BadRequestException,
   Catch,
   type ExceptionFilter,
   type ArgumentsHost,
@@ -347,10 +349,10 @@ class ApiController {
       "Content-Type",
       format === "pdf" ? "application/pdf" : "text/html; charset=utf-8",
     );
-    res.set("X-Frame-Options", "SAMEORIGIN");
+    res.removeHeader("X-Frame-Options");
     res.set(
       "Content-Security-Policy",
-      "sandbox; default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src 'none'",
+      "sandbox; frame-ancestors 'self'; default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src 'none'",
     );
     if (format === "pdf")
       res.set(
@@ -395,6 +397,14 @@ class ApiController {
         context: json(input.context),
       },
     });
+    if (!config.modelFixture)
+      return {
+        content:
+          "Review the assistant model cost before I prepare a proposed task.",
+        tool: "assistant",
+        context: input.context,
+        requiresApproval: true,
+      };
     const tool = /pre.flight|mailbox|inbox/i.test(input.content)
       ? "preflight"
       : /audit|website/i.test(input.content)
@@ -432,6 +442,17 @@ class ApiController {
     const input = z
       .object({ secret: z.string().min(10).max(4000) })
       .parse(body);
+    if (provider === "predictleads") {
+      try {
+        z.object({ key: z.string().min(1), token: z.string().min(1) }).parse(
+          JSON.parse(input.secret),
+        );
+      } catch {
+        throw new BadRequestException(
+          "Enter PredictLeads credentials as JSON containing key and token.",
+        );
+      }
+    }
     const ref = await new Vault().put(ws, input.secret);
     await db.connector.upsert({
       where: { workspaceId_provider: { workspaceId: ws, provider } },
@@ -543,17 +564,64 @@ app
   );
 app.useGlobalFilters(new Errors());
 app.enableShutdownHooks();
-SwaggerModule.setup(
-  "api/docs",
+const document = SwaggerModule.createDocument(
   app,
-  SwaggerModule.createDocument(
-    app,
-    new DocumentBuilder()
-      .setTitle("Revenue Workspace")
-      .setVersion("0.1.0")
-      .addCookieAuth()
-      .build(),
-  ),
-  { jsonDocumentUrl: "api/openapi.json" },
+  new DocumentBuilder()
+    .setTitle("Revenue Workspace")
+    .setVersion("0.1.0")
+    .addCookieAuth()
+    .build(),
 );
+const toolSchema = z.toJSONSchema(toolRequest, { target: "openapi-3.0" });
+for (const path of [
+  "/api/workspaces/{workspaceId}/quotes",
+  "/api/workspaces/{workspaceId}/runs",
+]) {
+  const operation = document.paths[path]?.post;
+  if (operation)
+    operation.requestBody = {
+      required: true,
+      content: {
+        "application/json": {
+          schema: toolSchema as import("@nestjs/swagger").SchemaObject,
+        },
+      },
+    };
+}
+document.paths["/api/workspaces/{workspaceId}/imports"] = {
+  post: {
+    summary:
+      "Import a bounded CSV/XLSX file with an idempotency key and optional column mapping",
+    requestBody: {
+      required: true,
+      content: {
+        "multipart/form-data": {
+          schema: {
+            type: "object",
+            required: ["file", "requestKey"],
+            properties: {
+              file: { type: "string", format: "binary" },
+              requestKey: { type: "string", minLength: 8 },
+              mapping: {
+                type: "string",
+                description:
+                  "JSON object mapping product field names to source column headings.",
+              },
+            },
+          },
+        },
+      },
+    },
+    responses: {
+      "200": {
+        description:
+          "Persisted row outcomes; an in-progress retry does not acquire another import lease.",
+      },
+      "400": { description: "Invalid file, mapping or reused request key." },
+    },
+  },
+};
+SwaggerModule.setup("api/docs", app, document, {
+  jsonDocumentUrl: "api/openapi.json",
+});
 await app.listen(config.apiPort, process.env.API_HOST ?? "127.0.0.1");

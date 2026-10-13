@@ -35,7 +35,11 @@ export const auth = betterAuth({
   },
   session: { expiresIn: 60 * 60 * 24 * 7, updateAge: 60 * 60 * 24 },
   rateLimit: { enabled: true, window: 60, max: 60, storage: "database" },
-  advanced: { useSecureCookies: config.webOrigin.startsWith("https://") },
+  advanced: {
+    useSecureCookies: config.webOrigin.startsWith("https://"),
+    // API ingress is private. Only the web proxy supplies this sanitized header.
+    ipAddress: { ipAddressHeaders: ["x-revenue-client-ip"] },
+  },
 });
 
 export { toNodeHandler };

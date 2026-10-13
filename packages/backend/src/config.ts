@@ -13,6 +13,7 @@ if (existsSync(join(directory, ".env")))
 export const ROOT = directory;
 export const config = {
   fixture: process.env.PROVIDER_MODE !== "live",
+  modelFixture: process.env.MODEL_MODE !== "live",
   queueName: process.env.QUEUE_NAME ?? "revenue-runs",
   redis: process.env.REDIS_URL ?? "redis://127.0.0.1:6386",
   webOrigin: process.env.WEB_ORIGIN ?? "http://localhost:3100",
@@ -22,7 +23,7 @@ export const config = {
 
 export function required(name: string): string {
   const value = process.env[name];
-  if (!value)
+  if (!value || value === "NOT_CONFIGURED")
     throw new Error(
       `${name} is not configured. Ask the workspace owner to connect the service.`,
     );

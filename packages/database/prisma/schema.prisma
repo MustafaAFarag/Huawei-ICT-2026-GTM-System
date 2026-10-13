@@ -90,6 +90,7 @@ model Membership {
   userId      String
   user        User @relation(fields: [userId], references: [id], onDelete: Cascade)
   role        String
+  creditCap   Int?
   @@unique([workspaceId, userId])
 }
 
@@ -131,6 +132,7 @@ model ImportBatch {
   requestKey  String
   digest      String
   outcomes    Json
+  leaseUntil  DateTime?
   createdAt   DateTime @default(now())
   @@unique([workspaceId, requestKey])
 }

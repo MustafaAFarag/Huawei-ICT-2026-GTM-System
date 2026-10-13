@@ -56,6 +56,7 @@ type Draft = {
 };
 type Asset = {
   id: string;
+  prospectId: string;
   title: string;
   language: string;
   template: string;
@@ -74,10 +75,19 @@ type Run = {
 type Dashboard = {
   role: string;
   fixture: boolean;
+  modelFixture: boolean;
+  quotas: { kind: string; used: number; reserved: number; cap: number }[];
+  members: {
+    userId: string;
+    role: string;
+    creditCap: number | null;
+    user: { name: string; email: string };
+  }[];
   workspace: {
     id: string;
     name: string;
     plan: string;
+    planLimits: Record<string, number>;
     company: { description: string; icp: string; marketingLicence: boolean };
     brand: { name: string; website: string; primary: string; accent: string };
     offers: { id: string; text: string; approved: boolean }[];
@@ -108,7 +118,17 @@ type Dashboard = {
     reserved: number;
   }[];
   audit: { id: number; action: string; createdAt: string }[];
-  plans: Record<string, { price: number; aiCredits: number; records: number }>;
+  plans: Record<
+    string,
+    {
+      price: number;
+      aiCredits: number;
+      records: number;
+      enrichmentCredits: number;
+      sends: number;
+      exports: number;
+    }
+  >;
 };
 type Membership = { role: string; workspace: { id: string; name: string } };
 type Chat = {
@@ -183,8 +203,17 @@ export default function Page() {
       { row: number; state: string; message?: string }[]
     >([]);
   const fileRef = useRef<HTMLInputElement>(null);
+  const [columnMapping, setColumnMapping] = useState<Record<string, string>>(
+    {},
+  );
+  const activeWorkspace = useRef(ws);
+  useEffect(() => {
+    activeWorkspace.current = ws;
+  }, [ws]);
   const refresh = useCallback(async () => {
-    if (ws) setData(await client.workspace<Dashboard>(ws));
+    if (!ws) return;
+    const result = await client.workspace<Dashboard>(ws);
+    if (activeWorkspace.current === ws) setData(result);
   }, [ws]);
   const loadMe = async () => {
     try {
@@ -194,7 +223,12 @@ export default function Page() {
       }>("/me");
       setMemberships(me.workspaces);
       setUserName(me.user.name);
-      setWs(me.workspaces[0]?.workspace.id ?? "");
+      const previous = sessionStorage.getItem("revenue-workspace");
+      setWs(
+        me.workspaces.find((m) => m.workspace.id === previous)?.workspace.id ??
+          me.workspaces[0]?.workspace.id ??
+          "",
+      );
       setAuthState("ready");
     } catch {
       setAuthState("signin");
@@ -208,15 +242,26 @@ export default function Page() {
     setSelected([]);
     setProspect(null);
     setProposal(null);
+    setPreview(null);
+    setChats([]);
+    setChatTool(null);
+    setOutcomes([]);
     setActiveRun(null);
     setError("");
     setImportKey(crypto.randomUUID());
     if (ws) {
-      void refresh().catch((e) => setError(e.message));
+      sessionStorage.setItem("revenue-workspace", ws);
+      void refresh().catch((e) => {
+        if (activeWorkspace.current === ws) setError(e.message);
+      });
       void client
         .workspace<Chat[]>(ws, "/chat")
-        .then(setChats)
-        .catch((e) => setError(e.message));
+        .then((history) => {
+          if (activeWorkspace.current === ws) setChats(history);
+        })
+        .catch((e) => {
+          if (activeWorkspace.current === ws) setError(e.message);
+        });
     }
   }, [ws, refresh]);
   useEffect(() => {
@@ -233,6 +278,16 @@ export default function Page() {
       if (["succeeded", "failed"].includes(row.kind)) {
         stream.close();
         void refresh();
+        void client
+          .workspace<Chat[]>(ws, "/chat")
+          .then((history) => {
+            if (activeWorkspace.current !== ws) return;
+            setChats(history);
+            const last = history.at(-1);
+            if (last?.role === "assistant")
+              setChatTool(last.context?.tool ?? null);
+          })
+          .catch(() => {});
       }
     };
     stream.onerror = () => {
@@ -270,6 +325,7 @@ export default function Page() {
     tool: ToolName,
     draftIds: string[] = [],
     website?: string,
+    message?: string,
   ) =>
     action(async () => {
       const input: ToolRequest = {
@@ -285,6 +341,7 @@ export default function Page() {
         approvedSpend: false,
         holdoutPercent: 20,
         website,
+        message,
       };
       const quote = await client.workspace<{
         id: string;
@@ -310,6 +367,39 @@ export default function Page() {
       setActiveRun(run.id);
       setProposal(null);
     }, "Action queued. Progress is saved if you leave this page.");
+  useEffect(() => {
+    if (!proposal && !preview) return;
+    const previous = document.activeElement as HTMLElement | null;
+    const modal = document.querySelector<HTMLElement>('[role="dialog"]');
+    const controls = () =>
+      Array.from(
+        modal?.querySelectorAll<HTMLElement>(
+          "button:not(:disabled), input:not(:disabled), textarea:not(:disabled), select:not(:disabled), a[href], iframe",
+        ) ?? [],
+      );
+    controls()[0]?.focus();
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape" && !busy) {
+        setProposal(null);
+        setPreview(null);
+      }
+      if (event.key !== "Tab") return;
+      const list = controls();
+      if (!list.length) return;
+      if (event.shiftKey && document.activeElement === list[0]) {
+        event.preventDefault();
+        list.at(-1)?.focus();
+      } else if (!event.shiftKey && document.activeElement === list.at(-1)) {
+        event.preventDefault();
+        list[0]?.focus();
+      }
+    };
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      if (previous?.isConnected) previous.focus();
+    };
+  }, [Boolean(proposal), Boolean(preview), busy]);
   const currentPlay = PLAYS.find((p) => p.id === play)!;
   const approvedDrafts =
     data?.drafts.filter((d) => d.approvedVersion === d.version) ?? [];
@@ -388,7 +478,7 @@ export default function Page() {
     );
   return (
     <div className={`shell ${chatOpen ? "" : "chat-closed"}`}>
-      <aside className="sidebar">
+      <aside className="sidebar" inert={Boolean(proposal || preview)}>
         <div className="wordmark">
           <span>r</span> Revenue Workspace
         </div>
@@ -437,6 +527,7 @@ export default function Page() {
             onClick={async () => {
               await client.request("/auth/sign-out", { method: "POST" });
               setAuthState("signin");
+              setWs("");
               setData(null);
             }}
           >
@@ -444,7 +535,7 @@ export default function Page() {
           </button>
         </div>
       </aside>
-      <main className="main">
+      <main className="main" inert={Boolean(proposal || preview)}>
         <header className="topbar">
           <span>
             {data?.workspace.name ?? "Loading workspace…"}{" "}
@@ -611,6 +702,38 @@ export default function Page() {
                       accept=".csv,.xlsx"
                       onChange={() => setImportKey(crypto.randomUUID())}
                     />
+                    <details>
+                      <summary>Map differently named columns</summary>
+                      <p>
+                        Enter the exact column heading from your file. Leave
+                        blank to use the standard heading.
+                      </p>
+                      <div className="form-grid">
+                        {[
+                          "firstName",
+                          "lastName",
+                          "email",
+                          "company",
+                          "website",
+                          "title",
+                          "employees",
+                        ].map((target) => (
+                          <label key={target}>
+                            File column for {target}
+                            <Input
+                              value={columnMapping[target] ?? ""}
+                              onChange={(e) => {
+                                setColumnMapping((previous) => ({
+                                  ...previous,
+                                  [target]: e.target.value,
+                                }));
+                                setImportKey(crypto.randomUUID());
+                              }}
+                            />
+                          </label>
+                        ))}
+                      </div>
+                    </details>
                     <Button
                       disabled={busy || !canWrite}
                       onClick={() =>
@@ -621,6 +744,16 @@ export default function Page() {
                           const form = new FormData();
                           form.append("file", file);
                           form.append("requestKey", importKey);
+                          form.append(
+                            "mapping",
+                            JSON.stringify(
+                              Object.fromEntries(
+                                Object.entries(columnMapping).filter(
+                                  ([, source]) => source.trim(),
+                                ),
+                              ),
+                            ),
+                          );
                           const res = await fetch(
                             `/api/workspaces/${ws}/imports`,
                             { method: "POST", body: form },
@@ -747,6 +880,22 @@ export default function Page() {
                         canWrite={canWrite}
                         canApprove={canApprove}
                         busy={busy}
+                        assets={data.assets.filter(
+                          (a) => a.prospectId === d.prospectId && a.approvedAt,
+                        )}
+                        onAttach={(assetId) =>
+                          action(
+                            () =>
+                              client.workspace(ws, `/drafts/${d.id}/asset`, {
+                                method: "POST",
+                                body: JSON.stringify({
+                                  version: d.version,
+                                  assetId,
+                                }),
+                              }),
+                            "Asset assignment saved. Review and approve the new copy version.",
+                          )
+                        }
                         onSave={(content) =>
                           action(
                             () =>
@@ -866,6 +1015,30 @@ export default function Page() {
                             <p dir="auto">{step.body}</p>
                           </div>
                         ))}
+                        {data.fixture && (
+                          <Button
+                            disabled={
+                              !canWrite || busy || s.state === "cancelled"
+                            }
+                            onClick={() =>
+                              void action(
+                                () =>
+                                  client.workspace(ws, "/events/simulate", {
+                                    method: "POST",
+                                    body: JSON.stringify({
+                                      id: crypto.randomUUID(),
+                                      sequenceId: s.id,
+                                      kind: "replied",
+                                      occurredAt: new Date().toISOString(),
+                                    }),
+                                  }),
+                                "Simulated reply recorded. Remaining touches across plays are cancelled.",
+                              )
+                            }
+                          >
+                            Record simulated reply
+                          </Button>
+                        )}
                         <Button
                           disabled={!canWrite || busy}
                           onClick={() =>
@@ -983,6 +1156,20 @@ export default function Page() {
                       ))}
                     </div>
                   </section>
+                  <QuotaSettings
+                    data={data}
+                    busy={busy}
+                    onSave={(value) =>
+                      action(
+                        () =>
+                          client.workspace(ws, "", {
+                            method: "PATCH",
+                            body: JSON.stringify(value),
+                          }),
+                        "Workspace quotas and member caps saved.",
+                      )
+                    }
+                  />
                   <section className="panel">
                     <h2>Connectors</h2>
                     <p className="muted">
@@ -1130,7 +1317,7 @@ export default function Page() {
         </div>
       </main>
       {chatOpen && (
-        <aside className="assistant">
+        <aside className="assistant" inert={Boolean(proposal || preview)}>
           <header>
             <IconMessageCircle size={18} />
             <strong>Workspace assistant</strong>
@@ -1155,8 +1342,9 @@ export default function Page() {
                   action for you to review.
                 </p>
                 <p className="muted">
-                  Fixture assistant · structured action suggestions. Model
-                  access is pending.
+                  {data?.modelFixture
+                    ? "Fixture assistant · structured action suggestions. Model access is pending."
+                    : "Model proposals use reviewed context. Each action needs your cost approval."}
                 </p>
               </div>
             )}
@@ -1180,18 +1368,20 @@ export default function Page() {
             onSubmit={(e) => {
               e.preventDefault();
               void action(async () => {
-                const result = await client.workspace<{ tool: ToolName }>(
-                  ws,
-                  "/chat",
-                  {
-                    method: "POST",
-                    body: JSON.stringify({
-                      content: chatInput,
-                      context: { play, prospectIds: selected },
-                    }),
-                  },
-                );
-                setChatTool(result.tool);
+                const result = await client.workspace<{
+                  tool: ToolName;
+                  requiresApproval?: boolean;
+                }>(ws, "/chat", {
+                  method: "POST",
+                  body: JSON.stringify({
+                    content: chatInput,
+                    context: { play, prospectIds: selected },
+                  }),
+                });
+                if (result.requiresApproval) {
+                  await propose("assistant", [], undefined, chatInput);
+                  setChatTool(null);
+                } else setChatTool(result.tool);
                 setChatInput("");
                 setChats(await client.workspace<Chat[]>(ws, "/chat"));
               });
@@ -1231,6 +1421,11 @@ export default function Page() {
               {proposal.quote.audience || "Workspace"} selected ·{" "}
               {proposal.input.language} · {proposal.input.play}
             </p>
+            {error && (
+              <p role="alert" className="error">
+                {error}
+              </p>
+            )}
             <div className="cost">
               <strong>{proposal.quote.estimate}</strong> credits maximum
             </div>
@@ -1474,6 +1669,8 @@ function DraftReview({
   busy,
   onSave,
   onApprove,
+  assets,
+  onAttach,
 }: {
   draft: Draft;
   name: string;
@@ -1482,9 +1679,12 @@ function DraftReview({
   busy: boolean;
   onSave: (content: Touch[]) => Promise<void>;
   onApprove: () => Promise<void>;
+  assets: Asset[];
+  onAttach: (id: string | null) => Promise<void>;
 }) {
   const [content, setContent] = useState(draft.content),
     [reviewed, setReviewed] = useState(false);
+  const [assetId, setAssetId] = useState(draft.assetId ?? "");
   return (
     <section className="panel">
       <div className="section-title">
@@ -1539,6 +1739,27 @@ function DraftReview({
           </small>
         </div>
       ))}
+      <label>
+        Approved asset
+        <select
+          value={assetId}
+          onChange={(e) => setAssetId(e.target.value)}
+          disabled={!canWrite}
+        >
+          <option value="">No asset</option>
+          {assets.map((a) => (
+            <option key={a.id} value={a.id}>
+              {a.title} · {a.language}
+            </option>
+          ))}
+        </select>
+      </label>
+      <Button
+        disabled={!canWrite || busy || assetId === (draft.assetId ?? "")}
+        onClick={() => void onAttach(assetId || null)}
+      >
+        Save asset assignment
+      </Button>
       <label className="check-label">
         <input
           type="checkbox"
@@ -1580,8 +1801,30 @@ function ContextForm({
   onSave: (value: unknown) => Promise<void>;
   onOnboard: (url: string) => Promise<void>;
 }) {
+  const [description, setDescription] = useState(
+    data.workspace.company.description,
+  );
+  const onboarding = data.runs.find(
+    (r) => r.tool === "onboard" && r.state === "succeeded",
+  )?.output as { proposedDescription?: string; website?: string }[] | undefined;
   return (
     <section className="panel">
+      {onboarding?.[0]?.proposedDescription && (
+        <div>
+          <h2>Website context proposal</h2>
+          <p dir="auto">{onboarding[0].proposedDescription}</p>
+          <p>
+            Source: {onboarding[0].website}. Review this text before saving it
+            as company context.
+          </p>
+          <Button
+            disabled={data.role !== "owner"}
+            onClick={() => setDescription(onboarding[0].proposedDescription!)}
+          >
+            Use proposal for review
+          </Button>
+        </div>
+      )}
       <form
         onSubmit={(e) => {
           e.preventDefault();
@@ -1645,7 +1888,8 @@ function ContextForm({
           What your company does
           <textarea
             name="description"
-            defaultValue={data.workspace.company.description}
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
           />
         </label>
         <label>
@@ -1703,6 +1947,88 @@ function ContextForm({
         Website text is untrusted research. A person reviews it before it
         becomes approved company context.
       </p>
+    </section>
+  );
+}
+
+function QuotaSettings({
+  data,
+  busy,
+  onSave,
+}: {
+  data: Dashboard;
+  busy: boolean;
+  onSave: (value: unknown) => Promise<void>;
+}) {
+  const limits = {
+    ...data.plans[data.workspace.plan],
+    ...data.workspace.planLimits,
+  };
+  return (
+    <section className="panel">
+      <h2>Resource quotas and member caps</h2>
+      <p>
+        Monthly workspace quotas apply alongside spending caps. Reducing a cap
+        retains existing usage and prevents further reservations.
+      </p>
+      {data.quotas.map((q) => (
+        <p key={q.kind}>
+          {q.kind}: {q.used} used · {q.reserved} reserved · {q.cap} cap
+        </p>
+      ))}
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          const f = new FormData(e.currentTarget);
+          void onSave({
+            planLimits: Object.fromEntries(
+              ["aiCredits", "enrichmentCredits", "sends", "exports"].map(
+                (k) => [k, Number(f.get(k))],
+              ),
+            ),
+            memberCaps: data.members.map((m) => ({
+              userId: m.userId,
+              cap: Number(f.get(`member:${m.userId}`)),
+            })),
+          });
+        }}
+      >
+        <div className="form-grid">
+          {["aiCredits", "enrichmentCredits", "sends", "exports"].map((k) => (
+            <label key={k}>
+              {k}
+              <Input
+                name={k}
+                type="number"
+                min={0}
+                max={k === "exports" ? 10000 : k === "sends" ? 1000000 : 100000}
+                defaultValue={limits[k as keyof typeof limits]}
+                required
+              />
+            </label>
+          ))}
+          {data.members.map((m) => (
+            <label key={m.userId}>
+              {m.user.name} · {m.role} monthly credits
+              <Input
+                name={`member:${m.userId}`}
+                type="number"
+                min={0}
+                max={100000}
+                defaultValue={
+                  m.creditCap ??
+                  data.budgets.find((b) => b.userId === m.userId)?.cap ??
+                  limits.aiCredits
+                }
+                required
+              />
+            </label>
+          ))}
+        </div>
+        <Button type="submit" disabled={data.role !== "owner" || busy}>
+          Save quotas and member caps
+        </Button>
+      </form>
     </section>
   );
 }

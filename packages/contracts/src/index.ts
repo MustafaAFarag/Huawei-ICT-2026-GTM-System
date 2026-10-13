@@ -12,6 +12,7 @@ export const tools = [
   "preflight",
   "mini_audit",
   "onboard",
+  "assistant",
 ] as const;
 export type ToolName = (typeof tools)[number];
 export type Actor = { userId: string; workspaceId: string; role: Role };
@@ -75,6 +76,7 @@ export const toolRequest = z.object({
     .enum(["offer-one-pager", "mini-audit"])
     .default("offer-one-pager"),
   website: z.url().optional(),
+  message: z.string().min(1).max(3000).optional(),
   draftIds: z.array(z.uuid()).max(100).default([]),
   approvedSpend: z.boolean().default(false),
   spendApprovalId: z.uuid().optional(),
@@ -93,6 +95,7 @@ export const COSTS: Record<ToolName, number> = {
   preflight: 0,
   mini_audit: 2,
   onboard: 4,
+  assistant: 2,
 };
 export const PLAYS = [
   {

@@ -1,4 +1,4 @@
-import { beforeAll, afterAll, describe, expect, it } from "vitest";
+import { beforeAll, afterAll, describe, expect, it, vi } from "vitest";
 import { randomUUID } from "node:crypto";
 import {
   db,
@@ -8,6 +8,11 @@ import {
   month,
   digest,
   publicAddress,
+  senderEvent,
+  Providers,
+  preflightHolds,
+  channelHolds,
+  serializable,
 } from "@revenue/backend";
 import { toolRequest, type Actor } from "@revenue/contracts";
 const workflows = new WorkflowService(),
@@ -82,6 +87,7 @@ afterAll(async () => {
     db.playVersion,
     db.importBatch,
     db.suppression,
+    db.providerEvent,
   ])
     await (model.deleteMany as (args: object) => Promise<unknown>)({
       where: { workspaceId },
@@ -91,6 +97,22 @@ afterAll(async () => {
   await db.$disconnect();
 });
 describe("PostgreSQL-backed governance", () => {
+  it("retries concurrent raw SQL serialization conflicts without losing updates", async () => {
+    const id = randomUUID();
+    await db.budget.create({
+      data: { id, workspaceId, month: month(), cap: 100 },
+    });
+    await Promise.all(
+      Array.from({ length: 4 }, () =>
+        serializable(async (tx) => {
+          await tx.budget.findUniqueOrThrow({ where: { id } });
+          await new Promise((resolve) => setTimeout(resolve, 25));
+          await tx.$executeRaw`UPDATE "Budget" SET used = used + 1 WHERE id = ${id}`;
+        }),
+      ),
+    );
+    expect((await db.budget.findUniqueOrThrow({ where: { id } })).used).toBe(4);
+  });
   it("does not accept model-supplied approval flags", async () => {
     await expect(
       workflows.start(actor, { ...input(), approvedSpend: true }),
@@ -120,6 +142,13 @@ describe("PostgreSQL-backed governance", () => {
       where: { id: prospectId },
       data: { evidence: [] },
     });
+  });
+  it("invalidates a cost approval when spending limits change", async () => {
+    const request = await approved(input());
+    await workspaces.configure(actor, { cap: 99 });
+    await expect(workflows.start(actor, request)).rejects.toThrow(
+      "Review and approve",
+    );
   });
   it("atomically enforces caps for concurrent reservations and idempotent retries", async () => {
     await db.budget.upsert({
@@ -182,6 +211,110 @@ describe("PostgreSQL-backed governance", () => {
       (await db.usage.findUniqueOrThrow({ where: { runId: run.id } })).state,
     ).toBe("reconciled");
   });
+  it("enforces member caps and concurrent resource quotas independently", async () => {
+    await workspaces.configure(actor, {
+      cap: 1000,
+      memberCaps: [{ userId, cap: 1 }],
+      planLimits: {
+        aiCredits: 1000,
+        enrichmentCredits: 100,
+        exports: 1,
+        sends: 100,
+      },
+    });
+    await expect(
+      workflows.start(actor, await approved(input())),
+    ).rejects.toThrow("cap");
+    await workspaces.configure(actor, { memberCaps: [{ userId, cap: 1000 }] });
+    const requests = await Promise.all([
+      approved(input("make_asset")),
+      approved(input("make_asset")),
+    ]);
+    const results = await Promise.allSettled(
+      requests.map((r) => workflows.start(actor, r)),
+    );
+    expect(results.filter((r) => r.status === "fulfilled")).toHaveLength(1);
+    const quota = await db.quota.findUniqueOrThrow({
+      where: { id: `${workspaceId}:${month()}:exports` },
+    });
+    expect(quota.reserved).toBe(1);
+    const result = results.find(
+      (r) => r.status === "fulfilled",
+    ) as PromiseFulfilledResult<{ id: string }>;
+    await workflows.cancel(actor, result.value.id);
+    await workflows.execute(result.value.id);
+    expect(
+      (await db.run.findUniqueOrThrow({ where: { id: result.value.id } }))
+        .actualCost,
+    ).toBe(0);
+    expect(
+      (await db.quota.findUniqueOrThrow({ where: { id: quota.id } })).reserved,
+    ).toBe(0);
+  });
+  it("retains attempted provider cost on an uncertain failure without repeating the call", async () => {
+    const provider = vi
+      .spyOn(Providers.prototype, "enrich")
+      .mockRejectedValueOnce(
+        new Error("Provider is unavailable. Check its status before retrying."),
+      );
+    try {
+      const request = await approved(input("enrich_contacts"));
+      const run = await workflows.start(actor, request);
+      await workflows.execute(run.id);
+      await workflows.execute(run.id);
+      const failed = await db.run.findUniqueOrThrow({ where: { id: run.id } });
+      expect(failed.state).toBe("failed");
+      expect(failed.actualCost).toBe(3);
+      expect(provider).toHaveBeenCalledTimes(1);
+      expect(
+        (await db.usage.findUniqueOrThrow({ where: { runId: run.id } })).actual,
+      ).toBe(3);
+    } finally {
+      provider.mockRestore();
+    }
+  });
+  it("reconciles duplicate and out-of-order events and cancels across plays", async () => {
+    const data = {
+      workspaceId,
+      prospectId,
+      draftId: randomUUID(),
+      draftVersion: 1,
+      approvalDigest: "fixture",
+      sender: "demo@example.test",
+      steps: [],
+    };
+    const first = await db.sequence.create({ data }),
+      second = await db.sequence.create({ data });
+    const event = {
+      id: randomUUID(),
+      sequenceId: first.id,
+      kind: "delivered",
+      occurredAt: new Date().toISOString(),
+    };
+    await senderEvent(actor, event);
+    expect((await senderEvent(actor, event)).duplicate).toBe(true);
+    await expect(
+      senderEvent(actor, { ...event, kind: "sent" }),
+    ).rejects.toThrow("different content");
+    await senderEvent(actor, {
+      ...event,
+      id: randomUUID(),
+      kind: "sent",
+      occurredAt: new Date(Date.now() - 10000).toISOString(),
+    });
+    expect(
+      (await db.sequence.findUniqueOrThrow({ where: { id: first.id } })).state,
+    ).toBe("simulated_delivered");
+    await senderEvent(actor, { ...event, id: randomUUID(), kind: "opt_out" });
+    expect(
+      (await db.sequence.findUniqueOrThrow({ where: { id: second.id } })).state,
+    ).toBe("cancelled");
+    expect(await db.suppression.count({ where: { workspaceId } })).toBe(1);
+    await senderEvent(actor, { ...event, id: randomUUID(), kind: "delivered" });
+    expect(
+      (await db.sequence.findUniqueOrThrow({ where: { id: first.id } })).state,
+    ).toBe("cancelled");
+  });
 });
 it("rejects private network destinations", () => {
   for (const address of [
@@ -192,6 +325,32 @@ it("rejects private network destinations", () => {
     "::1",
     "::ffff:127.0.0.1",
     "fc00::1",
+    "64:ff9b::a00:1",
+    "2002:7f00:1::",
+    "198.51.100.1",
+    "203.0.113.3",
+    "3fff::1",
   ])
     expect(publicAddress(address)).toBe(false);
+});
+
+it("holds unknown, stale and future sender checks and future consent", () => {
+  expect(preflightHolds({ checkedAt: "invalid" })).toContain(
+    "Refresh the sender check (valid for 24 hours)",
+  );
+  expect(
+    preflightHolds({ checkedAt: new Date(Date.now() + 3600000).toISOString() }),
+  ).toContain("Refresh the sender check (valid for 24 hours)");
+  expect(
+    channelHolds(
+      {
+        country: "EG",
+        lawfulBasis: "consent",
+        consentAt: new Date(Date.now() + 3600000),
+        excluded: false,
+        snapshot: { email: "demo@example.test" },
+      },
+      true,
+    ),
+  ).toContain("Record the consent timestamp");
 });

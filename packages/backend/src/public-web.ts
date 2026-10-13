@@ -6,16 +6,19 @@ import { request as httpsRequest } from "node:https";
 export function publicAddress(address: string): boolean {
   if (address.includes(":")) {
     const lower = address.toLowerCase();
+    // Only global unicast destinations. Block documentation and transition ranges too.
     return (
-      !["::", "::1"].includes(lower) &&
-      !/^(fc|fd|fe[89ab]|ff)/.test(lower) &&
-      !lower.startsWith("::ffff:") &&
-      !lower.startsWith("2001:db8:")
+      isIP(lower) === 6 &&
+      /^[23][0-9a-f]{3}:/.test(lower) &&
+      !/^2001:(?:0:|db8:|10:|20:)/.test(lower) &&
+      !lower.startsWith("2002:") &&
+      !lower.startsWith("3fff:")
     );
   }
   const octets = address.split(".").map(Number);
   const [a, b] = octets;
   return (
+    isIP(address) === 4 &&
     octets.length === 4 &&
     octets.every((n) => n >= 0 && n <= 255) &&
     a !== 0 &&
@@ -26,7 +29,9 @@ export function publicAddress(address: string): boolean {
     !(a === 172 && b >= 16 && b <= 31) &&
     !(a === 192 && [0, 168].includes(b)) &&
     !(a === 100 && b >= 64 && b <= 127) &&
-    !(a === 198 && [18, 19].includes(b))
+    !(a === 198 && [18, 19].includes(b)) &&
+    !(a === 198 && b === 51 && octets[2] === 100) &&
+    !(a === 203 && b === 0 && octets[2] === 113)
   );
 }
 export async function publicPage(

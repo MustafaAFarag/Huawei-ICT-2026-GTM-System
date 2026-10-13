@@ -30,6 +30,8 @@ export function assertRole(
     );
 }
 export function estimate(input: ToolRequest) {
+  if (["assistant", "onboard", "preflight"].includes(input.tool))
+    return COSTS[input.tool];
   return (
     COSTS[input.tool] *
     Math.max(
@@ -115,7 +117,12 @@ export function preflightHolds(value: Partial<Preflight>) {
     holds.push("Complaint rate must be known and below 0.1%");
   if (!(Number(value.dailyCap) > 0 && Number(value.dailyCap) <= 30))
     holds.push("Set a daily mailbox cap from 1 to 30");
-  if (!value.checkedAt || Date.now() - Date.parse(value.checkedAt) > 86400000)
+  if (
+    !value.checkedAt ||
+    !Number.isFinite(Date.parse(value.checkedAt)) ||
+    Date.parse(value.checkedAt) > Date.now() + 60000 ||
+    Date.now() - Date.parse(value.checkedAt) > 86400000
+  )
     holds.push("Refresh the sender check (valid for 24 hours)");
   return holds;
 }
@@ -151,7 +158,10 @@ export function channelHolds(
   else {
     if (!(rule.bases as readonly string[]).includes(prospect.lawfulBasis ?? ""))
       holds.push(rule.name);
-    if (prospect.lawfulBasis === "consent" && !prospect.consentAt)
+    if (
+      prospect.lawfulBasis === "consent" &&
+      (!prospect.consentAt || prospect.consentAt.getTime() > Date.now())
+    )
       holds.push("Record the consent timestamp");
     if (rule.licence && !marketingLicence)
       holds.push("Record the Egypt electronic marketing licence");

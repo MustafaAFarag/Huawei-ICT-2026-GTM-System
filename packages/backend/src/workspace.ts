@@ -127,6 +127,19 @@ export class WorkspaceService {
       audit,
       plans: PLANS,
       fixture: process.env.PROVIDER_MODE !== "live",
+      modelFixture: process.env.MODEL_MODE !== "live",
+      quotas: await db.quota.findMany({
+        where: { workspaceId: actor.workspaceId, month: month() },
+      }),
+      members: await db.membership.findMany({
+        where: { workspaceId: actor.workspaceId },
+        select: {
+          userId: true,
+          role: true,
+          creditCap: true,
+          user: { select: { name: true, email: true } },
+        },
+      }),
     };
   }
   async configure(actor: Actor, value: unknown) {
@@ -163,10 +176,27 @@ export class WorkspaceService {
           .enum(["Free", "Solo", "Team", "Agency", "Enterprise"])
           .optional(),
         cap: z.number().int().min(0).max(100000).optional(),
+        planLimits: z
+          .object({
+            aiCredits: z.number().int().min(0).max(100000),
+            enrichmentCredits: z.number().int().min(0).max(100000),
+            sends: z.number().int().min(0).max(1000000),
+            exports: z.number().int().min(0).max(10000),
+          })
+          .optional(),
+        memberCaps: z
+          .array(
+            z.object({
+              userId: z.string().min(1).max(100),
+              cap: z.number().int().min(0).max(100000),
+            }),
+          )
+          .max(100)
+          .optional(),
       })
       .parse(value);
     return serializable(async (tx) => {
-      const { cap, ...data } = input;
+      const { cap, memberCaps, ...data } = input;
       const updated = await tx.workspace.update({
         where: { id: actor.workspaceId },
         data,
@@ -182,6 +212,28 @@ export class WorkspaceService {
           },
           update: { cap },
         });
+      for (const member of memberCaps ?? []) {
+        const updated = await tx.membership.updateMany({
+          where: { workspaceId: actor.workspaceId, userId: member.userId },
+          data: { creditCap: member.cap },
+        });
+        if (!updated.count)
+          throw new BadRequestException(
+            "This member does not belong to the workspace.",
+          );
+        const id = `${actor.workspaceId}:${member.userId}:${month()}`;
+        await tx.budget.upsert({
+          where: { id },
+          create: {
+            id,
+            workspaceId: actor.workspaceId,
+            userId: member.userId,
+            month: month(),
+            cap: member.cap,
+          },
+          update: { cap: member.cap },
+        });
+      }
       // Context changes invalidate approvals and queued execution in one transaction.
       if (input.company || input.offers || input.brand) {
         await tx.asset.updateMany({
@@ -195,7 +247,7 @@ export class WorkspaceService {
         await tx.sequence.updateMany({
           where: {
             workspaceId: actor.workspaceId,
-            state: { in: ["queued", "scheduled", "simulated"] },
+            state: { notIn: ["cancelled", "completed", "failed"] },
           },
           data: { state: "cancelled" },
         });
@@ -242,6 +294,7 @@ export class WorkspaceService {
         to: 1001,
       });
     else {
+      validateXlsxArchive(buffer);
       const book = new ExcelJS.Workbook();
       await book.xlsx.load(buffer as never);
       const sheet = book.worksheets[0];
@@ -267,14 +320,31 @@ export class WorkspaceService {
     }
     if (rows.length > 1000)
       throw new BadRequestException("Import at most 1,000 rows per file.");
-    batch ??= await db.importBatch.create({
-      data: {
+    batch = await db.importBatch.upsert({
+      where: {
+        workspaceId_requestKey: { workspaceId: actor.workspaceId, requestKey },
+      },
+      create: {
         workspaceId: actor.workspaceId,
         requestKey,
         digest: inputDigest,
         outcomes: [],
       },
+      update: {},
     });
+    if (batch.digest !== inputDigest)
+      throw new BadRequestException(
+        "This import key belongs to a different file or mapping.",
+      );
+    const acquired = await db.importBatch.updateMany({
+      where: {
+        id: batch.id,
+        OR: [{ leaseUntil: null }, { leaseUntil: { lt: new Date() } }],
+      },
+      data: { leaseUntil: new Date(Date.now() + 180000) },
+    });
+    if (!acquired.count)
+      return { id: batch.id, outcomes: batch.outcomes, inProgress: true };
     const outcomes = batch.outcomes as {
       row: number;
       state: string;
@@ -285,91 +355,144 @@ export class WorkspaceService {
     const limit =
       PLANS[workspace.plan as keyof typeof PLANS]?.records ??
       PLANS.Free.records;
-    for (let index = 0; index < rows.length; index++) {
-      if (
-        outcomes.some(
-          (result) => result.row === index + 2 && result.state === "imported",
+    try {
+      for (let index = 0; index < rows.length; index++) {
+        if (
+          outcomes.some(
+            (result) => result.row === index + 2 && result.state === "imported",
+          )
         )
-      )
-        continue;
-      const row = rows[index]!;
-      const normalized = Object.fromEntries(
-        Object.entries(row).map(([key, value]) => [key.trim(), value]),
-      );
-      for (const [target, source] of Object.entries(mapping))
-        normalized[target] = row[source];
-      const parsed = prospectSchema.safeParse(normalized);
-      let outcome: (typeof outcomes)[number];
-      if (!parsed.success)
-        outcome = {
-          row: index + 2,
-          state: "invalid",
-          message: parsed.error.issues
-            .map((issue) => `${issue.path.join(".")}: ${issue.message}`)
-            .join("; "),
-        };
-      else {
-        const snapshot = parsed.data;
-        const sourceKey = (
-          snapshot.email ||
-          `${snapshot.company}:${snapshot.firstName}:${snapshot.lastName}`
-        )
-          .trim()
-          .toLowerCase();
-        try {
-          let prospect = await db.prospect.findUnique({
-            where: {
-              workspaceId_sourceKey: {
-                workspaceId: actor.workspaceId,
-                sourceKey,
-              },
-            },
-          });
-          if (!prospect) {
-            if (
-              (await db.prospect.count({
-                where: { workspaceId: actor.workspaceId },
-              })) >= limit
-            )
-              throw new Error("Record quota reached.");
-            prospect = await db.prospect.create({
-              data: {
-                workspaceId: actor.workspaceId,
-                sourceKey,
-                snapshot: json(snapshot),
-                ownerId: actor.userId,
-              },
-            });
-          }
-          const crm = await new Crm(workspace).upsertPerson(
-            sourceKey,
-            snapshot,
-            prospect,
-          );
-          await db.prospect.update({
-            where: { id: prospect.id },
-            data: { ...crm, snapshot: json(snapshot) },
-          });
-          outcome = { row: index + 2, state: "imported", id: prospect.id };
-        } catch (error) {
+          continue;
+        const row = rows[index]!;
+        const normalized = Object.fromEntries(
+          Object.entries(row).map(([key, value]) => [key.trim(), value]),
+        );
+        for (const [target, source] of Object.entries(mapping))
+          normalized[target] = row[source];
+        const parsed = prospectSchema.safeParse(normalized);
+        let outcome: (typeof outcomes)[number];
+        if (!parsed.success)
           outcome = {
             row: index + 2,
-            state: "retry",
-            message:
-              error instanceof Error
-                ? error.message
-                : "Import failed. Retry this file with the same key.",
+            state: "invalid",
+            message: parsed.error.issues
+              .map((issue) => `${issue.path.join(".")}: ${issue.message}`)
+              .join("; "),
           };
+        else {
+          const snapshot = parsed.data;
+          const sourceKey = (
+            snapshot.email ||
+            `${snapshot.company}:${snapshot.firstName}:${snapshot.lastName}`
+          )
+            .trim()
+            .toLowerCase();
+          try {
+            const prospect = await serializable(async (tx) => {
+              const existing = await tx.prospect.findUnique({
+                where: {
+                  workspaceId_sourceKey: {
+                    workspaceId: actor.workspaceId,
+                    sourceKey,
+                  },
+                },
+              });
+              if (existing) {
+                if (
+                  !snapshot.email &&
+                  digest(existing.snapshot) !== digest(snapshot)
+                )
+                  throw new Error(
+                    "Ambiguous identity without email. Review and supply a verified professional identifier.",
+                  );
+                return existing;
+              }
+              if (
+                (await tx.prospect.count({
+                  where: { workspaceId: actor.workspaceId },
+                })) >= limit
+              )
+                throw new Error("Record quota reached.");
+              return tx.prospect.create({
+                data: {
+                  workspaceId: actor.workspaceId,
+                  sourceKey,
+                  snapshot: json(snapshot),
+                  ownerId: actor.userId,
+                },
+              });
+            });
+            const crm = await new Crm(workspace).upsertPerson(
+              sourceKey,
+              snapshot,
+              prospect,
+            );
+            await serializable(async (tx) => {
+              const current = await tx.prospect.findUniqueOrThrow({
+                where: { id: prospect.id },
+              });
+              if (digest(current.snapshot) !== digest(snapshot)) {
+                await tx.draft.updateMany({
+                  where: {
+                    workspaceId: actor.workspaceId,
+                    prospectId: prospect.id,
+                  },
+                  data: {
+                    approvedVersion: null,
+                    approvedAt: null,
+                    approvedBy: null,
+                  },
+                });
+                await tx.asset.updateMany({
+                  where: {
+                    workspaceId: actor.workspaceId,
+                    prospectId: prospect.id,
+                  },
+                  data: { approvedAt: null, approvedBy: null },
+                });
+                await tx.sequence.updateMany({
+                  where: {
+                    workspaceId: actor.workspaceId,
+                    prospectId: prospect.id,
+                    state: { notIn: ["cancelled", "completed", "failed"] },
+                  },
+                  data: { state: "cancelled" },
+                });
+              }
+              await tx.prospect.update({
+                where: { id: prospect.id },
+                data: { ...crm, snapshot: json(snapshot) },
+              });
+            });
+            outcome = { row: index + 2, state: "imported", id: prospect.id };
+          } catch (error) {
+            outcome = {
+              row: index + 2,
+              state: "retry",
+              message:
+                error instanceof Error
+                  ? error.message
+                  : "Import failed. Retry this file with the same key.",
+            };
+          }
         }
+        const previous = outcomes.findIndex(
+          (result) => result.row === outcome.row,
+        );
+        if (previous >= 0) outcomes[previous] = outcome;
+        else outcomes.push(outcome);
+        await db.importBatch.update({
+          where: { id: batch.id },
+          data: {
+            outcomes: json(outcomes),
+            leaseUntil: new Date(Date.now() + 180000),
+          },
+        });
       }
-      const previous = outcomes.findIndex(
-        (result) => result.row === outcome.row,
-      );
-      if (previous >= 0) outcomes[previous] = outcome;
-      else outcomes.push(outcome);
+    } finally {
       await db.importBatch.update({
         where: { id: batch.id },
-        data: { outcomes: json(outcomes) },
+        data: { leaseUntil: null },
       });
     }
     return { id: batch.id, outcomes };
@@ -410,7 +533,7 @@ export class WorkspaceService {
         where: {
           workspaceId: actor.workspaceId,
           prospectId: id,
-          state: { in: ["queued", "scheduled", "simulated"] },
+          state: { notIn: ["cancelled", "completed", "failed"] },
         },
         data: { state: "cancelled" },
       });
@@ -487,7 +610,7 @@ export class WorkspaceService {
           where: {
             workspaceId: actor.workspaceId,
             draftId: id,
-            state: { in: ["queued", "scheduled", "simulated"] },
+            state: { notIn: ["cancelled", "completed", "failed"] },
           },
           data: { state: "cancelled" },
         });
@@ -548,5 +671,48 @@ export class WorkspaceService {
       });
       return item;
     });
+  }
+}
+
+// Bound decompressed input before ExcelJS allocates its workbook.
+function validateXlsxArchive(buffer: Buffer) {
+  let end = -1;
+  for (
+    let at = buffer.length - 22;
+    at >= Math.max(0, buffer.length - 65557);
+    at--
+  )
+    if (buffer.readUInt32LE(at) === 0x06054b50) {
+      end = at;
+      break;
+    }
+  if (end < 0 || buffer.readUInt16LE(end + 4) || buffer.readUInt16LE(end + 6))
+    throw new BadRequestException("Use a standard XLSX workbook.");
+  const count = buffer.readUInt16LE(end + 10);
+  let cursor = buffer.readUInt32LE(end + 16),
+    expanded = 0;
+  if (count > 500)
+    throw new BadRequestException(
+      "XLSX contains too many entries. Export only the lead worksheet.",
+    );
+  for (let index = 0; index < count; index++) {
+    if (
+      cursor + 46 > end ||
+      buffer.readUInt32LE(cursor) !== 0x02014b50 ||
+      buffer.readUInt16LE(cursor + 8) & 1
+    )
+      throw new BadRequestException(
+        "Use a standard unencrypted XLSX workbook.",
+      );
+    expanded += buffer.readUInt32LE(cursor + 24);
+    if (expanded > 20 * 1024 * 1024)
+      throw new BadRequestException(
+        "XLSX expands beyond 20 MB. Export a smaller lead worksheet.",
+      );
+    cursor +=
+      46 +
+      buffer.readUInt16LE(cursor + 28) +
+      buffer.readUInt16LE(cursor + 30) +
+      buffer.readUInt16LE(cursor + 32);
   }
 }

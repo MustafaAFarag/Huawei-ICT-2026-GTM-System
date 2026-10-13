@@ -52,7 +52,9 @@ export class WorkflowService {
         "A selected record is unavailable in this workspace.",
       );
     if (
-      !["preflight", "onboard", "queue_sequence"].includes(input.tool) &&
+      !["preflight", "onboard", "queue_sequence", "assistant"].includes(
+        input.tool,
+      ) &&
       !prospects.length
     )
       throw new BadRequestException("Select at least one prospect.");
@@ -65,8 +67,37 @@ export class WorkflowService {
       expectedEstimate,
       ...operation
     } = input;
+    const limits = {
+      ...(PLANS[workspace.plan as keyof typeof PLANS] ?? PLANS.Free),
+      ...(workspace.planLimits as object),
+    };
+    const [workspaceBudget, memberBudget, member] = await Promise.all([
+      db.budget.findUnique({
+        where: { id: `${workspace.id}:${month()}` },
+        select: { cap: true },
+      }),
+      db.budget.findUnique({
+        where: { id: `${workspace.id}:${actor.userId}:${month()}` },
+        select: { cap: true },
+      }),
+      db.membership.findUnique({
+        where: {
+          workspaceId_userId: {
+            workspaceId: workspace.id,
+            userId: actor.userId,
+          },
+        },
+        select: { creditCap: true },
+      }),
+    ]);
     const scopeDigest = digest({
       operation,
+      spending: {
+        plan: workspace.plan,
+        limits,
+        workspaceCap: workspaceBudget?.cap ?? limits.aiCredits,
+        memberCap: memberBudget?.cap ?? member?.creditCap ?? limits.aiCredits,
+      },
       prospects: prospects.map((p) => ({
         id: p.id,
         updatedAt: p.updatedAt,
@@ -205,6 +236,18 @@ export class WorkflowService {
         `${actor.workspaceId}:${actor.userId}:${month()}`,
       ];
       for (const id of budgetIds) {
+        const member = await tx.membership.findUnique({
+          where: {
+            workspaceId_userId: {
+              workspaceId: actor.workspaceId,
+              userId: actor.userId,
+            },
+          },
+        });
+        if (!member || !["owner", "operator"].includes(member.role))
+          throw new ForbiddenException(
+            "Your workspace role changed. Reload before starting a new action.",
+          );
         await tx.budget.upsert({
           where: { id },
           create: {
@@ -212,12 +255,15 @@ export class WorkflowService {
             workspaceId: actor.workspaceId,
             userId: id === budgetIds[0] ? null : actor.userId,
             month: month(),
-            cap: limits.aiCredits,
+            cap:
+              id === budgetIds[0]
+                ? limits.aiCredits
+                : (member.creditCap ?? limits.aiCredits),
           },
           update: {},
         });
         const reserved =
-          await tx.$executeRaw`UPDATE "Budget" SET reserved = reserved + ${amount} WHERE id = ${id} AND used + reserved + ${amount} <= cap`;
+          await tx.$executeRaw`UPDATE "Budget" SET reserved = reserved + ${amount} WHERE id = ${id} AND (${amount} = 0 OR used + reserved + ${amount} <= cap)`;
         if (reserved !== 1)
           throw new ForbiddenException(
             "The workspace or member spending cap would be exceeded. Ask the owner to review the cap.",
@@ -240,7 +286,7 @@ export class WorkflowService {
           playVersionId: play?.id,
         },
       });
-      const quotas =
+      const resourceQuotas =
         input.tool === "enrich_contacts"
           ? [
               {
@@ -266,6 +312,12 @@ export class WorkflowService {
                   },
                 ]
               : [];
+      const quotas = [
+        ...(amount
+          ? [{ kind: "aiCredits", units: amount, cap: limits.aiCredits }]
+          : []),
+        ...resourceQuotas,
+      ];
       for (const item of quotas) {
         const id = `${actor.workspaceId}:${month()}:${item.kind}`;
         await tx.quota.upsert({
@@ -383,6 +435,18 @@ export class WorkflowService {
       },
     });
     let actual = 0;
+    const chargeAttempt = async (credits: number) => {
+      actual += credits;
+      await db.run.update({ where: { id }, data: { actualCost: actual } });
+    };
+    const heartbeat = setInterval(() => {
+      void db.run
+        .updateMany({
+          where: { id, state: "running" },
+          data: { leaseUntil: new Date(Date.now() + 180000) },
+        })
+        .catch(() => {});
+    }, 20000);
     try {
       const actor = {
         userId: run.userId,
@@ -417,6 +481,62 @@ export class WorkflowService {
           data: { preflight: json(result) },
         });
         outputs.push({ ...result, holds: preflightHolds(result) });
+      } else if (input.tool === "assistant") {
+        if (!input.message) throw new Error("Enter the assistant message.");
+        const { ModelGateway } = await import("./model.js");
+        const { z } = await import("zod");
+        const schema = z.object({
+          content: z.string().max(2000),
+          tool: z.enum([
+            "find_signals",
+            "score_accounts",
+            "enrich_contacts",
+            "draft_messages",
+            "make_asset",
+            "queue_sequence",
+            "preflight",
+            "mini_audit",
+          ]),
+        });
+        await chargeAttempt(2);
+        const result = (await new ModelGateway().json(
+          "Propose one appropriate Revenue Workspace task, briefly explain it and any review needed. You cannot execute tools or approve costs. Use only approved facts, distinguish hypotheses and unknowns. Never claim a send or operation happened. Return {content,tool}.",
+          {
+            message: input.message,
+            play: input.play,
+            company: workspace.company,
+            selected: prospects.map((p) => ({
+              id: p.id,
+              snapshot: p.snapshot,
+              evidence: (p.evidence as Evidence[]).filter((e) => e.approved),
+            })),
+            history: (
+              await db.chatMessage.findMany({
+                where: { workspaceId: workspace.id, userId: actor.userId },
+                take: 12,
+                orderBy: { createdAt: "desc" },
+              })
+            )
+              .reverse()
+              .map((c) => ({ role: c.role, content: c.content })),
+          },
+          schema,
+        )) as { content: string; tool: string };
+        await db.chatMessage.create({
+          data: {
+            workspaceId: workspace.id,
+            userId: actor.userId,
+            role: "assistant",
+            content: result.content,
+            runId: id,
+            context: json({
+              tool: result.tool,
+              play: input.play,
+              prospectIds: input.prospectIds,
+            }),
+          },
+        });
+        outputs.push(result);
       } else if (input.tool === "onboard") {
         if (!input.website) throw new Error("Enter your company website.");
         const { publicPage, pageText } = await import("./public-web.js");
@@ -450,6 +570,10 @@ export class WorkflowService {
                   .marketingLicence === true,
               ),
             ];
+            if (score(prospect.snapshot as ProspectSnapshot).disqualified)
+              holds.push(
+                "This account is below the deterministic qualification threshold",
+              );
             validateEvidence(prospect.evidence as Evidence[]);
             if (
               current.approvedVersion !== current.version ||
@@ -552,6 +676,34 @@ export class WorkflowService {
           if ((await db.run.findUniqueOrThrow({ where: { id } })).cancelledAt)
             throw new Error("Cancelled. Completed work is preserved.");
           const snapshot = prospect.snapshot as ProspectSnapshot;
+          if (
+            ["enrich_contacts", "draft_messages", "make_asset"].includes(
+              input.tool,
+            ) &&
+            (prospect.excluded ||
+              score(snapshot).disqualified ||
+              (await db.suppression.findUnique({
+                where: {
+                  workspaceId_identity: {
+                    workspaceId: workspace.id,
+                    identity: prospect.sourceKey,
+                  },
+                },
+              })))
+          ) {
+            outputs.push({
+              prospectId: prospect.id,
+              held: true,
+              reason:
+                "Excluded, suppressed or below the deterministic qualification threshold.",
+            });
+            await this.event(
+              id,
+              "progress",
+              `Held ${snapshot.company}: resolve qualification or suppression before preparation.`,
+            );
+            continue;
+          }
           let result: unknown;
           if (input.tool === "score_accounts") {
             result = score(snapshot);
@@ -566,6 +718,7 @@ export class WorkflowService {
             input.tool === "find_signals" ||
             input.tool === "mini_audit"
           ) {
+            await chargeAttempt(2);
             const evidence =
               input.tool === "find_signals"
                 ? await this.providers.signals(workspace.id, snapshot)
@@ -579,6 +732,10 @@ export class WorkflowService {
                     ...evidence,
                   ]),
                 },
+              });
+              await tx.asset.updateMany({
+                where: { workspaceId: workspace.id, prospectId: prospect.id },
+                data: { approvedAt: null, approvedBy: null },
               });
               await tx.draft.updateMany({
                 where: { workspaceId: workspace.id, prospectId: prospect.id },
@@ -598,12 +755,12 @@ export class WorkflowService {
               });
             });
             result = evidence;
-            actual += input.tool === "find_signals" ? 2 : 2;
           } else if (input.tool === "enrich_contacts") {
             const cacheId = `${workspace.id}:${prospect.sourceKey}:email`;
             const cache = await db.cacheEntry.findFirst({
               where: { id: cacheId, expiresAt: { gt: new Date() } },
             });
+            if (!cache) await chargeAttempt(3);
             result =
               cache?.result ??
               (await this.providers.enrich(
@@ -612,7 +769,6 @@ export class WorkflowService {
                 score(snapshot).tier,
               ));
             if (!cache) {
-              actual += 3;
               await db.cacheEntry.upsert({
                 where: { id: cacheId },
                 create: {
@@ -653,6 +809,7 @@ export class WorkflowService {
               throw new Error(
                 "Review and approve an offer in company context first.",
               );
+            await chargeAttempt(4);
             const content = await this.providers.draft(
               snapshot,
               evidence,
@@ -669,10 +826,19 @@ export class WorkflowService {
                 evidenceDigest: digest(evidence),
               },
             });
-            actual += 4;
           } else if (input.tool === "make_asset") {
             const evidence = prospect.evidence as Evidence[];
             validateEvidence(evidence);
+            if (
+              input.template === "offer-one-pager" &&
+              !(workspace.offers as { approved: boolean }[]).some(
+                (o) => o.approved,
+              )
+            )
+              throw new Error(
+                "Approve an offer before generating its one-pager.",
+              );
+            await chargeAttempt(6);
             const generated = await new OpenDesign(workspace).generate(
               input.template,
               snapshot,
@@ -727,7 +893,6 @@ export class WorkflowService {
                 campaignVersion: 1,
               },
             );
-            actual += 6;
           }
           outputs.push({ prospectId: prospect.id, result });
           await this.event(id, "progress", `Completed ${snapshot.company}.`, {
@@ -771,6 +936,7 @@ export class WorkflowService {
       });
       await this.event(id, "failed", safeError(error));
     } finally {
+      clearInterval(heartbeat);
       await this.reconcile(id, actual);
     }
   }
@@ -826,8 +992,8 @@ export class WorkflowService {
     });
     for (const run of stale) {
       // Never repeat uncertain provider submissions after a crash.
-      await db.run.update({
-        where: { id: run.id },
+      const recovered = await db.run.updateMany({
+        where: { id: run.id, state: "running", leaseUntil: { lt: new Date() } },
         data: {
           state: "failed",
           error:
@@ -837,6 +1003,7 @@ export class WorkflowService {
           leaseUntil: null,
         },
       });
+      if (!recovered.count) continue;
       await this.reconcile(run.id, run.estimate);
       await this.event(
         run.id,
