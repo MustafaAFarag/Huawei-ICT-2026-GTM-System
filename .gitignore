@@ -20,3 +20,11 @@ playwright-report/
 *.tsbuildinfo
 Lara Meeting*.pdf
 Lara Meeting transcript.txt
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfplan
+*.tfvars
+*.tfvars.json
+crash.log
+crash.*.log

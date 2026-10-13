@@ -1,0 +1,182 @@
+# Future single-server target. This file is not the localhost Compose stack.
+name: revenue-demo
+
+x-product-env: &product-env
+  DATABASE_URL: postgresql://revenue:${POSTGRES_PASSWORD:?Set private env}@postgres:5432/revenue
+  REDIS_URL: redis://redis:6379/0
+  QUEUE_NAME: revenue-demo
+  WEB_ORIGIN: https://${PUBLIC_HOST:?Set public hostname}
+  BETTER_AUTH_URL: https://${PUBLIC_HOST}
+  TWENTY_A_URL: http://twenty:3000
+  TWENTY_B_URL: http://twenty:3000
+  OPEN_DESIGN_A_URL: http://open-design-a:7456
+  OPEN_DESIGN_B_URL: http://open-design-b:7456
+  PROVIDER_MODE: fixture
+  MODEL_MODE: fixture
+  STORAGE_DRIVER: local
+  STORAGE_PATH: /app/.local/assets
+  SECRET_DRIVER: local
+
+x-twenty-env: &twenty-env
+  PG_DATABASE_URL: postgres://revenue:${POSTGRES_PASSWORD}@postgres:5432/twenty
+  REDIS_URL: redis://redis:6379/1
+  SERVER_URL: http://localhost:3200
+  ENCRYPTION_KEY: ${TWENTY_ENCRYPTION_KEY:?Set private env}
+  APP_SECRET: ${TWENTY_ENCRYPTION_KEY}
+  STORAGE_TYPE: local
+  IS_MULTIWORKSPACE_ENABLED: "true"
+  SIGN_IN_PREFILLED: "false"
+  NODE_OPTIONS: --max-old-space-size=1024
+
+services:
+  proxy:
+    image: caddy:2.10.2
+    restart: unless-stopped
+    environment:
+      PUBLIC_HOST: ${PUBLIC_HOST}
+      ACME_EMAIL: ${ACME_EMAIL:?Set certificate contact}
+    ports: ["80:80", "443:443"]
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - /srv/revenue-data/caddy:/data
+    depends_on:
+      web: { condition: service_healthy }
+    mem_limit: 128m
+  postgres:
+    image: postgres:16.10-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: revenue
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: revenue
+    volumes:
+      - /srv/revenue-data/postgres:/var/lib/postgresql/data
+      - ../local/init.sql:/docker-entrypoint-initdb.d/02-twenty.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U revenue -d revenue"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    mem_limit: 512m
+  redis:
+    image: redis:7.2.11-alpine
+    restart: unless-stopped
+    command:
+      [
+        "redis-server",
+        "--appendonly",
+        "yes",
+        "--maxmemory-policy",
+        "noeviction",
+      ]
+    volumes: ["/srv/revenue-data/redis:/data"]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    mem_limit: 256m
+  twenty:
+    image: twentycrm/twenty@sha256:bb4e94f0215cbd14c7356b0324d9b7ac10ccd077042cd6d5058ad02ef2080605
+    restart: unless-stopped
+    environment: *twenty-env
+    # Native administration through an SSH tunnel, never public ingress.
+    ports: ["127.0.0.1:3200:3000"]
+    volumes:
+      ["/srv/revenue-data/twenty:/app/packages/twenty-server/.local-storage"]
+    depends_on:
+      postgres: { condition: service_healthy }
+      redis: { condition: service_healthy }
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "http://localhost:3000/healthz"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+      start_period: 60s
+    mem_limit: 1600m
+  twenty-worker:
+    image: twentycrm/twenty@sha256:bb4e94f0215cbd14c7356b0324d9b7ac10ccd077042cd6d5058ad02ef2080605
+    restart: unless-stopped
+    command: ["yarn", "worker:prod"]
+    environment:
+      <<: *twenty-env
+      DISABLE_DB_MIGRATIONS: "true"
+      DISABLE_CRON_JOBS_REGISTRATION: "true"
+    volumes:
+      ["/srv/revenue-data/twenty:/app/packages/twenty-server/.local-storage"]
+    depends_on:
+      twenty: { condition: service_healthy }
+    mem_limit: 1536m
+  open-design-a:
+    image: ghcr.io/nexu-io/od@sha256:587a992857d0f8b71011e4bc55c5851e33ef9fc4c169fc17e6447700ac428f22
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      NODE_OPTIONS: --max-old-space-size=256
+      OD_BIND_HOST: 0.0.0.0
+      OD_PORT: 7456
+      OD_API_TOKEN: ${OPEN_DESIGN_A_TOKEN:?Set private env}
+      OD_DATA_DIR: /app/.od
+    volumes: ["/srv/revenue-data/open-design-a:/app/.od"]
+    read_only: true
+    tmpfs: ["/tmp"]
+    security_opt: ["no-new-privileges:true"]
+    pids_limit: 256
+    mem_limit: 384m
+  open-design-b:
+    image: ghcr.io/nexu-io/od@sha256:587a992857d0f8b71011e4bc55c5851e33ef9fc4c169fc17e6447700ac428f22
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      NODE_OPTIONS: --max-old-space-size=256
+      OD_BIND_HOST: 0.0.0.0
+      OD_PORT: 7456
+      OD_API_TOKEN: ${OPEN_DESIGN_B_TOKEN:?Set private env}
+      OD_DATA_DIR: /app/.od
+    volumes: ["/srv/revenue-data/open-design-b:/app/.od"]
+    read_only: true
+    tmpfs: ["/tmp"]
+    security_opt: ["no-new-privileges:true"]
+    pids_limit: 256
+    mem_limit: 384m
+  api:
+    image: revenue-api:${IMAGE_TAG:?Set reviewed image tag}
+    restart: unless-stopped
+    env_file: ../../.env
+    environment: *product-env
+    volumes:
+      [
+        "/srv/revenue-data/assets:/app/.local/assets",
+        "/srv/revenue-data/vault:/app/.local/vault",
+      ]
+    depends_on:
+      postgres: { condition: service_healthy }
+      redis: { condition: service_healthy }
+    security_opt: ["no-new-privileges:true"]
+    cap_drop: ["ALL"]
+    mem_limit: 512m
+  worker:
+    image: revenue-worker:${IMAGE_TAG}
+    restart: unless-stopped
+    env_file: ../../.env
+    environment: *product-env
+    volumes:
+      [
+        "/srv/revenue-data/assets:/app/.local/assets",
+        "/srv/revenue-data/vault:/app/.local/vault",
+      ]
+    depends_on:
+      api: { condition: service_healthy }
+    security_opt: ["no-new-privileges:true"]
+    cap_drop: ["ALL"]
+    mem_limit: 1024m
+  web:
+    image: revenue-web:${IMAGE_TAG}
+    restart: unless-stopped
+    environment:
+      API_URL: http://api:4100
+    depends_on:
+      api: { condition: service_healthy }
+    security_opt: ["no-new-privileges:true"]
+    cap_drop: ["ALL"]
+    mem_limit: 512m

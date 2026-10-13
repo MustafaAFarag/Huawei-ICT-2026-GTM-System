@@ -1,0 +1,6 @@
+# Public/non-secret values only. Copy to an ignored terraform.tfvars after review.
+location          = "swedencentral"
+vm_size           = "Standard_D2as_v6"
+ssh_public_key    = "ssh-ed25519 REPLACE_WITH_YOUR_PUBLIC_KEY"
+admin_cidr        = "203.0.113.1/32" # Replace with your real public IPv4 address.
+data_disk_size_gb = 64

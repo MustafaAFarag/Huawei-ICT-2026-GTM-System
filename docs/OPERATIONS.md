@@ -22,7 +22,7 @@ Pause new requests and stop product workers before taking a coordinated snapshot
 
 For a full engine backup, also quiesce Twenty and both OpenDesign instances and snapshot **each named persistent volume separately**. OpenDesign's SQLite files must include a consistent database/WAL snapshot. Keep the two engine volumes separate. The script deliberately reports that these native file volumes are not included.
 
-Azure uses PostgreSQL point-in-time backup, Blob versioning/soft delete, and Azure Files snapshots for native engine files. Take coordinated application/file snapshots, retain Key Vault access and record deployed image digests. Region-specific restore and retention must be rehearsed after Azure access is available.
+The current Azure target is one Docker server with a separate persistent disk. Back up both PostgreSQL databases, product assets/vault and each native engine directory in a coordinated snapshot to storage outside the server; retain the matching decryption secrets and image digests. There is no managed PostgreSQL point-in-time recovery or automatic Blob/Files backup in this minimal target. Cloud disk mounting, retention and restore must be rehearsed before a pilot. See [the future server runbook](../infra/server/README.md).
 
 ## Restore safely
 

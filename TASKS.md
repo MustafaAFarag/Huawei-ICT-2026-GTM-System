@@ -1,4 +1,21 @@
-## Active implementation — Revenue Workspace (13 October 2026)
+## Active preparation — isolated Azure connection and Terraform (14 October 2026)
+
+Goal: prepare this project's Azure connection and a single-server Terraform target while verifying the complete application on localhost.
+Done: local governance/CRM/engine/browser checks pass; Terraform validates; isolated OIDC settings are configured or exact access blockers recorded; cloud/model prerequisites have verified/unverified status; reviewed changes committed locally.
+Stop: no GitHub push, application deployment, model provisioning, paid inference or live outbound. Never modify/delete resources used by Amr's other projects.
+
+- [x] Isolated Azure/GitHub CLI authentication; verified session creation, zero calls, no connections/deployments or resource references; removed only the two session-created Foundry resources. Existing three resources and shared groups preserved.
+- [x] Project-only group and Reader OIDC identity configured for `azure-demo`, main branch only; metadata variables verified; subscription/model/policy/quota inventory recorded. Default company CLI sessions preserved.
+- [x] Restarted preserved local services; 13 governance and 3 packaged browser tests, type checks, Twenty build/CRM isolation, OpenDesign and HTTP role checks passed. Sampled memory peak 2.81 GiB; dashboard/job acknowledgement p95 19/26 ms.
+- [x] Single-server Terraform and server Compose prepared; pinned Terraform/AzureRM and lockfile; two safety tests and Azure read-only plan (9 additions, no changes/deletions) passed. Old deployment workflow retired.
+- [x] Region/model/credit readiness and operations documented; own diff reviewed; local/static checks passed. Final Terraform checks passed; prepared for the local feature commit.
+
+Decisions: assume $100 credit (remaining balance unverified); localhost now, one 2 vCPU/8 GiB x86 server later, one environment; no Front Door by default; use separate project resources and never reuse Amr's Terraform state storage. Keep provider/model modes fixture. Tenant `3f5648ce-ad7c-46b5-8dfb-ddcbf48520af`; subscription `55336c1c-af74-4164-b687-a7b7c3ec740c`. Preserve unrelated sample CSV edits and default company CLI sessions.
+Blockers: selected Sweden Central D2as v6 has no listed SKU restrictions and 10 family/total vCPUs available; actual allocation remains untested. Remaining credit/offer eligibility and live models remain unverified. GitHub OIDC execution waits for an explicitly authorized push.
+
+---
+
+## Previous implementation — Revenue Workspace (13 October 2026)
 
 Goal: implement the approved Next.js/NestJS December release from PRD v3.
 Done: a verified local fixture release with four plays, governed assistant/tools, isolated Twenty/OpenDesign, durable jobs and bilingual assets; local browser/integration checks pass and the Azure deployment package is reviewed. Real providers/models and Azure validation remain external gates.

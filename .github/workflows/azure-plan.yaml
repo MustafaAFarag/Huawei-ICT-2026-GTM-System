@@ -1,0 +1,75 @@
+name: Validate and plan Azure demo (no deployment)
+on:
+  workflow_dispatch:
+    inputs:
+      cloud_plan:
+        description: "Also read Azure and produce a Terraform plan (no apply)"
+        type: boolean
+        default: false
+      admin_cidr:
+        description: "Your public IPv4 /32; needed only for cloud_plan"
+        required: false
+      ssh_public_key:
+        description: "Public ed25519/RSA key; needed only for cloud_plan"
+        required: false
+permissions:
+  contents: read
+concurrency:
+  group: revenue-azure-plan
+  cancel-in-progress: false
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.15.8
+      - working-directory: infra/terraform/azure
+        run: |
+          terraform fmt -check -recursive
+          terraform init -backend=false -lockfile=readonly
+          terraform validate
+          terraform test
+  plan:
+    if: inputs.cloud_plan
+    needs: validate
+    environment: azure-demo
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.15.8
+      - uses: azure/login@v2
+        with:
+          client-id: ${{ vars.AZURE_CLIENT_ID }}
+          tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+      - name: Check the explicit account and project boundary
+        env:
+          EXPECTED_GROUP: ${{ vars.AZURE_RESOURCE_GROUP }}
+        run: |
+          test "$(az account show --query id -o tsv)" = 55336c1c-af74-4164-b687-a7b7c3ec740c
+          test "$(az account show --query tenantId -o tsv)" = 3f5648ce-ad7c-46b5-8dfb-ddcbf48520af
+          test "$EXPECTED_GROUP" = rg-gtm-command-center-demo
+          test "$(az group show --name "$EXPECTED_GROUP" --query tags.project -o tsv)" = gtm-command-center
+      - name: Read-only Terraform plan
+        working-directory: infra/terraform/azure
+        env:
+          ARM_USE_OIDC: "true"
+          ARM_USE_CLI: "false"
+          ARM_CLIENT_ID: ${{ vars.AZURE_CLIENT_ID }}
+          ARM_TENANT_ID: ${{ vars.AZURE_TENANT_ID }}
+          ARM_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+          TF_VAR_admin_cidr: ${{ inputs.admin_cidr }}
+          TF_VAR_ssh_public_key: ${{ inputs.ssh_public_key }}
+          TF_IN_AUTOMATION: "true"
+        run: |
+          umask 077
+          terraform init -backend=false -lockfile=readonly
+          terraform plan -input=false -no-color
+      # No plan/state artifact upload; no apply/destroy/build/push/deploy steps.

@@ -355,6 +355,8 @@ Do not use: n8n as an embedded engine; Windmill, Firecrawl, Plausible, Listmonk,
 
 ### 8.2 Azure placeholder (until December)
 
+**Owner update, 14 October:** keep the application on localhost while testing. Prepare one cost-efficient Linux server with Terraform, a separate project resource group and a Reader-only GitHub connection. No staging/production split, availability zones, application deployment or model provisioning yet. The managed services below remain an expansion option; the current target uses Docker PostgreSQL/Redis and persistent local file/vault adapters on the server disk. See [Azure preparation](../AZURE_DEPLOYMENT.md).
+
 | Function | Azure service |
 | --- | --- |
 | LLM for assistant, research and drafts | Azure AI Foundry model endpoint behind our OpenAI-compatible gateway |

@@ -1,0 +1,29 @@
+#cloud-config
+# Host prerequisites only. Does not fetch the repository, embed secrets, format
+# data disks, start application containers or make model calls.
+package_update: true
+packages:
+  - docker.io
+  - docker-compose-v2
+  - ca-certificates
+  - curl
+write_files:
+  - path: /etc/docker/daemon.json
+    permissions: "0644"
+    content: |
+      {"log-driver":"local","log-opts":{"max-size":"10m","max-file":"3"}}
+  - path: /etc/ssh/sshd_config.d/60-revenue.conf
+    permissions: "0644"
+    content: |
+      PasswordAuthentication no
+      PermitRootLogin no
+  - path: /etc/motd
+    permissions: "0644"
+    content: |
+      Revenue Workspace host: application is not deployed.
+      Mount the project data disk at /srv/revenue-data before running Compose.
+      Follow the reviewed single-server runbook; no automatic deployments.
+runcmd:
+  - [systemctl, enable, --now, docker]
+  - [systemctl, restart, ssh]
+  - [install, -d, -m, "0750", -o, revenue, -g, revenue, /srv/revenue]

@@ -1,44 +1,73 @@
-# Reviewed Azure demo package
+# Azure preparation — 14 October 2026
 
-The Bicep template compiles locally. Subscription validation, region/SKU availability, prices, private networking, upstream Azure Files compatibility and real model calls remain unverified until Azure access exists. No cloud resources have been created.
+The application remains local at [localhost:3110](http://localhost:3110). The active cloud target is one Docker server defined in [Terraform](../infra/terraform/azure/main.tf), with [server Compose](../infra/server/compose.yaml) and [Caddy](../infra/server/Caddyfile). The previous `infra/azure` Bicep package is historical reference; its deployment workflow has been removed. No application server, model deployment, paid inference, registry or remote Terraform state has been created.
 
-## Required inputs and first setup
+## Connection and project boundary
 
-Supply subscription/tenant/client identity, resource group, reviewed region, credits and an existing ACR. Register the App, PostgreSQL, RedisEnterprise, Storage, Network, KeyVault, ManagedIdentity and OperationalInsights resource providers. The deploying identity needs resource creation and role-assignment permission within the reviewed scopes. Use GitHub OIDC federation for the `azure-demo` environment and configure required reviewers.
+| Setting                | Verified value                                                         |
+| ---------------------- | ---------------------------------------------------------------------- |
+| Directory              | Default Directory (`amrmedhatamer20gmail.onmicrosoft.com`)             |
+| Tenant                 | `3f5648ce-ad7c-46b5-8dfb-ddcbf48520af`                                 |
+| Subscription           | Azure for Students, `55336c1c-af74-4164-b687-a7b7c3ec740c`             |
+| Human access           | Owner; project CLI signed in as `mustafa.ashraf.saad@gmail.com`        |
+| Project resource group | `rg-gtm-command-center-demo`, West Europe                              |
+| Connection identity    | `gtm-demo-github-plan`                                                 |
+| Client ID              | `df30a1e8-6682-4816-9b68-840ecc0bb71d`                                 |
+| Identity permission    | Reader at this resource group only                                     |
+| Repository             | `MustafaAFarag/Huawei-ICT-2026-GTM-System`                             |
+| GitHub environment     | `azure-demo`, restricted to branch `main`                              |
+| Federation             | `repo:MustafaAFarag/Huawei-ICT-2026-GTM-System:environment:azure-demo` |
 
-Copy [the parameter template](../infra/azure/parameters.example.json) into the private GitHub environment secret `AZURE_DEPLOY_PARAMETERS`. Supply generated strong passwords/tokens and the selected registry/region. It contains secure infrastructure inputs and must never be committed. Define environment variables `AZURE_REGISTRY`, `AZURE_RESOURCE_GROUP`, `AZURE_PREFIX`, `DEMO_EMAIL`, and secrets `AZURE_CLIENT_ID`, `AZURE_TENANT_ID`, `AZURE_SUBSCRIPTION_ID`, `DEMO_PASSWORD`. The demo password must match the provisioning parameter. Use an immutable reviewed commit SHA for `image_tag`.
+The federation issuer is `https://token.actions.githubusercontent.com`, audience `api://AzureADTokenExchange`. Environment variables `AZURE_CLIENT_ID`, `AZURE_TENANT_ID`, `AZURE_SUBSCRIPTION_ID` and `AZURE_RESOURCE_GROUP` are configured. They are identifiers, not credentials. There is no client secret. The human Owner identity is distinct from the read-only workflow identity.
 
-Default modes are fixtures. Model access is a separate parameter; keep `modelMode=fixture` until the chosen compatible model endpoint, per-call price, authorization and spend accounting are reviewed. Sender submission stays disabled in this package. Public registration is disabled; the migration job provisions the owner and two product memberships.
+The GitHub repository is public and had no default branch when inspected. Code has not been pushed. The workflow's real GitHub OIDC exchange has therefore **not run**. Do not claim CI authentication is tested until an explicitly authorized push makes the workflow available.
 
-Cloud password-reset delivery also needs a reviewed SMTP connection. Local Mailpit delivery does not establish Azure email delivery; keep demo account provisioning under the owner until that connection is configured and tested.
+Azure CLI uses ignored `.local/azure-cli`; GitHub CLI uses `.local/github-cli`. Default company CLI configurations were preserved. To authenticate this project again:
 
-Web ingress discards client-supplied IP forwarding headers and passes only the rightmost address supplied by Azure ingress in a private header to the internal API. Better Auth uses that header for rate limiting. This follows [Azure's header contract](https://learn.microsoft.com/en-us/azure/container-apps/ingress-overview); validate the deployed path before accepting it as a cloud check. Local ingress uses a shared authentication bucket, so repeated test logins must respect its cooldown.
+```bash
+AZURE_CONFIG_DIR="$PWD/.local/azure-cli" az login --tenant 3f5648ce-ad7c-46b5-8dfb-ddcbf48520af --use-device-code
+GH_CONFIG_DIR="$PWD/.local/github-cli" gh auth login --hostname github.com --git-protocol https --web
+```
 
-## Package behavior
+Answer **No** to changing Git's credential helper if preserving the machine's existing setup. The idempotent [connection setup script](../scripts/azure-project-setup.py) creates only the tagged project group, Reader identity, federation and environment settings; it refuses mismatched ownership/account/trust settings. It does not register providers or deploy anything. [Preflight](../scripts/azure-preflight.py) reads metadata, quotas and policies, and records exact failures in ignored `.local/azure-preflight.json`.
 
-The [manual workflow](../.github/workflows/deploy-azure.yaml) builds pinned images, validates the concrete parameters, prints an Azure what-if, deploys only after its explicit confirmation input, waits for the migration/provisioning job and runs Playwright against the deployed URL. GitHub environment approval is the external release gate. A failed migration or browser check fails the workflow; it does not claim the deployment is healthy. Do not invoke it until deployment is authorized.
+### Narrow Foundry cleanup
 
-The [main template](../infra/azure/main.bicep) prepares:
+Foundry's sign-in onboarding unintentionally created `mustafaashrafsaad-3280-resource` and child `mustafaashrafsaad-3280` in **Amr's** `bravo6ciam-rg`. Both were verified as created by our signed-in account at 21:32 UTC on 13 October, with unchanged modification times, zero API calls, no model deployments, no connections/private endpoints, and no references from the other resources. Only these two resources were deleted after explicit authorization. Cognitive Services may retain a soft-deleted account; no purge was performed.
 
-- External web ingress and internal API, worker, Twenty and isolated OpenDesign A/B apps.
-- A workload-profile Container Apps environment and private PostgreSQL/Redis/Blob/Files/Key Vault networking.
-- Separate product and CRM databases; required native PostgreSQL extensions.
-- Managed Redis with `NoCluster`, `NoEviction`, encrypted traffic and AOF persistence; BullMQ uses database zero and a product queue namespace.
-- Blob assets, three separate persistent Azure Files mounts for native Twenty and the two asset engines, managed identity access, Key Vault secret references and Log Analytics.
-- A manual migration/seed job. API and worker health probes are independent of external models/sender accounts.
+The before/after inventory preserves `bravo6ciam.onmicrosoft.com`, `NetworkWatcher_westeurope`, and `terraformstateeprofile`. All existing resource groups were preserved. Do not reuse Amr's `terraform-rg` storage backend, import his resources into our state, delete a shared group, or change subscription-wide permissions/policies.
 
-For this demo, both databases use the bootstrap PostgreSQL administrator. Separate least-privilege database users/grants must be configured and verified before using customer data or enabling a pilot. Runtime identity also has connector-secret write access. Review its scope and the native engines' identities before broadening beyond two isolated demo workspaces.
+## Terraform validation and future server
 
-## Native-workspace bootstrap
+Terraform is pinned to **1.15.8**, AzureRM to **5.9.0**; the provider lockfile is committed. Automatic resource-provider registration is disabled. The connection-owned group/identity stay outside the compute state; Terraform reads and verifies the group's project tag.
 
-Provision two native Twenty workspaces and install the deployed app package through Twenty's API/SDK. Native workspace/API keys are **not** manufactured by our product seed. Since Twenty is internal, use an authorized administrative connection within the VNet (VPN/jump host or a reviewed temporary admin ingress) for its UI/SDK. Keep OpenDesign internal. Store the two resulting workspace keys in Key Vault and redeploy the secret references, then check CRM connections in the product.
+```bash
+terraform -chdir=infra/terraform/azure fmt -check -recursive
+terraform -chdir=infra/terraform/azure init -backend=false -lockfile=readonly
+terraform -chdir=infra/terraform/azure validate
+terraform -chdir=infra/terraform/azure test
+```
 
-A first deployment without native keys will intentionally fail the full workflow checks at CRM import. Complete native provisioning and rerun validation; do not treat initial infrastructure provisioning as release acceptance. The local installation rehearsal is recorded in [integration decisions](INTEGRATION.md).
+[The manual workflow](../.github/workflows/azure-plan.yaml) runs these offline checks. Its optional `cloud_plan` job logs in with OIDC and only plans. It has no apply, destroy, image push, migration or deployment commands, and uploads no state/plan artifacts. Public SSH key and administrator IPv4 `/32` are required for a real plan. Example addresses/keys are placeholders and must not be deployed.
 
-## Validation and recovery
+The future compute plan contains one Ubuntu 24.04 x86 VM (`Standard_D2as_v6`, 2 vCPU/8 GiB baseline in Sweden Central), a 32 GiB OS disk, protected 64 GiB data disk, one VNet/subnet, NIC, firewall and public IP. SSH accepts only the administrator's `/32`; public web accepts 80/443; other inbound traffic is denied. No availability zones/sets, managed PostgreSQL/Redis, Container Apps, Kubernetes, Front Door, ACR, Key Vault or AI resource is provisioned by this target.
 
-After provisioning, run the full four-play browser suite at the Azure URL, with the private demo credential injected into the runner. Verify two-workspace isolation, role restrictions, Arabic PDF fonts, queues after restart, persistent engine files and asset access. Measure app API/job-acknowledgement latency separately from model/provider/render time. Validate the chosen model's actual BYOK path and account billing separately; fixture results are not model evaluation.
+Cloud-init installs Docker and hardens SSH; it does **not** format data disks, fetch code, embed secrets or start the app. Use [the server runbook](../infra/server/README.md) only after later deployment authorization. PostgreSQL, Redis, Twenty and OpenDesign persist on the data disk; the product uses its local file/vault adapters. Native CRM administration uses an SSH tunnel. APIs and databases are private to Docker.
 
-Review logs through the workspace UI and Log Analytics; never enable request-body, authorization-header or secret-value logging. Rehearse database point-in-time restore, Blob version restore and separate Azure Files snapshots with the matching secrets/images before a live pilot. See [operations](OPERATIONS.md). Roll back to a reviewed image digest only when schema compatibility is established; avoid automatic destructive schema rollback.
+B2ms was marked `NotAvailableForSubscription` in West Europe, North Europe, Sweden Central and Central India. B2as v2 and D2as/D2s v5 in Sweden Central were rejected because their family quotas are 0. The selected **D2as v6** is x64 / 2 vCPU / 8 GiB, has no listed SKU restrictions, and has 0 used / 10 allowed family and total regional vCPUs. No quota increase or account upgrade was needed. Actual allocation remains untested.
 
-The pnpm migration rule requires a local Docker build before deployment. The manual workflow has no Vercel/Dokploy dependency. GitHub publication and cloud deployment remain separate authorized actions.
+Local plans/state and CLI tokens remain ignored; use `umask 077` for plan/state files. Local state is temporary for preparation. A separate project-owned remote backend and least-privilege deployment identity must be reviewed before any apply. Reader permission cannot deploy. The data disk has `prevent_destroy`; this is not a backup.
+
+## Credit and AI readiness
+
+Assume **$100 credit**; actual remaining balance is **unverified**. The sponsorship portal returned “This account does not have an active Sponsorship.” Subscription cost 0.00 does not establish credit balance. Amr's billing account/profile owns the offer; credit eligibility, expiry and live charges need verification there before paid usage.
+
+The public [Azure Retail Prices API](https://learn.microsoft.com/en-us/rest/api/cost-management/retail-prices/azure-retail-prices) returned **$0.097/hour** for Linux D2as v6 in Sweden Central on this check: about **$70.81 for 730 compute hours**, excluding disks, public IP, bandwidth, tax and AI. This is a retail estimate, not Amr's bill or confirmation of free-tier eligibility. Continuous hosting would consume most of $100 quickly. Keep localhost now; later deallocate compute between demo sessions, remembering that disks/public IP can continue billing. Front Door stays absent because it has a [base fee](https://learn.microsoft.com/en-us/azure/frontdoor/billing).
+
+Azure AI can serve the product gateway and OpenDesign's BYOK text/HTML generation. The current product does not automatically gain image generation, speech, OCR/search, tool integrations or a fully live conversational assistant merely by connecting Azure.
+
+Existing `MODEL_BASE_URL`, `MODEL_ID`, `MODEL_API_KEY` remain server-side and unset for live use. A future compatible Azure endpoint should use `https://<project-resource>.openai.azure.com/openai/v1` and a deployment name as `MODEL_ID`; [Microsoft's Chat Completions contract](https://learn.microsoft.com/en-us/rest/api/microsoft-foundry/azureopenai/chat) supports this interface. Store keys in private environment/vault storage, never Terraform inputs/state, CI logs or the browser bundle.
+
+The current candidate is **GPT-5 nano** for an inexpensive first text smoke test, with GPT-5 mini as a quality alternative after evaluation. Sweden Central reports unused Global Standard quota for both; GPT-4o mini has Standard/Global Standard quota as another compatibility candidate. Quota listings alone do not prove capacity, credit coverage, model API compatibility or Arabic quality. See the dated [readiness table](CLOUD.md).
+
+Keep `MODEL_MODE=fixture` and `PROVIDER_MODE=fixture`. No live model key/resource has been activated. A later separately authorized check must cover gateway JSON parsing, OpenDesign streaming/artifact validation, English/Arabic output, token limits, errors/timeouts, approval/cost gates and real account billing. Sender, signal and enrichment submission/webhook/billing checks also remain separate activation work.
