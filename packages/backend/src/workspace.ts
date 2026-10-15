@@ -8,7 +8,7 @@ import type {
   ProspectSnapshot,
   Touch,
 } from "@revenue/contracts";
-import { PLANS } from "@revenue/contracts";
+import { PLANS, angleFor, duplicateKeys } from "@revenue/contracts";
 import { db, json, serializable } from "./database.js";
 import { assertRole, digest, month, validateEvidence } from "./policy.js";
 import { Crm } from "./providers.js";
@@ -149,9 +149,15 @@ export class WorkspaceService {
         name: z.string().min(1).max(100).optional(),
         company: z
           .object({
-            description: z.string().max(3000),
-            icp: z.string().max(2000),
-            marketingLicence: z.boolean(),
+            description: z.string().max(3000).optional(),
+            icp: z.string().max(2000).optional(),
+            marketingLicence: z.boolean().optional(),
+            references: z
+              .array(z.object({ name: z.string().min(1).max(120), consent: z.boolean() }))
+              .max(30)
+              .optional(),
+            angles: z.record(z.string().max(40), z.string().max(300)).optional(),
+            segments: z.record(z.string().max(10), z.string().max(200)).optional(),
           })
           .optional(),
         brand: z
@@ -198,6 +204,13 @@ export class WorkspaceService {
       .parse(value);
     return serializable(async (tx) => {
       const { cap, memberCaps, ...data } = input;
+      // Company context is merged so partial saves keep angles, references and segments.
+      if (data.company) {
+        const current = await tx.workspace.findUniqueOrThrow({
+          where: { id: actor.workspaceId },
+        });
+        data.company = { ...(current.company as object), ...data.company };
+      }
       const updated = await tx.workspace.update({
         where: { id: actor.workspaceId },
         data,
@@ -381,13 +394,29 @@ export class WorkspaceService {
               .join("; "),
           };
         else {
-          const snapshot = parsed.data;
+          // GAP-04: infer persona, maturity, register and angle so every play can use them.
+          const offers = workspace.offers as { text: string; approved: boolean }[];
+          const inferred = angleFor(
+            parsed.data,
+            (workspace.company as { angles?: Record<string, string> }).angles,
+            offers.find((o) => o.approved)?.text,
+          );
+          const snapshot: ProspectSnapshot = {
+            ...parsed.data,
+            persona: inferred.persona,
+            hrMaturity: inferred.maturity,
+            register: inferred.register,
+            ...(inferred.angle ? { angle: inferred.angle } : {}),
+          };
           const sourceKey = (
             snapshot.email ||
             `${snapshot.company}:${snapshot.firstName}:${snapshot.lastName}`
           )
             .trim()
             .toLowerCase();
+          let merged: ProspectSnapshot = snapshot,
+            changed = false,
+            isNew = false;
           try {
             const prospect = await serializable(async (tx) => {
               const existing = await tx.prospect.findUnique({
@@ -401,12 +430,28 @@ export class WorkspaceService {
               if (existing) {
                 if (
                   !snapshot.email &&
-                  digest(existing.snapshot) !== digest(snapshot)
+                  digest(existing.snapshot) !== digest({ ...(existing.snapshot as object), ...snapshot })
                 )
                   throw new Error(
                     "Ambiguous identity without email. Review and supply a verified professional identifier.",
                   );
                 return existing;
+              }
+              // GAP-02: hold near-duplicates (same person or mailbox root) for review.
+              if (!mapping.__allowDuplicates) {
+                const keys = new Set(duplicateKeys(snapshot));
+                const others = await tx.prospect.findMany({
+                  where: { workspaceId: actor.workspaceId, excluded: false },
+                  select: { id: true, snapshot: true },
+                });
+                const match = others.find((o) =>
+                  duplicateKeys(o.snapshot as ProspectSnapshot).some((k) => keys.has(k)),
+                );
+                if (match)
+                  throw new DuplicateError(
+                    `Possible duplicate of ${(match.snapshot as ProspectSnapshot).firstName} ${(match.snapshot as ProspectSnapshot).lastName} at ${(match.snapshot as ProspectSnapshot).company}. Review it in Accounts → Duplicates.`,
+                    match.id,
+                  );
               }
               if (
                 (await tx.prospect.count({
@@ -414,6 +459,7 @@ export class WorkspaceService {
                 })) >= limit
               )
                 throw new Error("Record quota reached.");
+              isNew = true;
               return tx.prospect.create({
                 data: {
                   workspaceId: actor.workspaceId,
@@ -432,7 +478,10 @@ export class WorkspaceService {
               const current = await tx.prospect.findUniqueOrThrow({
                 where: { id: prospect.id },
               });
-              if (digest(current.snapshot) !== digest(snapshot)) {
+              // Keep fields the import does not carry (triage, segment, discovery…).
+              merged = { ...(current.snapshot as object), ...snapshot } as ProspectSnapshot;
+              changed = digest(current.snapshot) !== digest(merged);
+              if (changed) {
                 await tx.draft.updateMany({
                   where: {
                     workspaceId: actor.workspaceId,
@@ -462,11 +511,29 @@ export class WorkspaceService {
               }
               await tx.prospect.update({
                 where: { id: prospect.id },
-                data: { ...crm, snapshot: json(snapshot) },
+                data: { ...crm, snapshot: json(merged) },
               });
             });
-            outcome = { row: index + 2, state: "imported", id: prospect.id };
+            // GAP-01: re-imports report whether the record changed.
+            outcome = {
+              row: index + 2,
+              state: "imported",
+              id: prospect.id,
+              message: isNew
+                ? undefined
+                : changed
+                  ? "Updated from the new file"
+                  : "Unchanged",
+            };
           } catch (error) {
+            if (error instanceof DuplicateError)
+              outcome = {
+                row: index + 2,
+                state: "duplicate",
+                id: error.existingId,
+                message: error.message,
+              };
+            else
             outcome = {
               row: index + 2,
               state: "retry",
@@ -715,5 +782,14 @@ function validateXlsxArchive(buffer: Buffer) {
       buffer.readUInt16LE(cursor + 28) +
       buffer.readUInt16LE(cursor + 30) +
       buffer.readUInt16LE(cursor + 32);
+  }
+}
+
+class DuplicateError extends Error {
+  constructor(
+    message: string,
+    readonly existingId: string,
+  ) {
+    super(message);
   }
 }

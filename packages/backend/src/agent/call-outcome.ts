@@ -14,6 +14,7 @@ import { chargeCredits, refundCredits } from "./metering.js";
 export const CALL_OUTCOMES = [
   "connected",
   "meeting-booked",
+  "agreed",
   "call-back",
   "voicemail",
   "no-answer",

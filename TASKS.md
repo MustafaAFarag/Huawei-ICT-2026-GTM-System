@@ -1,3 +1,18 @@
+## Active — unattended run: PRD v3.1 features, Azure deployment, evals (started 15 October 2026, evening)
+
+Owner instruction (15 Oct): work unattended; deploy on Azure, build the PRD features, test, evaluate and verify.
+Goal: ship the D-phase v3.1 features (GAP-02/03/04/06/13/14, then D+ GAP-07/10/09/11/12/01), deploy the app to the single Azure server, and verify it in production with Playwright and the eval suites.
+Done: features implemented with tests; typecheck, unit and e2e suites pass locally; app reachable on Azure over HTTPS with demo data; Playwright and AI smoke pass against the production URL; docs and PRD status updated; focused local commits.
+Stop: nothing leaves for the remote repository, no live outbound sending, no changes to Amr's resources, no destructive DB operations outside the project; keep spend inside the USD 50 budget alert; stop and record if Azure capacity or credits block the VM.
+
+- [ ] Features: dedupe, triage, angle/register, launch gate, owners, event-claim check.
+- [ ] Features D+: scorecard, confidence score, references, SDR kit, discovery pilot, import diffs.
+- [ ] Azure deploy: VM via Terraform, images, compose, TLS, seed.
+- [ ] Production verification: Playwright e2e, AI smoke, evals.
+- [ ] Docs, PRD status, commits.
+
+---
+
 ## Active — Raycast design, MENA demo data, real AI harness and voice (started 15 October 2026)
 
 Goal: replace the ad-hoc UI with a Raycast-based design system, learn the real GTM process from `GTM Files/` (structure only) and seed 8 synthetic demo workspaces covering every tier, extend the PRD, and run the assistant and voice dictation on real Azure models.

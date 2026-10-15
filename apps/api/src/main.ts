@@ -52,9 +52,11 @@ import {
   aiLive,
   suggestCallOutcome,
   saveCallOutcome,
+  GtmService,
 } from "@revenue/backend";
 import type { Actor } from "@revenue/contracts";
 
+const gtm = new GtmService();
 const workspaceService = new WorkspaceService(),
   workflows = new WorkflowService(),
   storage = new Storage();
@@ -436,6 +438,69 @@ class ApiController {
       },
     });
     return { content, tool, context: input.context };
+  }
+  @ApiOperation({ summary: "Triage a prospect: bucket, rationale, segment, owner" })
+  @Patch("workspaces/:workspaceId/prospects/:id/triage") async triage(
+    @Req() req: Request,
+    @Param("workspaceId") ws: string,
+    @Param("id") id: string,
+    @Body() body: unknown,
+  ) {
+    return gtm.triage(await actorFor(req.headers, ws), id, body);
+  }
+  @Get("workspaces/:workspaceId/duplicates") async duplicates(
+    @Req() req: Request,
+    @Param("workspaceId") ws: string,
+  ) {
+    return gtm.duplicates(await actorFor(req.headers, ws));
+  }
+  @Post("workspaces/:workspaceId/duplicates/resolve") async resolveDuplicates(
+    @Req() req: Request,
+    @Param("workspaceId") ws: string,
+    @Body() body: unknown,
+  ) {
+    return gtm.resolveDuplicate(await actorFor(req.headers, ws), body);
+  }
+  @ApiOperation({ summary: "Launch gate: holds that would block a sequence" })
+  @Post("workspaces/:workspaceId/launch-gate") async launchGate(
+    @Req() req: Request,
+    @Param("workspaceId") ws: string,
+    @Body() body: unknown,
+  ) {
+    const input = z.object({ draftIds: z.array(z.uuid()).max(100) }).parse(body);
+    return gtm.launchGate(await actorFor(req.headers, ws), input.draftIds);
+  }
+  @Get("workspaces/:workspaceId/scorecard") async scorecard(
+    @Req() req: Request,
+    @Param("workspaceId") ws: string,
+  ) {
+    return gtm.scorecard(await actorFor(req.headers, ws));
+  }
+  @Get("workspaces/:workspaceId/sdr-kit") async sdrKit(
+    @Req() req: Request,
+    @Res() res: Response,
+    @Param("workspaceId") ws: string,
+  ) {
+    const pdf = await gtm.sdrKit(await actorFor(req.headers, ws));
+    res.set({
+      "Content-Type": "application/pdf",
+      "Content-Disposition": 'attachment; filename="sdr-onboarding-kit.pdf"',
+    });
+    res.send(pdf);
+  }
+  @Post("workspaces/:workspaceId/prospects/:id/discovery") async discovery(
+    @Req() req: Request,
+    @Param("workspaceId") ws: string,
+    @Param("id") id: string,
+    @Body() body: unknown,
+  ) {
+    return gtm.discovery(await actorFor(req.headers, ws), id, body);
+  }
+  @Get("workspaces/:workspaceId/discovery") async discoverySummary(
+    @Req() req: Request,
+    @Param("workspaceId") ws: string,
+  ) {
+    return gtm.discoverySummary(await actorFor(req.headers, ws));
   }
   @ApiOperation({ summary: "Propose a structured call outcome from a dictated note" })
   @Post("workspaces/:workspaceId/call-outcome/suggest") async suggestOutcome(

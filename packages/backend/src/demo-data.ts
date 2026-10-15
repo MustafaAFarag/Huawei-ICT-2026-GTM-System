@@ -406,6 +406,7 @@ export function generateDemo(seed = DEMO_SEED): DemoWorkspace[] {
             E: "Partners (channel, accelerators)",
             HOLD: "Needs contact research",
           },
+          angles: ANGLES,
           references: [
             { name: "Synthetic reference client 1", consent: true },
             { name: "Synthetic reference client 2", consent: true },

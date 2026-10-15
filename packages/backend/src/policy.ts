@@ -169,8 +169,11 @@ export function channelHolds(
   if (prospect.excluded) holds.push("This prospect is excluded");
   const snapshot = prospect.snapshot as ProspectSnapshot;
   if (!snapshot.email) holds.push("Email address is missing");
-  if (snapshot.existingClient)
+  if (snapshot.existingClient || snapshot.bucket === "existing")
     holds.push("Existing clients are excluded from acquisition");
+  if (snapshot.bucket === "drop") holds.push("This account was triaged as Drop");
+  if (snapshot.segment === "HOLD")
+    holds.push("This account is on hold until contact research is complete");
   return holds;
 }
 export function escapeHtml(text: unknown) {

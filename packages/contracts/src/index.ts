@@ -48,6 +48,15 @@ export type ProspectSnapshot = {
   angle?: string;
   owner?: string;
   signals?: string[];
+  triageNote?: string;
+  discovery?: {
+    headcountBand: string;
+    hrSetup: string;
+    pains: Record<string, number>;
+    maturity: number;
+    notes: string;
+    capturedAt: string;
+  };
 };
 export type Touch = {
   channel: "email" | "linkedin" | "call";
@@ -220,3 +229,4 @@ export class RevenueClient {
     return this.request<T>(`/workspaces/${id}${path}`, options);
   }
 }
+export * from "./gtm.js";

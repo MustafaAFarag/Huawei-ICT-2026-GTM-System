@@ -12,7 +12,7 @@ import type {
   ToolRequest,
   Touch,
 } from "@revenue/contracts";
-import { toolRequest, PLANS } from "@revenue/contracts";
+import { toolRequest, PLANS, draftChecks } from "@revenue/contracts";
 import { config } from "./config.js";
 import { db, json, serializable } from "./database.js";
 import {
@@ -583,6 +583,12 @@ export class WorkflowService {
               current.evidenceDigest !== digest(prospect.evidence)
             )
               holds.push("Review and approve the current draft and evidence");
+            // GAP-14: blocking copy checks (personal event claims, missing opt-out, placeholders).
+            for (const check of draftChecks(
+              current.content as Touch[],
+              prospect.language,
+            ))
+              if (check.level === "error") holds.push(check.message);
             if (
               await tx.suppression.findUnique({
                 where: {
@@ -818,6 +824,10 @@ export class WorkflowService {
               evidence,
               offer,
               input.language,
+              workspace.company as {
+                angles?: Record<string, string>;
+                references?: { name: string; consent: boolean }[];
+              },
             );
             result = await db.draft.create({
               data: {
