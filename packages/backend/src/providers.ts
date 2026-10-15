@@ -344,7 +344,10 @@ export class Providers {
     const plan = angleFor(snapshot, context.angles, offer);
     const consented = (context.references ?? []).filter((r) => r.consent);
     const reference = consented.length
-      ? consented[parseInt(digest(snapshot.email || snapshot.company).slice(0, 6), 16) % consented.length]!.name
+      ? consented[
+          parseInt(digest(snapshot.email || snapshot.company).slice(0, 6), 16) %
+            consented.length
+        ]!.name
       : undefined;
     if (!config.modelFixture) {
       const schema = z.object({
@@ -353,7 +356,7 @@ export class Providers {
             z.object({
               channel: z.enum(["email", "linkedin", "call"]),
               day: z.number().int().min(0).max(60),
-              subject: z.string().max(200).optional(),
+              subject: z.string().max(200).nullable(),
               body: z.string().max(3000),
               evidenceIds: z.array(z.string()),
             }),
@@ -379,7 +382,11 @@ export class Providers {
           angle: plan.angle,
           reference: reference ?? null,
           offer,
-          facts: facts.map((f) => ({ id: f.id, claim: f.claim, date: f.date.slice(0, 10) })),
+          facts: facts.map((f) => ({
+            id: f.id,
+            claim: f.claim,
+            date: f.date.slice(0, 10),
+          })),
         }),
         maxOutputTokens: 1500,
       });
@@ -394,7 +401,10 @@ export class Providers {
         throw new Error(
           "The generated draft failed the grounded sequence check. Review the sources and retry.",
         );
-      return result.touches;
+      return result.touches.map(({ subject, ...touch }) => ({
+        ...touch,
+        ...(subject !== null ? { subject } : {}),
+      }));
     }
     const arabic = language !== "en";
     const opener =
@@ -410,7 +420,8 @@ export class Providers {
         ? `\nمن الفرق اللي بتشتغل معانا: ${reference}.`
         : `\nTeams such as ${reference} work with us.`
       : "";
-    const pitch = plan.angle && plan.angle !== offer ? `${plan.angle}. ${offer}` : offer;
+    const pitch =
+      plan.angle && plan.angle !== offer ? `${plan.angle}. ${offer}` : offer;
     const body = arabic
       ? `أهلًا ${snapshot.firstName}\n\nالمعلومة اللي بنبني عليها الرسالة\n${fact.claim}\n\n${opener} ${pitch}${proof}\n\nتحب نتكلم عشر دقايق ونشوف لو مناسب ليكم؟\nلو مش حابب تستقبل رسائل تانية رد بكلمة توقف`
       : `Hi ${snapshot.firstName},\n\n${fact.claim}\n\n${opener} ${pitch}${proof}\n\nWould a ten-minute conversation be useful?\nReply stop if you do not want further messages.`;

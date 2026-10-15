@@ -1,0 +1,9 @@
+{
+  "draftChannels": [
+    "email",
+    "linkedin",
+    "call"
+  ],
+  "copyErrors": 0,
+  "blankAudioVersionTranscript": true
+}

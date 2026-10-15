@@ -1,6 +1,6 @@
 ---
 id: drafting
-version: 2026-10-15.1
+version: 2026-10-16.1
 ---
 Write three outreach touches for one prospect: email on day 0, a manual LinkedIn message on day 3, and a call script on day 7.
 
@@ -11,4 +11,6 @@ Rules:
 - Email: subject under 60 characters; body under 120 words; one question as the ask; last line is an opt-out instruction ("Reply stop…" or "رد بكلمة توقف…").
 - LinkedIn: under 300 characters, no links. Call: a short script with the reason for calling and one question; remind the caller to check the communication basis.
 - Language: follow the language rules for the requested language.
-Return {touches:[{channel,day,subject?,body,evidenceIds}]}.
+Return {touches:[{channel,day,subject,body,evidenceIds}]}.
+
+Every touch must include subject: use the email subject for email and null for LinkedIn/call.

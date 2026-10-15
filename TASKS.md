@@ -157,3 +157,6 @@ Decision: preserve the settled Raycast visual direction and unrelated sample CSV
 - [x] Found and fixed the runtime root marker omission in the service Dockerfile: copy `.node-version` so local vault paths resolve under `/app`, including on the server. Final service images will include and verify this marker.
 - [x] All three current product images built locally; API/worker source-update builds enforce unchanged lockfile and schema. Runtime root/UID/prompt/private-file checks pass.
 - [x] Removed only this run's cancelled dependency-copy cache and obsolete private context cache to recover local Docker disk space; no global prune or unrelated cleanup.
+- [x] Public HTTPS obtained; app health endpoint reachable.
+- [x] Public checks caught and repaired API PDF/chat memory pressure (512 MiB → 1 GiB), required-nullable live draft schema, and blank audio API-version fallback. Local real-model drafting/transcription check and all 33 backend tests pass.
+- [x] Added a harness correction for historical quote claims without a fresh quote; repeat live evaluation and production checks required for the new prompt.

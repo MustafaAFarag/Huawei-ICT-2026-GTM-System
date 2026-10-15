@@ -156,7 +156,7 @@ services:
       redis: { condition: service_healthy }
     security_opt: ["no-new-privileges:true"]
     cap_drop: ["ALL"]
-    mem_limit: 512m
+    mem_limit: 1024m
   worker:
     image: revenue-worker:${IMAGE_TAG}
     restart: unless-stopped

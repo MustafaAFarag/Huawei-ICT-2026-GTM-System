@@ -6,7 +6,12 @@ import { assertRole, safeError } from "../policy.js";
 import { WorkflowService } from "../workflows.js";
 import { prompt, promptVersions } from "./prompts.js";
 import { aiLive, chatModel, chatModelId } from "./provider.js";
-import { actionTools, readTools, uiTools, type ActionToolName } from "./tools.js";
+import {
+  actionTools,
+  readTools,
+  uiTools,
+  type ActionToolName,
+} from "./tools.js";
 import { chargeCredits, refundCredits } from "./metering.js";
 
 // The assistant harness (PRD AI-01, decision D19). We own the loop: system prompt, history,
@@ -22,14 +27,30 @@ export type AgentContext = {
   uiLanguage?: "en" | "ar";
 };
 export type AgentEvent =
-  | { type: "meta"; model: string; prompts: Record<string, string>; live: boolean }
+  | {
+      type: "meta";
+      model: string;
+      prompts: Record<string, string>;
+      live: boolean;
+    }
   | { type: "text"; delta: string }
-  | { type: "tool"; id: string; name: string; state: "called" | "result" | "error"; summary?: string }
+  | {
+      type: "tool";
+      id: string;
+      name: string;
+      state: "called" | "result" | "error";
+      summary?: string;
+    }
   | {
       type: "quote";
       tool: ToolName;
       input: ToolRequest;
-      quote: { id: string; estimate: number; audience: number; expiresAt: string | Date };
+      quote: {
+        id: string;
+        estimate: number;
+        audience: number;
+        expiresAt: string | Date;
+      };
     }
   | { type: "navigate"; screen: string }
   | { type: "error"; message: string }
@@ -49,14 +70,17 @@ function toolRequestFor(
     prospectIds: (input.prospectIds as string[]) ?? [],
     draftIds: (input.draftIds as string[]) ?? [],
     play,
-    language: (input.language as ToolRequest["language"]) ?? context.language ?? "en",
+    language:
+      (input.language as ToolRequest["language"]) ?? context.language ?? "en",
     template:
       (input.template as ToolRequest["template"]) ??
       (play === "P4" ? "mini-audit" : "offer-one-pager"),
     website: input.website as string | undefined,
     message: input.instructions as string | undefined,
     approvedSpend: false,
-    holdoutPercent: (input.holdoutPercent as number | undefined) ?? (name === "queue_sequence" ? 20 : 0),
+    holdoutPercent:
+      (input.holdoutPercent as number | undefined) ??
+      (name === "queue_sequence" ? 20 : 0),
   };
 }
 
@@ -93,14 +117,22 @@ export async function runAgentTurn(
   assertRole(actor, "write");
   const live = aiLive();
   const versions = promptVersions("system", "language", "fewshot");
-  emit({ type: "meta", model: live ? chatModelId() : "fixture", prompts: versions, live });
-  const history = options.history === false ? [] : (
-    await db.chatMessage.findMany({
-      where: { workspaceId: actor.workspaceId, userId: actor.userId },
-      orderBy: { createdAt: "desc" },
-      take: 12,
-    })
-  ).reverse();
+  emit({
+    type: "meta",
+    model: live ? chatModelId() : "fixture",
+    prompts: versions,
+    live,
+  });
+  const history =
+    options.history === false
+      ? []
+      : (
+          await db.chatMessage.findMany({
+            where: { workspaceId: actor.workspaceId, userId: actor.userId },
+            orderBy: { createdAt: "desc" },
+            take: 12,
+          })
+        ).reverse();
   await db.chatMessage.create({
     data: {
       workspaceId: actor.workspaceId,
@@ -115,7 +147,8 @@ export async function runAgentTurn(
   let credits = 0;
   const toolLog: { name: string; input?: unknown }[] = [];
   const quotes: { tool: ToolName; quoteId: string }[] = [];
-  const pending: { name: ActionToolName; input: Record<string, unknown> }[] = [];
+  const pending: { name: ActionToolName; input: Record<string, unknown> }[] =
+    [];
   const say = (delta: string) => {
     text += delta;
     emit({ type: "text", delta });
@@ -126,12 +159,19 @@ export async function runAgentTurn(
     const reply = `I can prepare ${tool.replaceAll("_", " ")} for your selected records. Review the proposed action and its cost below. This is the fixture assistant; no model call or live message will be made.`;
     for (const word of reply.split(/(?<= )/)) say(word);
     toolLog.push({ name: tool });
-    pending.push({ name: tool as ActionToolName, input: { prospectIds: context.prospectIds } });
+    pending.push({
+      name: tool as ActionToolName,
+      input: { prospectIds: context.prospectIds },
+    });
     steps = 1;
   } else {
-    const charge = await chargeCredits(actor, "chat_turn", { model: chatModelId() });
+    const charge = await chargeCredits(actor, "chat_turn", {
+      model: chatModelId(),
+    });
     credits = charge.credits;
-    const workspace = await db.workspace.findUniqueOrThrow({ where: { id: actor.workspaceId } });
+    const workspace = await db.workspace.findUniqueOrThrow({
+      where: { id: actor.workspaceId },
+    });
     const system = [
       prompt("system").text,
       prompt("language").text,
@@ -141,7 +181,10 @@ export async function runAgentTurn(
     const messages: ModelMessage[] = [
       ...history
         .filter((m) => m.role === "user" || m.role === "assistant")
-        .map((m) => ({ role: m.role as "user" | "assistant", content: m.content })),
+        .map((m) => ({
+          role: m.role as "user" | "assistant",
+          content: m.content,
+        })),
       { role: "user", content },
     ];
     try {
@@ -158,15 +201,39 @@ export async function runAgentTurn(
         if (part.type === "text-delta") say(part.text);
         else if (part.type === "tool-call") {
           toolLog.push({ name: part.toolName, input: part.input });
-          emit({ type: "tool", id: part.toolCallId, name: part.toolName, state: "called", summary: short(part.input) });
+          emit({
+            type: "tool",
+            id: part.toolCallId,
+            name: part.toolName,
+            state: "called",
+            summary: short(part.input),
+          });
           if (part.toolName in actionTools)
-            pending.push({ name: part.toolName as ActionToolName, input: part.input as Record<string, unknown> });
+            pending.push({
+              name: part.toolName as ActionToolName,
+              input: part.input as Record<string, unknown>,
+            });
           if (part.toolName === "open_screen")
-            emit({ type: "navigate", screen: (part.input as { screen: string }).screen });
+            emit({
+              type: "navigate",
+              screen: (part.input as { screen: string }).screen,
+            });
         } else if (part.type === "tool-result")
-          emit({ type: "tool", id: part.toolCallId, name: part.toolName, state: "result", summary: short(part.output) });
+          emit({
+            type: "tool",
+            id: part.toolCallId,
+            name: part.toolName,
+            state: "result",
+            summary: short(part.output),
+          });
         else if (part.type === "tool-error")
-          emit({ type: "tool", id: part.toolCallId, name: part.toolName, state: "error", summary: safeError(part.error) });
+          emit({
+            type: "tool",
+            id: part.toolCallId,
+            name: part.toolName,
+            state: "error",
+            summary: safeError(part.error),
+          });
         else if (part.type === "finish-step") steps++;
         else if (part.type === "error") throw part.error;
       }
@@ -185,7 +252,9 @@ export async function runAgentTurn(
   // Every action call becomes a quote. One action per turn: extra calls are reported, not quoted.
   for (const [index, call] of pending.entries()) {
     if (index > 0) {
-      say(`\n\n(Also suggested: ${call.name.replaceAll("_", " ")} — ask again after the first action.)`);
+      say(
+        `\n\n(Also suggested: ${call.name.replaceAll("_", " ")} — ask again after the first action.)`,
+      );
       continue;
     }
     try {
@@ -197,6 +266,19 @@ export async function runAgentTurn(
       const message = safeError(error);
       say(`\n\nI could not prepare that action: ${message}`);
     }
+  }
+  // A model can repeat an earlier quote claim from history without calling a tool.
+  // Persist the actual outcome and surface a correction instead of a nonexistent action.
+  if (
+    !quotes.length &&
+    /\bI (?:have )?(?:prepared|created) (?:a |the )?(?:cost )?quote\b|جهزت عرض تكلفة/i.test(
+      text,
+    )
+  ) {
+    text = /[\u0600-\u06ff]/.test(content)
+      ? "لم يتم إنشاء عرض تكلفة جديد. اطلب الإجراء مجددًا أو استخدم زر مراجعة الإجراء في الخطط الجاهزة."
+      : "No new cost quote was created. Ask again or use Review action in Plays.";
+    emit({ type: "error", message: text });
   }
   // The model often stops right after calling an action tool; always tell the user what is pending.
   if (quotes[0] && !text.trim())

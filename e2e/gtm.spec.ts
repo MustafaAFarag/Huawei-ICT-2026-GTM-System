@@ -4,7 +4,10 @@ test("triage, discovery, consent references and SDR PDF in both interface direct
   page,
   context,
 }) => {
+  const pageErrors: string[] = [];
+  page.on("pageerror", (error) => pageErrors.push(error.message));
   await page.goto("/");
+  expect(await page.evaluate(() => isSecureContext)).toBe(true);
   await expect(
     page.getByRole("heading", { name: "Plays", exact: true }),
   ).toBeVisible();
@@ -33,14 +36,12 @@ test("triage, discovery, consent references and SDR PDF in both interface direct
     .fill("Synthetic workflow verification");
   await page.getByRole("button", { name: "Save triage", exact: true }).click();
   await expect(page.getByRole("status")).toContainText("Triage saved");
-  const discovery = page
-    .locator("section")
-    .filter({
-      has: page.getByRole("heading", {
-        name: "Discovery interview",
-        exact: true,
-      }),
-    });
+  const discovery = page.locator("section").filter({
+    has: page.getByRole("heading", {
+      name: "Discovery interview",
+      exact: true,
+    }),
+  });
   if ((await discovery.locator("details").getAttribute("open")) === null)
     await discovery.locator("summary").click();
   await page
@@ -66,6 +67,51 @@ test("triage, discovery, consent references and SDR PDF in both interface direct
   await expect(
     page.getByRole("heading", { name: "Reference library", exact: true }),
   ).toBeVisible();
+  const references = page.locator("section").filter({
+    has: page.getByRole("heading", {
+      name: "Reference library",
+      exact: true,
+    }),
+  });
+  await references
+    .getByRole("button", { name: "Add reference", exact: true })
+    .click();
+  await references
+    .getByRole("textbox", { name: /^Reference name/ })
+    .last()
+    .fill("Synthetic Consent Proof");
+  const consent = references
+    .getByRole("checkbox", { name: "Consent recorded", exact: true })
+    .last();
+  const saveReferences = async () => {
+    const saved = page.waitForResponse(
+      (response) =>
+        response.url().endsWith(`/workspaces/${workspace}`) &&
+        response.request().method() === "PATCH",
+    );
+    await references
+      .getByRole("button", { name: "Save references", exact: true })
+      .click();
+    expect((await saved).ok()).toBe(true);
+    await expect(
+      references.getByRole("button", { name: "Save references", exact: true }),
+    ).toBeEnabled();
+  };
+  await consent.check();
+  await saveReferences();
+  let savedContext = await (
+    await context.request.get(`/api/workspaces/${workspace}`)
+  ).json();
+  expect(savedContext.workspace.company.references.at(-1)).toEqual({
+    name: "Synthetic Consent Proof",
+    consent: true,
+  });
+  await consent.uncheck();
+  await saveReferences();
+  savedContext = await (
+    await context.request.get(`/api/workspaces/${workspace}`)
+  ).json();
+  expect(savedContext.workspace.company.references.at(-1).consent).toBe(false);
   const downloadPromise = page.waitForEvent("download");
   await page
     .getByRole("button", { name: "Download SDR kit", exact: true })
@@ -110,4 +156,5 @@ test("triage, discovery, consent references and SDR PDF in both interface direct
       fullPage: true,
     });
   }
+  expect(pageErrors).toEqual([]);
 });

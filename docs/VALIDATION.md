@@ -92,3 +92,13 @@ Fresh live-agent baseline: **27/30**, Arabic model-judge mean 4.2/5. Revised sys
 Packaging continuation: the production web target built from the full Dockerfile. The service dependency base built locally from the frozen lockfile (`sha256:03adecf3ef96e32e5c5955329b4a8ddb4d96559cee1d84134d887821b1a0da09`). Its lockfile checksum matches the repository: `49a01185ef8360c8083e282b591c8ab9cca9f60dded93661aa19da9639890b06`. Final API and worker source-update images both built locally with lockfile/schema equality checks. The initial comparison failed with exit code 2 because the source lockfile is mode 0600; comparison now runs as root, and the runtime switches back to UID 1000.
 
 The API runtime probe passes: root `/app`, UID 1000, prompt `2026-10-15.6`, private GTM export directory absent, Terraform state absent. See `verification/service-runtime-2026-10-15.json`. Duplicate full dependency copies were cancelled with `Canceled: context canceled` under root filesystem pressure. Only the exact cancelled build-cache record and this run's private context cache were pruned; unrelated images, volumes and services were preserved.
+
+## Public Azure verification — 15–16 October continuation
+
+HTTPS provisioning and app startup succeeded at `https://gtm-4-223-169-93.sslip.io`. The first concurrent chat/PDF check exposed an API memory cgroup kill at its 512 MiB cap; Node reported `UND_ERR_SOCKET` / `TypeError: terminated`. The API cap is now 1 GiB. The repeated PDF/reference flow passed, with a measured 684,261,376-byte API peak, zero OOM events and zero restarts after recreation.
+
+The first public four-play run then caught Azure's strict response-schema rejection: `Missing 'subject'`. Drafting now uses a required nullable subject and omits null when mapping to the product touch model, following [the official structured-output rules](https://developers.openai.com/api/docs/guides/structured-outputs). A local real-model check generated email/LinkedIn/call touches with zero blocking copy errors.
+
+Voice returned `Transcription failed: Resource not found` because deployment serialization set an optional API-version variable to an empty string, overriding its default. The provider now treats blank/whitespace versions as unset; a local real transcription passes with that variable explicitly blank. The same check is recorded in `verification/live-repairs-2026-10-16.json`.
+
+A repeated chat request could echo a historical quote claim without making a fresh tool call. The harness now records and displays a correction if no quote exists, and the system prompt explicitly requires a fresh action call per new request. No unapproved run was created. Public browser/live smoke checks are being repeated with these corrections.

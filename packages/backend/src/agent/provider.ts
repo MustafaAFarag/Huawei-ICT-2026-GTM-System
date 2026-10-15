@@ -21,7 +21,9 @@ function azureSpeechProvider() {
     resourceName: required("AZURE_OPENAI_RESOURCE"),
     apiKey: required("AZURE_OPENAI_API_KEY"),
     useDeploymentBasedUrls: true,
-    apiVersion: process.env.AZURE_OPENAI_AUDIO_API_VERSION ?? "2025-03-01-preview",
+    apiVersion:
+      process.env.AZURE_OPENAI_AUDIO_API_VERSION?.trim() ||
+      "2025-03-01-preview",
   });
   return azureSpeech;
 }
@@ -55,5 +57,8 @@ export function transcriptionModel(alternative = false): {
   const deployment = alternative
     ? (process.env.AI_TRANSCRIBE_ALT_DEPLOYMENT ?? "whisper")
     : (process.env.AI_TRANSCRIBE_DEPLOYMENT ?? "gpt-4o-transcribe");
-  return { id: deployment, model: azureSpeechProvider().transcription(deployment) };
+  return {
+    id: deployment,
+    model: azureSpeechProvider().transcription(deployment),
+  };
 }
