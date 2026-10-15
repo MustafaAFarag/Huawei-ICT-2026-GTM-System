@@ -150,3 +150,16 @@ resource "azurerm_virtual_machine_data_disk_attachment" "data" {
   lun                = 0
   caching            = "None"
 }
+
+# Daily shutdown bounds unattended demo compute spend. Starting it again is manual.
+resource "azurerm_dev_test_global_vm_shutdown_schedule" "demo" {
+  virtual_machine_id    = azurerm_linux_virtual_machine.server.id
+  location              = var.location
+  enabled               = true
+  daily_recurrence_time = "2200"
+  timezone              = "UTC"
+  notification_settings {
+    enabled = false
+  }
+  tags = local.tags
+}

@@ -1,0 +1,21 @@
+# Source-only release from a locally verified service dependency image.
+# Use the full Dockerfile whenever pnpm-lock.yaml or the Prisma schema changes.
+ARG SERVICE_IMAGE
+FROM ${SERVICE_IMAGE} AS service
+WORKDIR /app
+USER root
+COPY pnpm-lock.yaml /tmp/release-lock.yaml
+COPY packages/database/prisma/schema.prisma /tmp/release-schema.prisma
+RUN cmp -s /app/pnpm-lock.yaml /tmp/release-lock.yaml && cmp -s /app/packages/database/prisma/schema.prisma /tmp/release-schema.prisma
+USER node
+COPY --chown=node:node .node-version tsconfig.base.json /app/
+COPY --chown=node:node packages/backend /app/packages/backend
+COPY --chown=node:node packages/contracts /app/packages/contracts
+COPY --chown=node:node apps/api /app/apps/api
+COPY --chown=node:node apps/worker /app/apps/worker
+FROM service AS api
+CMD ["pnpm", "--filter", "@revenue/api", "start"]
+FROM service AS worker
+EXPOSE 4101
+HEALTHCHECK --interval=30s --timeout=5s --start-period=30s CMD node -e "fetch('http://127.0.0.1:4101/health').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))"
+CMD ["pnpm", "--filter", "@revenue/worker", "start"]

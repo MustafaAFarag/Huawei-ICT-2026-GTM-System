@@ -39,7 +39,7 @@ ENV COREPACK_HOME=/opt/corepack
 WORKDIR /app
 COPY --from=dependencies /opt/corepack /opt/corepack
 COPY --from=dependencies /app/node_modules /app/node_modules
-COPY --from=dependencies /app/package.json /app/pnpm-workspace.yaml /app/pnpm-lock.yaml /app/.npmrc /app/tsconfig.base.json /app/LICENSE /app/THIRD_PARTY_NOTICES.md ./
+COPY --from=dependencies /app/package.json /app/pnpm-workspace.yaml /app/pnpm-lock.yaml /app/.npmrc /app/tsconfig.base.json /app/.node-version /app/LICENSE /app/THIRD_PARTY_NOTICES.md ./
 COPY --from=dependencies /app/apps/api /app/apps/api
 COPY --from=dependencies /app/apps/worker /app/apps/worker
 COPY --from=dependencies /app/packages/backend /app/packages/backend

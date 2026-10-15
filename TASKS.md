@@ -154,3 +154,6 @@ Decision: preserve the settled Raycast visual direction and unrelated sample CSV
 - [x] Fresh live eval baseline 27/30; versioned prompt revision 29/30. Remaining `act-01` scoring-intent failure explicitly recorded; Arabic model-judge 3.8/5 is not native-speaker approval.
 - [x] Azure compute apply: 10 additions, no changes/deletions; VM `4.223.169.93`, separate new 64 GiB disk mounted by UUID, mount requirement added to Docker service, daily shutdown at 22:00 UTC. Twenty healthy; synthetic product/engine restore underway.
 - [ ] Final images, HTTPS app start, public Playwright and live smoke, operational docs.
+- [x] Found and fixed the runtime root marker omission in the service Dockerfile: copy `.node-version` so local vault paths resolve under `/app`, including on the server. Final service images will include and verify this marker.
+- [x] All three current product images built locally; API/worker source-update builds enforce unchanged lockfile and schema. Runtime root/UID/prompt/private-file checks pass.
+- [x] Removed only this run's cancelled dependency-copy cache and obsolete private context cache to recover local Docker disk space; no global prune or unrelated cleanup.

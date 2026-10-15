@@ -12,7 +12,7 @@ x-product-env: &product-env
   OPEN_DESIGN_A_URL: http://open-design-a:7456
   OPEN_DESIGN_B_URL: http://open-design-b:7456
   PROVIDER_MODE: fixture
-  MODEL_MODE: fixture
+  MODEL_MODE: ${MODEL_MODE:-fixture}
   STORAGE_DRIVER: local
   STORAGE_PATH: /app/.local/assets
   SECRET_DRIVER: local
@@ -114,6 +114,7 @@ services:
       NODE_ENV: production
       NODE_OPTIONS: --max-old-space-size=256
       OD_BIND_HOST: 0.0.0.0
+      OD_HOST: 0.0.0.0
       OD_PORT: 7456
       OD_API_TOKEN: ${OPEN_DESIGN_A_TOKEN:?Set private env}
       OD_DATA_DIR: /app/.od
@@ -130,6 +131,7 @@ services:
       NODE_ENV: production
       NODE_OPTIONS: --max-old-space-size=256
       OD_BIND_HOST: 0.0.0.0
+      OD_HOST: 0.0.0.0
       OD_PORT: 7456
       OD_API_TOKEN: ${OPEN_DESIGN_B_TOKEN:?Set private env}
       OD_DATA_DIR: /app/.od

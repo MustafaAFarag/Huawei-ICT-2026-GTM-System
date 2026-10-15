@@ -21,3 +21,12 @@ evaluation
 verification
 gtm
 tests
+
+# Private research exports and local cloud state must never enter image layers.
+GTM Files
+**/.terraform
+**/*.tfstate
+**/*.tfstate.*
+**/*.tfplan
+**/*.tfvars
+**/*.tfvars.json

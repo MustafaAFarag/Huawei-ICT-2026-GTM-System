@@ -23,3 +23,16 @@ The web API proxy leaves `TRUST_AZURE_INGRESS` unset; it discards client forward
 Do not run Compose `down -v`, delete the resource group, wipe a filesystem or disable the Terraform data disk's `prevent_destroy` without a separate reviewed recovery action. Quiesce product and native workers before coordinated PostgreSQL dumps and file snapshots. Back up outside the server, including the secrets needed to decrypt the local vault; a persistent disk alone cannot recover from data loss.
 
 Scale the VM vertically if measured concurrency requires it. The local baseline does not establish cloud throughput or concurrency capacity. No high availability is promised. A Huawei move substitutes ECS/network/disk resources, transfers database/files and reruns compatibility checks while preserving this Compose topology and model/storage/secret interfaces.
+
+## 15 October deployment continuation
+
+The owner subsequently authorized Azure deployment. Terraform created this project's D2as v6 VM, 64 GiB disk, private Docker network and restricted SSH at `4.223.169.93`. A daily 22:00 UTC shutdown has no automatic restart. The disk was verified as a new empty Azure LUN, formatted once, mounted by UUID at `/srv/revenue-data`, and added as a Docker systemd mount requirement. Twenty and OpenDesign use separate persistent directories; synthetic database and engine snapshots were restored from the tested local demo. No real customer exports were transferred.
+
+The full service dependency image was rebuilt locally from the frozen lockfile. A second full source build was cancelled during dependency copying as the host filesystem approached 99% usage (`Canceled: context canceled`). For this unchanged-lockfile/schema release, [Dockerfile.source-update](../docker/Dockerfile.source-update) reuses that verified image, checks the inherited lockfile and Prisma schema, and copies the reviewed source plus `.node-version`. That marker is also fixed in the full Dockerfile so the local vault resolves under `/app` in fresh builds. Do not use the source-update path to change dependencies or database schema.
+
+```bash
+docker build --build-arg SERVICE_IMAGE=revenue-api:local -f infra/docker/Dockerfile.source-update --target api -t revenue-api:gtm-20261015 .
+docker build --build-arg SERVICE_IMAGE=revenue-api:local -f infra/docker/Dockerfile.source-update --target worker -t revenue-worker:gtm-20261015 .
+```
+
+Use the base image ID recorded in validation for this release; a mutable local tag alone does not establish matching dependencies. Private server environment and SSH keys are stored only under ignored `.local`, and Terraform state remains local/ignored. No GitHub workflow or repository push was performed.

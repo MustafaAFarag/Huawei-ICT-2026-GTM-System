@@ -30,6 +30,10 @@ run "project_boundary" {
     error_message = "Every managed resource must stay inside the project group."
   }
   assert {
+    condition = azurerm_dev_test_global_vm_shutdown_schedule.demo.enabled && azurerm_dev_test_global_vm_shutdown_schedule.demo.daily_recurrence_time == "2200" && azurerm_dev_test_global_vm_shutdown_schedule.demo.timezone == "UTC"
+    error_message = "The unattended demo must shut down daily at 22:00 UTC."
+  }
+  assert {
     condition     = azurerm_linux_virtual_machine.server.disable_password_authentication
     error_message = "Password SSH must stay disabled."
   }
