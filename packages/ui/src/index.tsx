@@ -1,7 +1,6 @@
 "use client";
 
-export { Button, Input, Checkbox } from "twenty-ui/primitives/input";
-export { ThemeProvider } from "twenty-ui/theme";
+// Icon set for the product UI (Tabler, MIT). Primitives live in apps/web/src/components.
 export {
   IconBuildingSkyscraper as IconBuilding,
   IconUsers,
@@ -13,9 +12,39 @@ export {
   IconCheck,
   IconX,
   IconArrowRight,
+  IconArrowUp,
   IconChevronRight,
   IconDownload,
-  IconShield as IconShieldCheck,
+  IconShieldCheck,
   IconSearch,
   IconPlus,
-} from "twenty-ui/icon";
+  IconAlertTriangle,
+  IconInbox,
+  IconSparkles,
+  IconMicrophone,
+  IconPlayerStopFilled,
+  IconMoon,
+  IconSun,
+  IconLanguage,
+  IconCommand,
+  IconLogout,
+  IconBolt,
+  IconEye,
+  IconUpload,
+  IconRefresh,
+  IconExternalLink,
+  IconChecklist,
+  IconTargetArrow,
+  IconSend,
+  IconLayoutSidebarRightCollapse,
+  IconSelector,
+  IconCoin,
+  IconPlug,
+  IconHistory,
+  IconWand,
+  IconMail,
+  IconPhone,
+  IconBrandLinkedin,
+  IconPlayerRecordFilled,
+  IconLoader2,
+} from "@tabler/icons-react";

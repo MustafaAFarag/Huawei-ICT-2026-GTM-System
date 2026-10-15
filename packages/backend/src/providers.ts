@@ -16,6 +16,8 @@ import { db } from "./database.js";
 import { config, required } from "./config.js";
 import { escapeHtml, digest } from "./policy.js";
 import { publicPage } from "./public-web.js";
+import { assetHtml } from "./asset-template.js";
+export { assetHtml };
 
 export class Crm {
   constructor(private workspace: Workspace) {}
@@ -537,45 +539,6 @@ export class OpenDesign {
     });
     return { html, engineProjectId: saved.url };
   }
-}
-
-export function assetHtml(
-  brand: Brand,
-  snapshot: ProspectSnapshot,
-  evidence: Evidence[],
-  template: string,
-  language: string,
-  simulated: boolean,
-  offer?: string,
-) {
-  const arabic = language !== "en";
-  if (template === "offer-one-pager" && !offer)
-    throw new Error(
-      "Approve an offer in company context before generating its one-pager.",
-    );
-  const offerSection =
-    template === "offer-one-pager"
-      ? `<section class="offer"><h2>${arabic ? "العرض المقترح" : "The proposed offer"}</h2><p dir="auto">${escapeHtml(offer ?? "")}</p><p>${arabic ? "نناقش مع بعض إذا كان العرض مناسبًا لفريقكم." : "Let’s discuss whether this offer fits your team."}</p></section>`
-      : `<section class="offer"><h2>${arabic ? "الخطوة التالية" : "Next step"}</h2><p>${arabic ? "راجعوا الملاحظات والمصادر وحددوا الأولويات قبل إجراء أي تغيير." : "Review these observations and sources, then choose priorities before making changes."}</p></section>`;
-  const color = /^#[0-9a-f]{6}$/i.test(brand.primary)
-    ? brand.primary
-    : "#242424";
-  const title =
-    template === "mini-audit"
-      ? arabic
-        ? "مراجعة سريعة لموقعك"
-        : "A short website review"
-      : arabic
-        ? "فكرة تساعد فريقك ينمو"
-        : "An idea for your next stage";
-  const rows = evidence
-    .filter((item) => item.approved && item.kind === "fact")
-    .map(
-      (item, index) =>
-        `<section><span class="number">${String(index + 1).padStart(2, "0")}</span><p dir="auto">${escapeHtml(item.claim)}</p><a dir="ltr" href="${escapeHtml(item.url)}">${escapeHtml(new URL(item.url).hostname)} · ${escapeHtml(item.date.slice(0, 10))}</a></section>`,
-    )
-    .join("");
-  return `<!doctype html><html lang="${arabic ? "ar" : "en"}" dir="${arabic ? "rtl" : "ltr"}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${escapeHtml(title)}</title><style>@page{size:A4;margin:16mm}*{box-sizing:border-box}body{font:16px/1.8 "Noto Sans Arabic",Arial,sans-serif;color:#242424;background:#fff;margin:0}.sheet{max-width:760px;margin:auto;padding:36px}header{display:flex;justify-content:space-between;gap:24px;border-bottom:3px solid ${color};padding-bottom:16px}.brand{font-weight:bold;color:${color}}.eyebrow{font-size:12px;color:#666}h1{font-size:42px;line-height:1.3;margin:36px 0 16px}h2{font-size:22px}section{break-inside:avoid;padding:20px 0;border-top:1px solid #ddd}.number{font-size:12px;color:#777}section p{margin:8px 0}a{font-size:12px;color:#555;word-break:break-all;display:inline-block}footer{border-top:2px solid ${color};margin-top:32px;padding-top:12px;font-size:12px;color:#666}.label{font-size:12px;color:#8a4c00}bdi{unicode-bidi:isolate}.offer{background:#f5f5f2;padding:20px;margin-top:24px}html[dir=rtl] header{display:block;text-align:right}html[dir=rtl] .eyebrow{display:block;margin-top:8px}html[dir=rtl] h1{font-size:36px;line-height:1.7}html[dir=ltr] section:not(.offer){display:grid;grid-template-columns:32px 1fr;gap:0 12px}html[dir=ltr] section a{grid-column:2}@media print{.sheet{padding:0}a{text-decoration:none}}</style></head><body><article class="sheet"><header><span class="brand">${escapeHtml(brand.name || "Revenue Workspace")}</span><span class="eyebrow">${arabic ? "مُعد خصيصًا لفريقك" : "PREPARED FOR YOUR TEAM"}</span></header>${simulated ? `<p class="label">${arabic ? "بيانات تجريبية مصطنعة · ليست توصية تجارية حقيقية" : "Synthetic demonstration data · template generation is simulated"}</p>` : ""}<h1>${title}</h1><h2 dir="auto">${escapeHtml(snapshot.company)}</h2><p>${arabic ? "الملاحظات دي مبنية على المصادر اللي راجعناها سوا ومحتاجة مراجعتك قبل المشاركة" : "These observations come from the reviewed sources below. Review this document before sharing it."}</p>${rows}${offerSection}<footer><span dir="auto">${escapeHtml(brand.name)}</span> · <bdi>${escapeHtml(brand.website)}</bdi> · ${arabic ? "المصدر والتاريخ موضحين تحت كل ملاحظة" : "Sources and dates accompany each observation"}</footer></article></body></html>`;
 }
 
 export async function renderPdf(html: string) {

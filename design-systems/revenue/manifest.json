@@ -1,0 +1,9 @@
+{
+  "schemaVersion": "od-design-system-project/v1",
+  "id": "revenue",
+  "name": "Revenue Workspace",
+  "category": "Productivity & SaaS",
+  "description": "Raycast-derived command-center system; light print tokens for A4 outreach assets.",
+  "source": {"type": "local", "path": "design-systems/revenue"},
+  "files": {"design": "DESIGN.md", "tokens": "../../apps/web/src/styles/tokens.css"}
+}

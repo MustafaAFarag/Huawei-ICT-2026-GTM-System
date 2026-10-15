@@ -1,0 +1,100 @@
+/* Revenue Workspace design tokens. Spec: design-systems/revenue/DESIGN.md */
+:root,
+[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #040506;
+  --surface: #07080a;
+  --surface-2: #111214;
+  --surface-3: #1b1c1e;
+  --line: #2f3031;
+  --line-strong: #363739;
+  --text: #ffffff;
+  --text-2: #e6e6e6;
+  --text-3: #9c9c9d;
+  --text-4: #6a6b6c;
+  --action: #e6e6e6;
+  --action-hover: #ffffff;
+  --action-text: #111214;
+  --ai: #ff6363;
+  --ai-tint: #452324;
+  --ok: #59d499;
+  --warn: #f5b14c;
+  --danger: #f2555a;
+  --info: #56c2ff;
+  --key: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 0 0 1px var(--line);
+  --key-raised: inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.3), 0 0 0 1px var(--line-strong);
+  --shadow-pop: 0 0 0 1px rgba(255, 255, 255, 0.08),
+    0 24px 48px -8px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  --backdrop: rgba(0, 0, 0, 0.6);
+  --glow: radial-gradient(
+    60% 50% at 50% 0%,
+    rgba(255, 99, 99, 0.12),
+    transparent 70%
+  );
+}
+[data-theme="light"] {
+  color-scheme: light;
+  --bg: #f7f7f8;
+  --surface: #ffffff;
+  --surface-2: #f1f1f3;
+  --surface-3: #e9e9ec;
+  --line: #e4e4e7;
+  --line-strong: #d4d4d8;
+  --text: #0b0c0e;
+  --text-2: #2a2b2e;
+  --text-3: #5f6064;
+  --text-4: #8b8c90;
+  --action: #111214;
+  --action-hover: #2a2b2e;
+  --action-text: #ffffff;
+  --ai: #e5484d;
+  --ai-tint: #fdecec;
+  --ok: #1a7f4b;
+  --warn: #a15c00;
+  --danger: #c42b31;
+  --info: #0b6bb8;
+  --key: 0 0 0 1px var(--line-strong), 0 1px 2px rgba(16, 17, 20, 0.04);
+  --key-raised: 0 0 0 1px var(--line-strong), 0 1px 2px rgba(16, 17, 20, 0.08);
+  --shadow-pop: 0 0 0 1px var(--line-strong), 0 24px 48px -12px rgba(16, 17, 20, 0.25);
+  --backdrop: rgba(16, 17, 20, 0.35);
+  --glow: radial-gradient(
+    60% 50% at 50% 0%,
+    rgba(229, 72, 77, 0.06),
+    transparent 70%
+  );
+}
+:root {
+  --font-sans: "Inter Variable", "IBM Plex Sans Arabic", system-ui,
+    -apple-system, "Segoe UI", sans-serif;
+  --font-arabic: "IBM Plex Sans Arabic", "Inter Variable", system-ui, sans-serif;
+  --font-mono: "Geist Mono Variable", ui-monospace, SFMono-Regular, Menlo,
+    monospace;
+  --text-xs: 11px;
+  --text-sm: 13px;
+  --text-md: 14px;
+  --text-lg: 15px;
+  --text-xl: 18px;
+  --text-2xl: 24px;
+  --text-display: 44px;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 40px;
+  --space-8: 48px;
+  --space-9: 64px;
+  --radius-badge: 6px;
+  --radius-control: 8px;
+  --radius-card: 14px;
+  --radius-modal: 16px;
+  --radius-pill: 999px;
+  --sidebar-width: 248px;
+  --assistant-width: 380px;
+  --content-max: 1240px;
+  --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --fast: 150ms;
+  --medium: 200ms;
+}

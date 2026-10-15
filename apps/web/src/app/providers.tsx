@@ -1,9 +1,5 @@
 "use client";
-import { ThemeProvider } from "@revenue/ui";
+import { PrefsProvider } from "../lib/prefs";
 export function Providers({ children }: { children: React.ReactNode }) {
-  return (
-    <ThemeProvider colorScheme="light" applyToRoot>
-      {children}
-    </ThemeProvider>
-  );
+  return <PrefsProvider>{children}</PrefsProvider>;
 }
