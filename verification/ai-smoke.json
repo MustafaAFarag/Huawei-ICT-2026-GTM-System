@@ -1,5 +1,6 @@
 {
-  "date": "2026-10-15T19:47:06.819Z",
+  "date": "2026-10-15T21:08:14.394Z",
+  "baseURL": "https://gtm-4-223-169-93.sslip.io",
   "workspace": "Qimam People",
   "chatRead": {
     "prompt": "Which tier A fintech accounts have a hiring signal? Show the top three.",
@@ -12,8 +13,8 @@
     "quoteTool": null,
     "credits": 1,
     "errors": [],
-    "totalMs": 3081,
-    "reply": "Top 3 tier A fintech accounts with a hiring signal:\n\n1. Murima Lend — Karim Zahran, Head of People, Sharjah, AE\n2. Rifdan Pay Tech — Anas Qasim, CEO, Dammam, SA\n3. Rifdan Pay Tech — Waleed Haddad, HR Manager, Dammam, SA\n\nNext step: I can draft messages for any of these three."
+    "totalMs": 2807,
+    "reply": "Top three tier A fintech accounts with a hiring signal:\n\n1. Murima Lend — Karim Zahran, Head of People, Sharjah, AE  \n2. Rifdan Pay Tech — Anas Qasim, CEO, Dammam, SA  \n3. Rifdan Pay Tech — Waleed Haddad, HR Manager, Dammam, SA\n\nNext step: I can prepare draft messages for these three."
   },
   "chatAction": {
     "prompt": "Draft messages for Kibesh Finance.",
@@ -24,9 +25,9 @@
       "draft_messages"
     ],
     "quote": {
-      "id": "03785f0e-a681-409a-91dd-8478bffc6177",
+      "id": "4855a1e3-7200-4688-9219-816b268cfcf8",
       "estimate": 12,
-      "expiresAt": "2026-10-15T20:02:12.425Z",
+      "expiresAt": "2026-10-15T21:23:20.301Z",
       "tool": "draft_messages",
       "audience": 3,
       "simulated": true
@@ -34,7 +35,7 @@
     "quoteTool": "draft_messages",
     "credits": 1,
     "errors": [],
-    "totalMs": 2519,
+    "totalMs": 2772,
     "reply": "I prepared a cost quote for draft messages. Nothing has run yet — review and approve the cost to start it."
   },
   "chatArabic": {
@@ -48,41 +49,41 @@
     "quoteTool": null,
     "credits": 1,
     "errors": [],
-    "totalMs": 2596,
-    "reply": "أحسن 3 حسابات تبدأ بيهم النهارده هم:\n\n1. Murima Lend — Karim Zahran, Head of People, Sharjah, AE  \n2. Rifdan Pay Tech — Anas Qasim, CEO, Dammam, SA  \n3. Rifdan Pay Tech — Waleed Haddad, HR Manager, Dammam, SA  \n\nليه دول:\n- Tier A\n- عندهم hiring signal\n- Murima Lend عندها score أعلى\n\nNext step: أقدر أجهزلك draft messages لأي واحد فيهم."
+    "totalMs": 2488,
+    "reply": "أحسن 3 حسابات أبدأ بيهم النهارده هم:\n\n1. Murima Lend — Karim Zahran, Head of People, Sharjah, AE  \n2. Dirix Wallet — Hisham Mahmoud, Head of People, Alexandria, EG  \n3. Rifdan Pay Tech — Anas Qasim, CEO, Dammam, SA\n\nNext step: لو تحب، أقدر أجهز عرض تكلفة لصياغة رسائل ليهم."
   },
   "transcribe_en-1": {
     "status": 200,
-    "ms": 1768,
+    "ms": 1810,
     "text": "Spoke to the head of people. She asked me to call back on Sunday after payroll closes.",
     "language": "en",
     "model": "gpt-4o-transcribe",
     "credits": 1,
     "durationInSeconds": null,
-    "latencyMs": 1736
+    "latencyMs": 1373
   },
   "transcribe_ar-eg-1": {
     "status": 200,
-    "ms": 927,
+    "ms": 1719,
     "text": "كلمت مديرة الموارد البشرية وقالت لي أكلمها تاني يوم الأحد بعد ما يخلصوا المرتبات.",
     "language": "ar",
     "model": "gpt-4o-transcribe",
     "credits": 1,
     "durationInSeconds": null,
-    "latencyMs": 890
+    "latencyMs": 1403
   },
   "callOutcome": {
     "status": 201,
     "outcome": "call-back",
     "nextStep": "أكلمها تاني يوم الأحد بعد ما يخلصوا المرتبات.",
     "followUpDays": null,
-    "summary": "تكلمت مع مديرة الموارد البشرية وطلبت معاودة الاتصال يوم الأحد بعد انتهاء صرف المرتبات.",
+    "summary": "كلمت مديرة الموارد البشرية وطلبت أرجع أكلمها يوم الأحد بعد ما يخلصوا المرتبات.",
     "model": "gpt-5-4-mini",
     "credits": 1
   },
   "credits": {
-    "before": 643,
-    "after": 649
+    "before": 663,
+    "after": 669
   },
   "runsCreatedByAssistant": 0
 }
