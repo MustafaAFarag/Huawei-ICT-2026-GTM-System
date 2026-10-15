@@ -136,3 +136,17 @@ Stop: no deployment, live outreach or push without separate authorization.
 
 Blockers: npm `EAI_AGAIN registry.npmjs.org`; Docker API permission denied; Node 22.23.3 vs Twenty's 24.5+ prerequisite; server socket `PermissionError: [Errno 1] Operation not permitted`; model weights, human labels and approved cloud/provider accounts unavailable.
 Decisions: original synthetic fixture data; transparent ranking/template baselines; preserve source facts vs offer hypotheses; never report invented AI gains; provider events always simulated; stand-alone loopback demo is not production authentication or a deployed Twenty application. Bravo6 preserved.
+
+### Resume — 15 October, Codex
+- [x] Recovered feature commit and unfinished UI; baseline typecheck and 30 tests pass.
+- [x] Completed account triage/owner/duplicate views, discovery capture, draft confidence and copy checks.
+- [x] Added launch checklist, event scorecard and segment discovery summary, consented reference editing and SDR PDF download.
+- [x] Enforced blocking copy checks at the approval API, in addition to queue-time checks.
+- [ ] Regression tests, bilingual responsive browser verification and review.
+- [ ] Container build and Azure deployment assessment; no repository push.
+Decision: preserve the settled Raycast visual direction and unrelated sample CSV edits. New panels use existing workspace loading/error/success handling, with cancellation guards for async reads.
+- [x] Added opt-in balanced contact assignment with per-member contact caps; tested cap exhaustion before CRM calls.
+- [x] Reviewed EN/AR desktop and phone captures; mechanical UI detector returned no findings.
+- [x] Terraform validates and both boundary tests pass; reviewed 10-addition project-only plan adds daily 22:00 UTC shutdown. Apply started; local state stays ignored.
+- [x] Docker build context now excludes private GTM exports and Terraform state/variables.
+- [ ] Final full-suite rerun after shared-module resolution fix; document remaining partial acceptance criteria rather than claiming all PRD features complete.

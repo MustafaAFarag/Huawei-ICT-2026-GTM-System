@@ -16,6 +16,7 @@ export type Tab = (typeof TABS)[number];
 
 export type WorkspaceValue = {
   ws: string;
+  userId: string;
   data: Dashboard;
   busy: boolean;
   canWrite: boolean;

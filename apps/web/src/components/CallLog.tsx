@@ -11,6 +11,7 @@ import type { Prospect } from "../lib/types";
 const OUTCOMES = [
   "connected",
   "meeting-booked",
+  "agreed",
   "call-back",
   "voicemail",
   "no-answer",

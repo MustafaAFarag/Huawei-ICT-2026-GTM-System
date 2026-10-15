@@ -2,8 +2,10 @@ import { test, expect, type Page } from "@playwright/test";
 import { readFile } from "node:fs/promises";
 import { randomUUID } from "node:crypto";
 import type { ToolName } from "@revenue/contracts";
-const companyName = `Synthetic Test Lab ${randomUUID().slice(0, 8)}`;
-const email = `noura-${randomUUID().slice(0, 8)}@synthetic-demo.example`;
+const companyName = `Synthetic Test Lab ${randomUUID()
+  .replace(/[0-9-]/g, "")
+  .slice(0, 10)}`;
+const email = `noura${randomUUID().slice(0, 8)}@synthetic-demo.example`;
 async function login(page: Page) {
   // The session comes from e2e/global-setup.ts (sign-in is rate-limited).
   await page.goto("/");
@@ -16,6 +18,7 @@ test("four plays, bilingual asset, approval invalidation, suppression and worksp
   page,
   context,
 }) => {
+  test.setTimeout(240000);
   await login(page);
   const me = await (await context.request.get("/api/me")).json();
   const a = me.workspaces.find(

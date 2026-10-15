@@ -19,6 +19,8 @@ export type Prospect = {
   consentAt: string | null;
   excluded: boolean;
   crmPersonId: string | null;
+  ownerId: string;
+  language: string;
 };
 export type Draft = {
   id: string;
@@ -62,7 +64,16 @@ export type Dashboard = {
     name: string;
     plan: string;
     planLimits: Record<string, number>;
-    company: { description: string; icp: string; marketingLicence: boolean };
+    company: {
+      description: string;
+      icp: string;
+      marketingLicence: boolean;
+      roundRobin?: boolean;
+      ownerCaps?: Record<string, number>;
+      references?: { name: string; consent: boolean }[];
+      angles?: Record<string, string>;
+      segments?: Record<string, string>;
+    };
     brand: { name: string; website: string; primary: string; accent: string };
     offers: { id: string; text: string; approved: boolean }[];
     preflight: Record<string, unknown>;
@@ -104,10 +115,18 @@ export type Dashboard = {
     }
   >;
 };
-export type Membership = { role: string; workspace: { id: string; name: string } };
+export type Membership = {
+  role: string;
+  workspace: { id: string; name: string };
+};
 export type Chat = {
   id: string;
   role: string;
   content: string;
-  context?: { tool?: ToolName; tools?: string[]; quoteId?: string; model?: string };
+  context?: {
+    tool?: ToolName;
+    tools?: string[];
+    quoteId?: string;
+    model?: string;
+  };
 };

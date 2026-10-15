@@ -1,9 +1,16 @@
 "use client";
-import { COSTS, PLAYS, type ToolName, type ToolRequest } from "@revenue/contracts";
+import {
+  COSTS,
+  PLAYS,
+  type ToolName,
+  type ToolRequest,
+} from "@revenue/contracts";
 import { IconArrowRight, IconCheck, IconPlayerPlay } from "@revenue/ui";
 import { Badge, Button, Field, Panel, Select, Stat } from "../primitives";
 import { useWorkspace } from "../workspace-context";
 import { usePrefs } from "../../lib/prefs";
+
+import { LaunchGate } from "../GtmPanels";
 
 const STEP_HELP: Record<string, string> = {
   find_signals: "Look for a dated hiring, funding or growth signal.",
@@ -160,7 +167,10 @@ export function Plays() {
                   <p>
                     {step === "queue_sequence"
                       ? `${approvedDrafts.length} ${t("approved drafts · asset assignment includes a 20% holdout")}`
-                      : t(STEP_HELP[step] ?? "Review the result before the next step.")}
+                      : t(
+                          STEP_HELP[step] ??
+                            "Review the result before the next step.",
+                        )}
                   </p>
                 </div>
                 <span className="step-cost mono">
@@ -187,6 +197,7 @@ export function Plays() {
           })}
         </ol>
       </Panel>
+      <LaunchGate />
     </>
   );
 }

@@ -3,6 +3,7 @@ import { IconPlug, IconShieldCheck, IconHistory, IconCoin } from "@revenue/ui";
 import {
   Badge,
   Button,
+  Check,
   Field,
   Input,
   Meter,
@@ -58,7 +59,12 @@ export function Settings() {
                 }}
               >
                 <Field label={t("Monthly cap")}>
-                  <Input type="number" name="cap" min={0} defaultValue={b.cap} />
+                  <Input
+                    type="number"
+                    name="cap"
+                    min={0}
+                    defaultValue={b.cap}
+                  />
                 </Field>
                 <Button type="submit" disabled={!isOwner || busy}>
                   {t("Save cap")}
@@ -149,7 +155,9 @@ export function Settings() {
                   name={k}
                   type="number"
                   min={0}
-                  max={k === "exports" ? 10000 : k === "sends" ? 1000000 : 100000}
+                  max={
+                    k === "exports" ? 10000 : k === "sends" ? 1000000 : 100000
+                  }
                   defaultValue={limits[k]}
                   required
                 />
@@ -177,6 +185,70 @@ export function Settings() {
           </div>
           <Button type="submit" disabled={!isOwner || busy}>
             {t("Save quotas and member caps")}
+          </Button>
+        </form>
+      </Panel>
+      <Panel title={t("Contact assignment")}>
+        <p className="muted small">
+          {t(
+            "Distribute new imports across owners and operators with the fewest active contacts. Existing owners are retained.",
+          )}
+        </p>
+        <form
+          className="stack"
+          onSubmit={(event) => {
+            event.preventDefault();
+            const form = new FormData(event.currentTarget);
+            void action(
+              () =>
+                client.workspace(ws, "", {
+                  method: "PATCH",
+                  body: JSON.stringify({
+                    company: {
+                      roundRobin: form.get("roundRobin") === "on",
+                      ownerCaps: Object.fromEntries(
+                        data.members
+                          .filter((m) => ["owner", "operator"].includes(m.role))
+                          .map((m) => [
+                            m.userId,
+                            Number(form.get(`contacts:${m.userId}`)),
+                          ]),
+                      ),
+                    },
+                  }),
+                }),
+              t("Contact assignment saved."),
+            );
+          }}
+        >
+          <Check
+            name="roundRobin"
+            label={t("Automatically distribute new contacts")}
+            defaultChecked={data.workspace.company.roundRobin}
+            disabled={!isOwner || busy}
+          />
+          {data.members
+            .filter((m) => ["owner", "operator"].includes(m.role))
+            .map((m) => (
+              <Field
+                key={m.userId}
+                label={`${m.user.name} · ${t("Contact cap")}`}
+              >
+                <Input
+                  name={`contacts:${m.userId}`}
+                  type="number"
+                  min={0}
+                  max={10000}
+                  defaultValue={
+                    data.workspace.company.ownerCaps?.[m.userId] ?? 10000
+                  }
+                  required
+                  disabled={!isOwner || busy}
+                />
+              </Field>
+            ))}
+          <Button type="submit" disabled={!isOwner || busy}>
+            {t("Save assignment")}
           </Button>
         </form>
       </Panel>
@@ -269,7 +341,9 @@ export function Settings() {
                 <dt className="mono">{key}</dt>
                 <dd>
                   {typeof value === "boolean" ? (
-                    <Badge tone={value ? "ok" : "danger"}>{String(value)}</Badge>
+                    <Badge tone={value ? "ok" : "danger"}>
+                      {String(value)}
+                    </Badge>
                   ) : (
                     <bdi className="mono">{String(value)}</bdi>
                   )}
@@ -280,7 +354,10 @@ export function Settings() {
         ) : (
           <p className="muted">{t("No sender check yet. Start P2.")}</p>
         )}
-        <Button disabled={!canWrite || busy} onClick={() => void propose("preflight")}>
+        <Button
+          disabled={!canWrite || busy}
+          onClick={() => void propose("preflight")}
+        >
           {t("Review sender check")}
         </Button>
       </Panel>

@@ -8,7 +8,12 @@ import type {
   ProspectSnapshot,
   Touch,
 } from "@revenue/contracts";
-import { PLANS, angleFor, duplicateKeys } from "@revenue/contracts";
+import {
+  PLANS,
+  angleFor,
+  duplicateKeys,
+  draftChecks,
+} from "@revenue/contracts";
 import { db, json, serializable } from "./database.js";
 import { assertRole, digest, month, validateEvidence } from "./policy.js";
 import { Crm } from "./providers.js";
@@ -152,12 +157,25 @@ export class WorkspaceService {
             description: z.string().max(3000).optional(),
             icp: z.string().max(2000).optional(),
             marketingLicence: z.boolean().optional(),
+            roundRobin: z.boolean().optional(),
+            ownerCaps: z
+              .record(z.string().max(100), z.number().int().min(0).max(10000))
+              .optional(),
             references: z
-              .array(z.object({ name: z.string().min(1).max(120), consent: z.boolean() }))
+              .array(
+                z.object({
+                  name: z.string().min(1).max(120),
+                  consent: z.boolean(),
+                }),
+              )
               .max(30)
               .optional(),
-            angles: z.record(z.string().max(40), z.string().max(300)).optional(),
-            segments: z.record(z.string().max(10), z.string().max(200)).optional(),
+            angles: z
+              .record(z.string().max(40), z.string().max(300))
+              .optional(),
+            segments: z
+              .record(z.string().max(10), z.string().max(200))
+              .optional(),
           })
           .optional(),
         brand: z
@@ -395,7 +413,10 @@ export class WorkspaceService {
           };
         else {
           // GAP-04: infer persona, maturity, register and angle so every play can use them.
-          const offers = workspace.offers as { text: string; approved: boolean }[];
+          const offers = workspace.offers as {
+            text: string;
+            approved: boolean;
+          }[];
           const inferred = angleFor(
             parsed.data,
             (workspace.company as { angles?: Record<string, string> }).angles,
@@ -430,7 +451,8 @@ export class WorkspaceService {
               if (existing) {
                 if (
                   !snapshot.email &&
-                  digest(existing.snapshot) !== digest({ ...(existing.snapshot as object), ...snapshot })
+                  digest(existing.snapshot) !==
+                    digest({ ...(existing.snapshot as object), ...snapshot })
                 )
                   throw new Error(
                     "Ambiguous identity without email. Review and supply a verified professional identifier.",
@@ -445,7 +467,9 @@ export class WorkspaceService {
                   select: { id: true, snapshot: true },
                 });
                 const match = others.find((o) =>
-                  duplicateKeys(o.snapshot as ProspectSnapshot).some((k) => keys.has(k)),
+                  duplicateKeys(o.snapshot as ProspectSnapshot).some((k) =>
+                    keys.has(k),
+                  ),
                 );
                 if (match)
                   throw new DuplicateError(
@@ -459,13 +483,45 @@ export class WorkspaceService {
                 })) >= limit
               )
                 throw new Error("Record quota reached.");
+              let ownerId = actor.userId;
+              const assignment = workspace.company as {
+                roundRobin?: boolean;
+                ownerCaps?: Record<string, number>;
+              };
+              if (assignment.roundRobin) {
+                const members = await tx.membership.findMany({
+                  where: {
+                    workspaceId: actor.workspaceId,
+                    role: { in: ["owner", "operator"] },
+                  },
+                  orderBy: { userId: "asc" },
+                });
+                const loads = await tx.prospect.groupBy({
+                  by: ["ownerId"],
+                  where: { workspaceId: actor.workspaceId, excluded: false },
+                  _count: true,
+                });
+                const count = (id: string) =>
+                  loads.find((load) => load.ownerId === id)?._count ?? 0;
+                const eligible = members.filter(
+                  (member) =>
+                    count(member.userId) <
+                    (assignment.ownerCaps?.[member.userId] ?? 10000),
+                );
+                eligible.sort((a, b) => count(a.userId) - count(b.userId));
+                if (!eligible.length)
+                  throw new Error(
+                    "All contact owner caps are reached. Update assignment settings.",
+                  );
+                ownerId = eligible[0]!.userId;
+              }
               isNew = true;
               return tx.prospect.create({
                 data: {
                   workspaceId: actor.workspaceId,
                   sourceKey,
                   snapshot: json(snapshot),
-                  ownerId: actor.userId,
+                  ownerId,
                 },
               });
             });
@@ -479,7 +535,10 @@ export class WorkspaceService {
                 where: { id: prospect.id },
               });
               // Keep fields the import does not carry (triage, segment, discovery…).
-              merged = { ...(current.snapshot as object), ...snapshot } as ProspectSnapshot;
+              merged = {
+                ...(current.snapshot as object),
+                ...snapshot,
+              } as ProspectSnapshot;
               changed = digest(current.snapshot) !== digest(merged);
               if (changed) {
                 await tx.draft.updateMany({
@@ -534,14 +593,14 @@ export class WorkspaceService {
                 message: error.message,
               };
             else
-            outcome = {
-              row: index + 2,
-              state: "retry",
-              message:
-                error instanceof Error
-                  ? error.message
-                  : "Import failed. Retry this file with the same key.",
-            };
+              outcome = {
+                row: index + 2,
+                state: "retry",
+                message:
+                  error instanceof Error
+                    ? error.message
+                    : "Import failed. Retry this file with the same key.",
+              };
           }
         }
         const previous = outcomes.findIndex(
@@ -638,6 +697,12 @@ export class WorkspaceService {
         where: { id: draft.prospectId, workspaceId: actor.workspaceId },
       });
       if (approve) {
+        const errors = draftChecks(
+          draft.content as Touch[],
+          prospect.language,
+        ).filter((c) => c.level === "error");
+        if (errors.length)
+          throw new BadRequestException(errors.map((c) => c.message).join(" "));
         validateEvidence(prospect.evidence as Evidence[]);
         if (draft.evidenceDigest !== digest(prospect.evidence))
           throw new BadRequestException(

@@ -41,6 +41,7 @@ export default function Page() {
   const { t } = usePrefs();
   const [memberships, setMemberships] = useState<Membership[]>([]),
     [userName, setUserName] = useState(""),
+    [userId, setUserId] = useState(""),
     [ws, setWs] = useState("");
   const [authState, setAuthState] = useState<"loading" | "signin" | "ready">(
     "loading",
@@ -75,11 +76,12 @@ export default function Page() {
   const loadMe = async () => {
     try {
       const me = await client.request<{
-        user: { name: string };
+        user: { id: string; name: string };
         workspaces: Membership[];
       }>("/me");
       setMemberships(me.workspaces);
       setUserName(me.user.name);
+      setUserId(me.user.id);
       const previous = sessionStorage.getItem("revenue-workspace");
       setWs(
         me.workspaces.find((m) => m.workspace.id === previous)?.workspace.id ??
@@ -267,6 +269,7 @@ export default function Page() {
       data
         ? {
             ws,
+            userId,
             data,
             busy,
             canWrite: ["owner", "operator"].includes(data.role),
@@ -284,7 +287,7 @@ export default function Page() {
             propose,
           }
         : null,
-    [ws, data, busy, play, language, selected, setTab, action, propose],
+    [ws, userId, data, busy, play, language, selected, setTab, action, propose],
   );
   if (authState === "loading")
     return (

@@ -13,20 +13,41 @@ import {
   type Touch,
 } from "@revenue/contracts";
 import { db, json, serializable } from "./database.js";
-import { assertRole, channelHolds, digest, escapeHtml, preflightHolds, score } from "./policy.js";
+import {
+  assertRole,
+  channelHolds,
+  digest,
+  escapeHtml,
+  preflightHolds,
+  score,
+  validateEvidence,
+} from "./policy.js";
 import { injectFonts } from "./asset-template.js";
 import { renderPdf } from "./providers.js";
 
 // PRD v3.1 §7.14 features that sit beside the play engine: triage, duplicates, launch gate,
 // scorecard, SDR onboarding kit and discovery capture.
 
-const audit = (actor: Actor, action: string, targetId: string | null, details: unknown) =>
+const audit = (
+  actor: Actor,
+  action: string,
+  targetId: string | null,
+  details: unknown,
+) =>
   db.audit.create({
-    data: { workspaceId: actor.workspaceId, userId: actor.userId, action, targetId, details: json(details) },
+    data: {
+      workspaceId: actor.workspaceId,
+      userId: actor.userId,
+      action,
+      targetId,
+      details: json(details),
+    },
   });
 
 async function prospectOf(actor: Actor, id: string) {
-  const prospect = await db.prospect.findFirst({ where: { id, workspaceId: actor.workspaceId } });
+  const prospect = await db.prospect.findFirst({
+    where: { id, workspaceId: actor.workspaceId },
+  });
   if (!prospect) throw new NotFoundException("Prospect not found.");
   return prospect;
 }
@@ -46,13 +67,21 @@ export class GtmService {
     const prospect = await prospectOf(actor, prospectId);
     if (input.ownerId) {
       const member = await db.membership.findUnique({
-        where: { workspaceId_userId: { workspaceId: actor.workspaceId, userId: input.ownerId } },
+        where: {
+          workspaceId_userId: {
+            workspaceId: actor.workspaceId,
+            userId: input.ownerId,
+          },
+        },
       });
-      if (!member) throw new BadRequestException("The owner must be a workspace member.");
+      if (!member)
+        throw new BadRequestException("The owner must be a workspace member.");
     }
     const snapshot = {
       ...(prospect.snapshot as ProspectSnapshot),
-      ...(input.bucket ? { bucket: input.bucket as ProspectSnapshot["bucket"] } : {}),
+      ...(input.bucket
+        ? { bucket: input.bucket as ProspectSnapshot["bucket"] }
+        : {}),
       ...(input.bucket === "existing" ? { existingClient: true } : {}),
       ...(input.rationale !== undefined ? { triageNote: input.rationale } : {}),
       ...(input.segment !== undefined ? { segment: input.segment } : {}),
@@ -69,10 +98,19 @@ export class GtmService {
         });
       const updated = await tx.prospect.update({
         where: { id: prospectId },
-        data: { snapshot: json(snapshot), ...(input.ownerId ? { ownerId: input.ownerId } : {}) },
+        data: {
+          snapshot: json(snapshot),
+          ...(input.ownerId ? { ownerId: input.ownerId } : {}),
+        },
       });
       await tx.audit.create({
-        data: { workspaceId: actor.workspaceId, userId: actor.userId, action: "prospect.triaged", targetId: prospectId, details: json(input) },
+        data: {
+          workspaceId: actor.workspaceId,
+          userId: actor.userId,
+          action: "prospect.triaged",
+          targetId: prospectId,
+          details: json(input),
+        },
       });
       return updated;
     });
@@ -84,61 +122,147 @@ export class GtmService {
       where: { workspaceId: actor.workspaceId, excluded: false },
       select: { id: true, snapshot: true, createdAt: true, crmPersonId: true },
     });
-    return duplicateGroups(rows.map((r) => ({ ...r, snapshot: r.snapshot as ProspectSnapshot }))).map(
-      (group) => group.map((r) => ({ id: r.id, snapshot: r.snapshot, crmPersonId: r.crmPersonId })),
+    return duplicateGroups(
+      rows.map((r) => ({ ...r, snapshot: r.snapshot as ProspectSnapshot })),
+    ).map((group) =>
+      group.map((r) => ({
+        id: r.id,
+        snapshot: r.snapshot,
+        crmPersonId: r.crmPersonId,
+      })),
     );
   }
 
   async resolveDuplicate(actor: Actor, value: unknown) {
     assertRole(actor, "write");
-    const input = z.object({ keepId: z.uuid(), dropIds: z.array(z.uuid()).min(1).max(20) }).parse(value);
-    if (input.dropIds.includes(input.keepId)) throw new BadRequestException("Keep and drop must differ.");
-    await prospectOf(actor, input.keepId);
-    for (const id of input.dropIds) {
-      const prospect = await prospectOf(actor, id);
-      await db.prospect.update({
-        where: { id },
-        data: {
-          excluded: true,
-          snapshot: json({
-            ...(prospect.snapshot as ProspectSnapshot),
-            bucket: "drop",
-            triageNote: `Duplicate of ${input.keepId}`,
-          }),
+    const input = z
+      .object({ keepId: z.uuid(), dropIds: z.array(z.uuid()).min(1).max(20) })
+      .parse(value);
+    if (input.dropIds.includes(input.keepId))
+      throw new BadRequestException("Keep and drop must differ.");
+    return serializable(async (tx) => {
+      const rows = await tx.prospect.findMany({
+        where: {
+          workspaceId: actor.workspaceId,
+          id: { in: [input.keepId, ...input.dropIds] },
         },
       });
-    }
-    await audit(actor, "prospect.duplicates_resolved", input.keepId, input);
-    return { kept: input.keepId, dropped: input.dropIds.length };
+      if (rows.length !== new Set([input.keepId, ...input.dropIds]).size)
+        throw new NotFoundException("Prospect not found.");
+      for (const id of input.dropIds) {
+        const prospect = rows.find((row) => row.id === id)!;
+        await tx.prospect.update({
+          where: { id },
+          data: {
+            excluded: true,
+            snapshot: json({
+              ...(prospect.snapshot as ProspectSnapshot),
+              bucket: "drop",
+              triageNote: `Duplicate of ${input.keepId}`,
+            }),
+          },
+        });
+      }
+      await tx.sequence.updateMany({
+        where: {
+          workspaceId: actor.workspaceId,
+          prospectId: { in: input.dropIds },
+          state: { notIn: ["cancelled", "completed", "failed"] },
+        },
+        data: { state: "cancelled" },
+      });
+      await tx.audit.create({
+        data: {
+          workspaceId: actor.workspaceId,
+          userId: actor.userId,
+          action: "prospect.duplicates_resolved",
+          targetId: input.keepId,
+          details: json(input),
+        },
+      });
+      return { kept: input.keepId, dropped: input.dropIds.length };
+    });
   }
 
   // GAP-06: the same holds queue_sequence enforces, shown before a quote is requested.
   async launchGate(actor: Actor, draftIds: string[]) {
-    const workspace = await db.workspace.findUniqueOrThrow({ where: { id: actor.workspaceId } });
-    const items: { id: string; label: string; ok: boolean; detail?: string }[] = [];
+    const workspace = await db.workspace.findUniqueOrThrow({
+      where: { id: actor.workspaceId },
+    });
+    const items: { id: string; label: string; ok: boolean; detail?: string }[] =
+      [];
     const offers = workspace.offers as { approved: boolean }[];
-    items.push({ id: "offer", label: "An approved offer exists", ok: offers.some((o) => o.approved) });
+    items.push({
+      id: "offer",
+      label: "An approved offer exists",
+      ok: offers.some((o) => o.approved),
+    });
     const sender = preflightHolds(workspace.preflight as Partial<Preflight>);
-    items.push({ id: "sender", label: "Sender pre-flight passes (P2)", ok: !sender.length, detail: sender.slice(0, 3).join("; ") });
-    const drafts = await db.draft.findMany({ where: { workspaceId: actor.workspaceId, id: { in: draftIds } } });
-    items.push({ id: "drafts", label: "At least one draft is selected", ok: drafts.length > 0 });
-    const marketingLicence = (workspace.company as { marketingLicence?: boolean }).marketingLicence === true;
+    items.push({
+      id: "sender",
+      label: "Sender pre-flight passes (P2)",
+      ok: !sender.length,
+      detail: sender.slice(0, 3).join("; "),
+    });
+    const drafts = await db.draft.findMany({
+      where: { workspaceId: actor.workspaceId, id: { in: draftIds } },
+    });
+    items.push({
+      id: "drafts",
+      label: "At least one draft is selected",
+      ok: drafts.length > 0,
+    });
+    const marketingLicence =
+      (workspace.company as { marketingLicence?: boolean }).marketingLicence ===
+      true;
     for (const draft of drafts) {
-      const prospect = await db.prospect.findUniqueOrThrow({ where: { id: draft.prospectId } });
+      const prospect = await db.prospect.findUniqueOrThrow({
+        where: { id: draft.prospectId },
+      });
       const snapshot = prospect.snapshot as ProspectSnapshot;
       const holds = channelHolds(prospect, marketingLicence);
-      if (draft.approvedVersion !== draft.version || draft.evidenceDigest !== digest(prospect.evidence))
+      try {
+        validateEvidence(
+          prospect.evidence as import("@revenue/contracts").Evidence[],
+        );
+      } catch (error) {
+        holds.push((error as Error).message);
+      }
+      if (
+        await db.sequence.count({
+          where: {
+            workspaceId: actor.workspaceId,
+            prospectId: prospect.id,
+            state: { notIn: ["cancelled", "completed", "failed"] },
+          },
+        })
+      )
+        holds.push("This contact is already enrolled in an active sequence");
+      if (
+        draft.approvedVersion !== draft.version ||
+        draft.evidenceDigest !== digest(prospect.evidence)
+      )
         holds.push("Approve the current draft and evidence");
-      if (score(snapshot).disqualified) holds.push("Below the qualification threshold");
-      for (const check of draftChecks(draft.content as Touch[], prospect.language))
+      if (score(snapshot).disqualified)
+        holds.push("Below the qualification threshold");
+      for (const check of draftChecks(
+        draft.content as Touch[],
+        prospect.language,
+      ))
         if (check.level === "error") holds.push(check.message);
       const suppressed = await db.suppression.findUnique({
-        where: { workspaceId_identity: { workspaceId: actor.workspaceId, identity: prospect.sourceKey } },
+        where: {
+          workspaceId_identity: {
+            workspaceId: actor.workspaceId,
+            identity: prospect.sourceKey,
+          },
+        },
       });
       if (suppressed) holds.push("Suppressed contact");
       items.push({
         id: `draft:${draft.id}`,
-        label: `${snapshot.company} — ${snapshot.firstName} ${snapshot.lastName}`.trim(),
+        label:
+          `${snapshot.company} — ${snapshot.firstName} ${snapshot.lastName}`.trim(),
         ok: !holds.length,
         detail: holds.join("; "),
       });
@@ -150,27 +274,51 @@ export class GtmService {
   async scorecard(actor: Actor) {
     const ws = actor.workspaceId;
     const [sequences, events, calls] = await Promise.all([
-      db.sequence.findMany({ where: { workspaceId: ws }, select: { id: true, holdout: true, prospectId: true } }),
-      db.providerEvent.findMany({ where: { workspaceId: ws }, select: { kind: true, sequenceId: true } }),
-      db.audit.findMany({ where: { workspaceId: ws, action: "call.outcome" }, select: { details: true, targetId: true } }),
+      db.sequence.findMany({
+        where: { workspaceId: ws },
+        select: { id: true, holdout: true, prospectId: true },
+      }),
+      db.providerEvent.findMany({
+        where: { workspaceId: ws },
+        select: { kind: true, sequenceId: true },
+      }),
+      db.audit.findMany({
+        where: { workspaceId: ws, action: "call.outcome" },
+        select: { details: true, targetId: true },
+      }),
     ]);
-    const seqWith = (kind: string) => new Set(events.filter((e) => e.kind === kind).map((e) => e.sequenceId));
-    const delivered = seqWith("delivered"), replied = seqWith("replied");
+    const seqWith = (kind: string) =>
+      new Set(events.filter((e) => e.kind === kind).map((e) => e.sequenceId));
+    const delivered = seqWith("delivered"),
+      replied = seqWith("replied");
     const outcome = (o: string) =>
-      new Set(calls.filter((c) => (c.details as { outcome?: string }).outcome === o).map((c) => c.targetId));
+      new Set(
+        calls
+          .filter((c) => (c.details as { outcome?: string }).outcome === o)
+          .map((c) => c.targetId),
+      );
     const meetings = outcome("meeting-booked");
     const counts = {
       prepared: sequences.length,
-      delivered: sequences.filter((s) => delivered.has(s.id) || replied.has(s.id)).length,
+      delivered: sequences.filter(
+        (s) => delivered.has(s.id) || replied.has(s.id),
+      ).length,
       replied: sequences.filter((s) => replied.has(s.id)).length,
       meeting: meetings.size,
       agreed: outcome("agreed").size,
     };
     const group = (holdout: boolean) => {
       const list = sequences.filter((s) => s.holdout === holdout);
-      const d = list.filter((s) => delivered.has(s.id) || replied.has(s.id)).length;
+      const d = list.filter(
+        (s) => delivered.has(s.id) || replied.has(s.id),
+      ).length;
       const r = list.filter((s) => replied.has(s.id)).length;
-      return { sequences: list.length, delivered: d, replied: r, replyRate: d ? r / d : null };
+      return {
+        sequences: list.length,
+        delivered: d,
+        replied: r,
+        replyRate: d ? r / d : null,
+      };
     };
     return {
       stages: FUNNEL.map((stage) => ({ stage, count: counts[stage] })),
@@ -184,7 +332,9 @@ export class GtmService {
 
   // GAP-11: SDR onboarding kit generated from workspace context.
   async sdrKit(actor: Actor) {
-    const workspace = await db.workspace.findUniqueOrThrow({ where: { id: actor.workspaceId } });
+    const workspace = await db.workspace.findUniqueOrThrow({
+      where: { id: actor.workspaceId },
+    });
     const company = workspace.company as {
       description?: string;
       icp?: string;
@@ -193,15 +343,27 @@ export class GtmService {
       references?: { name: string; consent: boolean }[];
     };
     const brand = workspace.brand as { name?: string; primary?: string };
-    const offers = (workspace.offers as { text: string; approved: boolean }[]).filter((o) => o.approved);
-    const prospects = await db.prospect.findMany({ where: { workspaceId: actor.workspaceId }, select: { snapshot: true } });
+    const offers = (
+      workspace.offers as { text: string; approved: boolean }[]
+    ).filter((o) => o.approved);
+    const prospects = await db.prospect.findMany({
+      where: { workspaceId: actor.workspaceId },
+      select: { snapshot: true },
+    });
     const personas = new Map<string, number>();
     for (const p of prospects) {
-      const a = angleFor(p.snapshot as ProspectSnapshot, company.angles, offers[0]?.text);
+      const a = angleFor(
+        p.snapshot as ProspectSnapshot,
+        company.angles,
+        offers[0]?.text,
+      );
       personas.set(`${a.persona}`, (personas.get(a.persona) ?? 0) + 1);
     }
-    const row = (cells: string[]) => `<tr>${cells.map((c) => `<td>${c}</td>`).join("")}</tr>`;
-    const color = /^#[0-9a-f]{6}$/i.test(brand.primary ?? "") ? brand.primary! : "#111214";
+    const row = (cells: string[]) =>
+      `<tr>${cells.map((c) => `<td>${c}</td>`).join("")}</tr>`;
+    const color = /^#[0-9a-f]{6}$/i.test(brand.primary ?? "")
+      ? brand.primary!
+      : "#111214";
     const html = `<!doctype html><html lang="en"><head><meta charset="utf-8"><title>SDR onboarding kit</title><style>
 @page{size:A4;margin:16mm}body{font:10.5pt/1.6 "Inter","IBM Plex Sans Arabic",Arial,sans-serif;color:#2a2b2e;margin:0}
 h1{font-size:22pt;margin:0 0 4px;color:#0b0c0e}h2{font-size:13pt;margin:22px 0 8px;color:#0b0c0e;border-bottom:1px solid #e4e4e7;padding-bottom:4px}
@@ -212,8 +374,17 @@ li{margin:3px 0}section{break-inside:avoid}</style></head><body>
 <h1>How we sell, on one page</h1><p>${escapeHtml(company.description ?? "")}</p>
 <section><h2>Ideal customer</h2><p>${escapeHtml(company.icp ?? "Not written yet — ask the owner to complete Company context.")}</p></section>
 <section><h2>Approved offers</h2><ul>${offers.map((o) => `<li>${escapeHtml(o.text)}</li>`).join("") || "<li>No approved offer yet.</li>"}</ul></section>
-<section><h2>Segments</h2><table><tr><th>Code</th><th>Meaning</th></tr>${Object.entries(company.segments ?? {}).map(([k, v]) => row([escapeHtml(k), escapeHtml(v)])).join("") || row(["—", "No segments defined"])}</table></section>
-<section><h2>Angle by persona and maturity</h2><table><tr><th>Persona · maturity</th><th>Angle</th></tr>${Object.entries(company.angles ?? {}).map(([k, v]) => row([escapeHtml(k), escapeHtml(v)])).join("") || row(["all", escapeHtml(offers[0]?.text ?? "Use the approved offer")])}</table>
+<section><h2>Segments</h2><table><tr><th>Code</th><th>Meaning</th></tr>${
+      Object.entries(company.segments ?? {})
+        .map(([k, v]) => row([escapeHtml(k), escapeHtml(v)]))
+        .join("") || row(["—", "No segments defined"])
+    }</table></section>
+<section><h2>Angle by persona and maturity</h2><table><tr><th>Persona · maturity</th><th>Angle</th></tr>${
+      Object.entries(company.angles ?? {})
+        .map(([k, v]) => row([escapeHtml(k), escapeHtml(v)]))
+        .join("") ||
+      row(["all", escapeHtml(offers[0]?.text ?? "Use the approved offer")])
+    }</table>
 <p>Register: founder voice for founders and CEOs; leader voice for HR, finance and operations leaders.</p></section>
 <section><h2>Who is in the list</h2><table><tr><th>Persona</th><th>Contacts</th></tr>${[...personas].map(([k, v]) => row([escapeHtml(k), String(v)])).join("")}</table></section>
 <section><h2>Scoring rubric (out of 100)</h2><table><tr><th>Rule</th><th>Points</th></tr>${row(["Decision-making role", "30"])}${row(["Small or growing business (1–200 staff)", "25"])}${row(["Company website available", "20"])}${row(["Hiring or funding signal", "25"])}</table><p>Tier A ≥ 75, B ≥ 50, below 50 is disqualified and never enriched.</p></section>
@@ -238,23 +409,40 @@ li{margin:3px 0}section{break-inside:avoid}</style></head><body>
       })
       .parse(value);
     const prospect = await prospectOf(actor, prospectId);
-    const snapshot = { ...(prospect.snapshot as ProspectSnapshot), discovery: { ...input, capturedAt: new Date().toISOString() } };
-    await db.prospect.update({ where: { id: prospectId }, data: { snapshot: json(snapshot) } });
-    await audit(actor, "discovery.captured", prospectId, { maturity: input.maturity });
+    const snapshot = {
+      ...(prospect.snapshot as ProspectSnapshot),
+      discovery: { ...input, capturedAt: new Date().toISOString() },
+    };
+    await db.prospect.update({
+      where: { id: prospectId },
+      data: { snapshot: json(snapshot) },
+    });
+    await audit(actor, "discovery.captured", prospectId, {
+      maturity: input.maturity,
+    });
     return snapshot.discovery;
   }
 
   async discoverySummary(actor: Actor) {
-    const rows = await db.prospect.findMany({ where: { workspaceId: actor.workspaceId }, select: { snapshot: true } });
-    const bySegment = new Map<string, { n: number; maturity: number; pains: Record<string, number[]> }>();
+    const rows = await db.prospect.findMany({
+      where: { workspaceId: actor.workspaceId },
+      select: { snapshot: true },
+    });
+    const bySegment = new Map<
+      string,
+      { n: number; maturity: number; pains: Record<string, number[]> }
+    >();
     for (const r of rows) {
-      const s = r.snapshot as ProspectSnapshot & { discovery?: { maturity: number; pains: Record<string, number> } };
+      const s = r.snapshot as ProspectSnapshot & {
+        discovery?: { maturity: number; pains: Record<string, number> };
+      };
       if (!s.discovery) continue;
       const key = s.segment ?? "—";
       const entry = bySegment.get(key) ?? { n: 0, maturity: 0, pains: {} };
       entry.n++;
       entry.maturity += s.discovery.maturity;
-      for (const [pain, value] of Object.entries(s.discovery.pains)) (entry.pains[pain] ??= []).push(value);
+      for (const [pain, value] of Object.entries(s.discovery.pains))
+        (entry.pains[pain] ??= []).push(value);
       bySegment.set(key, entry);
     }
     return [...bySegment].map(([segment, e]) => ({
@@ -262,7 +450,10 @@ li{margin:3px 0}section{break-inside:avoid}</style></head><body>
       interviews: e.n,
       averageMaturity: Number((e.maturity / e.n).toFixed(1)),
       pains: Object.fromEntries(
-        Object.entries(e.pains).map(([k, v]) => [k, Number((v.reduce((a, b) => a + b, 0) / v.length).toFixed(1))]),
+        Object.entries(e.pains).map(([k, v]) => [
+          k,
+          Number((v.reduce((a, b) => a + b, 0) / v.length).toFixed(1)),
+        ]),
       ),
     }));
   }

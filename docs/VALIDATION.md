@@ -74,3 +74,13 @@ The future server Compose parsed successfully and Caddy configuration validated 
 Azure setup and read-only preflight reports remain in ignored `.local`. Before/after resource inventories show only the two session-created Foundry resources removed and the new project identity added; Amr's original resources and groups remain. Default company CLI sessions are unchanged.
 
 The full Azure CLI `vm list-skus` enumeration for Sweden Central stalled and was stopped with SIGTERM. A direct read-only ARM SKU response was complete (`nextLink` absent) and used instead, paired with regional family quota. B2ms/B2as v2 and D2as/D2s v5 were rejected for subscription restrictions or zero family quota; the final D2as v6 candidate has no listed restrictions and 10 free family/total vCPUs.
+
+## GTM feature continuation — 15 October 2026
+
+The PRD v3.1 workflow UI now exposes triage buckets, segment and contact owner, near-duplicate review, account discovery interviews, draft confidence/register and blocking copy checks, a launch checklist, funnel and discovery summaries, consented-reference editing, and an on-demand SDR kit PDF. Imports can distribute new contacts among workspace owners/operators below configured contact caps; existing ownership is retained.
+
+The approval API now rejects personal event claims, missing email opt-out and unresolved placeholders. Duplicate resolution validates the full workspace-scoped set before any mutation, runs in one serializable transaction and cancels active sequences on excluded duplicates. Launch previews also validate evidence and active enrollment.
+
+Backend verification: **33 tests passed**, including approval API bypass rejection, duplicate rollback/cancellation and capped owner assignment. Initial bilingual desktop/phone captures and the new discovery/PDF browser flow passed. The first whole-suite reruns found repeated fixture email roots being correctly held as near-duplicates; the test now generates distinct mailbox roots. Final suite/container/cloud results are recorded below when complete.
+
+No live sender integration is activated. The scorecard reports prepared/delivered/replied/meeting/agreed events; native LinkedIn connection and acceptance telemetry remains unavailable. The SDR PDF is downloaded on demand; automatic delivery when members join remains open. Discovery questionnaires have capture and aggregates; a generated bilingual interview guide remains open. Duplicate review excludes records and cancels sequences; it does not merge CRM fields. Contact cap assignment applies to imports; manual reassignment remains explicit.

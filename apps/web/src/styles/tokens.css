@@ -22,10 +22,12 @@
   --danger: #f2555a;
   --info: #56c2ff;
   --key: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 0 0 1px var(--line);
-  --key-raised: inset 0 1px 0 rgba(255, 255, 255, 0.08),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.3), 0 0 0 1px var(--line-strong);
-  --shadow-pop: 0 0 0 1px rgba(255, 255, 255, 0.08),
-    0 24px 48px -8px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  --key-raised:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08), inset 0 -1px 0 rgba(0, 0, 0, 0.3),
+    0 0 0 1px var(--line-strong);
+  --shadow-pop:
+    0 0 0 1px rgba(255, 255, 255, 0.08), 0 24px 48px -8px rgba(0, 0, 0, 0.7),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
   --backdrop: rgba(0, 0, 0, 0.6);
   --glow: radial-gradient(
     60% 50% at 50% 0%,
@@ -56,7 +58,8 @@
   --info: #0b6bb8;
   --key: 0 0 0 1px var(--line-strong), 0 1px 2px rgba(16, 17, 20, 0.04);
   --key-raised: 0 0 0 1px var(--line-strong), 0 1px 2px rgba(16, 17, 20, 0.08);
-  --shadow-pop: 0 0 0 1px var(--line-strong), 0 24px 48px -12px rgba(16, 17, 20, 0.25);
+  --shadow-pop:
+    0 0 0 1px var(--line-strong), 0 24px 48px -12px rgba(16, 17, 20, 0.25);
   --backdrop: rgba(16, 17, 20, 0.35);
   --glow: radial-gradient(
     60% 50% at 50% 0%,
@@ -65,11 +68,13 @@
   );
 }
 :root {
-  --font-sans: "Inter Variable", "IBM Plex Sans Arabic", system-ui,
-    -apple-system, "Segoe UI", sans-serif;
-  --font-arabic: "IBM Plex Sans Arabic", "Inter Variable", system-ui, sans-serif;
-  --font-mono: "Geist Mono Variable", ui-monospace, SFMono-Regular, Menlo,
-    monospace;
+  --font-sans:
+    "Inter Variable", "IBM Plex Sans Arabic", system-ui, -apple-system,
+    "Segoe UI", sans-serif;
+  --font-arabic:
+    "IBM Plex Sans Arabic", "Inter Variable", system-ui, sans-serif;
+  --font-mono:
+    "Geist Mono Variable", ui-monospace, SFMono-Regular, Menlo, monospace;
   --text-xs: 11px;
   --text-sm: 13px;
   --text-md: 14px;
@@ -97,4 +102,118 @@
   --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
   --fast: 150ms;
   --medium: 200ms;
+}
+
+/* Triage, evidence review and discovery share the dashboard's spacing grid. */
+.bulk-bar,
+.badge-row,
+.draft-insights {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.bulk-bar {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--line);
+}
+.draft-insights {
+  margin-block-end: 16px;
+}
+.angle-card {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  margin: 0;
+}
+.angle-card dd {
+  margin: 4px 0 0;
+  overflow-wrap: anywhere;
+}
+.angle-card .span-all {
+  grid-column: 1 / -1;
+}
+.pain-grid {
+  display: grid;
+  gap: 12px;
+}
+.pain {
+  display: grid;
+  grid-template-columns: minmax(90px, 1fr) 2fr 20px;
+  align-items: center;
+  gap: 12px;
+}
+.pain input {
+  width: 100%;
+  min-width: 0;
+  accent-color: var(--action);
+}
+.dup-list {
+  display: grid;
+  gap: 24px;
+  padding: 16px;
+}
+.dup-group {
+  border-block-end: 1px solid var(--line);
+  padding-block-end: 16px;
+}
+.dup-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-block: 12px;
+}
+.dup-row > div {
+  flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.check-list {
+  list-style: none;
+  padding: 0;
+  margin-block: 16px;
+  display: grid;
+  gap: 12px;
+}
+.check-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+.check-list .badge {
+  flex-shrink: 0;
+}
+.funnel-stages {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 16px;
+  margin: 0;
+}
+.funnel-stages dt {
+  color: var(--text-3);
+  font-size: 12px;
+}
+.funnel-stages dd {
+  font-size: 22px;
+  margin: 4px 0 0;
+}
+.reference-row {
+  display: grid;
+  gap: 8px;
+  padding-block: 12px;
+  border-block-end: 1px solid var(--line);
+}
+@media (max-width: 640px) {
+  .funnel-stages {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .angle-card {
+    grid-template-columns: 1fr;
+  }
+  .dup-row {
+    flex-wrap: wrap;
+  }
+  .toolbar {
+    flex-wrap: wrap;
+  }
 }

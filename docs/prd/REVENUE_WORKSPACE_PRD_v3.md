@@ -590,3 +590,21 @@ Research reports: [01 GTM process and AI](../research/01-gtm-process-and-ai.md),
 **v3.1 — 15 October 2026.** Added decisions D18–D21 (Raycast-derived design system, own AI harness on Vercel AI SDK Core, Azure models and Whisper approved, real data read for structure only). Added plays P15–P17, requirement sections §7.14 (14 features from the real-workflow teardown) and §7.15 (AI harness and voice), and the v3.1 gaps in §12. ARB-07 (Arabic UI) is partly delivered early: interface strings and RTL layout exist; Twenty's own RTL is unchanged. Research 11 added.
 
 **v3 — 13 October 2026.** Owner decisions on the v2 proposals, business model, plays, Asset Studio, architecture and plan.
+
+### Implementation checkpoint — 15 October 2026 continuation
+
+The owner's later unattended-run instruction authorizes project-only Azure deployment and inference. Repository pushes and live outreach remain outside that authorization.
+
+| Requirements | Implemented behavior | Remaining acceptance work |
+| --- | --- | --- |
+| GAP-01 | Re-import reports added/updated/unchanged outcomes and invalidates stale reviews | File version history UI |
+| GAP-02 | Near-duplicate import holds, workspace review, atomic exclusion and sequence cancellation | CRM field-merge preview |
+| GAP-03/04/14 | Buckets/rationale/owner/segment controls, angle/register drafting, personal event-claim checks at approval and queue boundaries | Partner play P17 is still later scope |
+| GAP-06 | Visible launch checklist; queue-time holds remain authoritative | A note never bypasses suppression or consent gates |
+| GAP-07 | Event scorecard and asset/holdout counts; confirmed call outcomes sync to CRM | LinkedIn connect/accepted telemetry and general scorecard CRM writeback |
+| GAP-09/10 | Consent-managed reference library, reference rotation and visible evidence-based draft confidence | Native reviewer calibration of confidence |
+| GAP-11 | Branded SDR kit PDF from current workspace context | Automatic delivery on member joining |
+| GAP-12 | Account discovery capture and segment pain/maturity aggregates | Bilingual interview guide/questionnaire generation |
+| GAP-13 | Manual member assignment; opt-in balanced import distribution with per-member contact caps | Contact caps currently apply to automatic import assignment |
+
+These are implementation states, not claims of external-provider activation or full PRD completion. See [validation](../VALIDATION.md) for executed checks and limitations.

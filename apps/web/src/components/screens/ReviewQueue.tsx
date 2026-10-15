@@ -1,7 +1,17 @@
 "use client";
 import { useState } from "react";
-import type { Touch } from "@revenue/contracts";
-import { IconChecklist, IconMail, IconPhone, IconBrandLinkedin } from "@revenue/ui";
+import {
+  angleFor,
+  draftChecks,
+  draftConfidence,
+  type Touch,
+} from "@revenue/contracts";
+import {
+  IconChecklist,
+  IconMail,
+  IconPhone,
+  IconBrandLinkedin,
+} from "@revenue/ui";
 import {
   Badge,
   Button,
@@ -16,7 +26,7 @@ import {
 import { useWorkspace } from "../workspace-context";
 import { usePrefs } from "../../lib/prefs";
 import { client } from "../../lib/client";
-import type { Asset, Draft } from "../../lib/types";
+import type { Asset, Draft, Prospect } from "../../lib/types";
 
 const CHANNEL_ICON = {
   email: IconMail,
@@ -33,9 +43,7 @@ export function ReviewQueue() {
         title={t("No drafts waiting for review")}
         icon={<IconChecklist size={18} />}
       >
-        {t(
-          "Approve a source and an offer, then prepare messages from a play.",
-        )}
+        {t("Approve a source and an offer, then prepare messages from a play.")}
       </Empty>
     );
   const pending = data.drafts.filter((d) => d.approvedVersion !== d.version);
@@ -57,6 +65,7 @@ export function ReviewQueue() {
             data.prospects.find((p) => p.id === d.prospectId)?.snapshot
               .company ?? "Prospect"
           }
+          prospect={data.prospects.find((p) => p.id === d.prospectId)}
           assets={data.assets.filter(
             (a) => a.prospectId === d.prospectId && a.approvedAt,
           )}
@@ -101,6 +110,7 @@ export function ReviewQueue() {
 function DraftReview({
   draft,
   name,
+  prospect,
   onSave,
   onApprove,
   assets,
@@ -108,18 +118,32 @@ function DraftReview({
 }: {
   draft: Draft;
   name: string;
+  prospect?: Prospect;
   onSave: (content: Touch[]) => Promise<void>;
   onApprove: () => Promise<void>;
   assets: Asset[];
   onAttach: (id: string | null) => Promise<void>;
 }) {
-  const { canWrite, canApprove, busy } = useWorkspace();
+  const { canWrite, canApprove, busy, data } = useWorkspace();
   const { t } = usePrefs();
   const [content, setContent] = useState(draft.content),
     [reviewed, setReviewed] = useState(false);
   const [assetId, setAssetId] = useState(draft.assetId ?? "");
   const approved = draft.approvedVersion === draft.version;
   const edited = JSON.stringify(content) !== JSON.stringify(draft.content);
+  const language = prospect?.language ?? "en";
+  const checks = draftChecks(content, language);
+  const blocking = checks.filter((c) => c.level === "error");
+  const confidence = prospect
+    ? draftConfidence(content, prospect.evidence, prospect.snapshot, language)
+    : null;
+  const plan = prospect
+    ? angleFor(
+        prospect.snapshot,
+        (data.workspace.company as { angles?: Record<string, string> }).angles,
+        data.workspace.offers.find((o) => o.approved)?.text,
+      )
+    : null;
   const patch = (index: number, value: Partial<Touch>) =>
     setContent((previous) =>
       previous.map((v, i) => (i === index ? { ...v, ...value } : v)),
@@ -135,6 +159,57 @@ function DraftReview({
         </Badge>
       }
     >
+      <div className="draft-insights">
+        {confidence && (
+          <span title={confidence.reasons.join(" ")}>
+            <Badge
+              tone={
+                confidence.level === "high"
+                  ? "ok"
+                  : confidence.level === "medium"
+                    ? "warn"
+                    : "danger"
+              }
+            >
+              {t("confidence")} {t(confidence.level)} · {confidence.score}
+            </Badge>
+          </span>
+        )}
+        {plan && (
+          <>
+            <Badge dot={false}>
+              {plan.register === "founder"
+                ? t("Founder voice")
+                : t("Leader voice")}
+            </Badge>
+            {plan.angle && (
+              <span
+                className="muted small truncate"
+                dir="auto"
+                title={plan.angle}
+              >
+                {t("Angle")}: {plan.angle}
+              </span>
+            )}
+          </>
+        )}
+      </div>
+      {checks.length > 0 && (
+        <ul className="check-list">
+          {checks.map((c, i) => (
+            <li
+              key={i}
+              className={`tone-${c.level === "error" ? "danger" : "warn"}`}
+            >
+              <span className="dot" aria-hidden />
+              {c.touch !== undefined && (
+                <span className="mono">#{c.touch + 1}</span>
+              )}{" "}
+              {t(c.message)}
+            </li>
+          ))}
+        </ul>
+      )}
       <ol className="touch-timeline">
         {content.map((touch, index) => {
           const Icon = CHANNEL_ICON[touch.channel] ?? IconMail;
@@ -160,7 +235,9 @@ function DraftReview({
                       dir="auto"
                       value={touch.subject}
                       disabled={!canWrite}
-                      onChange={(e) => patch(index, { subject: e.target.value })}
+                      onChange={(e) =>
+                        patch(index, { subject: e.target.value })
+                      }
                     />
                   </Field>
                 )}
@@ -215,7 +292,9 @@ function DraftReview({
           </Button>
           <Button
             variant="primary"
-            disabled={!canApprove || busy || !reviewed || edited}
+            disabled={
+              !canApprove || busy || !reviewed || edited || blocking.length > 0
+            }
             onClick={() => void onApprove()}
           >
             {t("Approve current version")}

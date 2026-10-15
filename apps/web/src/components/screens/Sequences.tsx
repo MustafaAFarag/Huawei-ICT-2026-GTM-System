@@ -5,19 +5,28 @@ import { useWorkspace } from "../workspace-context";
 import { usePrefs } from "../../lib/prefs";
 import { client } from "../../lib/client";
 
+import { ResultsPanel } from "../GtmPanels";
+
 export function Sequences() {
   const { ws, data, canWrite, busy, action } = useWorkspace();
   const { t } = usePrefs();
   if (!data.sequences.length)
     return (
-      <Empty title={t("No sequences prepared yet")} icon={<IconClock size={18} />}>
-        {t(
-          "Approve every touch, run sender pre-flight, and resolve country and consent holds before preparing a sequence.",
-        )}
-      </Empty>
+      <div className="stack-lg">
+        <ResultsPanel />
+        <Empty
+          title={t("No sequences prepared yet")}
+          icon={<IconClock size={18} />}
+        >
+          {t(
+            "Approve every touch, run sender pre-flight, and resolve country and consent holds before preparing a sequence.",
+          )}
+        </Empty>
+      </div>
     );
   return (
     <div className="stack-lg">
+      <ResultsPanel />
       {data.sequences.map((s) => {
         const prospect = data.prospects.find((p) => p.id === s.prospectId);
         return (

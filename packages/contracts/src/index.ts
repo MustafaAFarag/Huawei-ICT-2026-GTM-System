@@ -229,4 +229,4 @@ export class RevenueClient {
     return this.request<T>(`/workspaces/${id}${path}`, options);
   }
 }
-export * from "./gtm.js";
+export * from "./gtm.ts";

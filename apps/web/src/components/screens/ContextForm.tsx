@@ -6,6 +6,8 @@ import { useWorkspace } from "../workspace-context";
 import { usePrefs } from "../../lib/prefs";
 import { client } from "../../lib/client";
 
+import { ReferenceLibrary, SdrKit } from "../ReferenceLibrary";
+
 export function ContextForm() {
   const { ws, data, busy, action, propose } = useWorkspace();
   const { t } = usePrefs();
@@ -103,7 +105,10 @@ export function ContextForm() {
             </Field>
           </div>
         </Panel>
-        <Panel eyebrow={t("Positioning")} title={t("What you sell and to whom")}>
+        <Panel
+          eyebrow={t("Positioning")}
+          title={t("What you sell and to whom")}
+        >
           <div className="stack">
             <Field label={t("What your company does")}>
               <Textarea
@@ -144,7 +149,11 @@ export function ContextForm() {
               defaultChecked={data.workspace.company.marketingLicence}
             />
             <div>
-              <Button type="submit" variant="primary" disabled={busy || !isOwner}>
+              <Button
+                type="submit"
+                variant="primary"
+                disabled={busy || !isOwner}
+              >
                 {t("Save company context")}
               </Button>
             </div>
@@ -152,6 +161,8 @@ export function ContextForm() {
         </Panel>
       </form>
       <aside className="detail-side">
+        <SdrKit />
+        <ReferenceLibrary />
         <Panel
           eyebrow={t("AI research")}
           title={t("Suggest context from website")}
@@ -190,7 +201,11 @@ export function ContextForm() {
             <div className="brand-proposal">
               {[brand.primary, brand.accent].filter(Boolean).map((color) => (
                 <span key={color} className="brand-chip">
-                  <span className="swatch" style={{ background: color! }} aria-hidden />
+                  <span
+                    className="swatch"
+                    style={{ background: color! }}
+                    aria-hidden
+                  />
                   <bdi className="mono">{color}</bdi>
                 </span>
               ))}
@@ -201,7 +216,9 @@ export function ContextForm() {
               )}
             </div>
             <p className="muted small">
-              {t("Colours and name were read from the website. Review before using them on assets.")}
+              {t(
+                "Colours and name were read from the website. Review before using them on assets.",
+              )}
             </p>
             <Button
               disabled={!isOwner || busy || !brand.primary}

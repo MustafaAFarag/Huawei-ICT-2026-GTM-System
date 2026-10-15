@@ -17,6 +17,7 @@ import { usePrefs } from "../../lib/prefs";
 import { client } from "../../lib/client";
 import type { Prospect } from "../../lib/types";
 import { CallLog } from "../CallLog";
+import { DiscoveryPanel, TriagePanel } from "../ProspectPanels";
 
 export function ProspectReview({ prospect }: { prospect: Prospect }) {
   const { ws, canApprove, action, setProspect } = useWorkspace();
@@ -158,10 +159,14 @@ export function ProspectReview({ prospect }: { prospect: Prospect }) {
                 </div>
                 <div className="evidence-foot">
                   <Check
-                    label={t("I reviewed this factual claim and its dated source")}
+                    label={t(
+                      "I reviewed this factual claim and its dated source",
+                    )}
                     checked={item.approved}
                     disabled={!canApprove}
-                    onChange={(e) => update(index, { approved: e.target.checked })}
+                    onChange={(e) =>
+                      update(index, { approved: e.target.checked })
+                    }
                   />
                   <a
                     className="link"
@@ -169,7 +174,8 @@ export function ProspectReview({ prospect }: { prospect: Prospect }) {
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    {t("Open source")} <IconExternalLink size={13} aria-hidden />
+                    {t("Open source")}{" "}
+                    <IconExternalLink size={13} aria-hidden />
                   </a>
                 </div>
               </div>
@@ -189,7 +195,15 @@ export function ProspectReview({ prospect }: { prospect: Prospect }) {
               <li key={r.rule}>
                 <span>{r.rule}</span>
                 <span className="mono">+{r.points}</span>
-                <Badge tone={r.state === "match" ? "ok" : r.state === "unknown" ? "warn" : "neutral"}>
+                <Badge
+                  tone={
+                    r.state === "match"
+                      ? "ok"
+                      : r.state === "unknown"
+                        ? "warn"
+                        : "neutral"
+                  }
+                >
                   {r.state}
                 </Badge>
               </li>
@@ -212,7 +226,9 @@ export function ProspectReview({ prospect }: { prospect: Prospect }) {
               >
                 <option value="">{t("Not recorded · blocked")}</option>
                 <option value="consent">{t("Recorded consent")}</option>
-                <option value="relationship">{t("Existing relationship")}</option>
+                <option value="relationship">
+                  {t("Existing relationship")}
+                </option>
               </Select>
             </Field>
             <Field label={t("Consent time")}>
@@ -232,7 +248,9 @@ export function ProspectReview({ prospect }: { prospect: Prospect }) {
             </Button>
           </div>
         </Panel>
-        <CallLog prospect={prospect} />
+        <TriagePanel key={`triage:${prospect.id}`} prospect={prospect} />
+        <CallLog key={`call:${prospect.id}`} prospect={prospect} />
+        <DiscoveryPanel key={`discovery:${prospect.id}`} prospect={prospect} />
       </aside>
     </form>
   );
