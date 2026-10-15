@@ -150,3 +150,7 @@ Decision: preserve the settled Raycast visual direction and unrelated sample CSV
 - [x] Terraform validates and both boundary tests pass; reviewed 10-addition project-only plan adds daily 22:00 UTC shutdown. Apply started; local state stays ignored.
 - [x] Docker build context now excludes private GTM exports and Terraform state/variables.
 - [ ] Final full-suite rerun after shared-module resolution fix; document remaining partial acceptance criteria rather than claiming all PRD features complete.
+- [x] Final local typecheck + 33 tests; seven browser scenarios verified (separate suite runs); feature commit `418fbfe`.
+- [x] Fresh live eval baseline 27/30; versioned prompt revision 29/30. Remaining `act-01` scoring-intent failure explicitly recorded; Arabic model-judge 3.8/5 is not native-speaker approval.
+- [x] Azure compute apply: 10 additions, no changes/deletions; VM `4.223.169.93`, separate new 64 GiB disk mounted by UUID, mount requirement added to Docker service, daily shutdown at 22:00 UTC. Twenty healthy; synthetic product/engine restore underway.
+- [ ] Final images, HTTPS app start, public Playwright and live smoke, operational docs.
