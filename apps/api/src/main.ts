@@ -45,6 +45,13 @@ import {
   handleMcp,
   senderEvent,
   serializable,
+  runAgentTurn,
+  transcribeAudio,
+  MAX_AUDIO_BYTES,
+  AI_COSTS,
+  aiLive,
+  suggestCallOutcome,
+  saveCallOutcome,
 } from "@revenue/backend";
 import type { Actor } from "@revenue/contracts";
 
@@ -430,6 +437,23 @@ class ApiController {
     });
     return { content, tool, context: input.context };
   }
+  @ApiOperation({ summary: "Propose a structured call outcome from a dictated note" })
+  @Post("workspaces/:workspaceId/call-outcome/suggest") async suggestOutcome(
+    @Req() req: Request,
+    @Param("workspaceId") ws: string,
+    @Body() body: unknown,
+  ) {
+    const input = z.object({ note: z.string().min(3).max(3000) }).parse(body);
+    return suggestCallOutcome(await actorFor(req.headers, ws), input.note);
+  }
+  @Post("workspaces/:workspaceId/prospects/:id/call-outcome") async callOutcome(
+    @Req() req: Request,
+    @Param("workspaceId") ws: string,
+    @Param("id") id: string,
+    @Body() body: unknown,
+  ) {
+    return saveCallOutcome(await actorFor(req.headers, ws), id, body);
+  }
   @Post("workspaces/:workspaceId/connectors/:provider") async connector(
     @Req() req: Request,
     @Param("workspaceId") ws: string,
@@ -542,6 +566,117 @@ app
       }
     },
   );
+// Streaming assistant turn (PRD AI-01). Server-sent events: meta, text, tool, quote,
+// navigate, error, done. Action tools only ever produce quotes.
+app
+  .getHttpAdapter()
+  .getInstance()
+  .post(
+    "/api/workspaces/:workspaceId/chat/stream",
+    async (req: Request, res: Response) => {
+      let actor: Actor;
+      let input: {
+        content: string;
+        context: {
+          play: "P1" | "P2" | "P3" | "P4";
+          prospectIds: string[];
+          language?: "en" | "ar-EG" | "ar-Gulf" | "ar";
+          uiLanguage?: "en" | "ar";
+        };
+      };
+      try {
+        actor = await actorFor(req.headers, String(req.params.workspaceId));
+        assertRole(actor, "write");
+        input = z
+          .object({
+            content: z.string().min(1).max(3000),
+            context: z.object({
+              play: z.enum(["P1", "P2", "P3", "P4"]),
+              prospectIds: z.array(z.uuid()).max(100),
+              language: z.enum(["en", "ar-EG", "ar-Gulf", "ar"]).optional(),
+              uiLanguage: z.enum(["en", "ar"]).optional(),
+            }),
+          })
+          .parse(req.body);
+      } catch (error) {
+        res
+          .status(
+            error instanceof HttpException
+              ? error.getStatus()
+              : error instanceof ZodError
+                ? 400
+                : 401,
+          )
+          .json({ message: safeError(error) });
+        return;
+      }
+      res.set({
+        "Content-Type": "text/event-stream",
+        "Cache-Control": "no-cache",
+        Connection: "keep-alive",
+        "X-Accel-Buffering": "no",
+      });
+      res.flushHeaders();
+      const abort = new AbortController();
+      res.on("close", () => abort.abort());
+      try {
+        await runAgentTurn(
+          actor,
+          input.content,
+          input.context,
+          (event) => {
+            if (!res.destroyed) res.write(`data: ${JSON.stringify(event)}\n\n`);
+          },
+          abort.signal,
+        );
+      } catch (error) {
+        if (!res.destroyed)
+          res.write(
+            `data: ${JSON.stringify({ type: "error", message: safeError(error) })}\n\n`,
+          );
+      }
+      res.end();
+    },
+  );
+// Voice dictation: raw audio body, transcribed and discarded (PRD AI-04).
+app
+  .getHttpAdapter()
+  .getInstance()
+  .post(
+    "/api/workspaces/:workspaceId/transcribe",
+    express.raw({ type: "audio/*", limit: MAX_AUDIO_BYTES }),
+    async (req: Request, res: Response) => {
+      try {
+        const actor = await actorFor(
+          req.headers,
+          String(req.params.workspaceId),
+        );
+        const language = z
+          .enum(["en", "ar", "auto"])
+          .catch("auto")
+          .parse(req.query.language);
+        res.json(
+          await transcribeAudio(
+            actor,
+            Buffer.isBuffer(req.body) ? req.body : Buffer.alloc(0),
+            String(req.headers["content-type"] ?? ""),
+            language,
+            req.query.model === "alt",
+          ),
+        );
+      } catch (error) {
+        res
+          .status(error instanceof HttpException ? error.getStatus() : 400)
+          .json({ message: safeError(error) });
+      }
+    },
+  );
+app
+  .getHttpAdapter()
+  .getInstance()
+  .get("/api/ai/status", (_req: Request, res: Response) => {
+    res.json({ live: aiLive(), costs: AI_COSTS });
+  });
 app
   .getHttpAdapter()
   .getInstance()

@@ -30,3 +30,5 @@ GTM Files/
 *.tfvars.json
 crash.log
 crash.*.log
+evaluation/agent/clips/
+evaluation/agent/results/*.raw.json

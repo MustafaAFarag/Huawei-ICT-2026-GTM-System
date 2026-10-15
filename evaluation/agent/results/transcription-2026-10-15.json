@@ -1,0 +1,182 @@
+{
+  "date": "2026-10-15",
+  "note": "Synthetic TTS clips; not native-speaker dialect accuracy.",
+  "summary": [
+    {
+      "model": "whisper",
+      "clips": 10,
+      "werEnglish": 0.025,
+      "werArabic": 0.099,
+      "medianMs": 39959
+    },
+    {
+      "model": "gpt-4o-transcribe",
+      "clips": 10,
+      "werEnglish": 0.025,
+      "werArabic": 0.05,
+      "medianMs": 932
+    }
+  ],
+  "rows": [
+    {
+      "model": "whisper",
+      "clip": "en-1",
+      "language": "en",
+      "wer": 0,
+      "ms": 48881,
+      "transcript": "spoke to the head of people. She asked me to call back on Sunday after payroll closes."
+    },
+    {
+      "model": "whisper",
+      "clip": "en-2",
+      "language": "en",
+      "wer": 0.125,
+      "ms": 39787,
+      "transcript": "Booked a 30-minute meeting for Tuesday at 11 with the founder and the finance manager."
+    },
+    {
+      "model": "whisper",
+      "clip": "en-3",
+      "language": "en",
+      "wer": 0,
+      "ms": 39872,
+      "transcript": "No answer on the first two attempts. Left a short voicemail about the outsourced payroll desk."
+    },
+    {
+      "model": "whisper",
+      "clip": "en-4",
+      "language": "en",
+      "wer": 0,
+      "ms": 39815,
+      "transcript": "Find Tier A fintech accounts in Riyadh that are hiring an HR generalist this month."
+    },
+    {
+      "model": "whisper",
+      "clip": "en-5",
+      "language": "en",
+      "wer": 0,
+      "ms": 39697,
+      "transcript": "He said they are not interested right now because they just hired an HR manager."
+    },
+    {
+      "model": "whisper",
+      "clip": "ar-eg-1",
+      "language": "ar",
+      "wer": 0.143,
+      "ms": 40944,
+      "transcript": "كلمت مديرة الموارد البشرية وقالت لي أكلمها تاني يوم الأحد بعدما يخلصوا المرتبات."
+    },
+    {
+      "model": "whisper",
+      "clip": "ar-eg-2",
+      "language": "ar",
+      "wer": 0.25,
+      "ms": 39978,
+      "transcript": "حجزنا اجتماع نصف ساعة يوم الثلاث. الساعة 11 مع المؤسس ومدير المالية."
+    },
+    {
+      "model": "whisper",
+      "clip": "ar-eg-3",
+      "language": "ar",
+      "wer": 0.1,
+      "ms": 39865,
+      "transcript": "عايز رسالة أصيرة للشركات اللي بتوظف في القاهرة الشهر ده"
+    },
+    {
+      "model": "whisper",
+      "clip": "ar-gulf-1",
+      "language": "ar",
+      "wer": 0,
+      "ms": 39959,
+      "transcript": "تواصلت مع مدير العمليات وقال إنهم مهتمين ويبون عرض سعر الأسبوع الجاي."
+    },
+    {
+      "model": "whisper",
+      "clip": "ar-msa-1",
+      "language": "ar",
+      "wer": 0,
+      "ms": 40053,
+      "transcript": "يرجى إعداد ملخص للحسابات ذات الأولوية العالية في قطاع التقنية المالية بالرياض."
+    },
+    {
+      "model": "gpt-4o-transcribe",
+      "clip": "en-1",
+      "language": "en",
+      "wer": 0,
+      "ms": 2186,
+      "transcript": "Spoke to the head of people. She asked me to call back on Sunday after payroll closes."
+    },
+    {
+      "model": "gpt-4o-transcribe",
+      "clip": "en-2",
+      "language": "en",
+      "wer": 0.125,
+      "ms": 909,
+      "transcript": "Booked a 30-minute meeting for Tuesday at 11 with the founder and the finance manager."
+    },
+    {
+      "model": "gpt-4o-transcribe",
+      "clip": "en-3",
+      "language": "en",
+      "wer": 0,
+      "ms": 1541,
+      "transcript": "No answer on the first two attempts. Left a short voicemail about the outsourced payroll desk."
+    },
+    {
+      "model": "gpt-4o-transcribe",
+      "clip": "en-4",
+      "language": "en",
+      "wer": 0,
+      "ms": 959,
+      "transcript": "Find tier A fintech accounts in Riyadh that are hiring an HR generalist this month."
+    },
+    {
+      "model": "gpt-4o-transcribe",
+      "clip": "en-5",
+      "language": "en",
+      "wer": 0,
+      "ms": 763,
+      "transcript": "He said, \"They are not interested right now because they just hired an HR manager.\""
+    },
+    {
+      "model": "gpt-4o-transcribe",
+      "clip": "ar-eg-1",
+      "language": "ar",
+      "wer": 0,
+      "ms": 932,
+      "transcript": "كلمت مديرة الموارد البشرية وقالت لي أكلمها تاني يوم الأحد بعد ما يخلصوا المرتبات."
+    },
+    {
+      "model": "gpt-4o-transcribe",
+      "clip": "ar-eg-2",
+      "language": "ar",
+      "wer": 0.083,
+      "ms": 929,
+      "transcript": "حجزنا اجتماع نص ساعة يوم التلات الساعة 11 مع المؤسس ومدير المالية."
+    },
+    {
+      "model": "gpt-4o-transcribe",
+      "clip": "ar-eg-3",
+      "language": "ar",
+      "wer": 0,
+      "ms": 813,
+      "transcript": "عايز رسالة قصيرة للشركات اللي بتوظف في القاهرة الشهر ده."
+    },
+    {
+      "model": "gpt-4o-transcribe",
+      "clip": "ar-gulf-1",
+      "language": "ar",
+      "wer": 0,
+      "ms": 851,
+      "transcript": "تواصلت مع مدير العمليات وقال إنهم مهتمين ويبون عرض سعر الأسبوع الجاي."
+    },
+    {
+      "model": "gpt-4o-transcribe",
+      "clip": "ar-msa-1",
+      "language": "ar",
+      "wer": 0.167,
+      "ms": 935,
+      "transcript": "يرجع إعداد الملخص للحسابات ذات الأولوية العالية في قطاع التقنية المالية بالرياض."
+    }
+  ]
+}

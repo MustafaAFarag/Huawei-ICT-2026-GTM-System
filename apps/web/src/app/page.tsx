@@ -60,8 +60,7 @@ export default function Page() {
     [events, setEvents] = useState<
       { id: number; message: string; kind: string }[]
     >([]);
-  const [chats, setChats] = useState<Chat[]>([]),
-    [chatTool, setChatTool] = useState<ToolName | null>(null);
+  const [chats, setChats] = useState<Chat[]>([]);
   const [preview, setPreview] = useState<Asset | null>(null),
     [prospect, setProspect] = useState<Prospect | null>(null);
   const activeWorkspace = useRef(ws);
@@ -104,7 +103,6 @@ export default function Page() {
     setProposal(null);
     setPreview(null);
     setChats([]);
-    setChatTool(null);
     setActiveRun(null);
     setError("");
     if (ws) {
@@ -139,11 +137,7 @@ export default function Page() {
         void client
           .workspace<Chat[]>(ws, "/chat")
           .then((history) => {
-            if (activeWorkspace.current !== ws) return;
-            setChats(history);
-            const last = history.at(-1);
-            if (last?.role === "assistant")
-              setChatTool(last.context?.tool ?? null);
+            if (activeWorkspace.current === ws) setChats(history);
           })
           .catch(() => {});
       }
@@ -428,8 +422,8 @@ export default function Page() {
             <Assistant
               chats={chats}
               setChats={setChats}
-              chatTool={chatTool}
-              setChatTool={setChatTool}
+              onQuote={setProposal}
+              onNavigate={setTab}
               onClose={() => setChatOpen(false)}
             />
           </WorkspaceProvider>

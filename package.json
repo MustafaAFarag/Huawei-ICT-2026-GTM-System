@@ -28,10 +28,13 @@
     "backup:local": "node scripts/backup-local.mjs"
   },
   "devDependencies": {
+    "@ai-sdk/azure": "4.0.101",
     "@playwright/test": "1.64.0",
     "@types/node": "24.10.1",
+    "ai": "7.0.140",
     "prettier": "3.6.2",
     "tsx": "4.20.6",
-    "typescript": "5.9.3"
+    "typescript": "5.9.3",
+    "zod": "4.3.6"
   }
 }

@@ -5,14 +5,8 @@ import type { ToolName } from "@revenue/contracts";
 const companyName = `Synthetic Test Lab ${randomUUID().slice(0, 8)}`;
 const email = `noura-${randomUUID().slice(0, 8)}@synthetic-demo.example`;
 async function login(page: Page) {
+  // The session comes from e2e/global-setup.ts (sign-in is rate-limited).
   await page.goto("/");
-  await page
-    .getByRole("textbox", { name: "Email", exact: true })
-    .fill(process.env.DEMO_EMAIL!);
-  await page
-    .getByRole("textbox", { name: "Password", exact: true })
-    .fill(process.env.DEMO_PASSWORD!);
-  await page.getByRole("button", { name: "Sign in", exact: true }).click();
   await expect(
     page.getByRole("heading", { name: "Plays", exact: true }),
   ).toBeVisible();

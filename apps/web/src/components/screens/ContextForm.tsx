@@ -14,7 +14,20 @@ export function ContextForm() {
   );
   const onboarding = data.runs.find(
     (r) => r.tool === "onboard" && r.state === "succeeded",
-  )?.output as { proposedDescription?: string; website?: string }[] | undefined;
+  )?.output as
+    | {
+        proposedDescription?: string;
+        website?: string;
+        brand?: {
+          name: string;
+          primary: string | null;
+          accent: string | null;
+          logo: string | null;
+          website: string;
+        };
+      }[]
+    | undefined;
+  const brand = onboarding?.[0]?.brand;
   const isOwner = data.role === "owner";
   return (
     <div className="detail-grid">
@@ -172,6 +185,49 @@ export function ContextForm() {
             </p>
           </form>
         </Panel>
+        {brand && (
+          <Panel eyebrow={t("Brand kit from website")} title={brand.name}>
+            <div className="brand-proposal">
+              {[brand.primary, brand.accent].filter(Boolean).map((color) => (
+                <span key={color} className="brand-chip">
+                  <span className="swatch" style={{ background: color! }} aria-hidden />
+                  <bdi className="mono">{color}</bdi>
+                </span>
+              ))}
+              {brand.logo && (
+                <bdi className="mono muted small truncate" title={brand.logo}>
+                  {new URL(brand.logo).hostname}
+                </bdi>
+              )}
+            </div>
+            <p className="muted small">
+              {t("Colours and name were read from the website. Review before using them on assets.")}
+            </p>
+            <Button
+              disabled={!isOwner || busy || !brand.primary}
+              onClick={() =>
+                void action(
+                  () =>
+                    client.workspace(ws, "", {
+                      method: "PATCH",
+                      body: JSON.stringify({
+                        brand: {
+                          name: brand.name,
+                          website: brand.website,
+                          primary: brand.primary,
+                          accent: brand.accent ?? data.workspace.brand.accent,
+                          ...(brand.logo ? { logo: brand.logo } : {}),
+                        },
+                      }),
+                    }),
+                  t("Brand kit saved. Existing approvals were invalidated."),
+                )
+              }
+            >
+              {t("Use this brand kit")}
+            </Button>
+          </Panel>
+        )}
         {onboarding?.[0]?.proposedDescription && (
           <Panel eyebrow={t("Proposal")} title={t("Website context proposal")}>
             <p dir="auto" className="ai-text">

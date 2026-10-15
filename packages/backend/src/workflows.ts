@@ -539,11 +539,14 @@ export class WorkflowService {
         outputs.push(result);
       } else if (input.tool === "onboard") {
         if (!input.website) throw new Error("Enter your company website.");
-        const { publicPage, pageText } = await import("./public-web.js");
+        const { publicPage, pageText, brandFromHtml } = await import(
+          "./public-web.js"
+        );
         const page = await publicPage(input.website);
         outputs.push({
           website: page.url,
           proposedDescription: pageText(page.html).slice(0, 1800),
+          brand: brandFromHtml(page.html, page.url),
           needsReview: true,
         });
         actual = run.estimate;
@@ -844,6 +847,7 @@ export class WorkflowService {
               snapshot,
               evidence,
               input.language,
+              input.message,
             );
             const assetId = randomUUID();
             const htmlKey = `${assetId}.html`,

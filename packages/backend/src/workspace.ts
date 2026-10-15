@@ -160,6 +160,7 @@ export class WorkspaceService {
             primary: z.string().regex(/^#[\da-f]{6}$/i),
             accent: z.string().regex(/^#[\da-f]{6}$/i),
             website: z.url(),
+            logo: z.url().optional(),
           })
           .optional(),
         offers: z

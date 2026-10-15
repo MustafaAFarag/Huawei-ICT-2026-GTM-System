@@ -16,6 +16,7 @@ import { useWorkspace } from "../workspace-context";
 import { usePrefs } from "../../lib/prefs";
 import { client } from "../../lib/client";
 import type { Prospect } from "../../lib/types";
+import { CallLog } from "../CallLog";
 
 export function ProspectReview({ prospect }: { prospect: Prospect }) {
   const { ws, canApprove, action, setProspect } = useWorkspace();
@@ -231,6 +232,7 @@ export function ProspectReview({ prospect }: { prospect: Prospect }) {
             </Button>
           </div>
         </Panel>
+        <CallLog prospect={prospect} />
       </aside>
     </form>
   );

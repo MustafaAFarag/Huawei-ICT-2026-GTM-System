@@ -11,6 +11,8 @@ export function AssetStudio({ onPreview }: { onPreview: (a: Asset) => void }) {
   const { t } = usePrefs();
   if (!data.assets.length)
     return (
+      <>
+      <TemplateLibrary />
       <Empty
         title={t("Make something useful for the conversation")}
         icon={<IconFileText size={18} />}
@@ -19,9 +21,12 @@ export function AssetStudio({ onPreview }: { onPreview: (a: Asset) => void }) {
           "Select a prospect, review its sources, and choose Make asset in a play. P1/P3 produce an offer one-pager; P4 produces a mini-audit.",
         )}
       </Empty>
+      </>
     );
   const brand = data.workspace.brand;
   return (
+    <>
+    <TemplateLibrary />
     <div className="asset-grid">
       {data.assets.map((a) => {
         const rtl = a.language.startsWith("ar");
@@ -103,6 +108,49 @@ export function AssetStudio({ onPreview }: { onPreview: (a: Asset) => void }) {
           </article>
         );
       })}
+    </div>
+    </>
+  );
+}
+
+// Template library (PRD §5.4): shipped templates first; later ones are shown with their phase.
+const TEMPLATES = [
+  { id: "offer-one-pager", name: "Offer one-pager", plays: "P1 · P3", phase: "ready" },
+  { id: "mini-audit", name: "Mini-audit report", plays: "P4", phase: "ready" },
+  { id: "case-study", name: "Case study + carousel", plays: "P6", phase: "D+" },
+  { id: "lead-magnet", name: "Checklist lead magnet", plays: "P5", phase: "D+" },
+  { id: "linkedin-carousel", name: "LinkedIn carousel", plays: "P7", phase: "N" },
+  { id: "proposal", name: "Short proposal", plays: "P10", phase: "N" },
+  { id: "client-report", name: "Weekly client report", plays: "P13", phase: "N" },
+] as const;
+
+function TemplateLibrary() {
+  const { setTab, setPlay } = useWorkspace();
+  const { t } = usePrefs();
+  return (
+    <div className="template-strip" role="list" aria-label={t("Templates")}>
+      {TEMPLATES.map((tpl) => (
+        <button
+          key={tpl.id}
+          role="listitem"
+          className={`template ${tpl.phase === "ready" ? "" : "soon"}`}
+          disabled={tpl.phase !== "ready"}
+          onClick={() => {
+            setPlay(tpl.id === "mini-audit" ? "P4" : "P1");
+            setTab("Plays");
+          }}
+        >
+          <span className="template-thumb" aria-hidden>
+            <span />
+            <span />
+            <span />
+          </span>
+          <strong>{t(tpl.name)}</strong>
+          <span className="mono muted small">
+            {tpl.plays} · {tpl.phase === "ready" ? t("ready") : tpl.phase}
+          </span>
+        </button>
+      ))}
     </div>
   );
 }

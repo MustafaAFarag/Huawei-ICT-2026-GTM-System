@@ -15,3 +15,4 @@ export { hashPassword } from "better-auth/crypto";
 export * from "./model.js";
 export * from "./events.js";
 export * from "./demo-data.js";
+export * from "./agent/index.js";

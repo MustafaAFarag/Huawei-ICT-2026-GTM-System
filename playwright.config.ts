@@ -3,6 +3,7 @@ import { existsSync } from "node:fs";
 if (existsSync(".env")) process.loadEnvFile(".env");
 export default defineConfig({
   testDir: "./e2e",
+  globalSetup: "./e2e/global-setup.ts",
   timeout: 120000,
   expect: { timeout: 30000 },
   workers: 1,
@@ -16,6 +17,7 @@ export default defineConfig({
           ? undefined
           : (process.env.CHROME_PATH ?? "/usr/bin/google-chrome-stable"),
     },
+    storageState: ".local/e2e-auth.json",
     trace: "retain-on-failure",
     screenshot: "only-on-failure",
   },

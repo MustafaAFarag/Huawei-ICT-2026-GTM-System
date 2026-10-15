@@ -34,6 +34,13 @@ function fonts() {
   return fontCss;
 }
 
+// The model never sees the base64 fonts (they would cost tokens and cannot be reproduced);
+// they are stripped from its input and put back into its output.
+export const stripFonts = (html: string) =>
+  html.replace(/\/\*fonts\*\/[\s\S]*?\/\*\/fonts\*\//, "");
+export const injectFonts = (html: string) =>
+  html.replace(/<style>/i, `<style>/*fonts*/${fonts()}/*/fonts*/`);
+
 const hex = (value: string | undefined, fallback: string) =>
   value && /^#[0-9a-f]{6}$/i.test(value) ? value : fallback;
 
@@ -91,7 +98,7 @@ export function assetHtml(
     ? `<section class="offer"><p class="eyebrow">${L("NEXT STEP", "الخطوة التالية")}</p><h3>${L("Choose two priorities", "اختاروا أولويتين")}</h3><p>${L("Review these observations and sources, then choose priorities before making changes.", "راجعوا الملاحظات والمصادر وحددوا الأولويات قبل إجراء أي تغيير.")}</p></section>`
     : `<section class="offer"><p class="eyebrow">${L("THE PROPOSED OFFER", "العرض المقترح")}</p><p class="offer-text" dir="auto">${escapeHtml(offer ?? "")}</p><p>${L("Let’s discuss whether this offer fits your team.", "نناقش مع بعض إذا كان العرض مناسبًا لفريقكم.")}</p></section>`;
   const date = new Date().toISOString().slice(0, 10);
-  const css = `${fonts()}
+  const css = `/*fonts*/${fonts()}/*/fonts*/
 @page{size:A4;margin:14mm 16mm}
 *{box-sizing:border-box}
 :root{--paper:#fff;--ink:#0b0c0e;--body:#2a2b2e;--meta:#6b6c70;--rule:#e4e4e7;--wash:#f6f6f7;--brand:${color};--brand-accent:${accent};--on-brand:${ink}}

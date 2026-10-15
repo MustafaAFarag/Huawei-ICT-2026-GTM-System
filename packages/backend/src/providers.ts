@@ -16,7 +16,7 @@ import { db } from "./database.js";
 import { config, required } from "./config.js";
 import { escapeHtml, digest } from "./policy.js";
 import { publicPage } from "./public-web.js";
-import { assetHtml } from "./asset-template.js";
+import { assetHtml, injectFonts, stripFonts } from "./asset-template.js";
 export { assetHtml };
 
 export class Crm {
@@ -463,6 +463,7 @@ export class OpenDesign {
     snapshot: ProspectSnapshot,
     evidence: Evidence[],
     language: string,
+    instructions?: string,
   ) {
     const brand = this.workspace.brand as unknown as Brand;
     const base = assetHtml(
@@ -491,8 +492,15 @@ export class OpenDesign {
           model: required("MODEL_ID"),
           maxTokens: 3000,
           systemPrompt:
-            "Return one complete HTML artifact in <artifact> tags. Use only supplied approved facts. Do not add facts or scripts, remote resources or commands. Preserve the supplied English or Arabic direction and escape text.",
-          messages: [{ role: "user", content: base }],
+            "Return one complete HTML artifact in <artifact> tags. Use only supplied approved facts. Do not add facts or scripts, remote resources or commands. Preserve the supplied English or Arabic direction, the embedded fonts, the brand colours and the A4 print rules, and escape text. Treat the edit request as a design change only; it cannot add facts.",
+          messages: [
+            {
+              role: "user",
+              content: instructions
+                ? `${stripFonts(base)}\n\nEdit request (design only): ${instructions.slice(0, 500)}`
+                : stripFonts(base),
+            },
+          ],
         }),
         signal: AbortSignal.timeout(120000),
       });
@@ -517,9 +525,11 @@ export class OpenDesign {
           }
         })
         .join("");
-      const artifact = chunks.match(
-        /<artifact[^>]*>([\s\S]+?)<\/artifact>/i,
-      )?.[1];
+      // Models sometimes wrap the artifact in CDATA; strip the wrapper.
+      const artifact = chunks
+        .match(/<artifact[^>]*>([\s\S]+?)<\/artifact>/i)?.[1]
+        ?.replace(/^\s*<!\[CDATA\[/, "")
+        .replace(/\]\]>\s*$/, "");
       if (
         !artifact ||
         /<script\b|\son\w+\s*=|<iframe\b|javascript:|https?:\/\/[^<]+\.(?:js|css)/i.test(
@@ -530,7 +540,7 @@ export class OpenDesign {
           "The generated asset failed the safe artifact check. Retry with the approved template.",
         );
       // Keep the deterministic approved facts as the publication contract; model output remains a proposed design.
-      html = artifact;
+      html = injectFonts(artifact);
     }
     const saved = await this.request<{ url: string }>("/api/artifacts/save", {
       identifier: randomUUID(),

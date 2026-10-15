@@ -109,5 +109,5 @@ export type Chat = {
   id: string;
   role: string;
   content: string;
-  context?: { tool?: ToolName };
+  context?: { tool?: ToolName; tools?: string[]; quoteId?: string; model?: string };
 };

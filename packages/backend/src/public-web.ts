@@ -131,3 +131,45 @@ export function pageText(html: string) {
     .slice(0, 12000)
     .trim();
 }
+
+// Brand kit from a website (STU-02): name, colours and logo proposed for human review.
+// Colours come from theme-color and the most frequent saturated hex values in inline CSS.
+export function brandFromHtml(html: string, url: string) {
+  const meta = (name: string) =>
+    html.match(
+      new RegExp(`<meta[^>]+(?:name|property)=["']${name}["'][^>]+content=["']([^"']+)["']`, "i"),
+    )?.[1] ??
+    html.match(
+      new RegExp(`<meta[^>]+content=["']([^"']+)["'][^>]+(?:name|property)=["']${name}["']`, "i"),
+    )?.[1];
+  const title = html.match(/<title[^>]*>([^<]{1,120})<\/title>/i)?.[1]?.trim();
+  const counts = new Map<string, number>();
+  for (const m of html.matchAll(/#([0-9a-f]{6})\b/gi)) {
+    const hex = `#${m[1]!.toLowerCase()}`;
+    const [r, g, b] = [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16));
+    const spread = Math.max(r!, g!, b!) - Math.min(r!, g!, b!);
+    if (spread < 40) continue; // skip greys, black and white
+    counts.set(hex, (counts.get(hex) ?? 0) + 1);
+  }
+  const ranked = [...counts.entries()].sort((a, b) => b[1] - a[1]).map(([hex]) => hex);
+  const theme = meta("theme-color");
+  const primary = theme && /^#[0-9a-f]{6}$/i.test(theme) ? theme.toLowerCase() : ranked[0];
+  const accent = ranked.find((hex) => hex !== primary);
+  const icon =
+    meta("og:image") ??
+    html.match(/<link[^>]+rel=["'][^"']*icon[^"']*["'][^>]+href=["']([^"']+)["']/i)?.[1];
+  let logo: string | undefined;
+  try {
+    logo = icon ? new URL(icon, url).toString() : undefined;
+  } catch {
+    logo = undefined;
+  }
+  return {
+    name: (meta("og:site_name") ?? title?.split(/[|\-–·]/)[0])?.trim() || new URL(url).hostname,
+    primary: primary ?? null,
+    accent: accent ?? null,
+    logo: logo ?? null,
+    website: url,
+    needsReview: true,
+  };
+}
