@@ -4,6 +4,7 @@ import { IconSearch, IconUpload, IconUsers } from "@revenue/ui";
 import { BUCKETS } from "@revenue/contracts";
 import { client } from "../../lib/client";
 import { Duplicates } from "../Duplicates";
+import { ImportHistory } from "../ImportHistory";
 import {
   Badge,
   Button,
@@ -197,6 +198,7 @@ export function Accounts() {
           </div>
         )}
       </Panel>
+      <ImportHistory key={ws} revision={outcomes} />
       {!data.prospects.length ? (
         <Empty
           title={t("Your first accounts belong here")}

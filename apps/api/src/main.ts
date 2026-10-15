@@ -53,10 +53,12 @@ import {
   suggestCallOutcome,
   saveCallOutcome,
   GtmService,
+  ImportHistoryService,
 } from "@revenue/backend";
 import type { Actor } from "@revenue/contracts";
 
 const gtm = new GtmService();
+const importHistory = new ImportHistoryService();
 const workspaceService = new WorkspaceService(),
   workflows = new WorkflowService(),
   storage = new Storage();
@@ -111,6 +113,20 @@ class ApiController {
     @Body() body: unknown,
   ) {
     return workspaceService.configure(await actorFor(req.headers, id), body);
+  }
+  @Get("workspaces/:workspaceId/imports") async imports(
+    @Req() req: Request,
+    @Param("workspaceId") ws: string,
+  ) {
+    const query = z.object({ cursor: z.uuid().optional() }).parse(req.query);
+    return importHistory.list(await actorFor(req.headers, ws), query.cursor);
+  }
+  @Get("workspaces/:workspaceId/imports/:id") async importDetail(
+    @Req() req: Request,
+    @Param("workspaceId") ws: string,
+    @Param("id") id: string,
+  ) {
+    return importHistory.detail(await actorFor(req.headers, ws), z.uuid().parse(id));
   }
   @Patch("workspaces/:workspaceId/prospects/:id") async prospect(
     @Req() req: Request,

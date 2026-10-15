@@ -1,13 +1,52 @@
 // Arabic interface strings (business Arabic). Keys are the English source strings;
 // a missing key falls back to English. Generated content language is chosen per play.
 export const AR: Record<string, string> = {
-  "Prepare role-specific questions from reviewed context. Answers and scores stay empty until you confirm them.": "جهّز أسئلة مناسبة للدور من السياق المراجع لا تُسجّل إجابات أو تقييمات قبل تأكيدها",
+  "Import history": "سجل الاستيراد",
+  "Show import history": "عرض سجل الاستيراد",
+  "Refresh history": "تحديث السجل",
+  "Versions group uploads with the same filename. Only imported records, row outcomes and file metadata are retained; the uploaded file is not stored.":
+    "تُجمع الملفات ذات الاسم نفسه في نسخ متتابعة تُحفظ السجلات ونتائج الصفوف وبيانات الملف فقط ولا يُحفظ الملف المرفوع",
+  "Could not load import history. Try again.":
+    "تعذّر تحميل سجل الاستيراد أعد المحاولة",
+  "No imports yet": "لا توجد عمليات استيراد بعد",
+  "Import a lead file above to track added, changed and unchanged rows.":
+    "ارفع ملف الحسابات أعلاه لمتابعة الصفوف المضافة والمعدّلة والتي لم تتغيّر",
+  "File / version": "الملف والنسخة",
+  Added: "مضاف",
+  Changed: "معدّل",
+  Unchanged: "دون تغيير",
+  "Earlier import": "استيراد سابق",
+  "Legacy import": "استيراد قديم",
+  "View import": "عرض الاستيراد",
+  "Load older imports": "تحميل استيرادات أقدم",
+  "Import details": "تفاصيل الاستيراد",
+  "Close details": "إغلاق التفاصيل",
+  "Compared with the account values saved before this upload. Changed fields invalidate previous approvals.":
+    "تُقارن القيم بالسجل المحفوظ قبل هذا الرفع التعديلات تُلغي الاعتمادات السابقة",
+  "Import row filter": "تصفية صفوف الاستيراد",
+  "All rows": "كل الصفوف",
+  "Changed rows": "الصفوف المعدّلة",
+  "No rows match this filter.": "لا توجد صفوف تطابق التصفية",
+  Row: "الصف",
+  Result: "النتيجة",
+  "Changes / reason": "التغييرات والسبب",
+  "New record": "سجل جديد",
+  "Review this row before retrying.": "راجع هذا الصف قبل إعادة المحاولة",
+  "Show more rows": "عرض صفوف إضافية",
+  added: "مضاف",
+  changed: "معدّل",
+  unchanged: "دون تغيير",
+  interrupted: "متوقف قبل الاكتمال",
+  processing: "قيد المعالجة",
+  "Prepare role-specific questions from reviewed context. Answers and scores stay empty until you confirm them.":
+    "جهّز أسئلة مناسبة للدور من السياق المراجع لا تُسجّل إجابات أو تقييمات قبل تأكيدها",
   "Guide language": "لغة الدليل",
   "Preparing guide…": "جارٍ إعداد الدليل…",
   "Prepare interview guide": "إعداد دليل المقابلة",
   "Download interview PDF": "تنزيل أسئلة المقابلة PDF",
   "Interview questions": "أسئلة المقابلة",
-  "Could not prepare the interview guide. Try again.": "تعذّر إعداد دليل المقابلة أعد المحاولة",
+  "Could not prepare the interview guide. Try again.":
+    "تعذّر إعداد دليل المقابلة أعد المحاولة",
   "Contact assignment": "توزيع جهات الاتصال",
   "Distribute new imports across owners and operators with the fewest active contacts. Existing owners are retained.":
     "وزّع الحسابات الجديدة على المسؤولين الأقل انشغالًا مع الاحتفاظ بالمسؤولين عن الحسابات الحالية",

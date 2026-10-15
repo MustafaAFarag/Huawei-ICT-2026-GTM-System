@@ -1,4 +1,5 @@
 import { test, expect } from "@playwright/test";
+import { randomUUID } from "node:crypto";
 
 test("interview guides show bilingual questions and export PDFs without inventing answers", async ({
   page,
@@ -75,4 +76,81 @@ test("interview guides show bilingual questions and export PDFs without inventin
     .getByRole("button", { name: "Download interview PDF", exact: true })
     .click();
   expect((await download).suggestedFilename()).toBe("discovery-guide-ar.pdf");
+});
+
+test("import history groups filename revisions and shows changed fields after reload", async ({
+  page,
+  context,
+}) => {
+  await page.goto("/");
+  const me = await (await context.request.get("/api/me")).json();
+  const ws = me.workspaces.find(
+    (m: any) => m.workspace.name === "Revenue Demo A",
+  ).workspace.id;
+  const suffix = randomUUID()
+    .replace(/[^a-z]/g, "")
+    .slice(0, 12);
+  const filename = `revision-${suffix}.csv`;
+  const csv = (title: string) =>
+    `firstName,lastName,email,company,website,title\nTester,${suffix},revision${suffix}@synthetic-demo.example,Revision ${suffix},https://example.com,${title}\n`;
+  const upload = async (title: string) => {
+    const response = await context.request.post(
+      `/api/workspaces/${ws}/imports`,
+      {
+        multipart: {
+          requestKey: randomUUID(),
+          file: {
+            name: filename,
+            mimeType: "text/csv",
+            buffer: Buffer.from(csv(title)),
+          },
+        },
+      },
+    );
+    expect(response.ok()).toBe(true);
+    return response.json();
+  };
+  const first = await upload("Founder");
+  const second = await upload("Finance Director");
+  const detail = await (
+    await context.request.get(`/api/workspaces/${ws}/imports/${second.id}`)
+  ).json();
+  expect(detail).toMatchObject({
+    version: 2,
+    previousId: first.id,
+    counts: { changed: 1 },
+  });
+  expect(detail.outcomes[0].changes).toContainEqual({
+    field: "title",
+    before: "Founder",
+    after: "Finance Director",
+  });
+  const other = me.workspaces.find((m: any) => m.workspace.id !== ws).workspace
+    .id;
+  expect(
+    (
+      await context.request.get(`/api/workspaces/${other}/imports/${second.id}`)
+    ).status(),
+  ).toBe(404);
+  await page.getByLabel("Workspace", { exact: true }).selectOption(ws);
+  const hide = page.getByRole("button", {
+    name: "Hide assistant",
+    exact: true,
+  });
+  if (await hide.isVisible()) await hide.click();
+  await page.getByRole("button", { name: "Accounts", exact: true }).click();
+  await page.getByText("Show import history", { exact: true }).click();
+  const row = page.getByRole("row").filter({ hasText: filename }).first();
+  await row.getByRole("button", { name: "View import", exact: true }).click();
+  const details = page.getByLabel("Import details", { exact: true });
+  await expect(details).toContainText("Founder");
+  await expect(details).toContainText("Finance Director");
+  await page.getByRole("button", { name: "Changed rows", exact: true }).click();
+  await expect(details.getByText("changed", { exact: true })).toBeVisible();
+  await page.reload();
+  await page.getByRole("button", { name: "Accounts", exact: true }).click();
+  await page.getByText("Show import history", { exact: true }).click();
+  await expect(
+    page.getByRole("row").filter({ hasText: filename }).first(),
+  ).toBeVisible();
 });

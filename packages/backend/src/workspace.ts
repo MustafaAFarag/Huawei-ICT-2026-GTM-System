@@ -352,17 +352,39 @@ export class WorkspaceService {
     }
     if (rows.length > 1000)
       throw new BadRequestException("Import at most 1,000 rows per file.");
-    batch = await db.importBatch.upsert({
-      where: {
-        workspaceId_requestKey: { workspaceId: actor.workspaceId, requestKey },
-      },
-      create: {
-        workspaceId: actor.workspaceId,
-        requestKey,
-        digest: inputDigest,
-        outcomes: [],
-      },
-      update: {},
+    const displayName = filename
+      .split(/[\\/]/)
+      .at(-1)!
+      .replace(/[\u0000-\u001f]/g, "")
+      .slice(0, 200);
+    const seriesKey = displayName.toLowerCase();
+    batch = await serializable(async (tx) => {
+      const existing = await tx.importBatch.findUnique({
+        where: {
+          workspaceId_requestKey: {
+            workspaceId: actor.workspaceId,
+            requestKey,
+          },
+        },
+      });
+      if (existing) return existing;
+      const previous = await tx.importBatch.findFirst({
+        where: { workspaceId: actor.workspaceId, seriesKey },
+        orderBy: { version: "desc" },
+      });
+      return tx.importBatch.create({
+        data: {
+          workspaceId: actor.workspaceId,
+          requestKey,
+          digest: inputDigest,
+          outcomes: [],
+          filename: displayName,
+          seriesKey,
+          rowCount: rows.length,
+          version: (previous?.version ?? 0) + 1,
+          previousId: previous?.id ?? null,
+        },
+      });
     });
     if (batch.digest !== inputDigest)
       throw new BadRequestException(
@@ -382,6 +404,8 @@ export class WorkspaceService {
       state: string;
       id?: string;
       message?: string;
+      change?: "added" | "changed" | "unchanged";
+      changes?: { field: string; before: unknown; after: unknown }[];
     }[];
     const workspace = await this.workspace(actor);
     const limit =
@@ -438,6 +462,8 @@ export class WorkspaceService {
           let merged: ProspectSnapshot = snapshot,
             changed = false,
             isNew = false;
+          let changes: { field: string; before: unknown; after: unknown }[] =
+            [];
           try {
             const prospect = await serializable(async (tx) => {
               const existing = await tx.prospect.findUnique({
@@ -540,6 +566,27 @@ export class WorkspaceService {
                 ...snapshot,
               } as ProspectSnapshot;
               changed = digest(current.snapshot) !== digest(merged);
+              changes = Object.keys(snapshot)
+                .filter(
+                  (key) =>
+                    digest(
+                      (current.snapshot as Record<string, unknown>)[key] ??
+                        null,
+                    ) !==
+                    digest(
+                      (snapshot as unknown as Record<string, unknown>)[key] ??
+                        null,
+                    ),
+                )
+                .map((field) => ({
+                  field,
+                  before:
+                    (current.snapshot as Record<string, unknown>)[field] ??
+                    null,
+                  after:
+                    (snapshot as unknown as Record<string, unknown>)[field] ??
+                    null,
+                }));
               if (changed) {
                 await tx.draft.updateMany({
                   where: {
@@ -583,6 +630,8 @@ export class WorkspaceService {
                 : changed
                   ? "Updated from the new file"
                   : "Unchanged",
+              change: isNew ? "added" : changed ? "changed" : "unchanged",
+              changes: isNew ? [] : changes,
             };
           } catch (error) {
             if (error instanceof DuplicateError)

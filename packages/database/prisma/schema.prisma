@@ -132,9 +132,16 @@ model ImportBatch {
   requestKey  String
   digest      String
   outcomes    Json
+  filename    String?
+  seriesKey   String?
+  version     Int @default(1)
+  previousId  String?
+  rowCount    Int?
   leaseUntil  DateTime?
   createdAt   DateTime @default(now())
   @@unique([workspaceId, requestKey])
+  @@unique([workspaceId, seriesKey, version])
+  @@index([workspaceId, createdAt])
 }
 
 model Run {
