@@ -154,3 +154,97 @@ test("import history groups filename revisions and shows changed fields after re
     page.getByRole("row").filter({ hasText: filename }).first(),
   ).toBeVisible();
 });
+
+test("recurring plays persist a due review and require cost approval before execution", async ({
+  page,
+  context,
+}) => {
+  await page.goto("/");
+  const me = await (await context.request.get("/api/me")).json();
+  const ws = me.workspaces.find(
+    (m: any) => m.workspace.name === "Revenue Demo A",
+  ).workspace.id;
+  const before = await (
+    await context.request.get(`/api/workspaces/${ws}`)
+  ).json();
+  const prospect = before.prospects.find((p: any) => !p.excluded);
+  await page.getByLabel("Workspace", { exact: true }).selectOption(ws);
+  const hide = page.getByRole("button", {
+    name: "Hide assistant",
+    exact: true,
+  });
+  if (await hide.isVisible()) await hide.click();
+  await page.getByRole("button", { name: "Accounts", exact: true }).click();
+  await page
+    .getByRole("searchbox", { name: "Search accounts" })
+    .fill(prospect.snapshot.email);
+  await page
+    .getByRole("row")
+    .filter({ hasText: prospect.snapshot.firstName })
+    .first()
+    .getByRole("checkbox")
+    .check();
+  await page.getByRole("button", { name: "Plays", exact: true }).click();
+  await page.getByText("Schedule this play", { exact: true }).click();
+  const name = `Synthetic scheduled review ${randomUUID().slice(0, 8)}`;
+  await page.getByLabel("Schedule name", { exact: true }).fill(name);
+  await page
+    .getByLabel("Scheduled step", { exact: true })
+    .selectOption("draft_messages");
+  const next = new Date(Date.now() + 3000);
+  const local = new Date(next.getTime() - next.getTimezoneOffset() * 60000)
+    .toISOString()
+    .slice(0, 19);
+  await page
+    .getByLabel("First review (your local time)", { exact: true })
+    .fill(local);
+  await page
+    .getByRole("button", { name: "Save recurring review", exact: true })
+    .click();
+  await expect(page.getByRole("status")).toContainText("Schedule saved");
+  let review: any;
+  await expect
+    .poll(
+      async () => {
+        const rows = await (
+          await context.request.get(`/api/workspaces/${ws}/scheduled-reviews`)
+        ).json();
+        review = rows.find((r: any) => r.name === name);
+        return Boolean(review);
+      },
+      { timeout: 15000 },
+    )
+    .toBe(true);
+  const scheduled = await (
+    await context.request.get(`/api/workspaces/${ws}/schedules`)
+  ).json();
+  const schedule = scheduled.find((s: any) => s.name === name);
+  await context.request.patch(
+    `/api/workspaces/${ws}/schedules/${schedule.id}`,
+    { data: { enabled: false } },
+  );
+  await page.getByRole("button", { name: "Review queue", exact: true }).click();
+  const item = page.locator(".selection-bar").filter({ hasText: name });
+  await item
+    .getByRole("button", { name: "Review scheduled action", exact: true })
+    .click();
+  await expect(page.getByRole("dialog")).toContainText("credits maximum");
+  await page.getByRole("button", { name: "Cancel", exact: true }).click();
+  const after = await (
+    await context.request.get(`/api/workspaces/${ws}`)
+  ).json();
+  expect(after.runs.length).toBe(before.runs.length);
+  expect(after.budgets.find((b: any) => !b.userId).used).toBe(
+    before.budgets.find((b: any) => !b.userId).used,
+  );
+  await page.reload();
+  await page.getByRole("button", { name: "Review queue", exact: true }).click();
+  const persisted = page.locator(".selection-bar").filter({ hasText: name });
+  await expect(persisted).toBeVisible();
+  await persisted
+    .getByRole("button", { name: "Dismiss review", exact: true })
+    .click();
+  await expect(
+    page.locator(".selection-bar").filter({ hasText: name }),
+  ).toHaveCount(0);
+});

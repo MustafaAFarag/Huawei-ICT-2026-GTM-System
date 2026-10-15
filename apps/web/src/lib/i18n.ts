@@ -1,6 +1,46 @@
 // Arabic interface strings (business Arabic). Keys are the English source strings;
 // a missing key falls back to English. Generated content language is chosen per play.
 export const AR: Record<string, string> = {
+  "Recurring play reviews": "مراجعات الخطط الدورية",
+  "Each occurrence prepares a review. You approve its current scope and cost before work starts.":
+    "في كل موعد تُجهّز مراجعة تعتمد النطاق والتكلفة الحالية قبل بدء العمل",
+  "Could not load schedules. Try again.": "تعذّر تحميل المواعيد أعد المحاولة",
+  "No recurring reviews yet": "لا توجد مراجعات دورية بعد",
+  "Schedule a selected play to bring its next action into the review queue.":
+    "حدّد موعدًا دوريًا للخطة المختارة لتظهر خطوتها التالية في قائمة المراجعة",
+  Every: "كل",
+  days: "أيام",
+  Active: "نشط",
+  Paused: "متوقف",
+  "Schedule updated.": "تم تحديث الموعد",
+  "Pause schedule": "إيقاف الموعد",
+  "Resume schedule": "استئناف الموعد",
+  "Schedule this play": "تحديد موعد لهذه الخطة",
+  "Schedule saved. Due actions will appear in Review queue.":
+    "تم حفظ الموعد ستظهر الإجراءات المستحقة في قائمة المراجعة",
+  "Schedule name": "اسم الموعد",
+  "Scheduled step": "الخطوة المجدولة",
+  "First review (your local time)": "أول مراجعة بتوقيت جهازك",
+  "Repeat every (days)": "التكرار كل عدد من الأيام",
+  "Pre-flight checks the workspace sender.":
+    "فحص الجاهزية يراجع حساب الإرسال الخاص بمساحة العمل",
+  "selected contacts. New imports are not included automatically.":
+    "جهة اتصال مختارة لا تُضاف الاستيرادات الجديدة تلقائيًا",
+  "Save recurring review": "حفظ المراجعة الدورية",
+  "Could not load scheduled reviews. Try again.":
+    "تعذّر تحميل المراجعات المجدولة أعد المحاولة",
+  "Scheduled actions ready for review": "إجراءات مجدولة جاهزة للمراجعة",
+  "No scheduled actions are due. Set a recurring review from Plays.":
+    "لا توجد إجراءات مجدولة مستحقة حدّد مراجعة دورية من الخطط الجاهزة",
+  contacts: "جهات اتصال",
+  "View run": "عرض التنفيذ",
+  "Preparing review…": "جارٍ إعداد المراجعة…",
+  "Review scheduled action": "مراجعة الإجراء المجدول",
+  "Scheduled review dismissed.": "تم استبعاد المراجعة المجدولة",
+  "Dismiss review": "استبعاد المراجعة",
+  "Find signals": "البحث عن الإشارات",
+  "Mini audit": "مراجعة مصغّرة",
+  "Check sender readiness": "فحص جاهزية الإرسال",
   "Import history": "سجل الاستيراد",
   "Show import history": "عرض سجل الاستيراد",
   "Refresh history": "تحديث السجل",

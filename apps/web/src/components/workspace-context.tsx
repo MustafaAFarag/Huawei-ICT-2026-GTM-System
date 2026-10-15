@@ -2,6 +2,7 @@
 import { createContext, useContext } from "react";
 import type { ToolName, ToolRequest } from "@revenue/contracts";
 import type { Dashboard, Prospect } from "../lib/types";
+import type { Proposal } from "./Modals";
 
 export const TABS = [
   "Plays",
@@ -30,6 +31,7 @@ export type WorkspaceValue = {
   setTab: (tab: Tab) => void;
   setProspect: (prospect: Prospect | null) => void;
   setActiveRun: (id: string | null) => void;
+  showProposal: (proposal: Proposal) => void;
   // Runs an API mutation, refreshes the dashboard and reports success or failure.
   action: (fn: () => Promise<unknown>, success?: string) => Promise<void>;
   // Requests a cost quote; the cost modal asks for approval before anything runs.

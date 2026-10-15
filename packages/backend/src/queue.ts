@@ -2,6 +2,7 @@ import { Queue, Worker } from "bullmq";
 import { config } from "./config.js";
 import { db } from "./database.js";
 import { WorkflowService } from "./workflows.js";
+import { prepareDueReviews } from "./schedules.js";
 const redis = new URL(config.redis);
 export const connection = {
   host: redis.hostname,
@@ -76,6 +77,7 @@ export function startWorker() {
     busy = true;
     try {
       await service.recoverInterrupted();
+      await prepareDueReviews();
       await dispatchOutbox();
     } catch (error) {
       console.error(

@@ -27,6 +27,7 @@ import { useWorkspace } from "../workspace-context";
 import { usePrefs } from "../../lib/prefs";
 import { client } from "../../lib/client";
 import type { Asset, Draft, Prospect } from "../../lib/types";
+import { ScheduledReviews } from "../ScheduledPlays";
 
 const CHANNEL_ICON = {
   email: IconMail,
@@ -39,12 +40,17 @@ export function ReviewQueue() {
   const { t } = usePrefs();
   if (!data.drafts.length)
     return (
-      <Empty
-        title={t("No drafts waiting for review")}
-        icon={<IconChecklist size={18} />}
-      >
-        {t("Approve a source and an offer, then prepare messages from a play.")}
-      </Empty>
+      <>
+        <ScheduledReviews key={ws} />
+        <Empty
+          title={t("No drafts waiting for review")}
+          icon={<IconChecklist size={18} />}
+        >
+          {t(
+            "Approve a source and an offer, then prepare messages from a play.",
+          )}
+        </Empty>
+      </>
     );
   const pending = data.drafts.filter((d) => d.approvedVersion !== d.version);
   const ordered = [
@@ -53,6 +59,7 @@ export function ReviewQueue() {
   ];
   return (
     <div className="stack-lg">
+      <ScheduledReviews key={ws} />
       <p className="muted">
         <span className="mono">{pending.length}</span>{" "}
         {t("drafts need a decision. Edit, then approve the current version.")}

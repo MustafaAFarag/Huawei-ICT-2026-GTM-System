@@ -11,6 +11,7 @@ import { useWorkspace } from "../workspace-context";
 import { usePrefs } from "../../lib/prefs";
 
 import { LaunchGate } from "../GtmPanels";
+import { ScheduledPlays } from "../ScheduledPlays";
 
 const STEP_HELP: Record<string, string> = {
   find_signals: "Look for a dated hiring, funding or growth signal.",
@@ -25,6 +26,7 @@ const STEP_HELP: Record<string, string> = {
 
 export function Plays() {
   const {
+    ws,
     data,
     play,
     setPlay,
@@ -198,6 +200,7 @@ export function Plays() {
         </ol>
       </Panel>
       <LaunchGate />
+      <ScheduledPlays key={ws} />
     </>
   );
 }

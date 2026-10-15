@@ -4,13 +4,30 @@ import type { ToolName, ToolRequest } from "@revenue/contracts";
 import { IconShieldCheck, IconX } from "@revenue/ui";
 import { client } from "../lib/client";
 import { usePrefs } from "../lib/prefs";
-import type { Asset, Chat, Dashboard, Membership, Prospect, Run } from "../lib/types";
-import { Badge, Button, Empty, ErrorPanel, Skeleton } from "../components/primitives";
+import type {
+  Asset,
+  Chat,
+  Dashboard,
+  Membership,
+  Prospect,
+  Run,
+} from "../lib/types";
+import {
+  Badge,
+  Button,
+  Empty,
+  ErrorPanel,
+  Skeleton,
+} from "../components/primitives";
 import { Sidebar, Topbar } from "../components/Shell";
 import { CommandPalette } from "../components/CommandPalette";
 import { Assistant } from "../components/Assistant";
 import { RunLog } from "../components/RunLog";
-import { AssetPreviewModal, CostModal, type Proposal } from "../components/Modals";
+import {
+  AssetPreviewModal,
+  CostModal,
+  type Proposal,
+} from "../components/Modals";
 import { SignIn } from "../components/SignIn";
 import {
   TABS,
@@ -30,7 +47,8 @@ import { Settings } from "../components/screens/Settings";
 const DESCRIPTIONS: Record<Tab, string> = {
   Plays: "Start with a goal. Review each step before moving forward.",
   Accounts: "Source facts, score fit, and choose who to approach.",
-  "Review queue": "Every message is approved by a person before it can be sent.",
+  "Review queue":
+    "Every message is approved by a person before it can be sent.",
   "Asset Studio": "Reviewed sources, a useful idea, and your brand.",
   Sequences: "Prepared touches, holdouts and recorded outcomes.",
   "Company context": "The brand, offer and customer every play draws on.",
@@ -239,11 +257,10 @@ export default function Page() {
           website,
           message,
         };
-        const quote = await client.workspace<Proposal["quote"]>(
-          ws,
-          "/quotes",
-          { method: "POST", body: JSON.stringify(input) },
-        );
+        const quote = await client.workspace<Proposal["quote"]>(ws, "/quotes", {
+          method: "POST",
+          body: JSON.stringify(input),
+        });
         setProposal({ input, quote });
       }),
     [action, selected, play, language, ws],
@@ -283,6 +300,7 @@ export default function Page() {
             setTab,
             setProspect,
             setActiveRun,
+            showProposal: setProposal,
             action,
             propose,
           }
@@ -352,7 +370,11 @@ export default function Page() {
                   >
                     {t("Retry loading")}
                   </Button>
-                  <Button size="sm" variant="ghost" onClick={() => setError("")}>
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    onClick={() => setError("")}
+                  >
                     {t("Dismiss")}
                   </Button>
                 </>

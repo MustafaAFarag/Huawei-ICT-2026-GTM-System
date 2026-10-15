@@ -54,11 +54,13 @@ import {
   saveCallOutcome,
   GtmService,
   ImportHistoryService,
+  ScheduleService,
 } from "@revenue/backend";
 import type { Actor } from "@revenue/contracts";
 
 const gtm = new GtmService();
 const importHistory = new ImportHistoryService();
+const schedules = new ScheduleService();
 const workspaceService = new WorkspaceService(),
   workflows = new WorkflowService(),
   storage = new Storage();
@@ -127,6 +129,24 @@ class ApiController {
     @Param("id") id: string,
   ) {
     return importHistory.detail(await actorFor(req.headers, ws), z.uuid().parse(id));
+  }
+  @Get("workspaces/:workspaceId/schedules") async listSchedules(@Req() req: Request, @Param("workspaceId") ws: string) {
+    return schedules.list(await actorFor(req.headers,ws));
+  }
+  @Post("workspaces/:workspaceId/schedules") async createSchedule(@Req() req: Request, @Param("workspaceId") ws: string, @Body() body: unknown) {
+    return schedules.create(await actorFor(req.headers,ws),body);
+  }
+  @Patch("workspaces/:workspaceId/schedules/:id") async updateSchedule(@Req() req: Request, @Param("workspaceId") ws: string, @Param("id") id: string, @Body() body: unknown) {
+    return schedules.update(await actorFor(req.headers,ws),z.uuid().parse(id),body);
+  }
+  @Get("workspaces/:workspaceId/scheduled-reviews") async scheduledReviews(@Req() req: Request, @Param("workspaceId") ws: string) {
+    return schedules.reviews(await actorFor(req.headers,ws));
+  }
+  @Post("workspaces/:workspaceId/scheduled-reviews/:id/quote") async quoteScheduledReview(@Req() req: Request, @Param("workspaceId") ws: string, @Param("id") id: string) {
+    return schedules.quote(await actorFor(req.headers,ws),z.uuid().parse(id));
+  }
+  @Post("workspaces/:workspaceId/scheduled-reviews/:id/dismiss") async dismissScheduledReview(@Req() req: Request, @Param("workspaceId") ws: string, @Param("id") id: string) {
+    return schedules.dismiss(await actorFor(req.headers,ws),z.uuid().parse(id));
   }
   @Patch("workspaces/:workspaceId/prospects/:id") async prospect(
     @Req() req: Request,

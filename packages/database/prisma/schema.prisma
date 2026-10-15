@@ -344,6 +344,27 @@ model Schedule {
   nextAt      DateTime
   intervalDays Int @default(7)
   enabled     Boolean @default(true)
+  name        String @default("Scheduled play")
+  queueName   String @default("revenue-runs")
+  lastError   String?
+  createdAt   DateTime @default(now())
+  reviews     ScheduledReview[]
+  @@index([queueName, enabled, nextAt])
+  @@index([workspaceId])
+}
+
+model ScheduledReview {
+  id          String @id @default(uuid())
+  workspaceId String
+  scheduleId  String
+  schedule    Schedule @relation(fields: [scheduleId], references: [id], onDelete: Cascade)
+  dueAt       DateTime
+  input       Json
+  state       String @default("pending")
+  quoteId     String?
+  createdAt   DateTime @default(now())
+  @@unique([scheduleId, dueAt])
+  @@index([workspaceId, state, createdAt])
 }
 
 model CacheEntry {

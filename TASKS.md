@@ -9,7 +9,7 @@ Stop: no push, deployment, real outreach, new cloud infrastructure or changes to
 - [x] Capture baseline and improve prompts/tool context: agent 29/30 → 30/30; draft hard checks 4/12 → 12/12. Added grounded source links, explicit 100-ID batches, saved-draft/run reads and enforced channel contracts. Chat Arabic judge mean regressed 4.0 → 3.4 in this sample; native review remains open.
 - [x] Build bilingual discovery interview guide/questionnaire export: role-specific questions, reviewed source context, JSON preview and EN/AR PDFs; 15 targeted checks and browser flow pass. Fixed the language selector accessible name found by Playwright.
 - [x] Expose import history and per-file row outcomes: filename versions, added/changed/unchanged counts, field diffs, legacy entries, pagination and tenant isolation. Four service tests and both continuation browser flows pass; additive migration applied locally.
-- [ ] Add scheduled play preparation/review controls if time permits; no automatic spending or sends.
+- [x] Add recurring play reviews: persisted schedules, due review queue, fresh human cost review, one execution key per occurrence, pause/resume/dismiss, role revocation and restart catch-up. Five service checks and all three continuation browser scenarios pass. Scheduled work pauses for cost approval; it does not automatically run paid steps.
 - [ ] Complete static/backend/browser/live checks, inspect outputs, update PRD/status and commit.
 
 Decisions: prioritize working behavior and factual output over cosmetic refinement. Provider sandbox activation stays blocked by missing external accounts. Native Arabic acceptance remains human work.

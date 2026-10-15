@@ -17,4 +17,5 @@ export * from "./events.js";
 export * from "./demo-data.js";
 export * from "./gtm-service.js";
 export * from "./import-history.js";
+export * from "./schedules.js";
 export * from "./agent/index.js";
