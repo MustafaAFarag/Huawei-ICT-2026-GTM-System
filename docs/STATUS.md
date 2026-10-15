@@ -2,6 +2,10 @@
 
 The active specification is [PRD v3](prd/REVENUE_WORKSPACE_PRD_v3.md). The approved Next.js/NestJS implementation now provides a verified **local fixture release**. No GitHub push, Azure deployment or live outreach has been performed.
 
+## 15 October 2026 update
+
+The UI uses a Raycast-derived design system (dark/light, Arabic RTL, command palette) split into components. Eight synthetic demo workspaces cover every plan tier and the agency model. The assistant runs on a real Azure model through our own harness with governed tools, streaming and voice dictation; OpenDesign generates assets through the same Azure deployment. 21 unit/integration and 6 browser tests pass; live results are in [validation](VALIDATION.md).
+
 ## Verified foundation
 
 - Pinned Node 24.18.0 and pnpm 12.10.1; reproducible dependency installation.

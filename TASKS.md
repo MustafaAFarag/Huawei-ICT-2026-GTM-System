@@ -7,8 +7,8 @@ Stop: no push, deployment, live outbound sending, or changes to Amr's other Azur
 - [x] Phase 0: real GTM files and meeting files ignored.
 - [x] Phase 1: Raycast DESIGN.md copied, product design system, tokens, component split, Arabic UI/RTL, print template; 3 e2e pass; 52 screenshots reviewed.
 - [x] Phase 2: research 11 teardown, deterministic 8-workspace seed (169 accounts, 324 contacts, 149 people in Twenty A), no-leak test, PRD v3.1.
-- [ ] Phase 3: Azure OpenAI + Whisper, agent loop, prompts, streaming chat, voice, Twenty MCP, OpenDesign BYOK, evaluation.
-- [ ] Verification: tests, e2e, live smoke, Terraform, own diff review, commits.
+- [x] Phase 3: Azure OpenAI (GPT-5.4 mini, GPT-4o transcribe, Whisper, TTS test) via separate Terraform root; own harness with versioned prompts, governed tools, streaming, metering; voice dictation and voice call outcomes; OpenDesign BYOK on Azure with edit instructions and brand-from-URL; agent eval 28/30, WER eval. Twenty-side MCP client not available in 2.46 (AI-06 open).
+- [x] Verification: 21 unit/integration, 6 e2e, live chat/voice/asset smoke, Terraform validate/plan/apply, own diff review, commits.
 
 Decisions: Raycast style (owner, 15 Oct). Own harness on Vercel AI SDK Core. Azure provisioning and real inference approved by owner; credits confirmed by Amr (replaces the earlier $100 assumption). Real files read for structure only.
 

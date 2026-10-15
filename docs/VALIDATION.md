@@ -1,3 +1,25 @@
+# Validation — 15 October 2026 update (design, demo data, live AI)
+
+This section records the 15 October work. Model calls are **real Azure OpenAI calls** where marked "live"; senders, signal providers and checkout remain simulated.
+
+| Check | Result | Evidence and limit |
+| --- | --- | --- |
+| Static checks | Pass | `pnpm typecheck` across all eight workspace packages |
+| Unit/integration | 21 / 21 pass | `pnpm test`: 13 governance + 4 demo-data (determinism, edge cases, no value from the real files) + 4 harness tests (quote-not-run, caps/refund, audio validation, voice call outcome and opt-out suppression) |
+| Browser | 6 / 6 pass | `pnpm test:e2e` in fixture mode: the 3 existing flows plus assistant stream → quote → cost modal (no run created), voice endpoint, Free-tier export hard stop. Sign-in happens once in `e2e/global-setup.ts` because the product rate-limits sign-in |
+| Screens | Reviewed | 52 screenshots: 6 screens × EN/AR × desktop/phone × dark/light plus sign-in (`scripts/screenshots.ts`); curated set in `verification/screens/` |
+| Assets / PDF | Reviewed | One-pager and mini-audit, EN and AR (RTL), rendered to HTML/PDF/PNG with embedded fonts (`scripts/render-asset-samples.ts`) |
+| Live chat (HTTP API) | Pass | `scripts/ai-smoke.ts` → `verification/ai-smoke.json`: GPT-5.4 mini on Azure; read question 3.1 s, draft request 2.5 s (search → `draft_messages` quote), Egyptian Arabic question 2.6 s; 0 runs created by the assistant; 1 credit per turn charged |
+| Live transcription (HTTP API) | Pass | English clip 1.8 s and Egyptian clip 0.9 s through `/transcribe` with GPT-4o transcribe; audio not stored |
+| Transcription accuracy | Measured | `evaluation/agent/transcription-eval.ts`, 10 synthetic TTS clips: Whisper WER 2.5% EN / 9.9% AR, median 40 s (capacity 1); GPT-4o transcribe WER 2.5% EN / 5.0% AR, median 0.9 s. TTS voices are not native dialect speakers; this is a pipeline floor, not dialect accuracy |
+| Agent evaluation | 28 / 30 | `evaluation/agent/agent-eval.ts`, 30 cases (tool choice, governance refusals, prompt injection, Arabic). Runs after prompt revisions: 24 → 26 → 28 → 28. Residual misses vary between runs (score-all, find-signals on an account that already has signals). Arabic LLM pre-filter 3.6 / 5 (native review still required). Median 4.8 s, p95 8.1 s. A jailbreak case is blocked by Azure prompt shields and counted as a refusal |
+| Voice call outcome | Pass (live) | Egyptian note → `call-back` with an Egyptian next step and summary |
+| OpenDesign BYOK on Azure | Pass (live) | `scripts/asset-smoke.ts`: one make_asset run in 18 s through OpenDesign's proxy to Azure, with a design edit request applied; a CDATA wrapper bug was found and fixed |
+
+Not verified: Azure cost in currency (Cost Management lags; product credits are internal units), Gulf dialect quality by native reviewers, Twenty-side chat calling our MCP (see [integration](INTEGRATION.md)), live senders.
+
+---
+
 # Local release validation — 13 October 2026
 
 This record covers the local fixture release. Provider/model generation, sender outcomes and checkout are simulated; Twenty/OpenDesign API integration, PostgreSQL, Redis and Chromium PDF rendering are real local services.

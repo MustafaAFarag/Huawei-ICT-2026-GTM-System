@@ -71,3 +71,18 @@ Existing `MODEL_BASE_URL`, `MODEL_ID`, `MODEL_API_KEY` remain server-side and un
 The current candidate is **GPT-5 nano** for an inexpensive first text smoke test, with GPT-5 mini as a quality alternative after evaluation. Sweden Central reports unused Global Standard quota for both; GPT-4o mini has Standard/Global Standard quota as another compatibility candidate. Quota listings alone do not prove capacity, credit coverage, model API compatibility or Arabic quality. See the dated [readiness table](CLOUD.md).
 
 Keep `MODEL_MODE=fixture` and `PROVIDER_MODE=fixture`. No live model key/resource has been activated. A later separately authorized check must cover gateway JSON parsing, OpenDesign streaming/artifact validation, English/Arabic output, token limits, errors/timeouts, approval/cost gates and real account billing. Sender, signal and enrichment submission/webhook/billing checks also remain separate activation work.
+
+## AI resources (15 October 2026)
+
+Owner-approved provisioning: Azure credits confirmed by Amr. A separate Terraform root, `infra/terraform/azure-ai/`, keeps local git-ignored state and never touches the VM plan in `../azure` or any other group.
+
+| Resource | Value |
+| --- | --- |
+| Account | `aoai-gtm-command-center-demo`, kind OpenAI, S0, Sweden Central, in `rg-gtm-command-center-demo` |
+| Chat | `gpt-5-4-mini` → GPT-5.4 mini `2026-03-17`, Global Standard, 200K tokens/min (raised from 50K after a rate-limit hit during evaluation) |
+| Dictation | `gpt-4o-transcribe` (default) and `whisper` (alternate, Standard capacity 1) |
+| Test only | `tts` — generates the synthetic evaluation clips |
+| Budget | `budget-gtm-command-center-demo`: USD 50/month on the project group, alerts at 50/80/100% (alerts only, not a hard stop) |
+
+Two applies: 5 additions, then 1 addition (TTS) and 1 in-place capacity change; no deletions. Keys are read with `az cognitiveservices account keys list` into the git-ignored `.env`; they are not Terraform outputs. Audio transcription requires deployment-based URLs (`/openai/deployments/{name}/audio/transcriptions`); the v1 path returns `DeploymentNotFound`, so the harness uses a separate provider instance for audio.
+
