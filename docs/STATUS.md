@@ -1,33 +1,17 @@
-# Implementation status
+# Implementation status — 16 October 2026
 
-The active specification is [PRD v3](prd/REVENUE_WORKSPACE_PRD_v3.md). The approved Next.js/NestJS implementation now provides a verified **local fixture release**. No GitHub push, Azure deployment or live outreach has been performed.
+The active specification is [PRD v3.1](prd/REVENUE_WORKSPACE_PRD_v3.md), with an updated [PDF](prd/REVENUE_WORKSPACE_PRD_v3.pdf). The current local review instance is [localhost:3100](http://localhost:3100), with live Azure AI and simulated outbound providers. The project-only [Azure demo](https://gtm-4-223-169-93.sslip.io) is deployed; its VM is currently stopped by the nightly schedule and needs manual restart. After the live draft/voice repairs, all four public browser scenarios and the English/Arabic AI smoke passed. Executed results and limits are in [validation](VALIDATION.md). No repository push or live outreach has occurred.
 
-## 15 October 2026 update
+The UI uses the settled Raycast-derived design system: dark/light themes, Arabic RTL, command palette, bilingual messages and print assets. Eight synthetic workspaces cover all five plan tiers and the agency model; Demo A/B provide the two independently tested native CRM bindings. Real customer exports remain ignored and absent from runtime images.
 
-The UI uses a Raycast-derived design system (dark/light, Arabic RTL, command palette) split into components. Eight synthetic demo workspaces cover every plan tier and the agency model. The assistant runs on a real Azure model through our own harness with governed tools, streaming and voice dictation; OpenDesign generates assets through the same Azure deployment. 21 unit/integration and 6 browser tests pass; live results are in [validation](VALIDATION.md).
+The continuation adds account triage and owner assignment, duplicate review, balanced imports with contact caps, discovery capture and segment summaries, draft confidence and copy checks, a launch checklist, funnel/holdout counts, consent-managed references and an on-demand SDR PDF kit. The approval API and queue enforce blocking copy checks. Duplicate exclusion is atomic and cancels active sequences.
 
-## Verified foundation
+The 16 October local recheck passes workspace typecheck, all 33 unit/integration tests, all seven browser scenarios, HTTP permissions and engine isolation. Local live English/Arabic chat and voice also pass with no unapproved runs. Production browser, voice and chat evidence is recorded separately in validation.
 
-- Pinned Node 24.18.0 and pnpm 12.10.1; reproducible dependency installation.
-- PostgreSQL schema/migration and local Redis/Mailpit services.
-- Twenty v2.46.0 SDK build and native app installs in two workspaces. Real company/contact CRUD, idempotent retries and CRM workspace isolation pass.
-- OpenDesign 0.24.1 image (upstream commit `89e64d813bb1c7a11519b3f668f011f7017637d7`), authentication and separate artifact-volume checks. Its health endpoint reports package version 0.23.1; the verified image/revision is the pin.
-- Twenty UI primitives render in Next.js.
+The assistant uses our versioned Vercel AI SDK harness on Azure, with streamed read tools, cost quotes for actions, explicit spending approval, metering and voice. Models are live; sender, signal/enrichment providers and checkout remain fixtures. Historical quote claims without a current quote now surface a correction. The final synthetic agent evaluation passes 30/30 with an Arabic model-judge mean of 4/5; native-speaker acceptance remains pending.
 
-## Product and governance checks
+Azure runs one 2 vCPU / 8 GiB VM with a separate 64 GiB mounted data disk. PostgreSQL, Redis, Twenty and two OpenDesign instances remain private; Caddy exposes the authenticated product over HTTPS. Daily shutdown is 22:00 UTC (01:00 Cairo), with manual restart. The API limit is 1 GiB after the public concurrent PDF/chat check exceeded 512 MiB. See [deployment and startup](AZURE_DEPLOYMENT.md).
 
-Four plays provide deterministic qualification, cited research review, enrichment fixtures, bilingual drafts, sender pre-flight and governed sequence simulation/manual CRM tasks. The persistent assistant and product MCP use the same authorization, approvals, budget reservations and durable execution as the UI.
+Remaining acceptance work is explicit in the PRD checkpoint: CRM field merging, LinkedIn connection/acceptance telemetry, automatic SDR-kit delivery on joining, generated interview guides, and native Arabic review. Sender/provider sandbox credentials, interviews and reviewer/legal input are needed before live pilots. SMTP/password-reset delivery, high availability and native-engine disaster recovery beyond the restored demo are not claimed.
 
-CSV/XLSX mapping and resumable imports, workspace/member caps, resource quotas, suppression, audit history, connector status and labelled mock checkout are implemented. Asset Studio supplies offer one-pager and mini-audit templates, approved-source references, sandboxed previews, PDF exports, versioned draft attachments and native CRM links.
-
-Thirteen PostgreSQL/Redis governance tests and three packaged Playwright workflows pass. Checks include concurrent caps, stale approvals, interrupted/lost jobs, uncertain provider attempts, cancellation, four-play preparation, import retries and delayed workspace switching. Arabic PDF layout has been visually reviewed. [Validation details](VALIDATION.md) distinguish these fixture checks from external-service acceptance.
-
-The Docker migration check succeeds as a non-root user. A product backup was restored into a new scratch database; native engine file snapshots still require a coordinated rehearsal. The historical Bicep package compiles; it has been superseded by single-server Terraform and a manual validation/plan-only workflow. See [Azure preparation](AZURE_DEPLOYMENT.md) and [operations](OPERATIONS.md).
-
-## Remaining external work
-
-The student subscription, human Owner access, separate project Reader identity and GitHub OIDC settings are verified. Terraform schema/safety checks and a human-authenticated read-only cloud plan are checked locally; GitHub's OIDC exchange remains unexecuted because no code was pushed. Remaining credits, actual VM capacity and model credentials/inference remain cloud activation gates. Sender/signal/enrichment accounts are required to implement and verify their remaining live submission, webhook authentication, commercial quota and billing contracts. Internal product credits are not currency billing. Sender submission remains disabled; fixture outcomes are synthetic and labelled.
-
-The current target uses one Docker server rather than Azure Files or managed databases. Server disk permissions/mounting, TLS/networking, regional capacity, coordinated backup/restore and password-reset delivery still require verification before a cloud pilot. Interviews and reviewer/legal inputs remain required before applicable pilots. These are release gates, not completed checks.
-
-The Python prototype is preserved as a reference. Its historical verification is described in [the review report](../verification/REVIEW.md); it does not verify the new application. Root [TASKS.md](../TASKS.md) tracks current completion and blockers.
+GitHub OIDC metadata is configured, but the exchange remains unexecuted because code has not been pushed. Terraform state and credentials stay local/ignored. The Python prototype and unrelated sample CSV edits are preserved. [TASKS.md](../TASKS.md) records the active run and remaining checks.

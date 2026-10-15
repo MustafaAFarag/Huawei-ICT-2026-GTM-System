@@ -2,7 +2,11 @@
 
 ## Start and inspect
 
-`pnpm dev` starts web/API/worker against local Docker services. For the production images:
+`pnpm dev` starts web/API/worker at localhost:3100/4100/4101 against local Docker services. The 16 October review instance runs detached with its log at `.local/morning-dev.log` and supervisor PID at `.local/morning-dev.pid`; it remains available while the laptop and Docker stay running. Sign in using `DEMO_EMAIL` and `DEMO_PASSWORD` in private `.env`, then select **Qimam People** to review the synthetic GTM workspace.
+
+Local `.env` currently enables live Azure AI with fixture outbound providers. Use `MODEL_MODE=fixture pnpm dev` for the deterministic browser suite; run `MODEL_MODE=fixture pnpm test` and `pnpm test:e2e` against that fixture instance. Return to `pnpm dev` for live chat/voice. Start only one development supervisor at a time. Activate the pinned Node with `eval "$(mise env -s bash)"` when using a shell that has not loaded mise.
+
+For the production images:
 
 ```bash
 for app in api worker web; do

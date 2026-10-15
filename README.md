@@ -1,6 +1,6 @@
 # Revenue Workspace
 
-Next.js and NestJS implementation of [PRD v3](docs/prd/REVENUE_WORKSPACE_PRD_v3.md): four outbound plays, governed workspace tools, persistent assistant history and bilingual assets. Development is local; an isolated read-only Azure/GitHub connection is configured. Live models and provider sandboxes remain pending. The earlier Python demonstrator remains in `gtm/` for reference.
+Next.js and NestJS implementation of [PRD v3](docs/prd/REVENUE_WORKSPACE_PRD_v3.md): four outbound plays, governed workspace tools, persistent assistant history and bilingual assets. The [Azure demo](https://gtm-4-223-169-93.sslip.io) uses live Azure AI and synthetic workspaces; outbound providers remain simulated. The earlier Python demonstrator remains in `gtm/` for reference.
 
 ## Local setup
 
@@ -39,11 +39,11 @@ Twenty owns CRM companies, contacts and tasks. Product data references native ID
 
 ## Current validation
 
-The local fixture release passes thirteen PostgreSQL/Redis governance checks and three Playwright workflows, including all four plays, CSV/XLSX retries, approval invalidation, reply cancellation, workspace isolation and Arabic PDF export. Native Twenty app installation/CRM writes and OpenDesign token/file isolation use real local upstream services. See [validation](docs/VALIDATION.md), [status](docs/STATUS.md) and [TASKS.md](TASKS.md) for evidence and remaining external checks.
+The current local fixture release passes 33 unit/integration checks and seven Playwright workflows, including all four plays, CSV/XLSX retries, approval invalidation, reply cancellation, workspace isolation and Arabic PDF export. Native Twenty app installation/CRM writes and OpenDesign token/file isolation use real local upstream services. See [validation](docs/VALIDATION.md), [status](docs/STATUS.md) and [TASKS.md](TASKS.md) for evidence and remaining external checks.
 
-The Docker-packaged product runs at [localhost:3110](http://localhost:3110). [Operations](docs/OPERATIONS.md) covers builds, startup and backup/restore; [Azure preparation](docs/AZURE_DEPLOYMENT.md) covers the project-only OIDC connection and single-server Terraform target. The manual workflow validates/plans only; no application deployment or model activation has occurred.
+The current development instance runs at [localhost:3100](http://localhost:3100). The optional Docker-packaged product uses [localhost:3110](http://localhost:3110). [Operations](docs/OPERATIONS.md) covers builds, startup and backup/restore; [Azure preparation](docs/AZURE_DEPLOYMENT.md) covers the project-only OIDC connection and single-server Terraform target. The manual workflow validates/plans only. The separately authorized Azure demo is described in [deployment](docs/AZURE_DEPLOYMENT.md); no repository push has occurred.
 
-Fixture mode is explicit: enrichment, assistant suggestions, template generation and sender results are synthetic. It makes no live outbound submission. Paid/model provider validation waits for authorized credentials. Changing `PROVIDER_MODE` does not enable an unverified sender.
+`MODEL_MODE=live` enables the configured Azure chat, drafting and dictation models; `MODEL_MODE=fixture` provides deterministic model responses for the full local test suite. Outbound providers remain simulated with `PROVIDER_MODE=fixture`; changing that variable alone does not enable an unverified sender.
 
 ## Checks
 
@@ -58,4 +58,4 @@ TEST_BASE_URL=http://localhost:3110 pnpm check:roles
 TEST_BASE_URL=http://localhost:3110 pnpm check:performance
 ```
 
-The Apache-2.0 licence covers our code. Preserve [third-party notices](THIRD_PARTY_NOTICES.md). Archived [PRD v1/v2](docs/prd/archive/) retain contracts referenced by v3; [research](docs/research/README.md) records the product evidence. No repository push or deployment is part of local implementation authorization.
+The Apache-2.0 licence covers our code. Preserve [third-party notices](THIRD_PARTY_NOTICES.md). Archived [PRD v1/v2](docs/prd/archive/) retain contracts referenced by v3; [research](docs/research/README.md) records the product evidence. Project-only Azure deployment and inference were separately authorized on 15 October; repository pushes and live outreach remain outside scope.

@@ -1,15 +1,28 @@
-## Active — unattended run: PRD v3.1 features, Azure deployment, evals (started 15 October 2026, evening)
+## Current — verified local review instance (16 October 2026)
+
+Goal: resume the interrupted run, leave the current app running locally, verify its main flows and finish the saved validation notes.
+Done: localhost:3100 serves the current source; sign-in and local workflow checks pass; preserved cloud evidence/backup checked; current status and limitations recorded; reviewed local commits.
+Stop: no push, new deployment, live outreach, deletion of existing data or changes to unrelated resources.
+
+- [x] Start web/API/worker against preserved local database and engines; localhost:3100, live AI and fixture outbound.
+- [x] Verify local workflows, service health, typecheck, 33 backend tests, 7 browser tests, HTTP roles and engine isolation. Local live chat/voice smoke passes; no unapproved runs.
+- [x] Inspect saved production evidence and interrupted backup completion: public browser 4/4, live AI smoke pass, agent eval 30/30; backup checksums/catalogues/archive and restart log pass.
+- [x] Update validation/status, review diffs and commit completed work. EN desktop and AR phone captures pass without overflow or page errors.
+
+---
+
+## Completed — unattended run: PRD v3.1 features, Azure deployment, evals (started 15 October 2026, evening)
 
 Owner instruction (15 Oct): work unattended; deploy on Azure, build the PRD features, test, evaluate and verify.
 Goal: ship the D-phase v3.1 features (GAP-02/03/04/06/13/14, then D+ GAP-07/10/09/11/12/01), deploy the app to the single Azure server, and verify it in production with Playwright and the eval suites.
 Done: features implemented with tests; typecheck, unit and e2e suites pass locally; app reachable on Azure over HTTPS with demo data; Playwright and AI smoke pass against the production URL; docs and PRD status updated; focused local commits.
 Stop: nothing leaves for the remote repository, no live outbound sending, no changes to Amr's resources, no destructive DB operations outside the project; keep spend inside the USD 50 budget alert; stop and record if Azure capacity or credits block the VM.
 
-- [ ] Features: dedupe, triage, angle/register, launch gate, owners, event-claim check.
-- [ ] Features D+: scorecard, confidence score, references, SDR kit, discovery pilot, import diffs.
-- [ ] Azure deploy: VM via Terraform, images, compose, TLS, seed.
-- [ ] Production verification: Playwright e2e, AI smoke, evals.
-- [ ] Docs, PRD status, commits.
+- [x] Features: dedupe, triage, angle/register, launch gate, owners, event-claim check.
+- [x] Features D+: scorecard, confidence score, references, SDR kit, discovery pilot, import diffs. Limits: duplicate field merge, automatic kit delivery and generated interview guides remain open.
+- [x] Azure deploy: VM via Terraform, images, compose, TLS, seed.
+- [x] Production verification: 4 public Playwright scenarios, EN/AR AI/voice smoke and final 30-case agent eval pass; off-server backup intact.
+- [x] Docs, PRD status, commits; public results and local live review verified on 16 October.
 
 ---
 
@@ -42,7 +55,7 @@ Stop: no GitHub push, application deployment, model provisioning, paid inference
 - [x] Region/model/credit readiness and operations documented; own diff reviewed; local/static checks passed. Final Terraform checks passed; prepared for the local feature commit.
 
 Decisions: assume $100 credit (remaining balance unverified); localhost now, one 2 vCPU/8 GiB x86 server later, one environment; no Front Door by default; use separate project resources and never reuse Amr's Terraform state storage. Keep provider/model modes fixture. Tenant `3f5648ce-ad7c-46b5-8dfb-ddcbf48520af`; subscription `55336c1c-af74-4164-b687-a7b7c3ec740c`. Preserve unrelated sample CSV edits and default company CLI sessions.
-Blockers: selected Sweden Central D2as v6 has no listed SKU restrictions and 10 family/total vCPUs available; actual allocation remains untested. Remaining credit/offer eligibility and live models remain unverified. GitHub OIDC execution waits for an explicitly authorized push.
+Historical blockers (14 Oct): selected Sweden Central D2as v6 has no listed SKU restrictions and 10 family/total vCPUs available; actual allocation remains untested. Remaining credit/offer eligibility and live models remain unverified. GitHub OIDC execution waits for an explicitly authorized push.
 
 ---
 
@@ -138,13 +151,16 @@ Blockers: npm `EAI_AGAIN registry.npmjs.org`; Docker API permission denied; Node
 Decisions: original synthetic fixture data; transparent ranking/template baselines; preserve source facts vs offer hypotheses; never report invented AI gains; provider events always simulated; stand-alone loopback demo is not production authentication or a deployed Twenty application. Bravo6 preserved.
 
 ### Resume — 15 October, Codex
+
 - [x] Recovered feature commit and unfinished UI; baseline typecheck and 30 tests pass.
 - [x] Completed account triage/owner/duplicate views, discovery capture, draft confidence and copy checks.
 - [x] Added launch checklist, event scorecard and segment discovery summary, consented reference editing and SDR PDF download.
 - [x] Enforced blocking copy checks at the approval API, in addition to queue-time checks.
-- [ ] Regression tests, bilingual responsive browser verification and review.
-- [ ] Container build and Azure deployment assessment; no repository push.
+- [x] Regression tests, bilingual responsive browser verification and review; final local 33 backend/7 browser checks pass.
+- [x] Container build and Azure deployment assessment; project deployed and public checks pass; no repository push.
+
 Decision: preserve the settled Raycast visual direction and unrelated sample CSV edits. New panels use existing workspace loading/error/success handling, with cancellation guards for async reads.
+
 - [x] Added opt-in balanced contact assignment with per-member contact caps; tested cap exhaustion before CRM calls.
 - [x] Reviewed EN/AR desktop and phone captures; mechanical UI detector returned no findings.
 - [x] Terraform validates and both boundary tests pass; reviewed 10-addition project-only plan adds daily 22:00 UTC shutdown. Apply started; local state stays ignored.

@@ -1,6 +1,16 @@
-# Azure preparation — 14 October 2026
+# Azure deployment — 16 October 2026
 
-The application remains local at [localhost:3110](http://localhost:3110). The active cloud target is one Docker server defined in [Terraform](../infra/terraform/azure/main.tf), with [server Compose](../infra/server/compose.yaml) and [Caddy](../infra/server/Caddyfile). The previous `infra/azure` Bicep package is historical reference; its deployment workflow has been removed. No application server, model deployment, paid inference, registry or remote Terraform state has been created.
+The project demo was deployed over [HTTPS](https://gtm-4-223-169-93.sslip.io) on the dedicated `gtm-demo-server` VM (`4.223.169.93`), with the [server Compose](../infra/server/compose.yaml) topology, a separate mounted data disk and private engines. The owner authorized project-only deployment and inference on 15 October. Public verification results and remaining limits are in [validation](VALIDATION.md).
+
+Daily shutdown is **22:00 UTC / 01:00 Cairo**. The VM does not automatically restart. From the project root, start it using the isolated project account:
+
+```bash
+AZURE_CONFIG_DIR="$PWD/.local/azure-cli" az vm start --resource-group rg-gtm-command-center-demo --name gtm-demo-server
+```
+
+Sign in with `DEMO_EMAIL` / `DEMO_PASSWORD` from the private local `.env`. Server credentials and the SSH key are in ignored `.local`; do not publish them. Native Twenty administration remains private, through `ssh -i .local/azure-demo-ssh -L 3200:127.0.0.1:3200 revenue@4.223.169.93`. The administrator's current IPv4 `/32` must match the firewall rule.
+
+The server uses live models and fixture outbound providers. Its API memory cap is 1 GiB after concurrent live chat/PDF generation exceeded the initial 512 MiB cap. Local Terraform state is retained and ignored; no registry, GitHub push or cloud workflow execution was used. The Bicep files and preparation notes below are historical reference.
 
 ## Connection and project boundary
 
@@ -37,7 +47,7 @@ Foundry's sign-in onboarding unintentionally created `mustafaashrafsaad-3280-res
 
 The before/after inventory preserves `bravo6ciam.onmicrosoft.com`, `NetworkWatcher_westeurope`, and `terraformstateeprofile`. All existing resource groups were preserved. Do not reuse Amr's `terraform-rg` storage backend, import his resources into our state, delete a shared group, or change subscription-wide permissions/policies.
 
-## Terraform validation and future server
+## Historical Terraform preparation — 14 October
 
 Terraform is pinned to **1.15.8**, AzureRM to **5.9.0**; the provider lockfile is committed. Automatic resource-provider registration is disabled. The connection-owned group/identity stay outside the compute state; Terraform reads and verifies the group's project tag.
 
@@ -58,7 +68,7 @@ B2ms was marked `NotAvailableForSubscription` in West Europe, North Europe, Swed
 
 Local plans/state and CLI tokens remain ignored; use `umask 077` for plan/state files. Local state is temporary for preparation. A separate project-owned remote backend and least-privilege deployment identity must be reviewed before any apply. Reader permission cannot deploy. The data disk has `prevent_destroy`; this is not a backup.
 
-## Credit and AI readiness
+## Historical credit and AI readiness — 14 October
 
 Assume **$100 credit**; actual remaining balance is **unverified**. The sponsorship portal returned “This account does not have an active Sponsorship.” Subscription cost 0.00 does not establish credit balance. Amr's billing account/profile owns the offer; credit eligibility, expiry and live charges need verification there before paid usage.
 
@@ -76,13 +86,12 @@ Keep `MODEL_MODE=fixture` and `PROVIDER_MODE=fixture`. No live model key/resourc
 
 Owner-approved provisioning: Azure credits confirmed by Amr. A separate Terraform root, `infra/terraform/azure-ai/`, keeps local git-ignored state and never touches the VM plan in `../azure` or any other group.
 
-| Resource | Value |
-| --- | --- |
-| Account | `aoai-gtm-command-center-demo`, kind OpenAI, S0, Sweden Central, in `rg-gtm-command-center-demo` |
-| Chat | `gpt-5-4-mini` → GPT-5.4 mini `2026-03-17`, Global Standard, 200K tokens/min (raised from 50K after a rate-limit hit during evaluation) |
-| Dictation | `gpt-4o-transcribe` (default) and `whisper` (alternate, Standard capacity 1) |
-| Test only | `tts` — generates the synthetic evaluation clips |
-| Budget | `budget-gtm-command-center-demo`: USD 50/month on the project group, alerts at 50/80/100% (alerts only, not a hard stop) |
+| Resource  | Value                                                                                                                                   |
+| --------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| Account   | `aoai-gtm-command-center-demo`, kind OpenAI, S0, Sweden Central, in `rg-gtm-command-center-demo`                                        |
+| Chat      | `gpt-5-4-mini` → GPT-5.4 mini `2026-03-17`, Global Standard, 200K tokens/min (raised from 50K after a rate-limit hit during evaluation) |
+| Dictation | `gpt-4o-transcribe` (default) and `whisper` (alternate, Standard capacity 1)                                                            |
+| Test only | `tts` — generates the synthetic evaluation clips                                                                                        |
+| Budget    | `budget-gtm-command-center-demo`: USD 50/month on the project group, alerts at 50/80/100% (alerts only, not a hard stop)                |
 
 Two applies: 5 additions, then 1 addition (TTS) and 1 in-place capacity change; no deletions. Keys are read with `az cognitiveservices account keys list` into the git-ignored `.env`; they are not Terraform outputs. Audio transcription requires deployment-based URLs (`/openai/deployments/{name}/audio/transcriptions`); the v1 path returns `DeploymentNotFound`, so the harness uses a separate provider instance for audio.
-
