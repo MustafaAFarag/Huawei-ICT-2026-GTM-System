@@ -55,6 +55,7 @@ import {
   GtmService,
   ImportHistoryService,
   ScheduleService,
+  assetPng,
 } from "@revenue/backend";
 import type { Actor } from "@revenue/contracts";
 
@@ -369,10 +370,10 @@ class ApiController {
   ) {
     await actorFor(req.headers, ws);
     const asset = await db.asset.findFirst({ where: { id, workspaceId: ws } });
-    if (!asset || !["html", "pdf"].includes(format))
+    if (!asset || !["html", "pdf", "png"].includes(format))
       throw new HttpException("Asset not found.", 404);
     if (
-      format === "pdf" &&
+      format !== "html" &&
       (!asset.approvedAt ||
         asset.evidenceDigest !==
           digest(
@@ -384,27 +385,34 @@ class ApiController {
           ))
     )
       throw new HttpException(
-        "Review and approve this asset before exporting its PDF.",
+        "Review and approve this asset before exporting it.",
         409,
       );
     const key = format === "pdf" ? asset.pdfKey : asset.htmlKey;
     if (!key)
       throw new HttpException("This export is still being prepared.", 409);
+    const bytes = format === "png" ? await assetPng(ws,asset) : await storage.get(ws,key);
+    if (format === "png") {
+      const current = await db.asset.findFirst({ where: { id, workspaceId: ws } });
+      const prospect = await db.prospect.findFirst({ where: { id: asset.prospectId!, workspaceId: ws } });
+      if (!current?.approvedAt || !prospect || current.evidenceDigest !== digest(prospect.evidence)) throw new HttpException("Asset approval changed while preparing the export. Reload and review it.",409);
+    }
+    res.set("Cache-Control","private, no-store");
     res.set(
       "Content-Type",
-      format === "pdf" ? "application/pdf" : "text/html; charset=utf-8",
+      format === "pdf" ? "application/pdf" : format === "png" ? "image/png" : "text/html; charset=utf-8",
     );
     res.removeHeader("X-Frame-Options");
     res.set(
       "Content-Security-Policy",
-      "sandbox; frame-ancestors 'self'; default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src 'none'",
+      "sandbox; frame-ancestors 'self'; default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:",
     );
-    if (format === "pdf")
+    if (format !== "html")
       res.set(
         "Content-Disposition",
-        `attachment; filename="${asset.template}-${asset.language}.pdf"`,
+        `attachment; filename="${asset.template}-${asset.language}.${format}"`,
       );
-    res.send(await storage.get(ws, key));
+    res.send(bytes);
   }
   @Get("workspaces/:workspaceId/chat") async history(
     @Req() req: Request,

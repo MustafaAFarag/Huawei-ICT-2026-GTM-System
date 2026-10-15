@@ -1,6 +1,12 @@
 // Arabic interface strings (business Arabic). Keys are the English source strings;
 // a missing key falls back to English. Generated content language is chosen per play.
 export const AR: Record<string, string> = {
+  "Download PNG": "تنزيل PNG",
+  "Preparing image…": "جارٍ إعداد الصورة…",
+  "Could not prepare the image. Try again.": "تعذّر إعداد الصورة أعد المحاولة",
+  "Another image export is being prepared. Try again shortly.": "جارٍ إعداد صورة أخرى أعد المحاولة بعد قليل",
+  "Review and approve this asset before exporting it.": "راجع المادة واعتمدها قبل التصدير",
+  "Asset approval changed while preparing the export. Reload and review it.": "تغيّر اعتماد المادة أثناء إعداد الملف أعد التحميل وراجعها",
   "Recurring play reviews": "مراجعات الخطط الدورية",
   "Each occurrence prepares a review. You approve its current scope and cost before work starts.":
     "في كل موعد تُجهّز مراجعة تعتمد النطاق والتكلفة الحالية قبل بدء العمل",

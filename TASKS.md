@@ -10,7 +10,8 @@ Stop: no push, deployment, real outreach, new cloud infrastructure or changes to
 - [x] Build bilingual discovery interview guide/questionnaire export: role-specific questions, reviewed source context, JSON preview and EN/AR PDFs; 15 targeted checks and browser flow pass. Fixed the language selector accessible name found by Playwright.
 - [x] Expose import history and per-file row outcomes: filename versions, added/changed/unchanged counts, field diffs, legacy entries, pagination and tenant isolation. Four service tests and both continuation browser flows pass; additive migration applied locally.
 - [x] Add recurring play reviews: persisted schedules, due review queue, fresh human cost review, one execution key per occurrence, pause/resume/dismiss, role revocation and restart catch-up. Five service checks and all three continuation browser scenarios pass. Scheduled work pauses for cost approval; it does not automatically run paid steps.
-- [ ] Complete static/backend/browser/live checks, inspect outputs, update PRD/status and commit.
+- [x] Add approved PNG export with source-change guards, content-addressed cache, bounded/coalesced rendering and download feedback. Two PNG service tests pass; all 53 backend tests and all 10 browser scenarios pass on this checkpoint.
+- [ ] Complete final static/backend/browser/live checks, inspect outputs, update PRD/status and commit.
 
 Decisions: prioritize working behavior and factual output over cosmetic refinement. Provider sandbox activation stays blocked by missing external accounts. Native Arabic acceptance remains human work.
 

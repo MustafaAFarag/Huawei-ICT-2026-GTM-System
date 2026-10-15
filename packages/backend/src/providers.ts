@@ -653,3 +653,15 @@ export async function renderPdf(html: string) {
     await browser.close();
   }
 }
+
+export async function renderPng(html: string) {
+  const browser = await chromium.launch({ headless: true, env: { PATH: process.env.PATH ?? "/usr/bin:/bin", HOME: "/tmp", LANG: "C.UTF-8" }, executablePath: process.env.CHROME_PATH ?? "/usr/bin/google-chrome-stable" });
+  try {
+    const context = await browser.newContext({ javaScriptEnabled: false, viewport: { width: 794, height: 1123 }, deviceScaleFactor: 2 });
+    await context.route("**/*",route=>route.abort());
+    const page = await context.newPage();
+    await page.setContent(html,{waitUntil:"load"});
+    await page.evaluate(()=>document.fonts.ready);
+    return await page.screenshot({type:"png",fullPage:true,timeout:30000});
+  } finally { await browser.close(); }
+}

@@ -152,6 +152,9 @@ test("four plays, bilingual asset, approval invalidation, suppression and worksp
   expect(
     (await context.request.get(`${base}/assets/${asset.id}/pdf`)).status(),
   ).toBe(409);
+  expect(
+    (await context.request.get(`${base}/assets/${asset.id}/png`)).status(),
+  ).toBe(409);
   await page.getByRole("button", { name: "Asset Studio", exact: true }).click();
   const card = page
     .locator(".asset-card")
@@ -183,6 +186,17 @@ test("four plays, bilingual asset, approval invalidation, suppression and worksp
   const pdf = await context.request.get(`${base}/assets/${asset.id}/pdf`);
   expect(pdf.status()).toBe(200);
   expect((await pdf.body()).subarray(0, 4).toString()).toBe("%PDF");
+  const png = await context.request.get(`${base}/assets/${asset.id}/png`);
+  expect(png.status()).toBe(200);
+  expect(png.headers()["content-type"]).toContain("image/png");
+  expect((await png.body()).subarray(0, 8)).toEqual(
+    Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]),
+  );
+  const imageDownload = page.waitForEvent("download");
+  await card.getByRole("button", { name: "Download PNG", exact: true }).click();
+  expect((await imageDownload).suggestedFilename()).toBe(
+    "offer-one-pager-ar-EG.png",
+  );
   await expect(page.getByText("Action needs attention")).toHaveCount(0);
   // Asset assignment is versioned, then current copy is approved again.
   expect(
@@ -283,6 +297,9 @@ test("four plays, bilingual asset, approval invalidation, suppression and worksp
   expect(
     state.assets.find((current: any) => current.id === asset.id).approvedAt,
   ).toBeNull();
+  expect(
+    (await context.request.get(`${base}/assets/${asset.id}/png`)).status(),
+  ).toBe(409);
   const researched = state.prospects.find((p: any) => p.id === prospect.id);
   expect(
     (
