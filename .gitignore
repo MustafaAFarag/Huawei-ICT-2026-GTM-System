@@ -18,8 +18,10 @@ coverage/
 test-results/
 playwright-report/
 *.tsbuildinfo
-Lara Meeting*.pdf
-Lara Meeting transcript.txt
+*Lara Meeting*.pdf
+*Lara Meeting transcript.txt
+# Real customer GTM exports: structure reference only, never committed
+GTM Files/
 .terraform/
 *.tfstate
 *.tfstate.*

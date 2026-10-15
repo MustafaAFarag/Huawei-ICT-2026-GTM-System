@@ -1,3 +1,19 @@
+## Active — Raycast design, MENA demo data, real AI harness and voice (started 15 October 2026)
+
+Goal: replace the ad-hoc UI with a Raycast-based design system, learn the real GTM process from `GTM Files/` (structure only) and seed 8 synthetic demo workspaces covering every tier, extend the PRD, and run the assistant and voice dictation on real Azure models.
+Done: new design in EN/AR, desktop/phone, dark/light and PDF; deterministic seed with no real PII; PRD v3.1; streamed governed assistant on Azure; Whisper EN/AR dictation; tests pass; screenshots and live smoke results recorded.
+Stop: no push, deployment, live outbound sending, or changes to Amr's other Azure resources.
+
+- [x] Phase 0: real GTM files and meeting files ignored.
+- [ ] Phase 1: Raycast DESIGN.md, product design system, tokens, component split, print template, screenshots.
+- [ ] Phase 2: research 11 teardown, deterministic 8-workspace seed, PRD v3.1.
+- [ ] Phase 3: Azure OpenAI + Whisper, agent loop, prompts, streaming chat, voice, Twenty MCP, OpenDesign BYOK, evaluation.
+- [ ] Verification: tests, e2e, live smoke, Terraform, own diff review, commits.
+
+Decisions: Raycast style (owner, 15 Oct). Own harness on Vercel AI SDK Core. Azure provisioning and real inference approved by owner; credits confirmed by Amr (replaces the earlier $100 assumption). Real files read for structure only.
+
+---
+
 ## Active preparation — isolated Azure connection and Terraform (14 October 2026)
 
 Goal: prepare this project's Azure connection and a single-server Terraform target while verifying the complete application on localhost.
