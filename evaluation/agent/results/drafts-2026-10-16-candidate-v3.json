@@ -1,0 +1,527 @@
+{
+  "summary": {
+    "checkedAt": "2026-10-15T23:24:39.994Z",
+    "label": "candidate-v3",
+    "model": "gpt-5-4-mini",
+    "prompts": {
+      "drafting": "2026-10-16.3+82a0fd4b",
+      "language": "2026-10-16.3+ddcf64e1"
+    },
+    "criteriaVersion": "2026-10-16.3",
+    "regraded": false,
+    "cases": 12,
+    "passed": 12,
+    "judgeMeans": {
+      "grounding": 4.67,
+      "relevance": 3.67,
+      "language": 4.75
+    },
+    "limits": "Synthetic cases; same-model judge. Language score capped at 1 for entirely English Arabic-channel bodies; raw judge score retained. Deterministic checks also required. No native Arabic acceptance or campaign effectiveness claim."
+  },
+  "results": [
+    {
+      "id": "hiring-leader-en",
+      "language": "en",
+      "ms": 5475,
+      "pass": true,
+      "failures": [],
+      "review": {
+        "grounding": 5,
+        "relevance": 4,
+        "language": 5,
+        "reason": "Uses only the approved fact about Lumaro Pay’s HR vacancies and the approved offer of outsourced HR operations for payroll and employee onboarding. No invented meeting, permission, or customer result claims. The ask is low-pressure and relevant, though it remains somewhat generic and does not explain a specific connection beyond the vacancy signal.",
+        "rawJudgeLanguage": 5
+      },
+      "approvedFact": "Lumaro Pay lists three HR vacancies, including a payroll specialist.",
+      "touches": [
+        {
+          "channel": "email",
+          "day": 0,
+          "body": "Hi Huda,\n\nI noticed Lumaro Pay lists three HR vacancies, including a payroll specialist. I work on an outsourced HR operations desk that runs payroll and employee onboarding.\n\nWould it be relevant to compare notes on whether that kind of support could help your team?\n\nReply stop to opt out.",
+          "evidenceIds": [
+            "reviewed-fact"
+          ],
+          "subject": "HR vacancies at Lumaro Pay"
+        },
+        {
+          "channel": "linkedin",
+          "day": 3,
+          "body": "Hi Huda — I saw Lumaro Pay has three HR vacancies, including a payroll specialist. I help with outsourced HR operations for payroll and employee onboarding. Would that be relevant to your team?",
+          "evidenceIds": [
+            "reviewed-fact"
+          ]
+        },
+        {
+          "channel": "call",
+          "day": 7,
+          "body": "Before calling: check the recorded communication basis and permitted hours. Do not call without a valid basis or after an opt-out.\n\nHi Huda, I noticed Lumaro Pay has three HR vacancies, including a payroll specialist. I work on outsourced HR operations for payroll and employee onboarding. Would it be relevant to explore whether that kind of support fits your team?",
+          "evidenceIds": [
+            "reviewed-fact"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "event-founder-en",
+      "language": "en",
+      "ms": 3253,
+      "pass": true,
+      "failures": [],
+      "review": {
+        "grounding": 5,
+        "relevance": 4,
+        "language": 5,
+        "reason": "Grounding is solid: it only uses the approved exhibitor fact and the approved offer, with no invented pain, relationship, or permission. Relevance is decent because the message connects the event participation to a payroll/onboarding HR ops desk and uses a low-pressure question, though it stays somewhat generic and doesn’t explain why this matters to Lumaro Pay specifically. Language is natural and consistent in English, with names preserved and no stray issues.",
+        "rawJudgeLanguage": 5
+      },
+      "approvedFact": "Lumaro Pay was listed as a company exhibitor at the Cairo Business Forum on 2 October 2026.",
+      "touches": [
+        {
+          "channel": "email",
+          "day": 0,
+          "body": "Hi Huda,\n\nI noticed Lumaro Pay was listed as a company exhibitor at the Cairo Business Forum on 2 October 2026. I work with an outsourced HR operations desk that handles payroll and employee onboarding.\n\nWould that be relevant for Lumaro Pay?\n\nReply stop to opt out.",
+          "evidenceIds": [
+            "reviewed-fact"
+          ],
+          "subject": "Lumaro Pay at Cairo Business Forum"
+        },
+        {
+          "channel": "linkedin",
+          "day": 3,
+          "body": "Hi Huda, I saw Lumaro Pay was listed as a company exhibitor at the Cairo Business Forum. I work with an outsourced HR operations desk for payroll and employee onboarding. Would that be relevant for Lumaro Pay?",
+          "evidenceIds": [
+            "reviewed-fact"
+          ]
+        },
+        {
+          "channel": "call",
+          "day": 7,
+          "body": "Before calling: check the recorded communication basis and permitted hours. Do not call without a valid basis or after an opt-out.\n\nHi Huda, I noticed Lumaro Pay was listed as a company exhibitor at the Cairo Business Forum on 2 October 2026. I help with outsourced HR operations for payroll and employee onboarding. Would that be relevant for Lumaro Pay?",
+          "evidenceIds": [
+            "reviewed-fact"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sparse-finance-en",
+      "language": "en",
+      "ms": 3299,
+      "pass": true,
+      "failures": [],
+      "review": {
+        "grounding": 5,
+        "relevance": 3,
+        "language": 5,
+        "reason": "Grounding is solid: it only cites the approved public website fact and the approved offer, with no invented relationship or results. Relevance is cautious and low-pressure, but the connection from payment settlement to outsourced HR operations is thin and not explained beyond a general “relevant?” ask. Language is natural English, names are preserved, and there are no obvious wording issues.",
+        "rawJudgeLanguage": 5
+      },
+      "approvedFact": "Lumaro Pay's public website describes its payment settlement service.",
+      "touches": [
+        {
+          "channel": "email",
+          "day": 0,
+          "body": "Hi Huda,\n\nI looked at Lumaro Pay’s public website and saw the payment settlement service. I’m reaching out because I work with an outsourced HR operations desk that runs payroll and employee onboarding.\n\nWould that be relevant for Lumaro Pay at all?\n\nReply stop to opt out.",
+          "evidenceIds": [
+            "reviewed-fact"
+          ],
+          "subject": "Lumaro Pay payment settlement"
+        },
+        {
+          "channel": "linkedin",
+          "day": 3,
+          "body": "Hi Huda, I noticed Lumaro Pay’s public website describes its payment settlement service. I’m following up because I work with an outsourced HR operations desk for payroll and employee onboarding. Is that relevant for Lumaro Pay?",
+          "evidenceIds": [
+            "reviewed-fact"
+          ]
+        },
+        {
+          "channel": "call",
+          "day": 7,
+          "body": "Before calling: check the recorded communication basis and permitted hours. Do not call without a valid basis or after an opt-out.\n\nHi Huda, this is a brief outreach based on Lumaro Pay’s public website mentioning payment settlement. I work with an outsourced HR operations desk covering payroll and employee onboarding. Would that be relevant for Lumaro Pay?",
+          "evidenceIds": [
+            "reviewed-fact"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "hiring-leader-ar-EG",
+      "language": "ar-EG",
+      "ms": 4994,
+      "pass": true,
+      "failures": [],
+      "review": {
+        "grounding": 4,
+        "relevance": 4,
+        "language": 5,
+        "reason": "الاستناد واضح إلى حقيقة واحدة فقط: وجود 3 وظائف في الموارد البشرية ومنها أخصائي رواتب. ما فيش ادعاءات عن ألم خاص، عملاء مشتركين، نتائج سابقة، أو تواصل/موافقة شخصية. العرض مرتبط ومباشر، والطلب منخفض الضغط. اللغة المصرية العربية طبيعية عمومًا مع أسماء الشركات والأشخاص كما هي، لكن في ملاحظة صغيرة: عبارة \"شؤون الموظفين\" مقبولة، و\"تهيئة الموظفين الجدد\" أفضل من استخدام مصطلحات إنجليزية. لا توجد مشكلة كبيرة في اللغة.",
+        "rawJudgeLanguage": 5
+      },
+      "approvedFact": "Lumaro Pay lists three HR vacancies, including a payroll specialist.",
+      "touches": [
+        {
+          "channel": "email",
+          "day": 0,
+          "body": "أهلًا Huda، لاحظت إن Lumaro Pay عندها 3 وظائف شاغرة في الموارد البشرية، منهم أخصائي رواتب. عندنا خدمة خارجية لتشغيل شؤون الموظفين بتشمل الرواتب وتهيئة الموظفين الجدد. هل ده ممكن يكون مناسب ليكم دلوقتي؟\n\nلو مش حابين نتابع ابعتوا كلمة توقف.",
+          "evidenceIds": [
+            "reviewed-fact"
+          ],
+          "subject": "بخصوص وظائف الموارد البشرية عندكم"
+        },
+        {
+          "channel": "linkedin",
+          "day": 3,
+          "body": "أهلًا Huda، رجعت لملاحظة وظائف الموارد البشرية الثلاثة في Lumaro Pay، منهم أخصائي رواتب. لو مفيد، ممكن أشارك باختصار إزاي خدمة خارجية لتشغيل شؤون الموظفين والرواتب وتهيئة الموظفين الجدد بتكون منظمة. هل ده له صلة عندكم؟",
+          "evidenceIds": [
+            "reviewed-fact"
+          ]
+        },
+        {
+          "channel": "call",
+          "day": 7,
+          "body": "قبل الاتصال: اتأكد من الأساس المسجّل للتواصل ومن الوقت المسموح ما تتصلش لو مفيش أساس مناسب أو لو الشخص طلب وقف التواصل.\n\nأهلًا Huda، أنا لاحظت إن Lumaro Pay عندها 3 وظائف شاغرة في الموارد البشرية، منهم أخصائي رواتب. عندنا خدمة خارجية لتشغيل شؤون الموظفين بتغطي الرواتب وتهيئة الموظفين الجدد. هل ده ممكن يكون له صلة عندكم؟",
+          "evidenceIds": [
+            "reviewed-fact"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "event-founder-ar-EG",
+      "language": "ar-EG",
+      "ms": 4447,
+      "pass": true,
+      "failures": [],
+      "review": {
+        "grounding": 3,
+        "relevance": 3,
+        "language": 5,
+        "reason": "الرسائل مبنية فقط على حقيقة موثقة واحدة عن مشاركة Lumaro Pay في المعرض، لكن لا توجد صلة مُثبتة بحاجة لدى الشركة أو إذن تواصل أو لقاء شخصي. العرض مناسب كخدمة، لكن الربط به يظل عامًّا ومتحفظًا، والطلب منخفض الضغط. اللغة المصرية سليمة عمومًا، والأسماء محفوظة، مع ملاحظة أن عبارة \"رد بكلمة توقف\" مناسبة.",
+        "rawJudgeLanguage": 5
+      },
+      "approvedFact": "Lumaro Pay was listed as a company exhibitor at the Cairo Business Forum on 2 October 2026.",
+      "touches": [
+        {
+          "channel": "email",
+          "day": 0,
+          "body": "أهلًا Huda،\n\nشفت إن Lumaro Pay كانت شركة عارضة في Cairo Business Forum يوم 2 أكتوبر 2026. لو في أي اهتمام بتخفيف شغل الرواتب وتهيئة الموظفين الجدد كخدمة خارجية، هل ده ممكن يكون مناسب لكم؟\n\nرد بكلمة توقف لو مش حابب تواصل تاني.",
+          "evidenceIds": [
+            "reviewed-fact"
+          ],
+          "subject": "لمحت Lumaro Pay في Cairo Business Forum"
+        },
+        {
+          "channel": "linkedin",
+          "day": 3,
+          "body": "أهلًا Huda، لاحظت إن Lumaro Pay كانت شركة عارضة في Cairo Business Forum يوم 2 أكتوبر 2026. إحنا بنقدّم خدمة خارجية لتشغيل الرواتب وتهيئة الموظفين الجدد. هل ده ممكن يكون له صلة عندكم؟",
+          "evidenceIds": [
+            "reviewed-fact"
+          ]
+        },
+        {
+          "channel": "call",
+          "day": 7,
+          "body": "قبل الاتصال: اتأكد من الأساس المسجّل للتواصل ومن الوقت المسموح ما تتصلش لو مفيش أساس مناسب أو لو الشخص طلب وقف التواصل.\n\nأهلًا Huda، لاحظت إن Lumaro Pay كانت شركة عارضة في Cairo Business Forum يوم 2 أكتوبر 2026. بسأل لو خدمة خارجية لتشغيل الرواتب وتهيئة الموظفين الجدد ممكن تكون مناسبة لكم؟",
+          "evidenceIds": [
+            "reviewed-fact"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sparse-finance-ar-EG",
+      "language": "ar-EG",
+      "ms": 4178,
+      "pass": true,
+      "failures": [],
+      "review": {
+        "grounding": 5,
+        "relevance": 4,
+        "language": 5,
+        "reason": "الرسائل مبنية فقط على حقيقة عامة عن موقع Lumaro Pay وخدمة التسوية، وبتعرض العرض بشكل متواضع مع سؤال بدل ادعاءات عن ألم أو علاقة شخصية. فيها بعض الحذر، لكن ما زالت قريبة من البيع المباشر في صياغة شبه عامة. اللغة عربية مصرية طبيعية، والأسماء محفوظة.",
+        "rawJudgeLanguage": 5
+      },
+      "approvedFact": "Lumaro Pay's public website describes its payment settlement service.",
+      "touches": [
+        {
+          "channel": "email",
+          "day": 0,
+          "body": "أهلًا Huda، شفت إن موقع Lumaro Pay بيعرض خدمة تسوية المدفوعات. أنا بطرح بس سؤال: هل فيه أي اهتمام بخدمة خارجية لتشغيل شؤون الموظفين والرواتب وتهيئة الموظفين الجدد، لو ده مناسب لكم؟\n\nرد بكلمة توقف لو مش حابب تواصل تاني.",
+          "evidenceIds": [
+            "reviewed-fact"
+          ],
+          "subject": "سؤال سريع عن تسوية المدفوعات في Lumaro Pay"
+        },
+        {
+          "channel": "linkedin",
+          "day": 3,
+          "body": "أهلًا Huda، رجعت على نقطة صغيرة: موقع Lumaro Pay بيعرض تسوية المدفوعات. لو إدارة شؤون الموظفين والرواتب وتهيئة الموظفين الجدد على طرفكم مش أولوية حاليًا، تمام. لو حابة، أقدر أوضح هل خدمة خارجية بالشكل ده لها صلة عندكم؟",
+          "evidenceIds": [
+            "reviewed-fact"
+          ]
+        },
+        {
+          "channel": "call",
+          "day": 7,
+          "body": "قبل الاتصال: اتأكد من الأساس المسجّل للتواصل ومن الوقت المسموح ما تتصلش لو مفيش أساس مناسب أو لو الشخص طلب وقف التواصل.\n\nأهلًا Huda، أنا لقيت إن موقع Lumaro Pay بيعرض تسوية المدفوعات. هل فيه أي صلة عندكم بخدمة خارجية لتشغيل شؤون الموظفين والرواتب وتهيئة الموظفين الجدد؟",
+          "evidenceIds": [
+            "reviewed-fact"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "hiring-leader-ar-Gulf",
+      "language": "ar-Gulf",
+      "ms": 5609,
+      "pass": true,
+      "failures": [],
+      "review": {
+        "grounding": 5,
+        "relevance": 4,
+        "language": 4,
+        "reason": "الاستناد واضح ومحدود: ذُكرت فقط حقيقة الوظائف الشاغرة في Lumaro Pay وربطها بعرض خارجي في الرواتب وتوظيف/تهيئة الموظفين الجدد دون اختلاق دردشة أو موافقة أو نتائج. الملاءمة جيدة لكن فيها نبرة تسويقية عامة بعض الشيء، والسؤال واسع ولا يثبت حاجة فعلية. اللغة العربية مفهومة وبلهجة خليجية، مع أسماء Lumaro Pay وHuda كما هي، لكن 'شؤون الموظفين الجدد' أقل دقة من 'تهيئة الموظفين الجدد' وبعض الصياغة تحتاج صقل.",
+        "rawJudgeLanguage": 4
+      },
+      "approvedFact": "Lumaro Pay lists three HR vacancies, including a payroll specialist.",
+      "touches": [
+        {
+          "channel": "email",
+          "day": 0,
+          "body": "هلا Huda،\n\nاطلعت إن Lumaro Pay مدرجة فيها ثلاث وظائف شاغرة في الموارد البشرية، منها أخصائي الرواتب. عندنا خدمة خارجية لتشغيل شؤون الموظفين الجدد والرواتب. هل هذا ضمن الأشياء اللي ممكن تكون مناسبة لكم؟\n\nإذا ما ترغبون بمتابعة التواصل، ردّوا بكلمة توقف.",
+          "evidenceIds": [
+            "reviewed-fact"
+          ],
+          "subject": "وظائف الموارد البشرية في Lumaro Pay"
+        },
+        {
+          "channel": "linkedin",
+          "day": 3,
+          "body": "هلا Huda، رجعت على ملاحظة وظائف الموارد البشرية في Lumaro Pay، ومنها أخصائي الرواتب. إذا كان مناسب، أقدر أشارك كيف خدمة تشغيل شؤون الموظفين الجدد والرواتب قد تكون مفيدة لكم. هل هذا ضمن اهتماماتكم؟",
+          "evidenceIds": [
+            "reviewed-fact"
+          ]
+        },
+        {
+          "channel": "call",
+          "day": 7,
+          "body": "قبل الاتصال: تأكّد من أساس التواصل المسجّل والوقت المسموح لا تتصل عند غياب الأساس المناسب أو وجود طلب بإيقاف التواصل.\n\nهلا Huda، أنا تواصلت لأن Lumaro Pay ظاهر فيها ثلاث وظائف شاغرة في الموارد البشرية، ومنها أخصائي الرواتب. عندنا خدمة خارجية لتشغيل شؤون الموظفين الجدد والرواتب. هل هذا شيء له صلة عندكم؟",
+          "evidenceIds": [
+            "reviewed-fact"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "event-founder-ar-Gulf",
+      "language": "ar-Gulf",
+      "ms": 4386,
+      "pass": true,
+      "failures": [],
+      "review": {
+        "grounding": 5,
+        "relevance": 4,
+        "language": 5,
+        "reason": "الاعتماد على حقيقة واحدة فقط واضح: ظهور Lumaro Pay كعارض في Cairo Business Forum. ما فيه ادعاء بموعد شخصي أو إذن مسبق أو عملاء مشتركين. العرض مرتبط مباشرة بالخدمة المعتمدة (تشغيل الرواتب وتهيئة الموظفين الجدد). الملاحظة الوحيدة أن السؤال عام قليلًا ولا يذكر سببًا محددًا لملاءمته للشركة، لكنه ما يزال منخفض الضغط ومقبول باللهجة الخليجية.",
+        "rawJudgeLanguage": 5
+      },
+      "approvedFact": "Lumaro Pay was listed as a company exhibitor at the Cairo Business Forum on 2 October 2026.",
+      "touches": [
+        {
+          "channel": "email",
+          "day": 0,
+          "body": "أهلًا Huda،\n\nظهر اسم Lumaro Pay كشركة عارضة في Cairo Business Forum بتاريخ 2 أكتوبر 2026. عندنا خدمة خارجية لتشغيل شؤون الموظفين الجدد والرواتب، وإذا كان هذا النوع من الدعم له صلة بخطتكم الحالية أقدر أشارك تفاصيل أكثر.\n\nهل هالخدمة مناسبة لكم؟\n\nإذا ما ترغبون بمتابعة التواصل ردّوا بكلمة توقف.",
+          "evidenceIds": [
+            "reviewed-fact"
+          ],
+          "subject": "Lumaro Pay في Cairo Business Forum"
+        },
+        {
+          "channel": "linkedin",
+          "day": 3,
+          "body": "أهلًا Huda، ظهر اسم Lumaro Pay كشركة عارضة في Cairo Business Forum. عندنا خدمة خارجية لتشغيل شؤون الموظفين الجدد والرواتب، وإذا كان هذا النوع من الدعم له صلة بخططكم الحالية يسعدني أشارك تفاصيل أكثر. هل هالخدمة مناسبة لكم؟",
+          "evidenceIds": [
+            "reviewed-fact"
+          ]
+        },
+        {
+          "channel": "call",
+          "day": 7,
+          "body": "قبل الاتصال: تأكّد من أساس التواصل المسجّل والوقت المسموح لا تتصل عند غياب الأساس المناسب أو وجود طلب بإيقاف التواصل.\n\nأهلًا Huda، معك بخصوص ظهور Lumaro Pay كشركة عارضة في Cairo Business Forum. عندنا خدمة خارجية لتشغيل شؤون الموظفين الجدد والرواتب، فهل هذا النوع من الدعم له صلة بخططكم الحالية؟",
+          "evidenceIds": [
+            "reviewed-fact"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sparse-finance-ar-Gulf",
+      "language": "ar-Gulf",
+      "ms": 4453,
+      "pass": true,
+      "failures": [],
+      "review": {
+        "grounding": 5,
+        "relevance": 4,
+        "language": 5,
+        "reason": "الربط الوحيد المبني على حقيقة عامة هو وصف Lumaro Pay لخدمة تسوية المدفوعات، وهذا مناسب. العرض المذكور واضح ومطابق للاعتماد. الصياغة هادئة وفيها سؤال منخفض الضغط مع خيار إيقاف التواصل. ما فيه ادعاءات عن ألم عميل، ولا علاقات سابقة، ولا نتائج أو لقاءات شخصية. الملاحظة الوحيدة أن الاستدلال على الصلة ما زال عامًّا ولا يوضح سببًا تجاريًا محددًا، فالأفضل لو أضيف سبب ارتباط مباشر إن وُجد.",
+        "rawJudgeLanguage": 5
+      },
+      "approvedFact": "Lumaro Pay's public website describes its payment settlement service.",
+      "touches": [
+        {
+          "channel": "email",
+          "day": 0,
+          "body": "أهلًا Huda،\nاطلعت على وصف Lumaro Pay على موقعكم العام لخدمة تسوية المدفوعات. عندنا خدمة خارجية لتشغيل شؤون الموظفين الجدد والرواتب، فحبيت أسأل: هل هذا النوع من الدعم له صلة عندكم؟\nإذا ما هو مناسب، ردّي بكلمة توقف لو ما ترغبين نتابع.",
+          "evidenceIds": [
+            "reviewed-fact"
+          ],
+          "subject": "سؤال سريع عن تشغيل الرواتب وتهيئة الموظفين"
+        },
+        {
+          "channel": "linkedin",
+          "day": 3,
+          "body": "أهلًا Huda، رجعت على وصف Lumaro Pay لخدمة تسوية المدفوعات. عندنا خدمة خارجية لتشغيل شؤون الموظفين الجدد والرواتب. هل هذا له صلة عندكم؟ إذا ما يناسبكم، يكفيني رد بكلمة توقف.",
+          "evidenceIds": [
+            "reviewed-fact"
+          ]
+        },
+        {
+          "channel": "call",
+          "day": 7,
+          "body": "قبل الاتصال: تأكّد من أساس التواصل المسجّل والوقت المسموح لا تتصل عند غياب الأساس المناسب أو وجود طلب بإيقاف التواصل.\n\nأهلًا Huda، أنا راجعت وصف Lumaro Pay لخدمة تسوية المدفوعات، وعندنا خدمة خارجية لتشغيل شؤون الموظفين الجدد والرواتب. هل هذا النوع من الدعم له صلة عندكم؟",
+          "evidenceIds": [
+            "reviewed-fact"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "hiring-leader-ar",
+      "language": "ar",
+      "ms": 4299,
+      "pass": true,
+      "failures": [],
+      "review": {
+        "grounding": 5,
+        "relevance": 4,
+        "language": 5,
+        "reason": "الاستناد واضح إلى حقيقة واحدة فقط: وجود ثلاث وظائف في الموارد البشرية، ومنها أخصائي رواتب. العرض مطابق تقريبًا للقدرة المعتمدة (تشغيل شؤون الموظفين والرواتب وتهيئة الموظفين الجدد) من دون ادعاءات شخصية أو علاقات غير مثبتة. الصياغة عربية سليمة عمومًا، وأسماء الشركة والشخص محفوظة. الملاحظة الوحيدة أن عبارة «هل هذا ضمن ما قد يكون مناسبًا لكم؟» و«هل هذا له صلة عندكم؟» ما تزال عامة قليلًا وتحتاج تقليلًا إضافيًا للعرضية أو لتحويلها إلى سؤال أكثر تحديدًا.",
+        "rawJudgeLanguage": 5
+      },
+      "approvedFact": "Lumaro Pay lists three HR vacancies, including a payroll specialist.",
+      "touches": [
+        {
+          "channel": "email",
+          "day": 0,
+          "body": "أهلًا Huda،\n\nلاحظت أن Lumaro Pay مدرجة لديها ثلاث وظائف شاغرة في الموارد البشرية، ومنها أخصائي الرواتب. بما أن العرض الذي لدي يغطّي تشغيل شؤون الموظفين والرواتب وتهيئة الموظفين الجدد كخدمة خارجية، هل هذا ضمن ما قد يكون مناسبًا لكم؟\n\nلإيقاف التواصل يرجى الرد بكلمة توقف.",
+          "evidenceIds": [
+            "reviewed-fact"
+          ],
+          "subject": "حول وظائف الموارد البشرية في Lumaro Pay"
+        },
+        {
+          "channel": "linkedin",
+          "day": 3,
+          "body": "أهلًا Huda، لفت نظري أن Lumaro Pay لديها ثلاث وظائف شاغرة في الموارد البشرية، منها أخصائي الرواتب. أشاركك لأن لدي عرضًا لتشغيل شؤون الموظفين والرواتب وتهيئة الموظفين الجدد كخدمة خارجية. هل هذا له صلة عندكم؟",
+          "evidenceIds": [
+            "reviewed-fact"
+          ]
+        },
+        {
+          "channel": "call",
+          "day": 7,
+          "body": "قبل الاتصال: تحقّق من الأساس المسجّل للتواصل والوقت المسموح لا تتصل عند غياب الأساس المناسب أو وجود طلب بإيقاف التواصل.\n\nأهلًا Huda، لفت انتباهي أن Lumaro Pay لديها ثلاث وظائف شاغرة في الموارد البشرية، منها أخصائي الرواتب. عندي عرض لتشغيل شؤون الموظفين والرواتب وتهيئة الموظفين الجدد كخدمة خارجية، هل هذا قد يكون مناسبًا لكم؟",
+          "evidenceIds": [
+            "reviewed-fact"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "event-founder-ar",
+      "language": "ar",
+      "ms": 3841,
+      "pass": true,
+      "failures": [],
+      "review": {
+        "grounding": 4,
+        "relevance": 3,
+        "language": 4,
+        "reason": "الأساس الوحيد هو ظهور Lumaro Pay كعارض في الحدث، وهذا مذكور بشكل صحيح من دون ادعاء اجتماع شخصي أو إذن تواصل. لكن الرسالة تفترض اهتمامًا حاليًا من دون دليل، والصياغة عامة قليلًا مع عرض الخدمة فقط وسؤال واسع. اللغة العربية مفهومة وطبيعية إجمالًا، مع استخدام 'الرواتب' و'تهيئة الموظفين الجدد' بشكل مناسب، لكن هناك بعض الركاكة مثل 'هل ده له صلة' و'ظهر اسمها' بدل صياغة أكثر سلاسة.",
+        "rawJudgeLanguage": 4
+      },
+      "approvedFact": "Lumaro Pay was listed as a company exhibitor at the Cairo Business Forum on 2 October 2026.",
+      "touches": [
+        {
+          "channel": "email",
+          "day": 0,
+          "body": "أهلًا Huda،\n\nظهر اسم Lumaro Pay كشركة عارضة في Cairo Business Forum بتاريخ 2 أكتوبر 2026. عندنا خدمة خارجية لتشغيل شؤون الموارد البشرية، تشمل الرواتب وتهيئة الموظفين الجدد. هل ده له صلة باهتمامكم الحالي؟\n\nلإيقاف التواصل يرجى الرد بكلمة توقف.",
+          "evidenceIds": [
+            "reviewed-fact"
+          ],
+          "subject": "Lumaro Pay في Cairo Business Forum"
+        },
+        {
+          "channel": "linkedin",
+          "day": 3,
+          "body": "أهلًا Huda، شفت إن Lumaro Pay كانت شركة عارضة في Cairo Business Forum. لو مناسب، عندنا خدمة خارجية لتشغيل شؤون الموارد البشرية تشمل الرواتب وتهيئة الموظفين الجدد. هل ده له صلة باهتمامكم؟",
+          "evidenceIds": [
+            "reviewed-fact"
+          ]
+        },
+        {
+          "channel": "call",
+          "day": 7,
+          "body": "قبل الاتصال: تحقّق من الأساس المسجّل للتواصل والوقت المسموح لا تتصل عند غياب الأساس المناسب أو وجود طلب بإيقاف التواصل.\n\nأهلًا Huda، أنا متابع إن Lumaro Pay ظهر اسمها كشركة عارضة في Cairo Business Forum. عندنا خدمة خارجية لتشغيل شؤون الموارد البشرية تشمل الرواتب وتهيئة الموظفين الجدد. هل ده له صلة باهتمامكم؟",
+          "evidenceIds": [
+            "reviewed-fact"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sparse-finance-ar",
+      "language": "ar",
+      "ms": 4221,
+      "pass": true,
+      "failures": [],
+      "review": {
+        "grounding": 5,
+        "relevance": 3,
+        "language": 4,
+        "reason": "Grounding is good: it only cites the approved public website fact and the approved offer, without inventing meetings, shared customers, or results. Relevance is moderate: the connection to payment settlement is real but fairly indirect, and the asks are low-pressure though still somewhat generic. Language is mostly natural Arabic and preserves names, but it leaves approved business terms like payroll/onboarding as transliterated/English-like concepts rather than fully translated Arabic business词",
+        "rawJudgeLanguage": 4
+      },
+      "approvedFact": "Lumaro Pay's public website describes its payment settlement service.",
+      "touches": [
+        {
+          "channel": "email",
+          "day": 0,
+          "body": "أهلًا Huda،\nراجعتُ الموقع العام لـ Lumaro Pay ولاحظتُ أنه يصف خدمة تسوية المدفوعات لديكم.\nأقدّم خدمة خارجية لتشغيل شؤون الموظفين والرواتب وتهيئة الموظفين الجدد. هل هذا مناسب لكم، أم ليس له صلة الآن؟\nلإيقاف التواصل يرجى الرد بكلمة توقف.",
+          "evidenceIds": [
+            "reviewed-fact"
+          ],
+          "subject": "ملاحظة عن خدمة تسوية المدفوعات لدى Lumaro Pay"
+        },
+        {
+          "channel": "linkedin",
+          "day": 3,
+          "body": "أهلًا Huda، لاحظتُ من موقع Lumaro Pay وصف خدمة تسوية المدفوعات. أقدّم خدمة خارجية لتشغيل شؤون الموظفين والرواتب وتهيئة الموظفين الجدد. هل هذا له صلة عندكم؟",
+          "evidenceIds": [
+            "reviewed-fact"
+          ]
+        },
+        {
+          "channel": "call",
+          "day": 7,
+          "body": "قبل الاتصال: تحقّق من الأساس المسجّل للتواصل والوقت المسموح لا تتصل عند غياب الأساس المناسب أو وجود طلب بإيقاف التواصل.\n\nأهلًا Huda، لاحظتُ أن موقع Lumaro Pay يصف خدمة تسوية المدفوعات. أقدّم خدمة خارجية لتشغيل شؤون الموظفين والرواتب وتهيئة الموظفين الجدد. هل هذا قد يكون له صلة عندكم؟",
+          "evidenceIds": [
+            "reviewed-fact"
+          ]
+        }
+      ]
+    }
+  ]
+}

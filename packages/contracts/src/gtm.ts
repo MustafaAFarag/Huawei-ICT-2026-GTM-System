@@ -93,7 +93,7 @@ export function draftChecks(touches: Touch[], language = "en"): DraftCheck[] {
       checks.push({ level: "warning", code: "language", touch: index, message: "This draft is meant to be Arabic but contains no Arabic text." });
     if (language === "en" && ARABIC.test(touch.body))
       checks.push({ level: "warning", code: "language", touch: index, message: "This English draft contains Arabic text." });
-    if (/\[(name|company|first ?name)\]|{{|}}/i.test(text))
+    if (/\[(name|company|first ?name|your name|your company|اسمك|شركتك|اسم الشركة|اسم العميل)\]|{{|}}/i.test(text))
       checks.push({ level: "error", code: "placeholder", touch: index, message: "Unfilled placeholder left in the copy." });
   });
   return checks;

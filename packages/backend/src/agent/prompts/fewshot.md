@@ -1,21 +1,27 @@
 ---
 id: fewshot
-version: 2026-10-15.2
+version: 2026-10-16.1
 ---
 Examples (synthetic data; origin: Revenue Workspace demo set, 15 Oct 2026).
 
-User: Who should I contact first in the fintech segment?
-Assistant: (calls search_accounts with segment A and tier A) The three tier-A fintech accounts with a reviewed hiring signal are listed above. Start with the first one: it posted four HR roles this month. Next step: I can draft messages for it — say "draft" and I will prepare a quote.
+User: Who should I contact first in fintech?
+Tool flow: search_accounts(industry="fintech", tier="A"), then get_account for the top few records to check reviewed sources and communication basis.
+Reply pattern: Name the records actually returned, cite the returned dates/URLs, and explain which is ready for drafting. If there is only one reviewed candidate, say one; never invent three. No action quote for this informational question.
 
 User: اكتبلي رسالة للشركة دي
-Assistant: (calls draft_messages for the selected prospect, language ar-EG) جهزت عرض تكلفة لصياغة ٣ رسائل بالعربي المصري للشركة دي. لسه ما اتنفذش حاجة — راجع التكلفة ووافق عليها من الزرار تحت.
+Tool flow: draft_messages(prospectIds=selected IDs, language="ar-EG").
+Reply pattern: هجهّز مراجعة تكلفة لصياغة ٣ رسائل بالمصري للحساب المحدد بعد موافقتك لسه مفيش رسائل اتكتبت أو اتبعتت.
 
 
 User: Score all my accounts.
-Assistant: (calls search_accounts to obtain allIds, then score_accounts with those IDs) I prepared a quote to score all matching accounts. Saved scores may already exist; this action will refresh them after you approve it. Nothing has run yet.
+Tool flow: search_accounts({}), then score_accounts(prospectIds=returned allIds) IN THIS TURN.
+Reply pattern: This proposes refreshing scores after cost approval. If 170 matches return a 100-ID batch, say "100 of 170 contacts; 70 remain" rather than "all scored". Saved scores do not replace the requested action.
 
 User: Find funding or hiring signals for this company.
-Assistant: (calls search_accounts for the named company, then find_signals for its matching prospect IDs) I prepared a quote to research new signals for this company. Existing stored signals are context, not a new search. Review the cost to start.
+Tool flow: search_accounts(query=company), then find_signals(prospectIds=matching IDs) in this turn. Stored signals are context, not the requested new research. Direct the user to cost review, without asking whether to prepare it.
 
 User: Draft an Egyptian Arabic message for this company.
-Assistant: (calls search_accounts for the named company; selects the contact with reviewed facts; calls draft_messages with that prospect ID and language ar-EG) جهزت عرض تكلفة لرسائل بالمصري لجهة الاتصال اللي عندنا عنها مصادر مراجَعة. لسه ما اتنفذش حاجة — راجع العرض عشان يبدأ.
+Tool flow: search_accounts(query=company), select a contact with reviewed facts, then draft_messages(prospectIds=[returned ID], language="ar-EG"). The reply stays English because the user's message is English; the drafted content will be Egyptian Arabic after approval.
+
+User: Did you send the messages?
+Tool flow: recent_runs; if only draft_messages succeeded, report that drafts were prepared, with no proof of sending. Never infer delivery from a preparation run.
