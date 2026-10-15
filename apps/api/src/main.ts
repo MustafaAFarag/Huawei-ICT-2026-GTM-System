@@ -502,6 +502,17 @@ class ApiController {
   ) {
     return gtm.discoverySummary(await actorFor(req.headers, ws));
   }
+  @Get("workspaces/:workspaceId/prospects/:id/discovery-guide") async interviewGuide(
+    @Req() req: Request,
+    @Res() res: Response,
+    @Param("workspaceId") ws: string,
+    @Param("id") id: string,
+  ) {
+    const query = z.object({ language: z.enum(["en", "ar"]).default("en"), format: z.enum(["json", "pdf"]).default("json") }).parse(req.query);
+    const result = await gtm.interviewGuide(await actorFor(req.headers, ws), id, query.language, query.format);
+    if (query.format === "json") return res.json(result);
+    return res.set({ "Content-Type": "application/pdf", "Content-Disposition": `attachment; filename="discovery-guide-${query.language}.pdf"`, "Cache-Control": "private, no-store" }).send(result);
+  }
   @ApiOperation({ summary: "Propose a structured call outcome from a dictated note" })
   @Post("workspaces/:workspaceId/call-outcome/suggest") async suggestOutcome(
     @Req() req: Request,

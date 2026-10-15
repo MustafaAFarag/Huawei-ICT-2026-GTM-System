@@ -220,6 +220,15 @@ afterAll(async () => {
 });
 
 describe("GTM service", () => {
+  it("prepares interview guides without changing answers and hides other workspaces", async () => {
+    const before = await db.prospect.findUniqueOrThrow({ where: { id: ids[0] } });
+    const guide = await gtm.interviewGuide(actor, ids[0]!, "ar");
+    expect(guide).toMatchObject({ language: "ar", company: "Lumaro Pay", method: "reviewed-context-template" });
+    const after = await db.prospect.findUniqueOrThrow({ where: { id: ids[0] } });
+    expect(after.snapshot).toEqual(before.snapshot);
+    expect(after.updatedAt).toEqual(before.updatedAt);
+    await expect(gtm.interviewGuide({ ...actor, workspaceId: randomUUID() }, ids[0]!, "en")).rejects.toThrow("Prospect not found");
+  });
   it("finds and resolves duplicates", async () => {
     const groups = await gtm.duplicates(actor);
     expect(groups).toHaveLength(1);

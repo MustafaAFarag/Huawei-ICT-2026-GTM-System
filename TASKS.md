@@ -1,3 +1,21 @@
+## Active — two-hour output quality and PRD continuation (16 October 2026)
+
+Owner instruction: work unattended until scheduled laptop shutdown in two hours; research prompt engineering, inspect outputs, adjust prompts and implement useful remaining features. Start 23:12 UTC; target wrap-up 00:55 UTC (shutdown margin).
+Goal: improve measured assistant/draft output quality and close locally verifiable PRD gaps.
+Done: sourced research notes; before/after live outputs with prompt versions; completed feature slices tested locally in EN/AR; reviewed focused commits; current app and handoff available before shutdown.
+Stop: no push, deployment, real outreach, new cloud infrastructure or changes to unrelated resources. Preserve sample CSV edits and existing data. Keep current Azure model/account. Mark incomplete requirements honestly.
+
+- [ ] Research first-party prompt/tool/evaluation guidance and examine linked prompt collection.
+- [ ] Capture baseline; improve prompts/tool context and compare live outputs with regressions.
+- [x] Build bilingual discovery interview guide/questionnaire export: role-specific questions, reviewed source context, JSON preview and EN/AR PDFs; 15 targeted checks and browser flow pass. Fixed the language selector accessible name found by Playwright.
+- [ ] Expose import history and per-file row outcomes without retaining uploaded customer files.
+- [ ] Add scheduled play preparation/review controls if time permits; no automatic spending or sends.
+- [ ] Complete static/backend/browser/live checks, inspect outputs, update PRD/status and commit.
+
+Decisions: prioritize working behavior and factual output over cosmetic refinement. Provider sandbox activation stays blocked by missing external accounts. Native Arabic acceptance remains human work.
+
+---
+
 ## Current — verified local review instance (16 October 2026)
 
 Goal: resume the interrupted run, leave the current app running locally, verify its main flows and finish the saved validation notes.

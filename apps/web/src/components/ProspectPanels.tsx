@@ -14,6 +14,7 @@ import { useWorkspace } from "./workspace-context";
 import { usePrefs } from "../lib/prefs";
 import { client } from "../lib/client";
 import type { Prospect } from "../lib/types";
+import { InterviewGuide } from "./InterviewGuide";
 
 // GAP-03 / GAP-04 / GAP-13: triage bucket, segment, owner, and the angle the drafts will use.
 export function TriagePanel({ prospect }: { prospect: Prospect }) {
@@ -166,6 +167,7 @@ export function DiscoveryPanel({ prospect }: { prospect: Prospect }) {
   const [notes, setNotes] = useState(existing?.notes ?? "");
   return (
     <Panel eyebrow="P15" title={t("Discovery interview")}>
+      <InterviewGuide key={`${ws}:${prospect.id}`} prospectId={prospect.id} />
       <details className="disclosure" open={Boolean(existing)}>
         <summary>
           {existing

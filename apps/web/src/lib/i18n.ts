@@ -1,6 +1,13 @@
 // Arabic interface strings (business Arabic). Keys are the English source strings;
 // a missing key falls back to English. Generated content language is chosen per play.
 export const AR: Record<string, string> = {
+  "Prepare role-specific questions from reviewed context. Answers and scores stay empty until you confirm them.": "جهّز أسئلة مناسبة للدور من السياق المراجع لا تُسجّل إجابات أو تقييمات قبل تأكيدها",
+  "Guide language": "لغة الدليل",
+  "Preparing guide…": "جارٍ إعداد الدليل…",
+  "Prepare interview guide": "إعداد دليل المقابلة",
+  "Download interview PDF": "تنزيل أسئلة المقابلة PDF",
+  "Interview questions": "أسئلة المقابلة",
+  "Could not prepare the interview guide. Try again.": "تعذّر إعداد دليل المقابلة أعد المحاولة",
   "Contact assignment": "توزيع جهات الاتصال",
   "Distribute new imports across owners and operators with the fewest active contacts. Existing owners are retained.":
     "وزّع الحسابات الجديدة على المسؤولين الأقل انشغالًا مع الاحتفاظ بالمسؤولين عن الحسابات الحالية",

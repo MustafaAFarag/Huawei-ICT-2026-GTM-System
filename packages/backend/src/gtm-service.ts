@@ -24,6 +24,7 @@ import {
 } from "./policy.js";
 import { injectFonts } from "./asset-template.js";
 import { renderPdf } from "./providers.js";
+import { discoveryGuide, discoveryGuideHtml } from "./discovery-guide.js";
 
 // PRD v3.1 §7.14 features that sit beside the play engine: triage, duplicates, launch gate,
 // scorecard, SDR onboarding kit and discovery capture.
@@ -53,6 +54,14 @@ async function prospectOf(actor: Actor, id: string) {
 }
 
 export class GtmService {
+  async interviewGuide(actor: Actor, prospectId: string, language: "en" | "ar", format: "json" | "pdf" = "json") {
+    const prospect = await prospectOf(actor, prospectId);
+    const workspace = await db.workspace.findUniqueOrThrow({ where: { id: actor.workspaceId } });
+    const guide = discoveryGuide(prospect.snapshot as ProspectSnapshot, prospect.evidence as import("@revenue/contracts").Evidence[], workspace.name, language);
+    if (format === "json") return guide;
+    return renderPdf(injectFonts(discoveryGuideHtml(guide)));
+  }
+
   // GAP-03 / GAP-13: bucket, rationale, segment and owner. Drop and existing cancel live sequences.
   async triage(actor: Actor, prospectId: string, value: unknown) {
     assertRole(actor, "write");

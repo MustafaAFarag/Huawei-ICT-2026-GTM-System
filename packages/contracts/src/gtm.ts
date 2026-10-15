@@ -135,3 +135,20 @@ export function draftConfidence(
 
 // GAP-07: funnel stages for the scorecard.
 export const FUNNEL = ["prepared", "delivered", "replied", "meeting", "agreed"] as const;
+
+export type DiscoveryGuide = {
+  language: "en" | "ar";
+  title: string;
+  company: string;
+  person: string;
+  role: string;
+  workspace: string;
+  segment: string | null;
+  generatedAt: string;
+  method: "reviewed-context-template";
+  introduction: string;
+  contextNote: string;
+  facts: { id: string; claim: string; date: string; url: string }[];
+  questions: { id: string; topic: string; question: string; answer: string }[];
+  completion: string;
+};
