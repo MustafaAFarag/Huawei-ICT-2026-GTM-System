@@ -5,8 +5,8 @@ Done: new design in EN/AR, desktop/phone, dark/light and PDF; deterministic seed
 Stop: no push, deployment, live outbound sending, or changes to Amr's other Azure resources.
 
 - [x] Phase 0: real GTM files and meeting files ignored.
-- [ ] Phase 1: Raycast DESIGN.md, product design system, tokens, component split, print template, screenshots.
-- [ ] Phase 2: research 11 teardown, deterministic 8-workspace seed, PRD v3.1.
+- [x] Phase 1: Raycast DESIGN.md copied, product design system, tokens, component split, Arabic UI/RTL, print template; 3 e2e pass; 52 screenshots reviewed.
+- [x] Phase 2: research 11 teardown, deterministic 8-workspace seed (169 accounts, 324 contacts, 149 people in Twenty A), no-leak test, PRD v3.1.
 - [ ] Phase 3: Azure OpenAI + Whisper, agent loop, prompts, streaming chat, voice, Twenty MCP, OpenDesign BYOK, evaluation.
 - [ ] Verification: tests, e2e, live smoke, Terraform, own diff review, commits.
 

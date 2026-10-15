@@ -14,6 +14,7 @@ Ten web-research reports, written by separate research agents, feed [Revenue Wor
 | [08 — Market data](08-market-data.md) | Market sizes, tool sprawl, skills gap, MENA SME and channel data, Arabic content share; numbers safe to use and numbers to avoid |
 | [09 — Building blocks and Agent-Reach](09-building-blocks-and-agent-reach.md) | What Agent-Reach does for LinkedIn and its risks; open-source components to gather, with licence risk; OpenDesign current state |
 | [10 — User pain and out-of-the-box](10-user-pain-and-out-of-box.md) | Non-technical user complaints, what "out of the box" means in 2026, evidence on design assets, agency pain, MENA voice; plays and templates to ship |
+| [11 — Real workflow teardown](11-real-workflow-teardown.md) | (15 Oct, v3.1) What a real outbound engagement's files show about the process, where the work is manual, public MENA SDR/funding context, and the synthetic demo set derived from it |
 
 ## Lead-reviewer spot checks (12 October 2026)
 

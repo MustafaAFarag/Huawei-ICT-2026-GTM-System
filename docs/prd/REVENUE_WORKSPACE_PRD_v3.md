@@ -1,6 +1,6 @@
-# Revenue Workspace — Product Requirements v3
+# Revenue Workspace — Product Requirements v3.1
 
-**Status:** current. **Date:** 13 October 2026. **Supersedes:** [PRD v2](archive/REVENUE_WORKSPACE_PRD_v2.md) (12 October 2026) and [PRD v1](archive/REVENUE_WORKSPACE_PRD_v1.md) (6 October 2026). **Inputs:** the product owner's answers of 13 October 2026, the Lara meeting transcript, and ten research reports in [`docs/research/`](../research/README.md). **Current authorization:** local implementation, installation, verification and focused commits; no push, deployment or live outreach.
+**Status:** current. **Date:** 13 October 2026; **v3.1 update:** 15 October 2026 (see [Changelog](#changelog)). **Supersedes:** [PRD v2](archive/REVENUE_WORKSPACE_PRD_v2.md) (12 October 2026) and [PRD v1](archive/REVENUE_WORKSPACE_PRD_v1.md) (6 October 2026). **Inputs:** the product owner's answers of 13 October 2026, the Lara meeting transcript, and eleven research reports in [`docs/research/`](../research/README.md) (report 11, added in v3.1, is an anonymised teardown of a real outbound engagement). **Current authorization:** local implementation, installation, verification and focused commits; no push, deployment or live outreach.
 
 v3 records the product owner's decisions on the v2 proposals and adds the business model, the "one place" component plan, the out-of-the-box plays and the Asset Studio. This document is about the product; competition rules live in [research 06](../research/06-huawei-ict-2026-27-rules.md). Every feature from v1 and v2 stays in the catalogue (§7 and Appendix A) so the team can pull work forward if it finishes early.
 
@@ -39,6 +39,10 @@ All decisions below are settled by the product owner. Do not reopen a settled de
 | D15 | Huawei technology | Huawei services are the post-December target: ModelArts Studio (MaaS) for the model, ECS/CCE, RDS, DCS and OBS (§8.3). Not used before December | Owner, 13 Oct |
 | D16 | Team eligibility | Confirmed by the owner. Not an open question | Owner |
 | D17 | Open source | The project is open source: the code is public on GitHub; revenue comes from the hosted service, credits and agency features (open core, like Supabase and Twenty). Our licence (Apache-2.0 or AGPL) is chosen before the repository goes public. Keep secrets and customer data out of the repository from day one | Owner, 13 Oct |
+| D18 *(v3.1)* | Design system | The product UI uses a Raycast-derived design system (copied from Refero Styles into `design-systems/raycast/`, adapted in `design-systems/revenue/DESIGN.md`): dark default plus light theme, one coral accent reserved for AI, Arabic UI strings and RTL | Owner, 15 Oct |
+| D19 *(v3.1)* | AI harness | Our own agent harness on Vercel AI SDK Core with Azure OpenAI: we own the loop, step cap, prompts (versioned files) and approval interrupts; spending tools never execute without a `SpendApproval`. The provider is swappable to Huawei ModelArts MaaS (OpenAI-compatible) | Owner request for full control, 15 Oct |
+| D20 *(v3.1)* | Azure models and voice | Azure credits confirmed by Amr; provisioning and real inference approved for one project-only Azure OpenAI resource (chat model + Whisper). Voice dictation uses Whisper in English and Arabic | Owner, 15 Oct |
+| D21 *(v3.1)* | Real data | Real customer exports are read for structure only, are git-ignored, and never appear in the repository; demo data is generated synthetically with a leak test | Owner, 15 Oct; extends D12 |
 
 ## 2. Delivery context
 
@@ -137,6 +141,9 @@ Every play: human approval before sending, cost shown before spending, English a
 | P12 | Agency client onboarding kit | New client | Intake, brand kit from URL, client workspace from template, guided mailbox connection | N |
 | P13 | Weekly client report | Weekly | Sends, replies, meetings (no opens); plain-language note; branded PDF/link | N |
 | P14 | Missing-data fallback (GCC) | Lead without email or phone | Provider order, coverage score, manual LinkedIn/WhatsApp task | D+ |
+| P15 *(v3.1)* | Discovery pilot | New segment or pre-PMF offer | Interview guide (en/ar), questionnaire, capture form with pain scores and maturity 0–4, launch gate, scorecard | D+ |
+| P16 *(v3.1)* | Event list follow-up | Attendee or exhibitor list after an event | Segments by register, company-level event reference rule, multi-channel cadence, HOLD for missing research | D+ |
+| P17 *(v3.1)* | Partnership campaign | Partner-bucket accounts (channel, accelerators, consultancies) | Partner angle, Day 0/2/7/16 cadence, connect → accepted → reply → meeting → agreed scorecard | N |
 
 Plays from the meeting's process (§6) are the engine underneath: segment, signals, scoring rubric, personas and offers, enrichment policy, research brief, message framework, sequence and guardrails are parts of every play.
 
@@ -334,6 +341,38 @@ Every v1 module stays in the product roadmap. Detailed rows and acceptance crite
 | Operations (rules, review queues, jobs, backups, client portal, monitoring) | OPS-01–09 | D (OPS-03, 04, 06, 09), N (OPS-01, 02, 05, 07), L (OPS-08) |
 | AI evaluation (ranking, retrieval, assistant safety, adaptation, commercial experiments) | EVAL-01–05 | D (EVAL-03), N (EVAL-02, ARB-05), L (EVAL-01, 04, 05) |
 
+### 7.14 From the real-workflow teardown *(v3.1)*
+
+Source: [research 11](../research/11-real-workflow-teardown.md). Each row replaces a manual step seen in a real engagement.
+
+| ID | Requirement | Phase | Acceptance |
+| --- | --- | --- | --- |
+| GAP-01 | Single source of truth with versions: imports diff against the previous version instead of re-exported copies | D+ | Re-importing an edited file shows added, changed and unchanged rows; no duplicate records |
+| GAP-02 | CRM duplicate check before import (domain, email, name, alias) with a merge preview | D | Near-duplicates in the demo data are flagged before import |
+| GAP-03 | Triage buckets beyond score tiers: client, partner, drop, existing client, with rationale and owner; Keep/Drop review queue | D | Existing clients never enter cold sequences; partner accounts route to P17 |
+| GAP-04 | Angle engine: segment × persona × HR-maturity (P1a/P1b/P2) → offer angle; register (founder or leader voice) from the recipient's title | D | Draft shows which angle and register it used; changing the title changes the register |
+| GAP-05 | Native sender push replaces Make.com glue: approved copy and lead list go to the sender platform in one step | D (sandbox) | No external automation tool needed for the demo flow |
+| GAP-06 | Launch gate per campaign: a checklist of blockers (missing research, missing basis, unverified emails, sender pre-flight) blocks queueing | D | Queueing is refused until every item is cleared or overridden with a note |
+| GAP-07 | Funnel scorecard from sequence events: connect → accepted → reply → meeting → agreed, written back to the CRM | D+ | Scorecard numbers match the event log |
+| GAP-08 | Call outcome logging by voice: the SDR dictates, Whisper transcribes, the assistant proposes a structured outcome for confirmation | D | Arabic and English notes produce a confirmed outcome on the record |
+| GAP-09 | Reference library: social-proof references with a consent flag, rotated automatically per contact | D+ | A reference without consent is never inserted |
+| GAP-10 | Message confidence score from evidence count, freshness, register fit and missing fields | D+ | Low-confidence drafts are labelled before review |
+| GAP-11 | SDR onboarding kit generated from ICP, offers, plays and rubric (extends PB-06) | D+ | A new member receives a PDF kit on joining a workspace |
+| GAP-12 | Discovery-pilot capture (play P15): interview answers, pain scores, maturity score, stored per account | D+ | Scores aggregate per segment |
+| GAP-13 | Owner assignment per contact with round-robin and per-member caps (extends GOV-05) | D | Seeded Team workspace shows three SDR owners |
+| GAP-14 | Event-claim rule: event references stay at company level ("your company was at…"), never personal | D | ARB-03 style check flags personal event claims |
+
+### 7.15 AI harness and voice *(v3.1)*
+
+| ID | Requirement | Phase | Acceptance |
+| --- | --- | --- | --- |
+| AI-01 | Own agent loop with streaming, typed tools from `packages/contracts`, step cap 8; spending or sending tools pause for approval | D | Live run streams tokens; a spending tool produces a quote, never a run |
+| AI-02 | Prompts as versioned files; prompt version recorded on every run and chat message | D | Changing a prompt changes the recorded version |
+| AI-03 | Provider adapter: Azure OpenAI now, OpenAI-compatible MaaS later, fixture for tests | D | Switching provider is configuration only |
+| AI-04 | Voice dictation in the assistant and call outcome forms (≤ 60 s), Whisper transcription with an en/ar hint, credits quoted | D | Arabic and English clips transcribe; audio is not stored by default |
+| AI-05 | Agent evaluation set: tool choice, refusal to spend without approval, Arabic quality rubric; transcription WER on a small clip set | D+ | Results recorded with date and model |
+| AI-06 | Twenty-side chat can call our product MCP so plays run from inside the CRM | D+ | A play started in Twenty appears in the review queue |
+
 ## 8. Architecture
 
 ### 8.1 Components
@@ -419,6 +458,9 @@ The December deadline is a date in December; the plan aims to finish by 30 Novem
 
 ## 12. Open questions
 
+**Gaps found in v3.1 (need decisions):** (a) data residency for voice audio and transcripts, especially for KSA residency workspaces; (b) Arabic transcription accuracy per dialect has no evaluation yet (only a small clip set); (c) prompt injection from scraped research now reaches a tool-calling loop, so injection tests (RES-03) must run against the live agent; (d) AI cost per play is unknown until live runs are logged; (e) agency parent/client relationships are stored in workspace context for the demo, not as a first-class model; (f) demo workspaces share the two local Twenty workspaces, so CRM isolation is only proven for Revenue Demo A/B.
+
+
 1. Interview list: which 5–10 founders and agencies (Cairo, Riyadh/Dubai) can we talk to before the PDF is written?
 2. Which sender (Instantly or Smartlead) and which signal provider (PredictLeads or Crustdata) gives us a sandbox?
 3. Who reviews Gulf Arabic in phase N?
@@ -426,7 +468,7 @@ The December deadline is a date in December; the plan aims to finish by 30 Novem
 
 ## 13. Sources
 
-Research reports: [01 GTM process and AI](../research/01-gtm-process-and-ai.md), [02 competitors](../research/02-competitors-and-positioning.md), [03 connectors](../research/03-connectors-and-apis.md), [04 MENA regulation and Arabic AI](../research/04-mena-market-regulation-arabic-ai.md), [05 Huawei competition and cloud](../research/05-huawei-ict-competition-and-cloud.md), [06 Huawei 2026–27 rules](../research/06-huawei-ict-2026-27-rules.md), [07 pricing and freemium](../research/07-pricing-and-freemium.md), [08 market data](../research/08-market-data.md), [09 building blocks and Agent-Reach](../research/09-building-blocks-and-agent-reach.md), [10 user pain and out-of-the-box](../research/10-user-pain-and-out-of-box.md). Lead-reviewer spot checks: [research README](../research/README.md). Meeting: `Lara Meeting transcript.txt`.
+Research reports: [01 GTM process and AI](../research/01-gtm-process-and-ai.md), [02 competitors](../research/02-competitors-and-positioning.md), [03 connectors](../research/03-connectors-and-apis.md), [04 MENA regulation and Arabic AI](../research/04-mena-market-regulation-arabic-ai.md), [05 Huawei competition and cloud](../research/05-huawei-ict-competition-and-cloud.md), [06 Huawei 2026–27 rules](../research/06-huawei-ict-2026-27-rules.md), [07 pricing and freemium](../research/07-pricing-and-freemium.md), [08 market data](../research/08-market-data.md), [09 building blocks and Agent-Reach](../research/09-building-blocks-and-agent-reach.md), [10 user pain and out-of-the-box](../research/10-user-pain-and-out-of-box.md). Lead-reviewer spot checks: [research README](../research/README.md). Meeting: `Lara Meeting transcript.txt`. v3.1: [11 real workflow teardown](../research/11-real-workflow-teardown.md).
 
 ## Appendix A. v1 feature catalogue with v3 phases
 
@@ -542,3 +584,9 @@ Research reports: [01 GTM process and AI](../research/01-gtm-process-and-ai.md),
 | EVAL-03 | Assistant safety tests | D |
 | EVAL-04 | Model adaptation | L |
 | EVAL-05 | Commercial experiments | L (needs real outcomes) |
+
+## Changelog
+
+**v3.1 — 15 October 2026.** Added decisions D18–D21 (Raycast-derived design system, own AI harness on Vercel AI SDK Core, Azure models and Whisper approved, real data read for structure only). Added plays P15–P17, requirement sections §7.14 (14 features from the real-workflow teardown) and §7.15 (AI harness and voice), and the v3.1 gaps in §12. ARB-07 (Arabic UI) is partly delivered early: interface strings and RTL layout exist; Twenty's own RTL is unchanged. Research 11 added.
+
+**v3 — 13 October 2026.** Owner decisions on the v2 proposals, business model, plays, Asset Studio, architecture and plan.

@@ -37,6 +37,17 @@ export type ProspectSnapshot = {
   funding?: boolean;
   hiring?: boolean;
   existingClient?: boolean;
+  // Optional GTM fields used by demo data, triage and the angle engine (PRD v3.1 §7.12).
+  phone?: string;
+  city?: string;
+  segment?: string;
+  bucket?: "client" | "partner" | "drop" | "existing";
+  persona?: "founder" | "people-leader" | "finance" | "operations" | "sales";
+  hrMaturity?: "P1a" | "P1b" | "P2";
+  register?: "founder" | "leader";
+  angle?: string;
+  owner?: string;
+  signals?: string[];
 };
 export type Touch = {
   channel: "email" | "linkedin" | "call";
