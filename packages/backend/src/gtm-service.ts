@@ -25,6 +25,7 @@ import {
 import { injectFonts } from "./asset-template.js";
 import { renderPdf } from "./providers.js";
 import { discoveryGuide, discoveryGuideHtml } from "./discovery-guide.js";
+import { researchBrief, researchBriefHtml } from "./research-brief.js";
 
 // PRD v3.1 §7.14 features that sit beside the play engine: triage, duplicates, launch gate,
 // scorecard, SDR onboarding kit and discovery capture.
@@ -54,6 +55,28 @@ async function prospectOf(actor: Actor, id: string) {
 }
 
 export class GtmService {
+  async researchBrief(
+    actor: Actor,
+    prospectId: string,
+    language: "en" | "ar",
+    format: "json" | "pdf" = "json",
+  ) {
+    const prospect = await prospectOf(actor, prospectId);
+    const workspace = await db.workspace.findUniqueOrThrow({
+      where: { id: actor.workspaceId },
+    });
+    const brief = researchBrief(
+      prospect.snapshot as ProspectSnapshot,
+      prospect.evidence as import("@revenue/contracts").Evidence[],
+      workspace.name,
+      prospect.updatedAt,
+      language,
+    );
+    return format === "json"
+      ? brief
+      : renderPdf(injectFonts(researchBriefHtml(brief)));
+  }
+
   async interviewGuide(actor: Actor, prospectId: string, language: "en" | "ar", format: "json" | "pdf" = "json") {
     const prospect = await prospectOf(actor, prospectId);
     const workspace = await db.workspace.findUniqueOrThrow({ where: { id: actor.workspaceId } });

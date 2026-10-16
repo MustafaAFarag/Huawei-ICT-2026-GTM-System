@@ -152,3 +152,18 @@ export type DiscoveryGuide = {
   questions: { id: string; topic: string; question: string; answer: string }[];
   completion: string;
 };
+
+export type ResearchBrief = {
+  language: "en" | "ar";
+  workspace: string;
+  company: string;
+  person: string;
+  role: string;
+  segment: string | null;
+  recordUpdatedAt: string;
+  recordDigest: string;
+  facts: Evidence[];
+  hypotheses: Evidence[];
+  unknowns: Evidence[];
+  withheldFacts: number;
+};

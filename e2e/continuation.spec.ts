@@ -1,6 +1,183 @@
 import { test, expect } from "@playwright/test";
 import { randomUUID } from "node:crypto";
 
+test("research brief exports the saved source record and holds unsaved edits", async ({
+  page,
+  context,
+}) => {
+  await page.goto("/");
+  const me = await (await context.request.get("/api/me")).json();
+  const ws = me.workspaces.find((m: any) => m.workspace.name === "Qimam People")
+    .workspace.id;
+  const state = await (
+    await context.request.get(`/api/workspaces/${ws}`)
+  ).json();
+  const prospect = state.prospects.find((p: any) => !p.excluded);
+  const path = `/api/workspaces/${ws}/prospects/${prospect.id}/research-brief`;
+  const brief = await (await context.request.get(path)).json();
+  expect(brief.facts).toEqual(
+    prospect.evidence.filter(
+      (item: any) =>
+        item.kind === "fact" &&
+        item.approved &&
+        /^https?:\/\//i.test(item.url) &&
+        Number.isFinite(Date.parse(item.date)) &&
+        item.claim.trim(),
+    ),
+  );
+  expect(brief.hypotheses).toEqual(
+    prospect.evidence.filter((item: any) => item.kind === "hypothesis"),
+  );
+  for (const language of ["en", "ar"]) {
+    const pdf = await context.request.get(
+      `${path}?language=${language}&format=pdf`,
+    );
+    expect(pdf.ok()).toBe(true);
+    expect(pdf.headers()["cache-control"]).toBe("private, no-store");
+    expect((await pdf.body()).subarray(0, 4).toString()).toBe("%PDF");
+  }
+  const other = me.workspaces.find((m: any) => m.workspace.id !== ws).workspace
+    .id;
+  expect(
+    (
+      await context.request.get(
+        `/api/workspaces/${other}/prospects/${prospect.id}/research-brief`,
+      )
+    ).status(),
+  ).toBe(404);
+  await page.getByLabel("Workspace", { exact: true }).selectOption(ws);
+  const hide = page.getByRole("button", {
+    name: "Hide assistant",
+    exact: true,
+  });
+  if (await hide.isVisible()) await hide.click();
+  await page.getByRole("button", { name: "Accounts", exact: true }).click();
+  await page.getByLabel("Search accounts").fill(prospect.snapshot.company);
+  await page
+    .getByRole("row")
+    .filter({
+      hasText: `${prospect.snapshot.firstName} ${prospect.snapshot.lastName}`,
+    })
+    .first()
+    .getByRole("button", { name: "Open", exact: true })
+    .click();
+  await page.getByLabel("Brief language", { exact: true }).selectOption("ar");
+  const download = page.waitForEvent("download");
+  await page
+    .getByRole("button", { name: "Download research brief", exact: true })
+    .click();
+  expect((await download).suggestedFilename()).toBe("research-brief-ar.pdf");
+  await page.getByRole("button", { name: "Add source", exact: true }).click();
+  await expect(
+    page.getByRole("button", { name: "Download research brief", exact: true }),
+  ).toBeDisabled();
+  await expect(
+    page.getByText("Save source changes before exporting the research brief.", {
+      exact: true,
+    }),
+  ).toBeVisible();
+});
+
+test("call logging supports manual review and discards stale AI suggestions", async ({
+  page,
+  context,
+}) => {
+  await page.goto("/");
+  const me = await (await context.request.get("/api/me")).json();
+  const ws = me.workspaces.find(
+    (m: any) => m.workspace.name === "Revenue Demo B",
+  ).workspace.id;
+  const state = await (
+    await context.request.get(`/api/workspaces/${ws}`)
+  ).json();
+  const prospect = state.prospects.find((p: any) => !p.excluded);
+  await page.getByLabel("Workspace", { exact: true }).selectOption(ws);
+  const hide = page.getByRole("button", {
+    name: "Hide assistant",
+    exact: true,
+  });
+  if (await hide.isVisible()) await hide.click();
+  await page.getByRole("button", { name: "Accounts", exact: true }).click();
+  await page.getByLabel("Search accounts").fill(prospect.snapshot.company);
+  await page
+    .getByRole("row")
+    .filter({
+      hasText: `${prospect.snapshot.firstName} ${prospect.snapshot.lastName}`,
+    })
+    .first()
+    .getByRole("button", { name: "Open", exact: true })
+    .click();
+  const panel = page.locator("section").filter({
+    has: page.getByRole("heading", {
+      name: "Log a call outcome",
+      exact: true,
+    }),
+  });
+  const note = panel.getByRole("textbox").first();
+  await note.fill(
+    "Called the synthetic contact. Asked to call back in two days.",
+  );
+  await panel
+    .getByRole("button", { name: "Log manually", exact: true })
+    .click();
+  await expect(panel.getByLabel("Call summary", { exact: true })).toContainText(
+    "Called the synthetic",
+  );
+  await note.fill(
+    "Revised synthetic call note: callback in two days, no meeting booked.",
+  );
+  await expect(
+    panel.getByRole("button", { name: "Confirm and save", exact: true }),
+  ).toHaveCount(0);
+  let finish!: () => void;
+  const held = new Promise<void>((resolve) => {
+    finish = resolve;
+  });
+  await page.route("**/call-outcome/suggest", async (route) => {
+    await held;
+    await route.fulfill({
+      json: {
+        outcome: "meeting-booked",
+        nextStep: "Stale suggestion",
+        followUpDays: null,
+        summary: "Stale note",
+      },
+    });
+  });
+  await panel
+    .getByRole("button", { name: "Suggest outcome", exact: true })
+    .click();
+  await note.fill("Latest synthetic call note: call back in two days.");
+  finish();
+  await page.unrouteAll({ behavior: "wait" });
+  await expect(
+    panel.getByRole("button", { name: "Confirm and save", exact: true }),
+  ).toHaveCount(0);
+  await panel
+    .getByRole("button", { name: "Log manually", exact: true })
+    .click();
+  await panel.getByRole("button", { name: "call back", exact: true }).click();
+  await panel
+    .getByLabel("Call summary", { exact: true })
+    .fill("Confirmed synthetic callback; no meeting booked.");
+  await panel.getByLabel("Follow-up after (days)", { exact: true }).fill("2");
+  const saved = page.waitForResponse(
+    (response) =>
+      response.url().endsWith(`/prospects/${prospect.id}/call-outcome`) &&
+      response.request().method() === "POST",
+  );
+  await panel
+    .getByRole("button", { name: "Confirm and save", exact: true })
+    .click();
+  expect((await saved).ok()).toBe(true);
+  await expect(
+    panel.getByRole("button", { name: "Confirm and save", exact: true }),
+  ).toHaveCount(0);
+  await expect(
+    page.getByText("Call outcome saved to this workspace.", { exact: true }),
+  ).toBeVisible();
+});
+
 test("interview guides show bilingual questions and export PDFs without inventing answers", async ({
   page,
   context,

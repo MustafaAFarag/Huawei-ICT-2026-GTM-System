@@ -220,6 +220,29 @@ afterAll(async () => {
 });
 
 describe("GTM service", () => {
+  it("exports saved research to readers and rejects a prospect in another workspace", async () => {
+    const before = await db.prospect.findUniqueOrThrow({
+      where: { id: ids[0] },
+    });
+    const result = await gtm.researchBrief(
+      { ...actor, role: "viewer" },
+      ids[0]!,
+      "ar",
+    );
+    expect(result).toMatchObject({
+      language: "ar",
+      company: "Lumaro Pay",
+      recordUpdatedAt: before.updatedAt.toISOString(),
+    });
+    expect(
+      (await db.prospect.findUniqueOrThrow({ where: { id: ids[0] } }))
+        .updatedAt,
+    ).toEqual(before.updatedAt);
+    await expect(
+      gtm.researchBrief({ ...actor, workspaceId: randomUUID() }, ids[0]!, "en"),
+    ).rejects.toThrow("Prospect not found");
+  });
+
   it("prepares interview guides without changing answers and hides other workspaces", async () => {
     const before = await db.prospect.findUniqueOrThrow({ where: { id: ids[0] } });
     const guide = await gtm.interviewGuide(actor, ids[0]!, "ar");

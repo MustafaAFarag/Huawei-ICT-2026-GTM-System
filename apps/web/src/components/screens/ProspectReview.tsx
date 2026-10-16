@@ -18,6 +18,7 @@ import { client } from "../../lib/client";
 import type { Prospect } from "../../lib/types";
 import { CallLog } from "../CallLog";
 import { DiscoveryPanel, TriagePanel } from "../ProspectPanels";
+import { ResearchBrief } from "../ResearchBrief";
 
 export function ProspectReview({ prospect }: { prospect: Prospect }) {
   const { ws, canApprove, action, setProspect } = useWorkspace();
@@ -99,6 +100,13 @@ export function ProspectReview({ prospect }: { prospect: Prospect }) {
           <p className="muted">
             <span dir="auto">{s.title}</span> · <bdi>{s.email}</bdi>
           </p>
+          <ResearchBrief
+            key={`${ws}:${prospect.id}`}
+            prospectId={prospect.id}
+            hasUnsavedChanges={
+              JSON.stringify(evidence) !== JSON.stringify(prospect.evidence)
+            }
+          />
           {!evidence.length && (
             <Empty title={t("No sources yet")}>
               {t(
