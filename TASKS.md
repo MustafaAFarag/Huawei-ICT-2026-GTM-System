@@ -1,3 +1,17 @@
+## Current — Caravan business and implementation audit (17 October 2026)
+
+Goal: compare the implemented product with the supplied Anthropic Founder’s Playbook and primary Alex Hormozi material; identify what obstructs a clear customer promise and a measurable lead-to-sales workflow.
+Done: source-backed, prioritised findings with implementation evidence, current-versus-proposed boundaries and a practical validation plan.
+Stop: audit/documentation only. No application/Figma changes, live outreach, paid model calls, deployment or push.
+
+- [x] Read the supplied 36-page PDF and primary Hormozi offer/niche checklists and training indexes; disclose inaccessible downloads and unwatched embedded videos.
+- [x] Trace current onboarding, targeting, research, outreach, replies, outcomes and reporting in source and tests. Four local read-only checks reproduce the current scoring/domain/enrichment limits; five existing discovery/copy tests pass.
+- [x] Review findings against counterevidence; publish source-backed priorities, current/proposed boundaries and pilot decision gates in `docs/research/14-caravan-business-implementation-audit.md`.
+
+Decision: recommendations only; existing tiers, chat/Asset Studio direction and outbound safeguards remain unchanged. Operator workflow evidence exists, but paid demand, retention and live acquisition outcomes were not established by the inspected material. No claim that evidence outside the repository does not exist.
+
+---
+
 ## Current — Figma redesign and Brand book flows (17 October 2026)
 
 Goal: recreate and improve the app's pages in an editable Figma draft, with a coherent chat-first workflow, clearer hierarchy and a Brand book flow for generation, PDF/PPTX upload or website extraction.
