@@ -30,7 +30,9 @@ The file has 12 pages. There are 92 screen/state designs in the organized design
 | Responsive & Arabic | 17 | Eight phone layouts, three Arabic phone examples, tablet review, two dark examples, 1280px review and two Arabic desktop examples |
 | States | 12 | Focused task dialogs/views and loading, error, read-only, cap, partial and success states |
 
-`00 Start here` explains the design and links to the main journeys. `01 Foundations` contains reusable navigation/status components, the imported Simple Design System button, typography specimens and semantic Light/Dark variables. Other repeated structures use native auto-layout frames and editable text. The existing Strobi/Nabil avatar and Tabler icons preserve the recognizable product identity.
+`00 The Cover` introduces the design as an editorial magazine cover: a Bodoni Moda masthead, Instrument Serif cover story, warm paper palette and native brand-book illustration with the original Nabil portrait. Three linked contents columns retain the creation, brand setup and outreach entry points. Inter remains the supporting typeface. The cover is editable, with no container overflow, and its final render was visually inspected.
+
+`01 Foundations` contains reusable navigation/status components, the imported Simple Design System button, typography specimens and semantic Light/Dark variables. Other repeated structures use native auto-layout frames and editable text. The existing Strobi/Nabil avatar and Tabler icons preserve the recognizable product identity.
 
 ## Verification
 
