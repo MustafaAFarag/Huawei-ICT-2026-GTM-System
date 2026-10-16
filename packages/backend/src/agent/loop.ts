@@ -64,6 +64,13 @@ export type AgentEvent =
         expiresAt: string | Date;
       };
     }
+  | {
+      type: "run";
+      runId: string;
+      tool: ToolName;
+      template?: string;
+      estimate: number;
+    }
   | { type: "navigate"; screen: string }
   | { type: "ui_action"; action: AssistantUiAction }
   | { type: "error"; message: string }
@@ -197,6 +204,7 @@ export async function runAgentTurn(
   let credits = 0;
   const toolLog: { name: string; input?: unknown }[] = [];
   const quotes: { tool: ToolName; quoteId: string; template?: string }[] = [];
+  const runs: { tool: ToolName; runId: string; template?: string }[] = [];
   const quoteLabel = (q: { tool: ToolName; template?: string }) =>
     q.tool === "make_asset" && q.template
       ? `a ${ASSET_FORMATS[q.template as keyof typeof ASSET_FORMATS]?.label ?? "deliverable"}`
@@ -229,13 +237,15 @@ export async function runAgentTurn(
     steps = 1;
   } else if (!live) {
     const tool = fixtureTool(content);
-    const reply = `I can prepare ${tool.replaceAll("_", " ")} for your selected records. Review the proposed action and its cost below. This is the fixture assistant; no model call or live message will be made.`;
-    for (const word of reply.split(/(?<= )/)) say(word);
     toolLog.push({ name: tool });
-    const template = tool === "make_asset" ? fixtureTemplate(content) : undefined;
+    const template =
+      tool === "make_asset" ? fixtureTemplate(content) : undefined;
     pending.push({
       name: tool as ActionToolName,
-      input: { prospectIds: context.prospectIds, ...(template ? { template } : {}) },
+      input: {
+        prospectIds: context.prospectIds,
+        ...(template ? { template } : {}),
+      },
     });
     steps = 1;
   } else {
@@ -313,7 +323,11 @@ export async function runAgentTurn(
         else if (part.type === "error") throw part.error;
       }
       const usage = await result.totalUsage;
-      const used = modelUsage.get(chatModelId()) ?? { input: 0, output: 0, calls: 0 };
+      const used = modelUsage.get(chatModelId()) ?? {
+        input: 0,
+        output: 0,
+        calls: 0,
+      };
       used.input += usage.inputTokens ?? 0;
       used.output += usage.outputTokens ?? 0;
       used.calls += 1;
@@ -323,7 +337,7 @@ export async function runAgentTurn(
       const message =
         (error as Error)?.name === "TimeoutError" ||
         /timed? ?out/i.test(safeError(error))
-          ? "The assistant took too long. Try a shorter request; no unapproved action was run."
+          ? "The assistant took too long. Try a shorter request; any started work is saved in your workspace."
           : safeError(error);
       // Azure's content filter (prompt shields) blocks jailbreak attempts before the model runs.
       emit({
@@ -334,7 +348,7 @@ export async function runAgentTurn(
       });
     }
   }
-  // Every action call becomes a quote. One action per turn: extra calls are reported, not quoted.
+  // One action per turn; reserve and start through the same governed workflow as the UI.
   for (const [index, call] of pending.entries()) {
     if (index > 0) {
       say(
@@ -348,8 +362,26 @@ export async function runAgentTurn(
         ...(threadId ? { threadId } : {}),
       };
       const quote = await workflows.quote(actor, input);
-      quotes.push({ tool: call.name, quoteId: quote.id, template: input.template });
-      emit({ type: "quote", tool: call.name, input, quote });
+      quotes.push({
+        tool: call.name,
+        quoteId: quote.id,
+        template: input.template,
+      });
+      // Start requested work within the existing plan, workspace and member caps.
+      // Outbound sending still requires reviewed drafts and the existing launch gates.
+      await workflows.approveQuote(actor, quote.id);
+      const run = await workflows.start(actor, {
+        ...input,
+        spendApprovalId: quote.id,
+      });
+      runs.push({ tool: call.name, runId: run.id, template: input.template });
+      emit({
+        type: "run",
+        runId: run.id,
+        tool: call.name,
+        template: input.template,
+        estimate: quote.estimate,
+      });
     } catch (error) {
       const message = safeError(error);
       say(`\n\nI could not prepare that action: ${message}`);
@@ -368,18 +400,19 @@ export async function runAgentTurn(
       : "No new cost quote was created. Ask again or use Review action in Plays.";
     emit({ type: "error", message: text });
   }
-  // The model often stops right after calling an action tool; always tell the user what is pending.
-  if (quotes[0] && !text.trim())
+  // The model often stops right after calling an action tool; always say what is happening.
+  if (runs[0] && !text.trim())
     say(
       context.uiLanguage === "ar" || /[\u0600-\u06FF]/.test(content)
-        ? `جهزت عرض تكلفة للإجراء ده. لسه ما اتنفذش حاجة — راجع التكلفة ووافق عليها عشان يبدأ.`
-        : `I prepared a cost quote for ${quoteLabel(quotes[0])}. Nothing has run yet — review and approve the cost to start it; the result opens in the canvas and is saved under Deliverables.`,
+        ? "بدأت التجهيز دلوقتي. النتيجة هتظهر هنا وتتحفظ في المخرجات أول ما تخلص."
+        : `Working on ${quoteLabel(runs[0])} now. ${runs[0].tool === "make_asset" ? "It opens here and is saved under Deliverables when it is ready." : "Results will be saved in your workspace when ready."}`,
     );
   const saved = await db.chatMessage.create({
     data: {
       workspaceId: actor.workspaceId,
       userId: actor.userId,
       threadId,
+      runId: runs[0]?.runId ?? null,
       role: "assistant",
       content: text.trim() || "(no reply)",
       context: json({

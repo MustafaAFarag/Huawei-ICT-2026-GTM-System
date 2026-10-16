@@ -15,7 +15,7 @@ import { month } from "../policy.js";
 
 // Tool registry for the assistant (PRD AI-01). Read tools execute against the actor's
 // workspace only. Action tools have no execute function: the loop stops on them and the
-// harness turns each call into a governed cost quote that a person approves.
+// harness reserves credits and starts each requested action through WorkflowService.
 
 const languages = z
   .enum(["en", "ar-EG", "ar-Gulf", "ar"])
@@ -448,7 +448,7 @@ export function uiTools(
 
 const action = (description: string, schema: z.ZodObject): Tool =>
   tool({
-    description: `${description} Creates a cost quote for human approval; nothing runs until a person approves.`,
+    description: `${description} Starts the requested work immediately within workspace credit caps. Outbound sending still requires human review.`,
     inputSchema: schema,
   });
 

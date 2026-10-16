@@ -17,7 +17,7 @@ import {
 import type { Actor } from "@revenue/contracts";
 
 // Harness governance in fixture mode (MODEL_MODE is not live in tests): an assistant turn
-// can only ever produce a quote, never a run; metering respects caps; audio is validated.
+// starts requested work with reserved credits; metering respects caps; audio is validated.
 const workspaceId = randomUUID(),
   userId = randomUUID();
 const actor: Actor = { workspaceId, userId, role: "owner" };
@@ -59,11 +59,19 @@ beforeAll(async () => {
   prospectId = prospect.id;
 });
 afterAll(async () => {
+  const runs = await db.run.findMany({
+    where: { workspaceId },
+    select: { id: true },
+  });
+  await db.outbox.deleteMany({
+    where: { runId: { in: runs.map((run) => run.id) } },
+  });
   for (const model of [
     db.spendApproval,
     db.chatMessage,
     db.usage,
     db.audit,
+    db.quotaReservation,
     db.quota,
     db.budget,
     db.sequence,
@@ -98,7 +106,7 @@ describe("assistant harness", () => {
     expect(events.some((event) => event.type === "quote")).toBe(false);
     await db.chatMessage.deleteMany({ where: { workspaceId } });
   });
-  it("streams a reply and turns the action into a quote, never a run", async () => {
+  it("starts requested work immediately and persists its run in the conversation", async () => {
     const events: AgentEvent[] = [];
     await runAgentTurn(
       actor,
@@ -110,23 +118,34 @@ describe("assistant harness", () => {
     expect(kinds[0]).toBe("meta");
     expect(kinds).toContain("text");
     expect(kinds.at(-1)).toBe("done");
-    const quote = events.find((e) => e.type === "quote") as Extract<
+    expect(kinds).not.toContain("quote");
+    const started = events.find((e) => e.type === "run") as Extract<
       AgentEvent,
-      { type: "quote" }
+      { type: "run" }
     >;
-    expect(quote.tool).toBe("draft_messages");
-    expect(quote.input.prospectIds).toEqual([prospectId]);
+    expect(started.tool).toBe("draft_messages");
+    const run = await db.run.findUniqueOrThrow({
+      where: { id: started.runId },
+    });
+    expect(run.workspaceId).toBe(workspaceId);
+    expect(run.userId).toBe(userId);
+    expect(run.state).toBe("queued");
     expect(
       await db.spendApproval.count({
         where: { workspaceId, approvedAt: null },
       }),
+    ).toBe(0);
+    expect(
+      await db.spendApproval.count({
+        where: { workspaceId, runId: started.runId, approvedAt: { not: null } },
+      }),
     ).toBe(1);
-    expect(await db.run.count({ where: { workspaceId } })).toBe(0);
     const messages = await db.chatMessage.findMany({
       where: { workspaceId },
       orderBy: { createdAt: "asc" },
     });
     expect(messages.map((m) => m.role)).toEqual(["user", "assistant"]);
+    expect(messages[1]!.runId).toBe(started.runId);
     expect(
       (messages[1]!.context as { prompts: Record<string, string> }).prompts
         .system,
@@ -138,7 +157,7 @@ describe("assistant harness", () => {
     await db.budget.upsert({
       where: { id },
       create: { id, workspaceId, month: month(), cap: 1 },
-      update: { cap: 1, used: 0 },
+      update: { cap: 1, used: 0, reserved: 0 },
     });
     const first = await chargeCredits(actor, "chat_turn");
     await expect(chargeCredits(actor, "chat_turn")).rejects.toThrow(/cap/);
@@ -151,6 +170,32 @@ describe("assistant harness", () => {
     await expect(
       chargeCredits({ ...actor, role: "viewer" }, "chat_turn"),
     ).rejects.toThrow(/viewer/);
+  });
+
+  it("does not start an action above the credit cap or claim that it started", async () => {
+    const before = await db.run.count({ where: { workspaceId } });
+    const events: AgentEvent[] = [];
+    await runAgentTurn(
+      actor,
+      "Draft messages for this account",
+      { play: "P1", prospectIds: [prospectId] },
+      (event) => events.push(event),
+    );
+    expect(
+      events.some((event) => event.type === "run" || event.type === "quote"),
+    ).toBe(false);
+    expect(
+      events
+        .filter((event) => event.type === "text")
+        .map((event) => event.delta)
+        .join(""),
+    ).toMatch(/could not prepare.*cap/i);
+    expect(await db.run.count({ where: { workspaceId } })).toBe(before);
+    const message = await db.chatMessage.findFirstOrThrow({
+      where: { workspaceId, role: "assistant" },
+      orderBy: { createdAt: "desc" },
+    });
+    expect(message.runId).toBeNull();
   });
 
   it("validates audio before any transcription", async () => {

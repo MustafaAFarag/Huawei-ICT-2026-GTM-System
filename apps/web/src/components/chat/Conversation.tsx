@@ -19,7 +19,7 @@ import {
 import { ASSET_FORMATS, type AssetTemplate } from "@revenue/contracts";
 import { usePrefs } from "../../lib/prefs";
 import { assetLabel } from "../../lib/asset-label";
-import type { Asset, Chat } from "../../lib/types";
+import type { Asset, Chat, Run } from "../../lib/types";
 import { ChatMarkdown } from "../Markdown";
 import { Nabil, useNabilMood } from "../nabil/Nabil";
 import { Button } from "../primitives";
@@ -41,15 +41,15 @@ const STEP_LABELS: Record<string, string> = {
   open_account: "Opened an account",
   open_asset: "Opened a deliverable",
   select_accounts: "Selected accounts",
-  find_signals: "Proposed a signal search",
-  score_accounts: "Proposed scoring",
-  enrich_contacts: "Proposed enrichment",
-  draft_messages: "Proposed drafts",
-  make_asset: "Proposed a deliverable",
-  queue_sequence: "Proposed a sequence",
-  preflight: "Proposed a pre-flight check",
-  mini_audit: "Proposed a website audit",
-  onboard: "Proposed reading your website",
+  find_signals: "Searching for signals",
+  score_accounts: "Scoring accounts",
+  enrich_contacts: "Enriching contacts",
+  draft_messages: "Preparing drafts",
+  make_asset: "Preparing a deliverable",
+  queue_sequence: "Preparing a sequence",
+  preflight: "Checking launch readiness",
+  mini_audit: "Auditing the website",
+  onboard: "Reading your website",
 };
 
 export const FORMAT_ICONS: Record<string, typeof IconFileText> = {
@@ -85,7 +85,10 @@ function StepRow({
   if (!names.length) return null;
   const groups = groupSteps(names);
   const summary = groups
-    .map((g) => `${t(STEP_LABELS[g.name] ?? g.name.replaceAll("_", " "))}${g.count > 1 ? ` ×${g.count}` : ""}`)
+    .map(
+      (g) =>
+        `${t(STEP_LABELS[g.name] ?? g.name.replaceAll("_", " "))}${g.count > 1 ? ` ×${g.count}` : ""}`,
+    )
     .join(", ");
   return (
     <div className={`step-row ${running ? "running" : ""}`}>
@@ -103,20 +106,22 @@ function StepRow({
         <ol className="tool-step-list">
           {(
             steps ??
-            names.map((name, i): ToolStep => ({ id: String(i), name, state: "result" }))
-          ).map(
-            (step) => (
-              <li key={step.id} className={`state-${step.state}`}>
-                <span className="dot" aria-hidden />
-                <span>{t(STEP_LABELS[step.name] ?? step.name.replaceAll("_", " "))}</span>
-                {step.summary && (
-                  <code className="step-detail" dir="ltr" title={step.summary}>
-                    {step.summary}
-                  </code>
-                )}
-              </li>
-            ),
-          )}
+            names.map(
+              (name, i): ToolStep => ({ id: String(i), name, state: "result" }),
+            )
+          ).map((step) => (
+            <li key={step.id} className={`state-${step.state}`}>
+              <span className="dot" aria-hidden />
+              <span>
+                {t(STEP_LABELS[step.name] ?? step.name.replaceAll("_", " "))}
+              </span>
+              {step.summary && (
+                <code className="step-detail" dir="ltr" title={step.summary}>
+                  {step.summary}
+                </code>
+              )}
+            </li>
+          ))}
         </ol>
       )}
     </div>
@@ -142,7 +147,9 @@ export function DeliverableCard({
         <Icon size={18} />
       </span>
       <span className="deliverable-meta">
-        <strong dir="auto">{asset ? assetLabel(asset, t) : fallbackTitle}</strong>
+        <strong dir="auto">
+          {asset ? assetLabel(asset, t) : fallbackTitle}
+        </strong>
         <span className="muted small">
           {t(ASSET_FORMATS[template as AssetTemplate]?.label ?? template)} · v
           {asset?.version ?? 1} ·{" "}
@@ -193,7 +200,11 @@ function MessageActions({
               void chat.feedback(message.id, feedback === "up" ? null : "up")
             }
           >
-            {feedback === "up" ? <IconThumbUpFilled size={14} /> : <IconThumbUp size={14} />}
+            {feedback === "up" ? (
+              <IconThumbUpFilled size={14} />
+            ) : (
+              <IconThumbUp size={14} />
+            )}
           </button>
           <button
             type="button"
@@ -201,7 +212,10 @@ function MessageActions({
             aria-label={t("Poor reply")}
             aria-pressed={feedback === "down"}
             onClick={() =>
-              void chat.feedback(message.id, feedback === "down" ? null : "down")
+              void chat.feedback(
+                message.id,
+                feedback === "down" ? null : "down",
+              )
             }
           >
             {feedback === "down" ? (
@@ -228,7 +242,13 @@ function MessageActions({
   );
 }
 
-function QuoteCard({ quote, onReview }: { quote: Proposal; onReview: () => void }) {
+function QuoteCard({
+  quote,
+  onReview,
+}: {
+  quote: Proposal;
+  onReview: () => void;
+}) {
   const { t } = usePrefs();
   return (
     <div className="quote-card">
@@ -236,15 +256,20 @@ function QuoteCard({ quote, onReview }: { quote: Proposal; onReview: () => void 
         <p className="eyebrow">{t("Needs your approval")}</p>
         <strong className="step-name">
           {quote.input.tool === "make_asset"
-            ? t(ASSET_FORMATS[quote.input.template as AssetTemplate]?.label ?? "Deliverable")
-            : t(STEP_LABELS[quote.input.tool] ?? quote.input.tool.replaceAll("_", " "))}
+            ? t(
+                ASSET_FORMATS[quote.input.template as AssetTemplate]?.label ??
+                  "Deliverable",
+              )
+            : t(
+                STEP_LABELS[quote.input.tool] ??
+                  quote.input.tool.replaceAll("_", " "),
+              )}
         </strong>
         <p className="muted small">
           {quote.quote.audience
             ? `${quote.quote.audience} ${t("selected")}`
             : t("Brand-level")}{" "}
-          ·{" "}
-          <bdi>{quote.input.language}</bdi>
+          · <bdi>{quote.input.language}</bdi>
         </p>
       </div>
       <span className="quote-cost mono">
@@ -254,6 +279,37 @@ function QuoteCard({ quote, onReview }: { quote: Proposal; onReview: () => void 
         {t("Review proposed action")}
       </Button>
     </div>
+  );
+}
+
+function RunProgress({ run }: { run: Run }) {
+  const { t } = usePrefs();
+  const active = ["queued", "running"].includes(run.state);
+  const label = active
+    ? "Working…"
+    : run.state === "succeeded"
+      ? "Completed"
+      : run.state === "cancelled"
+        ? "Cancelled"
+        : "Could not finish";
+  return (
+    <details className="chat-run-progress" data-state={run.state}>
+      <summary>
+        <span className={`run-dot ${active ? "shimmer" : ""}`} aria-hidden />
+        <span role="status">{t(label)}</span>
+      </summary>
+      <p>
+        {t(
+          active
+            ? "You can keep chatting while this is prepared."
+            : run.state === "succeeded"
+              ? "Saved in your workspace."
+              : "Try the request again after resolving the issue below.",
+        )}
+      </p>
+      {run.error && <p className="error-text">{t(run.error)}</p>}
+      {run.nextAction && <p>{t(run.nextAction)}</p>}
+    </details>
   );
 }
 
@@ -272,13 +328,20 @@ export function Conversation({
   const mood = useNabilMood(chat.activity);
   const list = useRef<HTMLDivElement>(null);
   const pinned = useRef(true);
-  const lastAssistant = [...chat.messages].reverse().find((m) => m.role === "assistant");
+  const lastAssistant = [...chat.messages]
+    .reverse()
+    .find((m) => m.role === "assistant");
 
   // Follow the stream unless the reader scrolled up to read earlier messages.
   useEffect(() => {
     const el = list.current;
     if (el && pinned.current) el.scrollTo({ top: el.scrollHeight });
-  }, [chat.messages.length, chat.live?.text, chat.live?.tools.length, chat.quote]);
+  }, [
+    chat.messages.length,
+    chat.live?.text,
+    chat.live?.tools.length,
+    chat.quote,
+  ]);
 
   return (
     <div
@@ -306,6 +369,13 @@ export function Conversation({
               <div className="msg-body">
                 <StepRow names={message.context?.tools ?? []} />
                 <ChatMarkdown text={message.content} />
+                {message.runId &&
+                  !message.context?.deliverable &&
+                  data.runs.find((r) => r.id === message.runId) && (
+                    <RunProgress
+                      run={data.runs.find((r) => r.id === message.runId)!}
+                    />
+                  )}
                 {message.context?.deliverable && (
                   <DeliverableCard
                     template={message.context.deliverable.template}
@@ -343,15 +413,24 @@ export function Conversation({
                 running={chat.streaming}
               />
               {chat.live.text ? (
-                <ChatMarkdown text={chat.live.text} streaming={chat.streaming} />
+                <ChatMarkdown
+                  text={chat.live.text}
+                  streaming={chat.streaming}
+                />
               ) : (
                 chat.streaming && (
                   <p className="shimmer muted">
-                    {t(mood === "searching" ? "Looking through your workspace…" : "Thinking…")}
+                    {t(
+                      mood === "searching"
+                        ? "Looking through your workspace…"
+                        : "Thinking…",
+                    )}
                   </p>
                 )
               )}
-              {chat.live.error && <p className="error-text">{chat.live.error}</p>}
+              {chat.live.error && (
+                <p className="error-text">{chat.live.error}</p>
+              )}
             </div>
           </div>
         )}

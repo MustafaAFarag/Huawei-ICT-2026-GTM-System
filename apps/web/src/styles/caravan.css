@@ -201,16 +201,6 @@
 .is-home .main {
   overflow: hidden;
 }
-.home-runlog {
-  position: absolute;
-  inset-block-end: 16px;
-  inset-inline-end: 16px;
-  z-index: 20;
-  inline-size: min(360px, calc(100% - 32px));
-}
-.home-runlog:empty {
-  display: none;
-}
 .flip-rtl {
   transform: none;
 }
@@ -318,6 +308,7 @@
 /* ---------- Composer ---------- */
 .composer {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: 6px;
   padding: 10px 10px 8px;
   border: 1px solid var(--line-strong);
@@ -404,6 +395,7 @@
   font-size: 11px;
 }
 .composer-context {
+  min-inline-size: 0;
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
@@ -424,7 +416,13 @@
   white-space: nowrap;
   text-overflow: ellipsis;
 }
+.context-chip bdi {
+  min-inline-size: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 .context-chip button {
+  flex-shrink: 0;
   display: grid;
   place-items: center;
   border: 0;
@@ -860,6 +858,7 @@
   flex-wrap: wrap;
   align-items: center;
   gap: 8px 10px;
+  flex-shrink: 0;
   min-block-size: 52px;
   padding: 8px 10px 8px 16px;
   border-block-end: 1px solid var(--line);
@@ -874,6 +873,8 @@
   margin: 0;
   font-size: var(--text-sm);
   font-weight: 600;
+  min-inline-size: 0;
+  overflow-wrap: anywhere;
 }
 .artifact-actions {
   display: flex;
@@ -995,6 +996,7 @@
 }
 .email-view {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   justify-items: center;
   block-size: 100%;
 }
@@ -1092,7 +1094,16 @@
   .sidebar-collapse {
     display: none;
   }
-  .sidebar-collapsed .sidebar :is(.wordmark bdi, .nav-label, .recents, .usage, .workspace-picker, .user-meta) {
+  .sidebar-collapsed
+    .sidebar
+    :is(
+      .wordmark bdi,
+      .nav-label,
+      .recents,
+      .usage,
+      .workspace-picker,
+      .user-meta
+    ) {
     display: revert;
   }
   .nav-scrim {
@@ -1500,4 +1511,23 @@ select option,
 select optgroup {
   background-color: var(--surface-2);
   color: var(--text);
+}
+
+/* Progress belongs to the conversation that requested the work. */
+.chat-run-progress {
+  margin-block-start: 10px;
+  color: var(--text-2);
+  font-size: var(--text-sm);
+}
+.chat-run-progress summary {
+  cursor: pointer;
+  overflow-wrap: anywhere;
+}
+.chat-run-progress p {
+  margin-block: 6px;
+  overflow-wrap: anywhere;
+}
+.chat-run-progress .run-dot {
+  display: inline-block;
+  margin-inline-end: 8px;
 }

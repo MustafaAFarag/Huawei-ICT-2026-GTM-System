@@ -39,6 +39,7 @@ type StreamEvent =
   | { type: "text"; delta: string }
   | { type: "tool"; id: string; name: string; state: string; summary?: string }
   | { type: "quote"; input: Proposal["input"]; quote: Proposal["quote"] }
+  | { type: "run"; runId: string }
   | { type: "navigate"; screen: string }
   | { type: "ui_action"; action: AssistantUiAction }
   | { type: "error"; message: string }
@@ -75,6 +76,7 @@ export function useChatController({
   context,
   runActive,
   onQuote,
+  onRun,
   onUiAction,
   onNavigate,
   onSettled,
@@ -85,6 +87,7 @@ export function useChatController({
   context: () => TurnContext;
   runActive: boolean;
   onQuote: (proposal: Proposal) => void;
+  onRun: (id: string) => void;
   onUiAction: (action: AssistantUiAction) => Promise<void>;
   onNavigate: (screen: string) => void;
   onSettled: () => void;
@@ -107,8 +110,24 @@ export function useChatController({
   const abort = useRef<AbortController | null>(null);
   const threadRef = useRef<string | null>(null);
   const wsRef = useRef(ws);
-  const handlers = useRef({ context, onQuote, onUiAction, onNavigate, onSettled, t });
-  handlers.current = { context, onQuote, onUiAction, onNavigate, onSettled, t };
+  const handlers = useRef({
+    context,
+    onQuote,
+    onRun,
+    onUiAction,
+    onNavigate,
+    onSettled,
+    t,
+  });
+  handlers.current = {
+    context,
+    onQuote,
+    onRun,
+    onUiAction,
+    onNavigate,
+    onSettled,
+    t,
+  };
   const lastSent = useRef("");
 
   useEffect(() => {
@@ -265,7 +284,10 @@ export function useChatController({
               );
             else if (event.type === "quote")
               setQuote({ input: event.input, quote: event.quote });
-            else if (event.type === "ui_action") {
+            else if (event.type === "run") {
+              handlers.current.onRun(event.runId);
+              handlers.current.onSettled();
+            } else if (event.type === "ui_action") {
               const parsed = assistantUiAction.safeParse(event.action);
               if (parsed.success)
                 await handlers.current.onUiAction(parsed.data).catch(() => {});
@@ -287,10 +309,7 @@ export function useChatController({
         setLastActiveAt(Date.now());
         if (wsRef.current === startedIn) {
           try {
-            await Promise.all([
-              loadMessages(threadRef.current),
-              loadThreads(),
-            ]);
+            await Promise.all([loadMessages(threadRef.current), loadThreads()]);
             setLive((l) =>
               l?.error ? { text: "", tools: [], error: l.error } : null,
             );
@@ -356,7 +375,15 @@ export function useChatController({
       celebratedAt,
       lastActiveAt,
     }),
-    [streaming, live, recording, typingAt, runActive, celebratedAt, lastActiveAt],
+    [
+      streaming,
+      live,
+      recording,
+      typingAt,
+      runActive,
+      celebratedAt,
+      lastActiveAt,
+    ],
   );
 
   return {

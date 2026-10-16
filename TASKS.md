@@ -1,3 +1,20 @@
+## Current — immediate assistant actions and unobtrusive progress (16 October 2026)
+
+Goal: finish the interrupted auto-run change, replace the blocking run panel with progress in chat, and contain long deliverable headings.
+Done: reviewed local diff, backend governance checks, typecheck and browser verification in EN/AR at desktop/tablet/phone widths; focused local commit.
+Stop: no push, deployment or live outbound. Preserve sample CSV edits and avatar archive.
+
+- [x] Complete backend auto-run and consistent prompts; preserve caps and outbound review.
+- [x] Connect run events, inline progress and result opening; remove the obstructing run panel.
+- [x] Fix canvas title sizing, composer context truncation and email grid sizing; verify EN/AR, dark/light at 1440/820/390px and the sibling Accounts route.
+- [x] Local typecheck; full backend suite 96/96, followed by 7/7 targeted assistant checks including a new cap rejection case; 7 browser scenarios pass, with a final 2/2 rerun for immediate execution and responsive deliverables. Reviewed the diff and phone screenshots; focused local commit.
+
+Decisions: assistant actions start immediately through existing credit reservations; sending still requires reviewed drafts and launch gates. Progress is attached to saved chat messages and refreshes after reload. No live model spend or external changes.
+Verification note: the first full test run had the old budget fixture fail because queued work now reserves credits, plus scheduling errors `Transaction failed due to a write conflict or a deadlock` and `Scheduled review not found.` Reset the isolated budget fixture and reran with the local maintenance worker stopped: 96/96 passed. Restarted the local app in fixture mode. Logs/captures: `.local/immediate-*.log`, `.local/ui-refinement/immediate-*.png`.
+
+
+---
+
 ## Current — Caravan + Nabil: chat-first shell, artifacts, new deliverables (started 16 October 2026)
 
 Goal: rename to Caravan; chat-first home with the Nabil assistant (Strobi avatar), threads, floating launcher, artifact canvas; HTML email (Outlook/Gmail), Instagram/LinkedIn carousels and flipbook deliverables; rewritten prompts evaluated on a stronger Azure model; Linear-style density pass.

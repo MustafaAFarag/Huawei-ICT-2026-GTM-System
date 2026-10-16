@@ -90,7 +90,11 @@ export function Composer({
     void chat.send(value);
   };
   const onKeyDown = (event: KeyboardEvent<HTMLTextAreaElement>) => {
-    if (event.key === "Enter" && !event.shiftKey && !event.nativeEvent.isComposing) {
+    if (
+      event.key === "Enter" &&
+      !event.shiftKey &&
+      !event.nativeEvent.isComposing
+    ) {
       event.preventDefault();
       submit();
     }
@@ -109,7 +113,8 @@ export function Composer({
         <div className="composer-context">
           {selected.length > 0 && (
             <span className="context-chip">
-              {selected.length} {t(selected.length === 1 ? "account" : "accounts")}
+              {selected.length}{" "}
+              {t(selected.length === 1 ? "account" : "accounts")}
               <button
                 type="button"
                 aria-label={t("Clear selected accounts")}
@@ -120,7 +125,11 @@ export function Composer({
             </span>
           )}
           {asset && (
-            <span className="context-chip" dir="auto">
+            <span
+              className="context-chip"
+              dir="auto"
+              title={assetLabel(asset, t)}
+            >
               {t("Editing")}: <bdi>{assetLabel(asset, t)}</bdi>
             </span>
           )}
@@ -166,7 +175,11 @@ export function Composer({
             <IconPlus size={16} />
           </button>
           {menuOpen && (
-            <div className="composer-menu" role="group" aria-label={t("Add context")}>
+            <div
+              className="composer-menu"
+              role="group"
+              aria-label={t("Add context")}
+            >
               <p className="eyebrow">{t("Play")}</p>
               {PLAYS.map((p) => (
                 <button
@@ -193,7 +206,8 @@ export function Composer({
             </div>
           )}
           <span className="composer-meta mono">
-            {play} · {chatLanguage === "auto" ? t("Auto language") : chatLanguage}
+            {play} ·{" "}
+            {chatLanguage === "auto" ? t("Auto language") : chatLanguage}
           </span>
         </div>
         <div className="composer-actions">
@@ -233,7 +247,9 @@ export function Composer({
         <p className="composer-note muted">
           {data.modelFixture
             ? t("Fixture assistant · no model call is made.")
-            : t("Nabil proposes actions; you approve every cost. 1 credit per reply.")}
+            : t(
+                "Nabil proposes actions; you approve every cost. 1 credit per reply.",
+              )}
         </p>
       )}
     </form>

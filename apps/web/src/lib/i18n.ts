@@ -1,12 +1,12 @@
 // Arabic interface strings (business Arabic). Keys are the English source strings;
 // a missing key falls back to English. Generated content language is chosen per play.
 export const AR: Record<string, string> = {
-
   // Caravan shell, Nabil and the deliverable canvas
   "Auto (match my message)": "تلقائي (حسب لغة رسالتي)",
   "Auto language": "لغة تلقائية",
   "Account detail": "تفاصيل الحساب",
-  "Ask Nabil for an email, a carousel, a flipbook or a one-pager. Finished work is filed here and on the account.": "اطلب من نبيل بريدًا أو شرائح أو كتيّبًا أو صفحة تعريفية. العمل المنتهي يُحفظ هنا وعلى الحساب.",
+  "Ask Nabil for an email, a carousel, a flipbook or a one-pager. Finished work is filed here and on the account.":
+    "اطلب من نبيل بريدًا أو شرائح أو كتيّبًا أو صفحة تعريفية. العمل المنتهي يُحفظ هنا وعلى الحساب.",
   "Brand-level": "على مستوى العلامة",
   Format: "النوع",
   "New with Nabil": "جديد مع نبيل",
@@ -22,7 +22,8 @@ export const AR: Record<string, string> = {
   Approved: "معتمد",
   "Approved. Exports are now available.": "تم الاعتماد. التصدير متاح الآن.",
   Archive: "أرشفة",
-  "Ask about this screen, or tell me what to prepare.": "اسأل عن هذه الصفحة، أو قل لي ماذا أجهّز.",
+  "Ask about this screen, or tell me what to prepare.":
+    "اسأل عن هذه الصفحة، أو قل لي ماذا أجهّز.",
   Chats: "المحادثات",
   "Clear selected accounts": "إلغاء تحديد الحسابات",
   "Close Nabil": "إغلاق نبيل",
@@ -37,13 +38,17 @@ export const AR: Record<string, string> = {
   "Copy code": "نسخ الكود",
   "Copy HTML": "نسخ HTML",
   "Copy reply": "نسخ الرد",
-  "Create a flipbook that walks a prospect through ": "أنشئ كتيّبًا تفاعليًا يشرح للعميل المحتمل ",
+  "Create a flipbook that walks a prospect through ":
+    "أنشئ كتيّبًا تفاعليًا يشرح للعميل المحتمل ",
   "Create a LinkedIn carousel about ": "أنشئ شرائح لينكدإن عن ",
-  "Create an HTML email (Gmail-safe) announcing ": "أنشئ رسالة بريد HTML متوافقة مع Gmail تعلن عن ",
+  "Create an HTML email (Gmail-safe) announcing ":
+    "أنشئ رسالة بريد HTML متوافقة مع Gmail تعلن عن ",
   "Create an Instagram carousel about ": "أنشئ شرائح إنستغرام عن ",
   "Create an offer one-pager for ": "أنشئ صفحة عرض تعريفية لـ ",
-  "Draft a three-step outreach sequence for ": "اكتب تسلسل تواصل من ثلاث خطوات لـ ",
-  "Find the best accounts to contact this week and explain why.": "حدّد أفضل الحسابات للتواصل هذا الأسبوع واشرح السبب.",
+  "Draft a three-step outreach sequence for ":
+    "اكتب تسلسل تواصل من ثلاث خطوات لـ ",
+  "Find the best accounts to contact this week and explain why.":
+    "حدّد أفضل الحسابات للتواصل هذا الأسبوع واشرح السبب.",
   "Desktop width": "عرض سطح المكتب",
   "Phone width": "عرض الهاتف",
   "Draft · needs review": "مسودة · تحتاج مراجعة",
@@ -52,7 +57,8 @@ export const AR: Record<string, string> = {
   "Edit with Nabil": "تعديل مع نبيل",
   "Email preview": "معاينة البريد",
   "Find accounts": "إيجاد حسابات",
-  "Fixture assistant · no model call is made.": "مساعد تجريبي · لا يتم استدعاء أي نموذج.",
+  "Fixture assistant · no model call is made.":
+    "مساعد تجريبي · لا يتم استدعاء أي نموذج.",
   Flipbook: "كتيّب تفاعلي",
   "Flipbook preview": "معاينة الكتيّب",
   "Gmail clips above 102 KB": "Gmail يقص الرسائل الأكبر من 102 كيلوبايت",
@@ -64,7 +70,8 @@ export const AR: Record<string, string> = {
   "Message Nabil": "راسل نبيل",
   "Nabil assistant": "المساعد نبيل",
   "Nabil is unavailable. Try again.": "نبيل غير متاح الآن. حاول مرة أخرى.",
-  "Nabil proposes actions; you approve every cost. 1 credit per reply.": "نبيل يقترح الإجراءات وأنت تعتمد كل تكلفة. رصيد واحد لكل رد.",
+  "Nabil proposes actions; you approve every cost. 1 credit per reply.":
+    "نبيل يقترح الإجراءات وأنت تعتمد كل تكلفة. رصيد واحد لكل رد.",
   "Needs review": "تحتاج مراجعة",
   "Needs your approval": "تحتاج موافقتك",
   "New chat": "محادثة جديدة",
@@ -87,14 +94,16 @@ export const AR: Record<string, string> = {
   "Start from": "ابدأ من",
   Version: "النسخة",
   "What should Nabil prepare for you today?": "ماذا يجهّز لك نبيل اليوم؟",
-  "Ask Nabil to find, draft or create…": "اطلب من نبيل أن يبحث أو يكتب أو يصمّم…",
+  "Ask Nabil to find, draft or create…":
+    "اطلب من نبيل أن يبحث أو يكتب أو يصمّم…",
   "Good morning": "صباح الخير",
   "Good afternoon": "مساء الخير",
   "Good evening": "مساء الخير",
   account: "حساب",
   accounts: "حسابات",
   Deliverables: "المخرجات",
-  "Every document, email and carousel Nabil prepared, filed by account.": "كل مستند وبريد وشرائح جهّزها نبيل، مرتبة حسب الحساب.",
+  "Every document, email and carousel Nabil prepared, filed by account.":
+    "كل مستند وبريد وشرائح جهّزها نبيل، مرتبة حسب الحساب.",
   "Arabic (Egypt)": "العربية (مصر)",
   "Arabic (Gulf)": "العربية (الخليج)",
   "Looking through your workspace…": "أبحث في مساحة العمل…",
@@ -687,6 +696,24 @@ export const AR: Record<string, string> = {
   "Audit history": "سجل التدقيق",
   "Actions will appear here as you work.": "ستظهر الإجراءات هنا أثناء عملك.",
   // Runs and dialogs
+  Completed: "اكتمل",
+  Cancelled: "تم الإلغاء",
+  "Working…": "جاري التجهيز…",
+  "Could not finish": "لم يكتمل التجهيز",
+  "You can keep chatting while this is prepared.":
+    "تقدر تكمل المحادثة أثناء التجهيز.",
+  "Saved in your workspace.": "تم الحفظ في مساحة العمل.",
+  "Try the request again after resolving the issue below.":
+    "جرّب الطلب مرة أخرى بعد حل المشكلة الموضحة أدناه.",
+  "Searching for signals": "جاري البحث عن إشارات",
+  "Scoring accounts": "جاري تقييم الحسابات",
+  "Enriching contacts": "جاري استكمال بيانات جهات الاتصال",
+  "Preparing drafts": "جاري تجهيز المسودات",
+  "Preparing a deliverable": "جاري تجهيز المخرج",
+  "Preparing a sequence": "جاري تجهيز التسلسل",
+  "Checking launch readiness": "جاري التحقق من جاهزية الإطلاق",
+  "Auditing the website": "جاري مراجعة الموقع",
+  "Reading your website": "جاري قراءة موقعك",
   "Durable jobs": "مهام محفوظة",
   "Recent runs": "آخر التشغيلات",
   "credits reconciled": "رصيد تمت تسويته",

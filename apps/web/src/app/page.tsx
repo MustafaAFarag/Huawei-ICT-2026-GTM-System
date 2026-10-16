@@ -12,7 +12,6 @@ import type { Asset, Dashboard, Membership, Prospect, Run } from "../lib/types";
 import { Button, Empty, ErrorPanel, Skeleton } from "../components/primitives";
 import { Sidebar, Topbar } from "../components/Shell";
 import { CommandPalette } from "../components/CommandPalette";
-import { RunLog } from "../components/RunLog";
 import { CostModal, type Proposal } from "../components/Modals";
 import { ArtifactCanvas } from "../components/ArtifactCanvas";
 import { SignIn } from "../components/SignIn";
@@ -41,7 +40,8 @@ const DESCRIPTIONS: Record<Tab, string> = {
   Accounts: "Source facts, score fit, and choose who to approach.",
   "Review queue":
     "Every message is approved by a person before it can be sent.",
-  "Asset Studio": "Every document, email and carousel Nabil prepared, filed by account.",
+  "Asset Studio":
+    "Every document, email and carousel Nabil prepared, filed by account.",
   Sequences: "Prepared touches, holdouts and recorded outcomes.",
   "Company context": "The brand, offer and customer every play draws on.",
   Settings: "Spending, quotas, connectors and the audit trail.",
@@ -78,7 +78,9 @@ export default function Page() {
     [play, setPlay] = useState<ToolRequest["play"]>("P1");
   const [selected, setSelected] = useState<string[]>([]),
     [language, setLanguage] = useState<ToolRequest["language"]>("en"),
-    [chatLanguage, setChatLanguage] = useState<"auto" | ToolRequest["language"]>("auto");
+    [chatLanguage, setChatLanguage] = useState<
+      "auto" | ToolRequest["language"]
+    >("auto");
   const [busy, setBusy] = useState(false),
     [error, setError] = useState(""),
     [notice, setNotice] = useState(""),
@@ -99,11 +101,11 @@ export default function Page() {
     [],
   );
   const [proposal, setProposal] = useState<Proposal | null>(null);
-  const [activeRun, setActiveRun] = useState<string | null>(null),
-    [events, setEvents] = useState<
-      { id: number; message: string; kind: string }[]
-    >([]);
-  const [homePrefill, setHomePrefill] = useState<{ text: string; key: number } | null>(null);
+  const [activeRun, setActiveRun] = useState<string | null>(null);
+  const [homePrefill, setHomePrefill] = useState<{
+    text: string;
+    key: number;
+  } | null>(null);
   const [preview, setPreview] = useState<Asset | null>(null),
     [prospect, setProspect] = useState<Prospect | null>(null);
   const activeWorkspace = useRef(ws);
@@ -136,8 +138,22 @@ export default function Page() {
   const runActive = Boolean(
     data?.runs.some((r) => ["queued", "running"].includes(r.state)),
   );
-  const contextRef = useRef({ play, selected, chatLanguage, view, prospect, preview });
-  contextRef.current = { play, selected, chatLanguage, view, prospect, preview };
+  const contextRef = useRef({
+    play,
+    selected,
+    chatLanguage,
+    view,
+    prospect,
+    preview,
+  });
+  contextRef.current = {
+    play,
+    selected,
+    chatLanguage,
+    view,
+    prospect,
+    preview,
+  };
 
   // Assistant UI actions: allowlisted product navigation with a brief visible cursor.
   const assistantAction = async (ui: AssistantUiAction) => {
@@ -222,6 +238,7 @@ export default function Page() {
       };
     },
     onQuote: setProposal,
+    onRun: setActiveRun,
     onUiAction: (ui) => assistantActionRef.current(ui),
     onNavigate: (screen) => {
       if (TABS.includes(screen as Tab)) setView(screen as Tab);
@@ -305,15 +322,11 @@ export default function Page() {
 
   useEffect(() => {
     if (!activeRun || !ws) return;
-    setEvents([]);
     const stream = new EventSource(
       `/api/workspaces/${ws}/runs/${activeRun}/events`,
     );
     stream.onmessage = (event) => {
       const row = JSON.parse(event.data);
-      setEvents((previous) =>
-        previous.some((e) => e.id === row.id) ? previous : [...previous, row],
-      );
       if (["succeeded", "failed"].includes(row.kind)) {
         stream.close();
         if (row.kind === "succeeded") chat.celebrate();
@@ -330,12 +343,12 @@ export default function Page() {
   }, [activeRun, ws, refresh]);
   useEffect(() => {
     if (!runActive) return;
-    const timer = setInterval(
-      () => void refresh().catch((e) => setError(e.message)),
-      3000,
-    );
+    const timer = setInterval(() => {
+      void refresh().catch((e) => setError(e.message));
+      void chat.reload();
+    }, 3000);
     return () => clearInterval(timer);
-  }, [runActive, refresh]);
+  }, [runActive, refresh, chat.reload]);
   useEffect(() => {
     if (!notice) return;
     const timer = setTimeout(() => setNotice(""), 6000);
@@ -673,11 +686,6 @@ export default function Page() {
                   initialPrefill={homePrefill}
                 />
               ) : null}
-              {view === "Home" && activeRun && (
-                <div className="home-runlog">
-                  <RunLog activeRun={activeRun} events={events} />
-                </div>
-              )}
               {view !== "Home" ? (
                 <div className="content">
                   {!preview && (
@@ -710,7 +718,6 @@ export default function Page() {
                         {view === "Settings" && <Settings />}
                       </>
                     )}
-                    <RunLog activeRun={activeRun} events={events} />
                   </div>
                 </div>
               ) : null}

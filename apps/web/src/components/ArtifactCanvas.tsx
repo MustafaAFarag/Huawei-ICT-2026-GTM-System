@@ -1,5 +1,11 @@
 "use client";
-import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "react";
+import {
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+  type ReactNode,
+} from "react";
 import {
   ASSET_FORMATS,
   type AssetExport,
@@ -32,7 +38,8 @@ type Meta = {
 
 function formatOf(asset: Asset) {
   return (
-    ASSET_FORMATS[asset.template as AssetTemplate] ?? ASSET_FORMATS["offer-one-pager"]
+    ASSET_FORMATS[asset.template as AssetTemplate] ??
+    ASSET_FORMATS["offer-one-pager"]
   );
 }
 
@@ -83,7 +90,9 @@ function ScaledFrame({
     const measure = () => {
       const byWidth = el.clientWidth / width;
       const byHeight = el.clientHeight / height;
-      setScale(Math.min(1, fit === "contain" ? Math.min(byWidth, byHeight) : byWidth));
+      setScale(
+        Math.min(1, fit === "contain" ? Math.min(byWidth, byHeight) : byWidth),
+      );
     };
     measure();
     const observer = new ResizeObserver(measure);
@@ -292,7 +301,7 @@ export function ArtifactCanvas({
     >
       <header className="artifact-bar">
         <div className="artifact-title">
-          <h2 id="artifact-title" dir="auto" className="truncate">
+          <h2 id="artifact-title" dir="auto" title={assetLabel(asset, t)}>
             {assetLabel(asset, t)}
           </h2>
           <span className="muted small">
@@ -326,7 +335,11 @@ export function ArtifactCanvas({
         </Badge>
         <div className="artifact-actions">
           {format.viewer === "email" && (
-            <div className="segmented" role="group" aria-label={t("Preview width")}>
+            <div
+              className="segmented"
+              role="group"
+              aria-label={t("Preview width")}
+            >
               <button
                 type="button"
                 aria-pressed={emailWidth === 600}
@@ -345,7 +358,12 @@ export function ArtifactCanvas({
               </button>
             </div>
           )}
-          <Button size="sm" variant="ai" startIcon={<IconWand size={14} />} onClick={onEdit}>
+          <Button
+            size="sm"
+            variant="ai"
+            startIcon={<IconWand size={14} />}
+            onClick={onEdit}
+          >
             {t("Edit with Nabil")}
           </Button>
           {!asset.approvedAt ? (
@@ -370,7 +388,9 @@ export function ArtifactCanvas({
               {format.viewer === "email" && (
                 <Button
                   size="sm"
-                  startIcon={copied ? <IconCheck size={14} /> : <IconCopy size={14} />}
+                  startIcon={
+                    copied ? <IconCheck size={14} /> : <IconCopy size={14} />
+                  }
                   onClick={() => void copyHtml()}
                 >
                   {copied ? t("Copied") : t("Copy HTML")}
@@ -384,7 +404,9 @@ export function ArtifactCanvas({
                   startIcon={<IconDownload size={14} />}
                   onClick={() => void exportFile(kind)}
                 >
-                  {exporting === kind ? t("Preparing…") : t(EXPORT_LABELS[kind])}
+                  {exporting === kind
+                    ? t("Preparing…")
+                    : t(EXPORT_LABELS[kind])}
                 </Button>
               ))}
             </>
@@ -429,7 +451,8 @@ export function ArtifactCanvas({
                 <li key={i} className={`lint-${item.level}`}>
                   <span className="dot" aria-hidden />
                   <span>
-                    <strong className="mono">{item.rule}</strong> {t(item.message)}
+                    <strong className="mono">{item.rule}</strong>{" "}
+                    {t(item.message)}
                   </span>
                 </li>
               ))}
@@ -439,7 +462,8 @@ export function ArtifactCanvas({
         {format.viewer === "email" && meta && (
           <p className="artifact-foot muted small mono">
             <bdi dir="ltr">{(meta.bytes / 1024).toFixed(1)} KB</bdi>
-            {asset.template === "email-gmail" && ` · ${t("Gmail clips above 102 KB")}`}
+            {asset.template === "email-gmail" &&
+              ` · ${t("Gmail clips above 102 KB")}`}
           </p>
         )}
       </div>
