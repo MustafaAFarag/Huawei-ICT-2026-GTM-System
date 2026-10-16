@@ -64,7 +64,13 @@ export type AgentEvent =
   | { type: "navigate"; screen: string }
   | { type: "ui_action"; action: AssistantUiAction }
   | { type: "error"; message: string }
-  | { type: "done"; messageId: string; credits: number; steps: number };
+  | {
+      type: "done";
+      messageId: string;
+      threadId: string | null;
+      credits: number;
+      steps: number;
+    };
 
 const workflows = new WorkflowService();
 
@@ -123,8 +129,9 @@ export async function runAgentTurn(
   context: AgentContext,
   emit: (event: AgentEvent) => void,
   signal?: AbortSignal,
-  options: { history?: boolean } = {},
+  options: { history?: boolean; threadId?: string } = {},
 ) {
+  const threadId = options.threadId ?? null;
   assertRole(actor, "write");
   const live = aiLive();
   const versions = promptVersions("system", "language", "fewshot");
@@ -139,7 +146,11 @@ export async function runAgentTurn(
       ? []
       : (
           await db.chatMessage.findMany({
-            where: { workspaceId: actor.workspaceId, userId: actor.userId },
+            where: {
+              workspaceId: actor.workspaceId,
+              userId: actor.userId,
+              threadId,
+            },
             orderBy: { createdAt: "desc" },
             take: 12,
           })
@@ -148,6 +159,7 @@ export async function runAgentTurn(
     data: {
       workspaceId: actor.workspaceId,
       userId: actor.userId,
+      threadId,
       role: "user",
       content,
       context: json(context),
@@ -293,7 +305,10 @@ export async function runAgentTurn(
       continue;
     }
     try {
-      const input = toolRequestFor(call.name, call.input, context);
+      const input = {
+        ...toolRequestFor(call.name, call.input, context),
+        ...(threadId ? { threadId } : {}),
+      };
       const quote = await workflows.quote(actor, input);
       quotes.push({ tool: call.name, quoteId: quote.id });
       emit({ type: "quote", tool: call.name, input, quote });
@@ -326,6 +341,7 @@ export async function runAgentTurn(
     data: {
       workspaceId: actor.workspaceId,
       userId: actor.userId,
+      threadId,
       role: "assistant",
       content: text.trim() || "(no reply)",
       context: json({
@@ -345,5 +361,10 @@ export async function runAgentTurn(
       }),
     },
   });
-  emit({ type: "done", messageId: saved.id, credits, steps });
+  if (threadId)
+    await db.chatThread.update({
+      where: { id: threadId },
+      data: { updatedAt: new Date() },
+    });
+  emit({ type: "done", messageId: saved.id, threadId, credits, steps });
 }

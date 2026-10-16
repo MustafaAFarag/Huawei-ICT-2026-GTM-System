@@ -1,7 +1,7 @@
 {
   "schemaVersion": "od-design-system-project/v1",
   "id": "revenue",
-  "name": "Revenue Workspace",
+  "name": "Caravan",
   "category": "Productivity & SaaS",
   "description": "Raycast-derived command-center system; light print tokens for A4 outreach assets.",
   "source": {"type": "local", "path": "design-systems/revenue"},

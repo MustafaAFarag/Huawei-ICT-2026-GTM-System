@@ -14,10 +14,21 @@ export const TABS = [
   "Settings",
 ] as const;
 export type Tab = (typeof TABS)[number];
+export type View = "Home" | Tab;
+// Display names. Internal ids stay stable because assistant tools and prompts use them.
+export const TAB_LABELS: Record<Tab, string> = {
+  Plays: "Plays",
+  Accounts: "Accounts",
+  "Review queue": "Review queue",
+  "Asset Studio": "Deliverables",
+  Sequences: "Sequences",
+  "Company context": "Company context",
+  Settings: "Settings",
+};
 
 export type WorkspaceValue = {
   ws: string;
-  screen: Tab;
+  screen: View;
   activeProspectId?: string;
   activeAssetId?: string;
   userId: string;
@@ -32,6 +43,8 @@ export type WorkspaceValue = {
   selected: string[];
   setSelected: (update: (previous: string[]) => string[]) => void;
   setTab: (tab: Tab) => void;
+  // Opens a deliverable in the canvas (beside the chat on home, full width elsewhere).
+  openAsset: (asset: import("../lib/types").Asset) => void;
   setProspect: (prospect: Prospect | null) => void;
   setActiveRun: (id: string | null) => void;
   showProposal: (proposal: Proposal) => void;

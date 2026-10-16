@@ -1,4 +1,4 @@
-# Revenue Workspace
+# Caravan
 
 <!-- impeccable:product-schema 1 -->
 
@@ -12,6 +12,7 @@ Next.js and Twenty UI; NestJS API and BullMQ worker; PostgreSQL/Prisma; unmodifi
 Non-technical founders, small B2B teams and agencies in Egypt, Saudi Arabia and the UAE. They need to prepare and review outreach without assembling a personal automation stack.
 
 ## Product Purpose
+Chat-first: the home page is a single composer where the user asks Nabil (the assistant, Strobi avatar) for work; Nabil gathers facts, proposes one governed action, and files the resulting deliverable in the workspace. Screens exist for detail and review.
 Run outbound in one place through ready-made plays, a persistent assistant and branded assets. Success is an approved first campaign in 30 minutes, an approved asset PDF in five minutes, and no unapproved sends or spending over caps.
 
 ## Capabilities and Constraints

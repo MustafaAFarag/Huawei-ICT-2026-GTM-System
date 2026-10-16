@@ -1,3 +1,21 @@
+## Current — Caravan + Nabil: chat-first shell, artifacts, new deliverables (started 16 October 2026)
+
+Goal: rename to Caravan; chat-first home with the Nabil assistant (Strobi avatar), threads, floating launcher, artifact canvas; HTML email (Outlook/Gmail), Instagram/LinkedIn carousels and flipbook deliverables; rewritten prompts evaluated on a stronger Azure model; Linear-style density pass.
+Done: typecheck, backend tests and new Playwright scenarios pass in EN/AR, desktop/phone, dark/light; live eval compares gpt-5-4-mini with Sol inside USD 10; focused local commit per phase.
+Stop: no push, deploy or real outbound; Azure changes limited to new model deployments on this project's resources; paid eval stops at USD 9 estimated. Preserve `samples/*.csv` edits.
+
+- [ ] Phase 1: brand rename, Nabil avatar, threads, Claude-style shell, chat-first home, floating launcher.
+- [ ] Phase 2: conversation UI, streaming Markdown, composer, deliverable cards.
+- [ ] Phase 3: artifact canvas and Deliverables list filed against thread/account/play.
+- [ ] Phase 4: format registry; HTML email (Outlook + Gmail skill), Instagram carousel, LinkedIn carousel, flipbook.
+- [ ] Phase 5: Nabil system prompt + per-format prompts; gpt-6.1-sol deployment; eval with cost meter.
+- [ ] Phase 6: Linear-style density pass.
+
+Decisions: product Caravan, assistant Nabil (owner, 16 Oct). Keep `@revenue/*` scope and `revenue-*` storage keys. Build email/carousel templates from researched defaults; owner sends examples later.
+Blockers: none yet.
+
+---
+
 ## Current — assistant actions, readable chat and bilingual output (16 October 2026)
 
 Goal: fix screenshot-reported chat/layout/bidi defects and let the assistant navigate records and revise the viewed one-pager visibly.

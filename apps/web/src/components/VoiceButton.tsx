@@ -13,15 +13,20 @@ export function VoiceButton({
   onText,
   onError,
   disabled,
+  onStateChange,
 }: {
   ws: string;
   language: "en" | "ar" | "auto";
   onText: (text: string) => void;
   onError: (message: string) => void;
   disabled?: boolean;
+  onStateChange?: (state: "idle" | "recording" | "working") => void;
 }) {
   const { t } = usePrefs();
   const [state, setState] = useState<"idle" | "recording" | "working">("idle");
+  const stateListener = useRef(onStateChange);
+  stateListener.current = onStateChange;
+  useEffect(() => stateListener.current?.(state), [state]);
   const [seconds, setSeconds] = useState(0);
   const recorder = useRef<MediaRecorder | null>(null);
   const timer = useRef<ReturnType<typeof setInterval> | null>(null);

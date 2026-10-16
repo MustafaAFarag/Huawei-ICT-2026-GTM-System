@@ -11,7 +11,7 @@ import {
 } from "@revenue/ui";
 import { Kbd } from "./primitives";
 import { TAB_ICONS } from "./Shell";
-import type { Tab } from "./workspace-context";
+import { TAB_LABELS, type Tab } from "./workspace-context";
 import type { Dashboard, Prospect } from "../lib/types";
 import { usePrefs } from "../lib/prefs";
 
@@ -64,7 +64,7 @@ export function CommandPalette({
         return {
           id: `tab:${name}`,
           group: t("Go to"),
-          label: t(name),
+          label: t(TAB_LABELS[name]),
           hint: `G ${i + 1}`,
           icon: <Icon size={16} />,
           run: () => onTab(name),
@@ -80,7 +80,7 @@ export function CommandPalette({
       {
         id: "chat",
         group: t("Actions"),
-        label: t("Ask the assistant"),
+        label: t("Ask Nabil"),
         icon: <IconMessageCircle size={16} />,
         run: onToggleChat,
       },

@@ -28,7 +28,7 @@ export const auth = betterAuth({
       await mail.sendMail({
         from: process.env.SMTP_FROM,
         to: user.email,
-        subject: "Reset your Revenue Workspace password",
+        subject: "Reset your Caravan password",
         text: `Use this link to reset your password: ${url}`,
       });
     },

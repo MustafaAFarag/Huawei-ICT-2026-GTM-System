@@ -223,6 +223,8 @@ model Asset {
   evidenceDigest String
   approvedAt  DateTime?
   approvedBy  String?
+  threadId    String?
+  playId      String?
   createdAt   DateTime @default(now())
   @@index([workspaceId])
 }
@@ -323,16 +325,29 @@ model ProviderEvent {
   receivedAt  DateTime @default(now())
 }
 
+model ChatThread {
+  id          String @id @default(uuid())
+  workspaceId String
+  userId      String
+  title       String
+  archivedAt  DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  @@index([workspaceId, userId, updatedAt])
+}
+
 model ChatMessage {
   id          String @id @default(uuid())
   workspaceId String
   userId      String
+  threadId    String?
   role        String
   content     String
   runId       String?
   context     Json @default("{}")
   createdAt   DateTime @default(now())
   @@index([workspaceId, userId, createdAt])
+  @@index([threadId, createdAt])
 }
 
 model Schedule {

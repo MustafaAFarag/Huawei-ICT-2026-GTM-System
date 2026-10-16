@@ -5,6 +5,7 @@ import {
   Get,
   Post,
   Patch,
+  Delete,
   Param,
   Req,
   Res,
@@ -55,6 +56,7 @@ import {
   GtmService,
   ImportHistoryService,
   ScheduleService,
+  ThreadService,
   assetPng,
   assetPdf,
   normalizeAssetBidi,
@@ -65,6 +67,7 @@ import type { Actor } from "@revenue/contracts";
 const gtm = new GtmService();
 const importHistory = new ImportHistoryService();
 const schedules = new ScheduleService();
+const threads = new ThreadService();
 const workspaceService = new WorkspaceService(),
   workflows = new WorkflowService(),
   storage = new Storage();
@@ -90,7 +93,7 @@ class Errors implements ExceptionFilter {
     });
   }
 }
-@ApiTags("Revenue Workspace")
+@ApiTags("Caravan")
 @Controller("api")
 class ApiController {
   @Get("health") async health() {
@@ -451,6 +454,64 @@ class ApiController {
       take: 200,
     });
   }
+  @ApiOperation({ summary: "List the member's Nabil conversations" })
+  @Get("workspaces/:workspaceId/threads") async threads(
+    @Req() req: Request,
+    @Param("workspaceId") ws: string,
+  ) {
+    return threads.list(await actorFor(req.headers, ws));
+  }
+  @Post("workspaces/:workspaceId/threads") async createThread(
+    @Req() req: Request,
+    @Param("workspaceId") ws: string,
+    @Body() body: unknown,
+  ) {
+    const input = z
+      .object({ title: z.string().max(200).optional() })
+      .parse(body ?? {});
+    return threads.create(await actorFor(req.headers, ws), input.title);
+  }
+  @Get("workspaces/:workspaceId/threads/:id/messages") async threadMessages(
+    @Req() req: Request,
+    @Param("workspaceId") ws: string,
+    @Param("id") id: string,
+  ) {
+    return threads.messages(await actorFor(req.headers, ws), id);
+  }
+  @Patch("workspaces/:workspaceId/threads/:id") async updateThread(
+    @Req() req: Request,
+    @Param("workspaceId") ws: string,
+    @Param("id") id: string,
+    @Body() body: unknown,
+  ) {
+    const input = z
+      .object({
+        title: z.string().min(1).max(200).optional(),
+        archived: z.boolean().optional(),
+      })
+      .parse(body);
+    return threads.update(await actorFor(req.headers, ws), id, input);
+  }
+  @Delete("workspaces/:workspaceId/threads/:id") async archiveThread(
+    @Req() req: Request,
+    @Param("workspaceId") ws: string,
+    @Param("id") id: string,
+  ) {
+    return threads.update(await actorFor(req.headers, ws), id, {
+      archived: true,
+    });
+  }
+  @Patch("workspaces/:workspaceId/chat/:id/feedback") async chatFeedback(
+    @Req() req: Request,
+    @Param("workspaceId") ws: string,
+    @Param("id") id: string,
+    @Body() body: unknown,
+  ) {
+    const input = z
+      .object({ value: z.enum(["up", "down"]).nullable() })
+      .parse(body);
+    return threads.feedback(await actorFor(req.headers, ws), id, input.value);
+  }
   @Post("workspaces/:workspaceId/chat") async chat(
     @Req() req: Request,
     @Param("workspaceId") ws: string,
@@ -755,6 +816,7 @@ app
       let actor: Actor;
       let input: {
         content: string;
+        threadId?: string;
         context: {
           play: "P1" | "P2" | "P3" | "P4";
           prospectIds: string[];
@@ -771,12 +833,13 @@ app
         input = z
           .object({
             content: z.string().min(1).max(3000),
+            threadId: z.uuid().optional(),
             context: z.object({
               play: z.enum(["P1", "P2", "P3", "P4"]),
               prospectIds: z.array(z.uuid()).max(100),
               language: z.enum(["en", "ar-EG", "ar-Gulf", "ar"]).optional(),
               uiLanguage: z.enum(["en", "ar"]).optional(),
-              screen: z.enum(["Plays", "Accounts", "Review queue", "Asset Studio", "Sequences", "Company context", "Settings"]).optional(),
+              screen: z.enum(["Home", "Plays", "Accounts", "Review queue", "Asset Studio", "Sequences", "Company context", "Settings"]).optional(),
               activeProspectId: z.uuid().optional(),
               activeAssetId: z.uuid().optional(),
             }),
@@ -804,6 +867,14 @@ app
       const abort = new AbortController();
       res.on("close", () => abort.abort());
       try {
+        const thread = await threads.forTurn(
+          actor,
+          input.content,
+          input.threadId,
+        );
+        res.write(
+          `data: ${JSON.stringify({ type: "thread", id: thread.id, title: thread.title })}\n\n`,
+        );
         await runAgentTurn(
           actor,
           input.content,
@@ -812,6 +883,7 @@ app
             if (!res.destroyed) res.write(`data: ${JSON.stringify(event)}\n\n`);
           },
           abort.signal,
+          { threadId: thread.id },
         );
       } catch (error) {
         if (!res.destroyed)
@@ -886,7 +958,7 @@ app.enableShutdownHooks();
 const document = SwaggerModule.createDocument(
   app,
   new DocumentBuilder()
-    .setTitle("Revenue Workspace")
+    .setTitle("Caravan API")
     .setVersion("0.1.0")
     .addCookieAuth()
     .build(),

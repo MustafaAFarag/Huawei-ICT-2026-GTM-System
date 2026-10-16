@@ -86,15 +86,85 @@ export type Preflight = {
   simulated: boolean;
 };
 
+// Deliverable formats (one registry for API, worker and UI). `viewer` picks the canvas view;
+// `exports` lists downloads; `size` is the CSS pixel canvas of one page or slide.
+export const assetTemplates = [
+  "offer-one-pager",
+  "mini-audit",
+  "email-gmail",
+  "email-outlook",
+  "instagram-carousel",
+  "linkedin-carousel",
+  "flipbook",
+] as const;
+export type AssetTemplate = (typeof assetTemplates)[number];
+export type AssetExport = "pdf" | "png" | "zip" | "html";
+export const ASSET_FORMATS: Record<
+  AssetTemplate,
+  {
+    label: string;
+    viewer: "document" | "email" | "slides" | "flipbook";
+    size: { width: number; height: number };
+    exports: AssetExport[];
+    slides?: { min: number; max: number; default: number };
+  }
+> = {
+  "offer-one-pager": {
+    label: "Offer one-pager",
+    viewer: "document",
+    size: { width: 794, height: 1123 },
+    exports: ["pdf", "png"],
+  },
+  "mini-audit": {
+    label: "Mini-audit report",
+    viewer: "document",
+    size: { width: 794, height: 1123 },
+    exports: ["pdf", "png"],
+  },
+  "email-gmail": {
+    label: "HTML email · Gmail",
+    viewer: "email",
+    size: { width: 600, height: 1200 },
+    exports: ["html"],
+  },
+  "email-outlook": {
+    label: "HTML email · Outlook",
+    viewer: "email",
+    size: { width: 600, height: 1200 },
+    exports: ["html"],
+  },
+  "instagram-carousel": {
+    label: "Instagram carousel",
+    viewer: "slides",
+    size: { width: 1080, height: 1350 },
+    exports: ["zip"],
+    slides: { min: 5, max: 10, default: 7 },
+  },
+  "linkedin-carousel": {
+    label: "LinkedIn carousel",
+    viewer: "slides",
+    size: { width: 1080, height: 1350 },
+    exports: ["pdf", "zip"],
+    slides: { min: 5, max: 12, default: 8 },
+  },
+  flipbook: {
+    label: "Flipbook",
+    viewer: "flipbook",
+    size: { width: 794, height: 1123 },
+    exports: ["html", "pdf"],
+    slides: { min: 6, max: 12, default: 8 },
+  },
+};
+
 export const toolRequest = z.object({
   tool: z.enum(tools),
   requestKey: z.string().min(8).max(150),
   prospectIds: z.array(z.uuid()).max(100).default([]),
   play: z.enum(["P1", "P2", "P3", "P4"]).default("P1"),
   language: z.enum(["en", "ar-EG", "ar-Gulf", "ar"]).default("en"),
-  template: z
-    .enum(["offer-one-pager", "mini-audit"])
-    .default("offer-one-pager"),
+  template: z.enum(assetTemplates).default("offer-one-pager"),
+  // Per-format options: slide count for carousels, page count for flipbooks.
+  slides: z.number().int().min(3).max(12).optional(),
   website: z.url().optional(),
   sourceAssetId: z.uuid().optional(),
   message: z.string().min(1).max(3000).optional(),
@@ -103,6 +173,8 @@ export const toolRequest = z.object({
   spendApprovalId: z.uuid().optional(),
   expectedEstimate: z.number().int().nonnegative().optional(),
   holdoutPercent: z.number().int().min(0).max(100).default(0),
+  // The Nabil conversation that proposed this work; deliverables are filed back into it.
+  threadId: z.uuid().optional(),
 });
 export type ToolRequest = z.infer<typeof toolRequest>;
 

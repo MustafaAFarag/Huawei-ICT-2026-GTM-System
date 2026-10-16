@@ -19,6 +19,7 @@ export * from "./gtm-service.js";
 export * from "./import-history.js";
 export * from "./schedules.js";
 export * from "./png-export.js";
+export * from "./threads.js";
 export * from "./agent/index.js";
 
 export * from "./asset-bidi.js";

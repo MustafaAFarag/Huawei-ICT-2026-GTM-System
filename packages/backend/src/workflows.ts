@@ -538,7 +538,7 @@ export class WorkflowService {
         });
         await chargeAttempt(2);
         const result = (await new ModelGateway().json(
-          "Propose one appropriate Revenue Workspace task, briefly explain it and any review needed. You cannot execute tools or approve costs. Use only approved facts, distinguish hypotheses and unknowns. Never claim a send or operation happened. Return {content,tool}.",
+          "Propose one appropriate Caravan task, briefly explain it and any review needed. You cannot execute tools or approve costs. Use only approved facts, distinguish hypotheses and unknowns. Never claim a send or operation happened. Return {content,tool}.",
           {
             message: input.message,
             play: input.play,
@@ -947,7 +947,7 @@ export class WorkflowService {
               await renderPdf(generated.html),
               "application/pdf",
             );
-            result = await db.asset.create({
+            const created = await db.asset.create({
               data: {
                 id: assetId,
                 workspaceId: workspace.id,
@@ -961,8 +961,12 @@ export class WorkflowService {
                 htmlKey,
                 pdfKey,
                 evidenceDigest: digest(evidence),
+                threadId: input.threadId ?? null,
+                playId: input.play,
               },
             });
+            result = created;
+            await fileDeliverable(workspace.id, input.threadId, created);
             await new Crm(workspace).upsertObject(
               "gtmAssets",
               "GtmAsset",
@@ -1106,4 +1110,42 @@ export class WorkflowService {
     });
     for (const run of complete) await this.reconcile(run.id, run.actualCost);
   }
+}
+
+
+// Files a finished deliverable back into the Nabil conversation that proposed it, so the
+// thread shows a card that opens the canvas. The member who owns the thread sees it.
+async function fileDeliverable(
+  workspaceId: string,
+  threadId: string | undefined,
+  asset: { id: string; template: string; title: string },
+) {
+  if (!threadId) return;
+  const thread = await db.chatThread.findFirst({
+    where: { id: threadId, workspaceId, archivedAt: null },
+  });
+  if (!thread) return;
+  await db.chatMessage.create({
+    data: {
+      workspaceId,
+      userId: thread.userId,
+      threadId,
+      role: "assistant",
+      content: asset.title.endsWith("· revision")
+        ? "The revision is ready. It is saved as a new draft; the original is unchanged."
+        : "Your deliverable is ready. Review it in the canvas, then approve it to export.",
+      context: json({
+        deliverable: {
+          assetId: asset.id,
+          template: asset.template,
+          title: asset.title,
+        },
+        model: "workspace-action",
+      }),
+    },
+  });
+  await db.chatThread.update({
+    where: { id: threadId },
+    data: { updatedAt: new Date() },
+  });
 }

@@ -8,33 +8,25 @@ import type {
 import { IconShieldCheck, IconX } from "@revenue/ui";
 import { client } from "../lib/client";
 import { usePrefs } from "../lib/prefs";
-import type {
-  Asset,
-  Chat,
-  Dashboard,
-  Membership,
-  Prospect,
-  Run,
-} from "../lib/types";
-import {
-  Badge,
-  Button,
-  Empty,
-  ErrorPanel,
-  Skeleton,
-} from "../components/primitives";
+import type { Asset, Dashboard, Membership, Prospect, Run } from "../lib/types";
+import { Button, Empty, ErrorPanel, Skeleton } from "../components/primitives";
 import { Sidebar, Topbar } from "../components/Shell";
 import { CommandPalette } from "../components/CommandPalette";
-import { Assistant } from "../components/Assistant";
 import { RunLog } from "../components/RunLog";
-import { AssetEditor, CostModal, type Proposal } from "../components/Modals";
+import { CostModal, type Proposal } from "../components/Modals";
+import { ArtifactCanvas } from "../components/ArtifactCanvas";
 import { SignIn } from "../components/SignIn";
 import {
   TABS,
+  TAB_LABELS,
   WorkspaceProvider,
   type Tab,
+  type View,
   type WorkspaceValue,
 } from "../components/workspace-context";
+import { ChatProvider, useChatController } from "../components/chat/controller";
+import { Home } from "../components/chat/Home";
+import { Launcher } from "../components/chat/Launcher";
 import { Plays } from "../components/screens/Plays";
 import { Accounts } from "../components/screens/Accounts";
 import { ProspectReview } from "../components/screens/ProspectReview";
@@ -49,14 +41,31 @@ const DESCRIPTIONS: Record<Tab, string> = {
   Accounts: "Source facts, score fit, and choose who to approach.",
   "Review queue":
     "Every message is approved by a person before it can be sent.",
-  "Asset Studio": "Reviewed sources, a useful idea, and your brand.",
+  "Asset Studio": "Every document, email and carousel Nabil prepared, filed by account.",
   Sequences: "Prepared touches, holdouts and recorded outcomes.",
   "Company context": "The brand, offer and customer every play draws on.",
   Settings: "Spending, quotas, connectors and the audit trail.",
 };
 
+// URL state: ?s=<screen> (absent on home) and ?c=<conversation>. Back and refresh restore both.
+function readUrl(): { view: View; thread: string | null } {
+  const params = new URLSearchParams(location.search);
+  const s = params.get("s");
+  return {
+    view: TABS.includes(s as Tab) ? (s as Tab) : "Home",
+    thread: params.get("c"),
+  };
+}
+function urlFor(view: View, thread: string | null) {
+  const params = new URLSearchParams();
+  if (view !== "Home") params.set("s", view);
+  if (thread) params.set("c", thread);
+  const query = params.toString();
+  return query ? `?${query}` : location.pathname;
+}
+
 export default function Page() {
-  const { t } = usePrefs();
+  const { t, language: uiLanguage } = usePrefs();
   const [memberships, setMemberships] = useState<Membership[]>([]),
     [userName, setUserName] = useState(""),
     [userId, setUserId] = useState(""),
@@ -65,15 +74,17 @@ export default function Page() {
     "loading",
   );
   const [data, setData] = useState<Dashboard | null>(null),
-    [tab, setTabState] = useState<Tab>("Plays"),
+    [view, setViewState] = useState<View>("Home"),
     [play, setPlay] = useState<ToolRequest["play"]>("P1");
   const [selected, setSelected] = useState<string[]>([]),
     [language, setLanguage] = useState<ToolRequest["language"]>("en");
   const [busy, setBusy] = useState(false),
     [error, setError] = useState(""),
     [notice, setNotice] = useState(""),
-    [chatOpen, setChatOpen] = useState(true),
-    [paletteOpen, setPaletteOpen] = useState(false);
+    [launcherOpen, setLauncherOpen] = useState(false),
+    [paletteOpen, setPaletteOpen] = useState(false),
+    [collapsed, setCollapsed] = useState(false),
+    [navOpen, setNavOpen] = useState(false);
   const [aiCursor, setAiCursor] = useState<{
     x: number;
     y: number;
@@ -91,18 +102,130 @@ export default function Page() {
     [events, setEvents] = useState<
       { id: number; message: string; kind: string }[]
     >([]);
-  const [chats, setChats] = useState<Chat[]>([]);
   const [preview, setPreview] = useState<Asset | null>(null),
     [prospect, setProspect] = useState<Prospect | null>(null);
   const activeWorkspace = useRef(ws);
   useEffect(() => {
     activeWorkspace.current = ws;
   }, [ws]);
+  const viewRef = useRef(view);
+  viewRef.current = view;
   const refresh = useCallback(async () => {
     if (!ws) return;
     const result = await client.workspace<Dashboard>(ws);
     if (activeWorkspace.current === ws) setData(result);
   }, [ws]);
+
+  const setView = useCallback((next: View) => {
+    setViewState(next);
+    setProspect(null);
+    setPreview(null);
+    setNavOpen(false);
+  }, []);
+  const setTab = useCallback((next: Tab) => setView(next), [setView]);
+
+  const openAsset = useCallback((asset: Asset) => {
+    if (viewRef.current !== "Home") setViewState("Asset Studio");
+    setProspect(null);
+    setPreview(asset);
+    if (asset.prospectId) setSelected([asset.prospectId]);
+  }, []);
+
+  const runActive = Boolean(
+    data?.runs.some((r) => ["queued", "running"].includes(r.state)),
+  );
+  const contextRef = useRef({ play, selected, language, view, prospect, preview });
+  contextRef.current = { play, selected, language, view, prospect, preview };
+
+  // Assistant UI actions: allowlisted product navigation with a brief visible cursor.
+  const assistantAction = async (ui: AssistantUiAction) => {
+    if (!data || activeWorkspace.current !== ws) return;
+    const fromHome = viewRef.current === "Home";
+    let target = "";
+    let label = "";
+    if (ui.kind === "navigate") {
+      target = `screen:${ui.screen}`;
+      label = t(TAB_LABELS[ui.screen]);
+      setView(ui.screen);
+    } else if (ui.kind === "open_account") {
+      const record = data.prospects.find((p) => p.id === ui.prospectId);
+      if (!record)
+        throw new Error(t("Account not found. Reload the workspace."));
+      setView("Accounts");
+      setProspect(record);
+      setSelected([record.id]);
+      target = "account-detail";
+      label = record.snapshot.company;
+    } else if (ui.kind === "open_asset") {
+      const asset = data.assets.find((a) => a.id === ui.assetId);
+      if (!asset) throw new Error(t("Asset not found. Reload the workspace."));
+      openAsset(asset);
+      target = "asset-preview";
+      label = t("Preview");
+    } else {
+      if (ui.prospectIds.some((id) => !data.prospects.some((p) => p.id === id)))
+        throw new Error(t("Account not found. Reload the workspace."));
+      setSelected(ui.prospectIds);
+      target = fromHome ? "" : `screen:${viewRef.current}`;
+      label = t("Accounts selected");
+    }
+    // Leaving home keeps the conversation visible in the launcher.
+    if (fromHome && ui.kind !== "open_asset" && ui.kind !== "select_accounts")
+      setLauncherOpen(true);
+    await new Promise<void>((resolve) =>
+      requestAnimationFrame(() => requestAnimationFrame(() => resolve())),
+    );
+    if (activeWorkspace.current !== ws || !target) return;
+    const element = document.querySelector<HTMLElement>(
+      `[data-ai-target="${CSS.escape(target)}"]`,
+    );
+    if (element) {
+      if (ui.kind !== "select_accounts")
+        document.querySelector(".main")?.scrollTo({ top: 0 });
+      element.classList.add("ai-target-active");
+      const box = element.getBoundingClientRect();
+      setAiCursor({
+        x: Math.min(innerWidth - 140, Math.max(12, box.x + box.width / 2)),
+        y: Math.min(innerHeight - 48, Math.max(12, box.y + 20)),
+        label,
+      });
+      if (cursorTimer.current) clearTimeout(cursorTimer.current);
+      cursorTimer.current = setTimeout(() => {
+        setAiCursor(null);
+        document
+          .querySelectorAll(".ai-target-active")
+          .forEach((e) => e.classList.remove("ai-target-active"));
+      }, 1000);
+    }
+  };
+  const assistantActionRef = useRef(assistantAction);
+  assistantActionRef.current = assistantAction;
+
+  const chat = useChatController({
+    ws,
+    enabled: authState === "ready",
+    runActive,
+    t,
+    context: () => {
+      const c = contextRef.current;
+      return {
+        play: c.play,
+        prospectIds: c.selected,
+        language: c.language,
+        uiLanguage,
+        screen: c.view,
+        activeProspectId: c.prospect?.id,
+        activeAssetId: c.preview?.id,
+      };
+    },
+    onQuote: setProposal,
+    onUiAction: (ui) => assistantActionRef.current(ui),
+    onNavigate: (screen) => {
+      if (TABS.includes(screen as Tab)) setView(screen as Tab);
+    },
+    onSettled: () => void refresh().catch(() => {}),
+  });
+
   const loadMe = async () => {
     try {
       const me = await client.request<{
@@ -125,33 +248,57 @@ export default function Page() {
   };
   useEffect(() => {
     void loadMe();
-    // On narrow screens the assistant overlays content, so it starts closed.
-    if (matchMedia("(max-width: 1099px)").matches) setChatOpen(false);
+    setCollapsed(localStorage.getItem("revenue-sidebar") === "collapsed");
+    setViewState(readUrl().view);
   }, []);
+
+  // The first workspace load restores the conversation from the URL; later switches start fresh.
+  const urlRestored = useRef(false);
   useEffect(() => {
     setData(null);
     setSelected([]);
     setProspect(null);
     setProposal(null);
     setPreview(null);
-    setChats([]);
     setActiveRun(null);
     setError("");
-    if (ws) {
-      sessionStorage.setItem("revenue-workspace", ws);
-      void refresh().catch((e) => {
-        if (activeWorkspace.current === ws) setError(e.message);
-      });
-      void client
-        .workspace<Chat[]>(ws, "/chat")
-        .then((history) => {
-          if (activeWorkspace.current === ws) setChats(history);
-        })
-        .catch((e) => {
-          if (activeWorkspace.current === ws) setError(e.message);
-        });
-    }
+    if (!ws) return;
+    sessionStorage.setItem("revenue-workspace", ws);
+    void refresh().catch((e) => {
+      if (activeWorkspace.current === ws) setError(e.message);
+    });
+    if (!urlRestored.current) {
+      urlRestored.current = true;
+      const thread = readUrl().thread;
+      if (thread) chat.openThread(thread);
+    } else setViewState("Home");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ws, refresh]);
+
+  // Keep the address bar in step with the view and thread; popstate restores them.
+  const fromHistory = useRef(false);
+  useEffect(() => {
+    if (authState !== "ready") return;
+    const next = urlFor(view, chat.threadId);
+    const current = location.search || location.pathname;
+    if (fromHistory.current) {
+      fromHistory.current = false;
+      return;
+    }
+    if (next !== current && !(next === location.pathname && !location.search))
+      history.pushState(null, "", next);
+  }, [view, chat.threadId, authState]);
+  useEffect(() => {
+    const onPop = () => {
+      const state = readUrl();
+      fromHistory.current = true;
+      setView(state.view);
+      chat.openThread(state.thread);
+    };
+    addEventListener("popstate", onPop);
+    return () => removeEventListener("popstate", onPop);
+  }, [setView, chat.openThread]);
+
   useEffect(() => {
     if (!activeRun || !ws) return;
     setEvents([]);
@@ -165,13 +312,9 @@ export default function Page() {
       );
       if (["succeeded", "failed"].includes(row.kind)) {
         stream.close();
+        if (row.kind === "succeeded") chat.celebrate();
         void refresh();
-        void client
-          .workspace<Chat[]>(ws, "/chat")
-          .then((history) => {
-            if (activeWorkspace.current === ws) setChats(history);
-          })
-          .catch(() => {});
+        void chat.reload();
       }
     };
     stream.onerror = () => {
@@ -179,26 +322,21 @@ export default function Page() {
       void refresh();
     };
     return () => stream.close();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeRun, ws, refresh]);
   useEffect(() => {
-    if (!data?.runs.some((r) => ["queued", "running"].includes(r.state)))
-      return;
+    if (!runActive) return;
     const timer = setInterval(
       () => void refresh().catch((e) => setError(e.message)),
       3000,
     );
     return () => clearInterval(timer);
-  }, [data?.runs, refresh]);
+  }, [runActive, refresh]);
   useEffect(() => {
     if (!notice) return;
     const timer = setTimeout(() => setNotice(""), 6000);
     return () => clearTimeout(timer);
   }, [notice]);
-  const setTab = useCallback((next: Tab) => {
-    setTabState(next);
-    setProspect(null);
-    setPreview(null);
-  }, []);
   // ⌘K / Ctrl+K opens the palette; "g" then a digit jumps to a screen.
   useEffect(() => {
     let pendingG = 0;
@@ -294,6 +432,7 @@ export default function Page() {
       setActiveRun(run.id);
       setProposal(null);
     }, t("Action queued. Progress is saved if you leave this page."));
+  // A finished deliverable opens in the canvas: beside the chat on home, full width elsewhere.
   const shownAssetRun = useRef<string | null>(null);
   useEffect(() => {
     const run = data?.runs.find(
@@ -307,75 +446,15 @@ export default function Page() {
     const result = data?.assets.find((a) => a.id === output?.[0]?.result?.id);
     if (result) {
       shownAssetRun.current = run.id;
-      setTabState("Asset Studio");
-      setProspect(null);
-      setPreview(result);
+      openAsset(result);
     }
-  }, [data, activeRun]);
-  const assistantAction = async (ui: AssistantUiAction) => {
-    if (!data || activeWorkspace.current !== ws) return;
-    let target = "";
-    let label = "";
-    if (ui.kind === "navigate") {
-      target = `screen:${ui.screen}`;
-      label = t(ui.screen);
-      setTab(ui.screen);
-    } else if (ui.kind === "open_account") {
-      const record = data.prospects.find((p) => p.id === ui.prospectId);
-      if (!record)
-        throw new Error(t("Account not found. Reload the workspace."));
-      setTab("Accounts");
-      setProspect(record);
-      setSelected([record.id]);
-      target = "account-detail";
-      label = record.snapshot.company;
-    } else if (ui.kind === "open_asset") {
-      const asset = data.assets.find((a) => a.id === ui.assetId);
-      if (!asset) throw new Error(t("Asset not found. Reload the workspace."));
-      setTab("Asset Studio");
-      setPreview(asset);
-      setSelected([asset.prospectId]);
-      target = "asset-preview";
-      label = t("Preview");
-    } else {
-      if (ui.prospectIds.some((id) => !data.prospects.some((p) => p.id === id)))
-        throw new Error(t("Account not found. Reload the workspace."));
-      setSelected(ui.prospectIds);
-      target = `screen:${tab}`;
-      label = t("Accounts selected");
-    }
-    await new Promise<void>((resolve) =>
-      requestAnimationFrame(() => requestAnimationFrame(() => resolve())),
-    );
-    if (activeWorkspace.current !== ws) return;
-    const element = document.querySelector<HTMLElement>(
-      `[data-ai-target="${CSS.escape(target)}"]`,
-    );
-    if (element) {
-      if (ui.kind !== "select_accounts")
-        document.querySelector(".main")?.scrollTo({ top: 0 });
-      element.classList.add("ai-target-active");
-      const box = element.getBoundingClientRect();
-      setAiCursor({
-        x: Math.min(innerWidth - 140, Math.max(12, box.x + box.width / 2)),
-        y: Math.min(innerHeight - 48, Math.max(12, box.y + 20)),
-        label,
-      });
-      if (cursorTimer.current) clearTimeout(cursorTimer.current);
-      cursorTimer.current = setTimeout(() => {
-        setAiCursor(null);
-        document
-          .querySelectorAll(".ai-target-active")
-          .forEach((e) => e.classList.remove("ai-target-active"));
-      }, 1000);
-    }
-  };
+  }, [data, activeRun, openAsset]);
   const value = useMemo<WorkspaceValue | null>(
     () =>
       data
         ? {
             ws,
-            screen: tab,
+            screen: view,
             activeProspectId: prospect?.id,
             activeAssetId: preview?.id,
             userId,
@@ -390,6 +469,7 @@ export default function Page() {
             selected,
             setSelected: (update) => setSelected(update),
             setTab,
+            openAsset,
             setProspect,
             setActiveRun,
             showProposal: setProposal,
@@ -399,7 +479,7 @@ export default function Page() {
         : null,
     [
       ws,
-      tab,
+      view,
       prospect?.id,
       preview?.id,
       userId,
@@ -409,6 +489,7 @@ export default function Page() {
       language,
       selected,
       setTab,
+      openAsset,
       action,
       propose,
     ],
@@ -423,89 +504,144 @@ export default function Page() {
     );
   if (authState === "signin") return <SignIn onSignedIn={loadMe} />;
   const modalOpen = Boolean(proposal || paletteOpen);
-  const heading = prospect ? prospect.snapshot.company : t(tab);
+  const currentAsset = preview
+    ? (data?.assets.find((asset) => asset.id === preview.id) ?? preview)
+    : null;
+  const focusComposer = () => {
+    if (viewRef.current === "Home")
+      requestAnimationFrame(() =>
+        document.getElementById("assistant-input")?.focus(),
+      );
+    else setLauncherOpen(true);
+  };
+  const canvas = currentAsset ? (
+    <ArtifactCanvas
+      ws={ws}
+      asset={currentAsset}
+      onClose={() => setPreview(null)}
+      onEdit={focusComposer}
+      onSelectVersion={(asset) => setPreview(asset)}
+    />
+  ) : null;
+  const section =
+    view === "Home"
+      ? (chat.thread?.title ?? t("New chat"))
+      : prospect
+        ? prospect.snapshot.company
+        : t(TAB_LABELS[view]);
   return (
-    <div className={`shell ${chatOpen ? "" : "chat-closed"}`}>
-      <aside className="sidebar" inert={modalOpen}>
-        <Sidebar
-          tabs={TABS}
-          tab={tab}
-          onTab={setTab}
-          memberships={memberships}
-          ws={ws}
-          onWorkspace={setWs}
-          data={data}
-          userName={userName}
-          onPalette={() => setPaletteOpen(true)}
-          onSignOut={async () => {
-            await client.request("/auth/sign-out", { method: "POST" });
-            setAuthState("signin");
-            setWs("");
-            setData(null);
-          }}
-        />
-      </aside>
-      <main className="main" inert={modalOpen}>
-        <Topbar
-          workspaceName={data?.workspace.name}
-          section={t(tab)}
-          chatOpen={chatOpen}
-          onToggleChat={() => setChatOpen(!chatOpen)}
-        />
-        {data?.fixture && (
-          <div className="fixture-banner">
-            <IconShieldCheck size={14} aria-hidden />
-            <span>
-              {t(
-                "Fixture demo · provider results and sequences are simulated. No live outreach.",
-              )}
-            </span>
-          </div>
+    <ChatProvider value={chat}>
+      <div
+        className={`shell ${collapsed ? "sidebar-collapsed" : ""} ${navOpen ? "nav-open" : ""} ${view === "Home" ? "is-home" : ""}`}
+      >
+        <aside className="sidebar" inert={modalOpen}>
+          <Sidebar
+            view={view}
+            onTab={setTab}
+            onHome={() => setView("Home")}
+            memberships={memberships}
+            ws={ws}
+            onWorkspace={setWs}
+            data={data}
+            userName={userName}
+            onPalette={() => setPaletteOpen(true)}
+            threads={chat.threads}
+            threadId={chat.threadId}
+            onThread={(id) => {
+              setView("Home");
+              chat.openThread(id);
+            }}
+            onNewChat={() => {
+              setView("Home");
+              chat.newChat();
+              requestAnimationFrame(() =>
+                document.getElementById("assistant-input")?.focus(),
+              );
+            }}
+            onArchive={(id) =>
+              void chat.archive(id).catch((e) => setError(e.message))
+            }
+            collapsed={collapsed}
+            onToggleCollapsed={() => {
+              const next = !collapsed;
+              setCollapsed(next);
+              localStorage.setItem(
+                "revenue-sidebar",
+                next ? "collapsed" : "open",
+              );
+            }}
+            onSignOut={async () => {
+              await client.request("/auth/sign-out", { method: "POST" });
+              setAuthState("signin");
+              setWs("");
+              setData(null);
+            }}
+          />
+        </aside>
+        {navOpen && (
+          <button
+            type="button"
+            className="nav-scrim"
+            aria-label={t("Close navigation")}
+            onClick={() => setNavOpen(false)}
+          />
         )}
-        <div className="content">
+        <main className="main" inert={modalOpen}>
+          <Topbar
+            workspaceName={data?.workspace.name}
+            section={section}
+            onMenu={() => setNavOpen(true)}
+          />
+          {data?.fixture && (
+            <div className="fixture-banner">
+              <IconShieldCheck size={14} aria-hidden />
+              <span>
+                {t(
+                  "Fixture demo · provider results and sequences are simulated. No live outreach.",
+                )}
+              </span>
+            </div>
+          )}
           {error && (
-            <ErrorPanel
-              title={t("Action needs attention")}
-              actions={
-                <>
-                  <Button
-                    size="sm"
-                    onClick={() =>
-                      void refresh().catch((e) => setError(e.message))
-                    }
-                  >
-                    {t("Retry loading")}
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="ghost"
-                    onClick={() => setError("")}
-                  >
-                    {t("Dismiss")}
-                  </Button>
-                </>
-              }
-            >
-              {error}
-            </ErrorPanel>
+            <div className="content-alert">
+              <ErrorPanel
+                title={t("Action needs attention")}
+                actions={
+                  <>
+                    <Button
+                      size="sm"
+                      onClick={() =>
+                        void refresh().catch((e) => setError(e.message))
+                      }
+                    >
+                      {t("Retry loading")}
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      onClick={() => setError("")}
+                    >
+                      {t("Dismiss")}
+                    </Button>
+                  </>
+                }
+              >
+                {error}
+              </ErrorPanel>
+            </div>
           )}
           {!data || !value ? (
             error ? (
-              <Empty title={t("Workspace could not load")}>
-                {t("Use Retry loading above to reconnect.")}
-              </Empty>
+              <div className="content">
+                <Empty title={t("Workspace could not load")}>
+                  {t("Use Retry loading above to reconnect.")}
+                </Empty>
+              </div>
             ) : (
-              <div className="loading-page" aria-busy="true">
+              <div className="content loading-page" aria-busy="true">
                 <p role="status" className="shimmer">
                   {t("Loading workspace…")}
                 </p>
-                <div className="stat-row">
-                  {[0, 1, 2, 3].map((i) => (
-                    <div key={i} className="stat">
-                      <Skeleton rows={2} />
-                    </div>
-                  ))}
-                </div>
                 <div className="panel">
                   <Skeleton rows={5} />
                 </div>
@@ -513,130 +649,132 @@ export default function Page() {
             )
           ) : (
             <WorkspaceProvider value={value}>
-              <div className="page-heading">
-                <div>
-                  <p className="eyebrow">{t("Your revenue workspace")}</p>
-                  <h1 dir="auto">{heading}</h1>
-                  <p className="muted">{t(DESCRIPTIONS[tab])}</p>
+              {view === "Home" ? (
+                <Home
+                  key={ws}
+                  userName={userName}
+                  onQuote={setProposal}
+                  onOpenAsset={openAsset}
+                  canvas={canvas}
+                />
+              ) : (
+                <div className="content">
+                  {!preview && (
+                    <div className="page-heading">
+                      <div>
+                        <h1 dir="auto">{section}</h1>
+                        {!prospect && (
+                          <p className="muted">{t(DESCRIPTIONS[view])}</p>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                  <div key={ws} className="screen">
+                    {canvas ? (
+                      canvas
+                    ) : prospect ? (
+                      <ProspectReview prospect={prospect} />
+                    ) : (
+                      <>
+                        {view === "Plays" && <Plays />}
+                        {view === "Accounts" && <Accounts />}
+                        {view === "Review queue" && <ReviewQueue />}
+                        {view === "Asset Studio" && (
+                          <AssetStudio onPreview={openAsset} />
+                        )}
+                        {view === "Sequences" && <Sequences />}
+                        {view === "Company context" && (
+                          <ContextForm key={ws + data.workspace.name} />
+                        )}
+                        {view === "Settings" && <Settings />}
+                      </>
+                    )}
+                    <RunLog activeRun={activeRun} events={events} />
+                  </div>
                 </div>
-                <Badge>
-                  <bdi>{data.workspace.plan}</bdi> {t("plan")}
-                </Badge>
-              </div>
-              <div key={ws} className="screen">
-                {preview ? (
-                  <AssetEditor
-                    ws={ws}
-                    asset={
-                      data.assets.find((asset) => asset.id === preview.id) ??
-                      preview
-                    }
-                    onClose={() => setPreview(null)}
-                    onEdit={() => {
-                      setChatOpen(true);
-                      requestAnimationFrame(() =>
-                        document.getElementById("assistant-input")?.focus(),
-                      );
+              )}
+              {view !== "Home" && (
+                <div inert={modalOpen}>
+                  <Launcher
+                    open={launcherOpen}
+                    onOpenChange={setLauncherOpen}
+                    onExpand={() => {
+                      setLauncherOpen(false);
+                      setView("Home");
                     }}
+                    onQuote={setProposal}
+                    onOpenAsset={openAsset}
                   />
-                ) : prospect ? (
-                  <ProspectReview prospect={prospect} />
-                ) : (
-                  <>
-                    {tab === "Plays" && <Plays />}
-                    {tab === "Accounts" && <Accounts />}
-                    {tab === "Review queue" && <ReviewQueue />}
-                    {tab === "Asset Studio" && (
-                      <AssetStudio
-                        onPreview={(asset) => {
-                          setPreview(asset);
-                          setSelected([asset.prospectId]);
-                        }}
-                      />
-                    )}
-                    {tab === "Sequences" && <Sequences />}
-                    {tab === "Company context" && (
-                      <ContextForm key={ws + data.workspace.name} />
-                    )}
-                    {tab === "Settings" && <Settings />}
-                  </>
-                )}
-                <RunLog activeRun={activeRun} events={events} />
-              </div>
+                </div>
+              )}
             </WorkspaceProvider>
           )}
-        </div>
-      </main>
-      {chatOpen && value && (
-        <aside className="assistant" inert={modalOpen}>
-          <WorkspaceProvider value={value}>
-            <Assistant
-              key={ws}
-              chats={chats}
-              setChats={setChats}
-              onQuote={setProposal}
-              onNavigate={setTab}
-              onUiAction={assistantAction}
-              onClose={() => setChatOpen(false)}
-            />
-          </WorkspaceProvider>
-        </aside>
-      )}
-      {aiCursor && (
-        <div
-          className="ai-cursor"
-          role="status"
-          style={{ left: aiCursor.x, top: aiCursor.y }}
-        >
-          <svg width="22" height="26" viewBox="0 0 22 26" aria-hidden="true">
-            <path
-              d="M2 2v20l6-6 5 8 4-2-5-8h8Z"
-              fill="currentColor"
-              stroke="var(--surface)"
-              strokeWidth="2"
-            />
-          </svg>
-          <span>{aiCursor.label}</span>
-        </div>
-      )}
-      {notice && (
-        <div className="toast" role="status">
-          <span className="dot tone-ok" aria-hidden />
-          <span>{notice}</span>
-          <button
-            className="icon-button"
-            aria-label={t("Dismiss")}
-            onClick={() => setNotice("")}
+          {view === "Home" && activeRun && (
+            <div className="home-runlog">
+              <RunLog activeRun={activeRun} events={events} />
+            </div>
+          )}
+        </main>
+        {aiCursor && (
+          <div
+            className="ai-cursor"
+            role="status"
+            style={{ left: aiCursor.x, top: aiCursor.y }}
           >
-            <IconX size={14} />
-          </button>
-        </div>
-      )}
-      {proposal && (
-        <CostModal
-          proposal={proposal}
-          busy={busy}
-          error={error}
-          onCancel={() => setProposal(null)}
-          onApprove={() => void launch()}
+            <svg width="22" height="26" viewBox="0 0 22 26" aria-hidden="true">
+              <path
+                d="M2 2v20l6-6 5 8 4-2-5-8h8Z"
+                fill="currentColor"
+                stroke="var(--surface)"
+                strokeWidth="2"
+              />
+            </svg>
+            <span>{aiCursor.label}</span>
+          </div>
+        )}
+        {notice && (
+          <div className="toast" role="status">
+            <span className="dot tone-ok" aria-hidden />
+            <span>{notice}</span>
+            <button
+              className="icon-button"
+              aria-label={t("Dismiss")}
+              onClick={() => setNotice("")}
+            >
+              <IconX size={14} />
+            </button>
+          </div>
+        )}
+        {proposal && (
+          <CostModal
+            proposal={proposal}
+            busy={busy}
+            error={error}
+            onCancel={() => setProposal(null)}
+            onApprove={() => void launch()}
+          />
+        )}
+        <CommandPalette
+          open={paletteOpen}
+          onClose={() => setPaletteOpen(false)}
+          tabs={TABS}
+          onTab={setTab}
+          onPlay={(id) => {
+            setPlay(id);
+            setTab("Plays");
+          }}
+          onProspect={(p) => {
+            setViewState("Accounts");
+            setPreview(null);
+            setProspect(p);
+          }}
+          onToggleChat={() => {
+            if (viewRef.current === "Home") focusComposer();
+            else setLauncherOpen(true);
+          }}
+          data={data}
         />
-      )}
-      <CommandPalette
-        open={paletteOpen}
-        onClose={() => setPaletteOpen(false)}
-        tabs={TABS}
-        onTab={setTab}
-        onPlay={(id) => {
-          setPlay(id);
-          setTab("Plays");
-        }}
-        onProspect={(p) => {
-          setTabState("Accounts");
-          setProspect(p);
-        }}
-        onToggleChat={() => setChatOpen(true)}
-        data={data}
-      />
-    </div>
+      </div>
+    </ChatProvider>
   );
 }

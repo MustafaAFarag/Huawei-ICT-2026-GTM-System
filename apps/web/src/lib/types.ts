@@ -37,6 +37,10 @@ export type Asset = {
   language: string;
   template: string;
   approvedAt: string | null;
+  version?: number;
+  createdAt?: string;
+  threadId?: string | null;
+  playId?: string | null;
 };
 export type Run = {
   id: string;
@@ -123,10 +127,22 @@ export type Chat = {
   id: string;
   role: string;
   content: string;
+  threadId?: string | null;
+  runId?: string | null;
+  createdAt?: string;
   context?: {
     tool?: ToolName;
     tools?: string[];
     quoteId?: string;
     model?: string;
+    feedback?: "up" | "down" | null;
+    // Set on the message Nabil posts when a deliverable run finishes.
+    deliverable?: { assetId: string; template: string; title: string };
   };
+};
+export type Thread = {
+  id: string;
+  title: string;
+  createdAt: string;
+  updatedAt: string;
 };

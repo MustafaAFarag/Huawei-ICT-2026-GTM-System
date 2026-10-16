@@ -1,4 +1,4 @@
-# Revenue Workspace — Design System
+# Caravan — Design System
 
 > Midnight command center for go-to-market work. Adapted from the [Raycast reference](../raycast/DESIGN.md) (Refero Styles, copied 15 October 2026) for a dense, bilingual product dashboard.
 
@@ -109,7 +109,7 @@ Assets are A4, light, and carry the workspace brand. Defaults derive from the li
 | `--brand` | brand kit primary (fallback `#111214`) | Header band, key figures |
 | `--brand-accent` | brand kit accent (fallback `#e5484d`) | One highlight per page |
 
-Type: Inter / IBM Plex Sans Arabic 10.5pt body, 22pt title, Geist Mono 8pt labels. Margins 16mm, 8mm grid, `break-inside: avoid` on blocks. Footer: mono source line and "Made with Revenue Workspace" on the Free plan.
+Type: Inter / IBM Plex Sans Arabic 10.5pt body, 22pt title, Geist Mono 8pt labels. Margins 16mm, 8mm grid, `break-inside: avoid` on blocks. Footer: mono source line and "Made with Caravan" on the Free plan.
 
 ## 9. Do and don't
 

@@ -6,12 +6,13 @@ import "@fontsource/ibm-plex-sans-arabic/500.css";
 import "@fontsource/ibm-plex-sans-arabic/600.css";
 import "../styles/tokens.css";
 import "./globals.css";
+import "../styles/caravan.css";
 import { Providers } from "./providers";
 
 export const metadata: Metadata = {
-  title: "Revenue Workspace",
+  title: "Caravan",
   description:
-    "Prepare and review outreach with ready-made plays, cited research and branded assets.",
+    "Caravan: tell Nabil what to prepare. Researched accounts, reviewed outreach and branded deliverables for MENA teams.",
   icons: { icon: "/favicon.svg" },
 };
 export const viewport: Viewport = {

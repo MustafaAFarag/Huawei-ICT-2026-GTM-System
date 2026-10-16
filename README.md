@@ -1,6 +1,6 @@
-# Revenue Workspace
+# Caravan
 
-Next.js and NestJS implementation of [PRD v3](docs/prd/REVENUE_WORKSPACE_PRD_v3.md): four outbound plays, governed workspace tools, persistent assistant history and bilingual assets. The [Azure demo](https://gtm-4-223-169-93.sslip.io) uses live Azure AI and synthetic workspaces; outbound providers remain simulated. The earlier Python demonstrator remains in `gtm/` for reference.
+Caravan (formerly Revenue Workspace) is a chat-first go-to-market workspace: tell **Nabil**, the assistant, what to prepare and it researches accounts, drafts reviewed outreach and builds branded deliverables (one-pagers, HTML emails, Instagram/LinkedIn carousels, flipbooks) that it files against the account. Next.js and NestJS implementation of [PRD v3](docs/prd/REVENUE_WORKSPACE_PRD_v3.md): four outbound plays, governed workspace tools, persistent assistant history and bilingual assets. The [Azure demo](https://gtm-4-223-169-93.sslip.io) uses live Azure AI and synthetic workspaces; outbound providers remain simulated. The earlier Python demonstrator remains in `gtm/` for reference.
 
 ## Local setup
 
