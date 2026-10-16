@@ -56,6 +56,7 @@ import {
   ImportHistoryService,
   ScheduleService,
   assetPng,
+  assertPngApprovalUnchanged,
 } from "@revenue/backend";
 import type { Actor } from "@revenue/contracts";
 
@@ -395,7 +396,8 @@ class ApiController {
     if (format === "png") {
       const current = await db.asset.findFirst({ where: { id, workspaceId: ws } });
       const prospect = await db.prospect.findFirst({ where: { id: asset.prospectId!, workspaceId: ws } });
-      if (!current?.approvedAt || !prospect || current.evidenceDigest !== digest(prospect.evidence)) throw new HttpException("Asset approval changed while preparing the export. Reload and review it.",409);
+      if(!prospect)throw new HttpException("The source account no longer exists. Reload the workspace.",409);
+      assertPngApprovalUnchanged(asset,current,prospect.evidence);
     }
     res.set("Cache-Control","private, no-store");
     res.set(

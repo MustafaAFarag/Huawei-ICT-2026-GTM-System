@@ -1,9 +1,33 @@
-import { ServiceUnavailableException } from "@nestjs/common";
+import { ConflictException, ServiceUnavailableException } from "@nestjs/common";
 import { digest } from "./policy.js";
 import { renderPng } from "./providers.js";
 import { Storage } from "./storage.js";
 
 const inFlight = new Map<string, Promise<Buffer>>();
+type ApprovedAsset = {
+  approvedAt: Date | null;
+  version: number;
+  htmlKey: string | null;
+  evidenceDigest: string;
+};
+export function assertPngApprovalUnchanged(
+  before: ApprovedAsset,
+  current: ApprovedAsset | null,
+  evidence: unknown,
+) {
+  if (
+    !before.approvedAt ||
+    !current?.approvedAt ||
+    current.approvedAt.getTime() !== before.approvedAt.getTime() ||
+    current.version !== before.version ||
+    current.htmlKey !== before.htmlKey ||
+    current.evidenceDigest !== before.evidenceDigest ||
+    current.evidenceDigest !== digest(evidence)
+  )
+    throw new ConflictException(
+      "Asset approval changed while preparing the export. Reload and review it.",
+    );
+}
 // Only approved callers reach this renderer. Cache by immutable HTML content and
 // coalesce concurrent requests; cap new browser renders to one per API process.
 export async function assetPng(

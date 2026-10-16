@@ -3,7 +3,14 @@ import { randomUUID } from "node:crypto";
 import { createServer } from "node:http";
 import { rm } from "node:fs/promises";
 import { join } from "node:path";
-import { assetPng, renderPng, Storage, config } from "@revenue/backend";
+import {
+  assetPng,
+  renderPng,
+  Storage,
+  config,
+  assertPngApprovalUnchanged,
+  digest,
+} from "@revenue/backend";
 
 const workspaceId = randomUUID(),
   assetId = randomUUID();
@@ -14,6 +21,43 @@ afterAll(async () => {
   });
 });
 describe("PNG asset export", () => {
+  it("holds an export after approval changes even when the source facts stayed identical", () => {
+    const evidence = [{ claim: "Reviewed source" }],
+      date = new Date("2026-10-16T00:00:00Z");
+    const asset = {
+      approvedAt: date,
+      version: 1,
+      htmlKey: "asset.html",
+      evidenceDigest: digest(evidence),
+    };
+    expect(() =>
+      assertPngApprovalUnchanged(asset, { ...asset }, evidence),
+    ).not.toThrow();
+    expect(() =>
+      assertPngApprovalUnchanged(
+        asset,
+        { ...asset, approvedAt: new Date(date.getTime() + 1) },
+        evidence,
+      ),
+    ).toThrow(/approval changed/);
+    expect(() =>
+      assertPngApprovalUnchanged(
+        asset,
+        { ...asset, version: 2 },
+        evidence,
+      ),
+    ).toThrow(/approval changed/);
+    expect(() =>
+      assertPngApprovalUnchanged(
+        asset,
+        { ...asset, htmlKey: "changed.html" },
+        evidence,
+      ),
+    ).toThrow(/approval changed/);
+    expect(() =>
+      assertPngApprovalUnchanged(asset, asset, [{ claim: "Changed source" }]),
+    ).toThrow(/approval changed/);
+  });
   it("renders readable-size PNGs without scripts or external resource requests", async () => {
     let requests = 0;
     const server = createServer((_req, res) => {
