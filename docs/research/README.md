@@ -1,6 +1,6 @@
-# Research for PRD v2 and v3 (12–13 October 2026)
+# Research for PRD v2/v3 and output quality (12–16 October 2026)
 
-Ten web-research reports, written by separate research agents, feed [Revenue Workspace PRD v3](../prd/REVENUE_WORKSPACE_PRD_v3.md) (reports 01–05 also fed [v2](../prd/archive/REVENUE_WORKSPACE_PRD_v2.md)). Each claim is tagged Verified or Unverified with sources. No credit-spending tools were called and nothing was sent.
+Reports 01–10 feed [Revenue Workspace PRD v3](../prd/REVENUE_WORKSPACE_PRD_v3.md) (01–05 also fed [v2](../prd/archive/REVENUE_WORKSPACE_PRD_v2.md)). Report 11 adds real-workflow analysis; report 12 records prompt research and separately authorized live synthetic evaluations. Original web research spent no model credits; the later output checks used live Azure inference. No outreach was sent.
 
 | Report | Question it answers |
 | --- | --- |
@@ -15,6 +15,7 @@ Ten web-research reports, written by separate research agents, feed [Revenue Wor
 | [09 — Building blocks and Agent-Reach](09-building-blocks-and-agent-reach.md) | What Agent-Reach does for LinkedIn and its risks; open-source components to gather, with licence risk; OpenDesign current state |
 | [10 — User pain and out-of-the-box](10-user-pain-and-out-of-box.md) | Non-technical user complaints, what "out of the box" means in 2026, evidence on design assets, agency pain, MENA voice; plays and templates to ship |
 | [11 — Real workflow teardown](11-real-workflow-teardown.md) | (15 Oct, v3.1) What a real outbound engagement's files show about the process, where the work is manual, public MENA SDR/funding context, and the synthetic demo set derived from it |
+| [12 — Output quality and prompt engineering](12-output-quality-and-prompt-engineering.md) | Primary-source prompt/tool/evaluation guidance, actual bilingual copy and assets, before/after checks, call dates and remaining judge/dialect limits |
 
 ## Lead-reviewer spot checks (12 October 2026)
 

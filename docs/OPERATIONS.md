@@ -2,9 +2,25 @@
 
 ## Start and inspect
 
-`pnpm dev` starts web/API/worker at localhost:3100/4100/4101 against local Docker services. The 16 October review instance runs detached with its log at `.local/morning-dev.log` and supervisor PID at `.local/morning-dev.pid`; it remains available while the laptop and Docker stay running. Sign in using `DEMO_EMAIL` and `DEMO_PASSWORD` in private `.env`, then select **Qimam People** to review the synthetic GTM workspace.
+The current source serves web/API/worker at localhost:3100/4100/4101. Development processes were stopped after the unattended verification; existing Docker volumes and private `.env` were preserved. After laptop startup, run:
 
-Local `.env` currently enables live Azure AI with fixture outbound providers. Use `MODEL_MODE=fixture pnpm dev` for the deterministic browser suite; run `MODEL_MODE=fixture pnpm test` and `pnpm test:e2e` against that fixture instance. Return to `pnpm dev` for live chat/voice. Start only one development supervisor at a time. Activate the pinned Node with `eval "$(mise env -s bash)"` when using a shell that has not loaded mise.
+```bash
+eval "$(mise env -s bash)"
+docker compose --profile engines up -d
+pnpm db:generate
+pnpm db:migrate
+pnpm dev
+```
+
+Sign in using `DEMO_EMAIL` and `DEMO_PASSWORD` from private `.env`; choose **Qimam People**. Review Accounts → saved research brief, discovery interview guide and call log; Review queue → fresh drafts and due scheduled reviews; Plays → recurring review settings; Asset Studio → approved PNG/PDF export. Unapproved copy remains held.
+
+Local `.env` retains `MODEL_MODE=live` and `PROVIDER_MODE=fixture`. Stop the live development process before starting `MODEL_MODE=fixture pnpm dev` for deterministic browser tests. Run `MODEL_MODE=fixture pnpm test`, then `pnpm test:e2e` against that fixture instance; return to plain `pnpm dev` for live AI. Never run two development supervisors against the same ports. The API and worker use plain `tsx` rather than watch mode: restart `pnpm dev` after backend or prompt changes; only Next.js hot-reloads frontend edits. The private unattended launcher wrote `.local/morning-dev.log` and `.local/morning-dev.pid`; those are operational artifacts, not a boot-time service.
+
+Two additive migrations (`20261016000100_import_history`, `20261016000200_scheduled_reviews`) are applied locally. A future cloud deployment must rebuild **all** product images and run migrations before starting the matching API/worker; the old deployed build is unchanged. The prior source-only image update procedure requires an unchanged schema and does not apply to this update.
+
+Recurring schedules prepare reviews only, without credit reservation or execution. Due occurrences require a fresh manual cost review. Catch-up creates at most one pending review per schedule; revoked creators and malformed legacy schedules pause with an explanation. Schedules are bound to the worker queue namespace.
+
+PNG exports use private storage keyed by the approved HTML digest. Identical requests coalesce, only one new render runs per API process, and a competing render returns HTTP 503 for retry. Scripts/network are disabled. An approval/source change during rendering holds the download, including a revoke-and-reapprove cycle over unchanged source facts. Internal interview/research PDFs are read-only record exports and do not spend AI credits.
 
 For the production images:
 

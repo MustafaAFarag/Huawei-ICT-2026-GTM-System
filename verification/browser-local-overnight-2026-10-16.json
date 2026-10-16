@@ -1,0 +1,34 @@
+{
+  "date": "2026-10-16T00:15:26.149Z",
+  "checks": [
+    {
+      "screen": "plays",
+      "language": "en",
+      "viewport": 1440,
+      "width": 1440,
+      "dir": "ltr"
+    },
+    {
+      "screen": "account",
+      "language": "en",
+      "viewport": 1440,
+      "width": 1440,
+      "dir": "ltr"
+    },
+    {
+      "screen": "plays",
+      "language": "ar",
+      "viewport": 390,
+      "width": 390,
+      "dir": "rtl"
+    },
+    {
+      "screen": "account",
+      "language": "ar",
+      "viewport": 390,
+      "width": 390,
+      "dir": "rtl"
+    }
+  ],
+  "pageErrors": []
+}

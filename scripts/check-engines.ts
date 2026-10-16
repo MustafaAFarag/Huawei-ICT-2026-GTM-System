@@ -54,7 +54,7 @@ const result = {
   authenticationIsolation: "passed",
   fileIsolation: "passed",
   byokInputValidation: "passed",
-  realModelGeneration: "pending Azure/model credentials",
+  realModelGeneration: "not exercised by this check; run scripts/asset-smoke.ts separately",
   release: "open-design-v0.24.1",
   commit: "89e64d813bb1c7a11519b3f668f011f7017637d7",
   checkedAt: new Date().toISOString(),

@@ -19,21 +19,21 @@ The new contract limits claims to approved observations and capabilities; an ang
 
 ## Recorded comparison
 
-These are synthetic development results, not campaign-effectiveness or native-dialect acceptance. The 12 cases cover hiring, event and sparse evidence across English, Egyptian Arabic, Gulf Arabic and standard Arabic. The baseline text was captured before changes and regraded with the final same criteria version `2026-10-16.3`.
+These are synthetic development results, not campaign-effectiveness or native-dialect acceptance. The 12 cases cover hiring, event and sparse evidence across English, Egyptian Arabic, Gulf Arabic and standard Arabic. The baseline text was captured before changes and regraded with the final same criteria version `2026-10-16.4`.
 
 | Check                                                            | Baseline | Latest candidate |
 | ---------------------------------------------------------------- | -------- | ---------------- |
 | Draft format, citations and language checks                      | 4/12     | 12/12            |
-| Same-model grounding review, mean /5                             | 2.92     | 4.67             |
-| Same-model relevance review, mean /5                             | 3.25     | 3.67             |
-| Language review after deterministic wrong-language gate, mean /5 | 3.00     | 4.75             |
+| Same-model grounding review, mean /5                             | 3.17     | 4.67             |
+| Same-model relevance review, mean /5                             | 3.33     | 4.00             |
+| Language review after deterministic wrong-language gate, mean /5 | 2.75     | 4.83             |
 | Existing agent workflow suite                                    | 29/30    | 30/30            |
 | Agent median duration                                            | 2,435 ms | 1,447 ms         |
 | Agent Arabic model review, mean /5                               | 4.0      | 3.4              |
 
 The chat Arabic review regressed in this sample even as tool choice and draft output improved. Do not advertise a universal quality gain. Chat still copies some English role labels and needs native-speaker calibration. Durations reflect these particular runs, not a controlled performance benchmark. The intermediate copy candidates are retained, including the 11/12 run that still left “Payroll Specialist” in Egyptian copy.
 
-Evidence: [draft baseline](../../evaluation/agent/results/drafts-2026-10-16-baseline.json), [latest drafts](../../evaluation/agent/results/drafts-2026-10-16-candidate-v3.json), [agent baseline](../../evaluation/agent/results/agent-2026-10-16-baseline.json), [agent final](../../evaluation/agent/results/agent-2026-10-16-final.json). `draft-eval.ts` supports `--regrade` to reuse captured text and preserves its original prompt versions. `agent-eval.ts` accepts `EVAL_REPORT_PATH` and exits nonzero on failed cases.
+Evidence: [draft baseline](../../evaluation/agent/results/drafts-2026-10-16-baseline.json), [latest drafts](../../evaluation/agent/results/drafts-2026-10-16-candidate-v6.json), [agent baseline](../../evaluation/agent/results/agent-2026-10-16-baseline.json), [agent final](../../evaluation/agent/results/agent-2026-10-16-final.json). `draft-eval.ts` supports `--regrade` to reuse captured text and preserves its original prompt versions. `agent-eval.ts` accepts `EVAL_REPORT_PATH` and exits nonzero on failed cases.
 
 ## Example: Egyptian founder outreach after a company event
 
@@ -62,6 +62,20 @@ After:
 
 رد بكلمة توقف لو مش حابب تواصل تاني.
 ```
+
+## Output inspection and regression cases
+
+The original [12-case unseen industry check](../../evaluation/agent/results/drafts-2026-10-16-heldout.json) covers security, logistics and software offers across the four languages and passed all hard checks. A later run exposed a recipient-name substitution even though the format checks passed. The product now requires the original first name in the email and rejects unsupported digit-based numbers, including Arabic/Persian digits. Equivalent English source number words and source dates are accepted; tests caught and repaired false rejections of “three” → “3” and “two” → “2”. These are limited checks, not semantic entailment. Written-out new claims and reuse of an allowed number with a different meaning still need review.
+
+The [final cross-industry regression](../../evaluation/agent/results/drafts-2026-10-16-heldout-v4.json) passes 12/12; its diagnostic model means are grounding 4.25, relevance 3.92 and language 4.67. Because these cases were reused during the guard repair, this final result is **not an untouched held-out evaluation**. The stricter development run passes 12/12. Intermediate rejected runs remain saved rather than being hidden. The same-model judge sometimes mistakes caller-preparation notes for spoken copy and criticizes names that the contract correctly preserves; its scores are advisory.
+
+The [live product draft check](../../verification/draft-smoke-local-final-2026-10-16.json) generated English and Egyptian Arabic drafts through fresh cost approvals, durable runs and the actual worker. Each took four credits; prompt/model versions and full copy are saved, both drafts remain unapproved and the sequence count is unchanged. The [live chat/voice check](../../verification/ai-smoke-local-overnight-2026-10-16.json) used six credits and created no runs. It includes the dated call-outcome proposal.
+
+The call classifier was missing a workspace-local date and had no explicit distinction between a callback and an agreed meeting. On twelve synthetic notes, the [old prompt](../../evaluation/agent/results/calls-2026-10-16-baseline.json) passes 9/12 exact outcome/delay checks, the first revision passes 10/12, and the [final prompt](../../evaluation/agent/results/calls-2026-10-16-candidate-v2.json) passes 12/12. The fixed reference is Friday 16 October in Cairo: a Sunday callback is two days away; a booked Tuesday meeting is not an invented four-day callback delay. Summaries and delays are editable, with a manual no-AI fallback. Recorded delays do not schedule reminders.
+
+Arabic Asset Studio output initially translated headings while leaving the observation and offer in English. The versioned asset prompt now translates the whole document, preserves original source links/counts and rejects untranslated full source sentences or new visible numbers. A real adversarial design edit requesting “60 percent savings for 50 clients” produced no such claims. The one available observation remains one, with full-width layout. The checks do not establish the meaning of every sentence.
+
+[Before](../../verification/screens/asset-ar-before-2026-10-16.png) and [after](../../verification/screens/asset-ar-after-2026-10-16.png) previews show the actual generated synthetic asset; [the live run report](../../verification/asset-smoke-local-adversarial-2026-10-16.json) identifies its versions. The [Arabic research-brief PDF preview](../../verification/screens/research-brief-ar-2026-10-16.png) instead preserves original source wording on purpose: it is a deterministic internal record export with RTL labels, separate evidence categories and a record fingerprint.
 
 ## Remaining checks
 

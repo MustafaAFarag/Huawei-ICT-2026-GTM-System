@@ -1,0 +1,80 @@
+{
+  "checkedAt": "2026-10-16T00:32:14.580718+00:00",
+  "scope": "Local development source; live Azure models, fixture outbound. No new deployment, repository push or live outreach.",
+  "checks": {
+    "typecheck": "passed",
+    "backend": {
+      "passed": 67,
+      "total": 67,
+      "files": 15,
+      "seconds": 20.7
+    },
+    "browser": {
+      "passed": 12,
+      "total": 12,
+      "minutesRounded": 1.6
+    },
+    "httpRoles": "passed",
+    "nativeEngineHealthAndIsolation": "passed; model generation checked separately",
+    "localMarkdownTargets": "passed",
+    "changedFilePrivateEnvValueScan": "passed; values not printed",
+    "responsiveScreens": {
+      "englishWidth": 1440,
+      "arabicWidth": 390,
+      "pageErrors": 0,
+      "horizontalOverflow": false
+    }
+  },
+  "evaluations": {
+    "agent": {
+      "baseline": 29,
+      "candidate": 30,
+      "total": 30,
+      "arabicJudgeMeanBaseline": 4.0,
+      "arabicJudgeMeanCandidate": 3.4
+    },
+    "draftDevelopment": {
+      "baseline": 4,
+      "candidate": 12,
+      "total": 12,
+      "criteriaVersion": "2026-10-16.4"
+    },
+    "draftCrossIndustryRegression": {
+      "passed": 12,
+      "total": 12,
+      "untouchedHoldout": false
+    },
+    "callOutcomeAndDelay": {
+      "baseline": 9,
+      "candidate": 12,
+      "total": 12
+    }
+  },
+  "liveEvidence": [
+    "ai-smoke-local-overnight-2026-10-16.json",
+    "draft-smoke-local-final-2026-10-16.json",
+    "asset-smoke-local-adversarial-2026-10-16.json"
+  ],
+  "migrationsAppliedLocally": [
+    "20261016000100_import_history",
+    "20261016000200_scheduled_reviews"
+  ],
+  "cloudVmLastVerifiedState": "deallocated",
+  "newContainerBuildOrRestoreRehearsal": false,
+  "remainingAcceptance": [
+    "real provider/sender activation",
+    "native Arabic review",
+    "CRM field merging",
+    "LinkedIn connection/acceptance telemetry",
+    "automatic SDR-kit delivery on joining",
+    "Letter/PPTX export",
+    "full automatic paid play chains"
+  ],
+  "handoff": {
+    "developmentProcesses": "stopped; ports 3100/4100/4101 closed",
+    "browser": "closed",
+    "privateConfigurationAndDockerData": "preserved",
+    "startupRunbook": "docs/OPERATIONS.md#start-and-inspect",
+    "activeLocalRuns": 0
+  }
+}

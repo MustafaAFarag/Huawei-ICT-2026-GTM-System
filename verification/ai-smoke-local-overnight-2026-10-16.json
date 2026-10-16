@@ -1,0 +1,96 @@
+{
+  "date": "2026-10-16T00:15:25.539Z",
+  "baseURL": "http://localhost:3100",
+  "workspace": "Qimam People",
+  "chatRead": {
+    "prompt": "Which tier A fintech accounts have a hiring signal? Show the top three.",
+    "status": 200,
+    "model": "gpt-5-4-mini",
+    "tools": [
+      "search_accounts"
+    ],
+    "quote": null,
+    "quoteTool": null,
+    "credits": 1,
+    "errors": [],
+    "totalMs": 2930,
+    "reply": "Here are the top 3 tier A fintech accounts with a hiring signal:\n\n1. Murima Lend — Karim Zahran, Head of People, Sharjah, AE  \n   - Score: 100\n   - Signals: hiring, funding\n   - Reviewed facts: 0\n   - Communication basis: recorded\n\n2. Rifdan Pay Tech — Anas Qasim, CEO, Dammam, SA  \n   - Score: 75\n   - Signals: hiring\n   - Reviewed facts: 1\n   - Communication basis: recorded\n\n3. Rifdan Pay Tech — Waleed Haddad, HR Manager, Dammam, SA  \n   - Score: 75\n   - Signals: hiring\n   - Reviewed facts: 1\n  "
+  },
+  "chatAction": {
+    "prompt": "Draft messages for Kibesh Finance.",
+    "status": 200,
+    "model": "gpt-5-4-mini",
+    "tools": [
+      "search_accounts",
+      "draft_messages"
+    ],
+    "quote": {
+      "id": "18e6782f-ebb1-4120-9d77-5f8bf6562dd3",
+      "estimate": 4,
+      "expiresAt": "2026-10-16T00:30:31.065Z",
+      "tool": "draft_messages",
+      "audience": 1,
+      "simulated": true
+    },
+    "quoteTool": "draft_messages",
+    "credits": 1,
+    "errors": [],
+    "totalMs": 2553,
+    "reply": "I prepared a cost quote for draft messages. Nothing has run yet — review and approve the cost to start it."
+  },
+  "chatArabic": {
+    "prompt": "مين أحسن ٣ حسابات أبدأ بيهم النهارده؟",
+    "status": 200,
+    "model": "gpt-5-4-mini",
+    "tools": [
+      "workspace_overview",
+      "search_accounts",
+      "search_accounts"
+    ],
+    "quote": null,
+    "quoteTool": null,
+    "credits": 1,
+    "errors": [],
+    "totalMs": 4211,
+    "reply": "أحسن 3 حسابات تبدأ بيهم النهارده من حسابات tier A هما:\n\n1. Wadena Stores — Dana Kamel, Managing Director, Khobar, SA  \n2. Murima Lend — Karim Zahran, Head of People, Sharjah, AE  \n3. Tiraq Retail — Lama Barakat, Co-founder & CEO, Dammam, SA  \n\nكلهم تقييمهم 100.  \nملاحظة: اللي ظهر في البحث ده 64 حساب tier A إجمالًا، و43 منهم عليهم إشارة توظيف.  \n\nلو تحب، أقدر أطلع لك كمان أفضل 3 من حسابات fintech فقط أو أرتبهم حسب وجود إشارات التوظيف."
+  },
+  "transcribe_en-1": {
+    "status": 200,
+    "ms": 878,
+    "text": "Spoke to the head of people. She asked me to call back on Sunday after payroll closes.",
+    "language": "en",
+    "model": "gpt-4o-transcribe",
+    "credits": 1,
+    "durationInSeconds": null,
+    "latencyMs": 841
+  },
+  "transcribe_ar-eg-1": {
+    "status": 200,
+    "ms": 898,
+    "text": "كلمت مديرة الموارد البشرية وقالت لي أكلمها تاني يوم الأحد بعد ما يخلصوا المرتبات.",
+    "language": "ar",
+    "model": "gpt-4o-transcribe",
+    "credits": 1,
+    "durationInSeconds": null,
+    "latencyMs": 861
+  },
+  "callOutcome": {
+    "status": 201,
+    "outcome": "call-back",
+    "nextStep": "كلمها تاني يوم الأحد بعد ما يخلصوا المرتبات",
+    "followUpDays": 2,
+    "summary": "كلمت مديرة الموارد البشرية وقالت لي أكلمها تاني يوم الأحد بعد ما يخلصوا المرتبات",
+    "model": "gpt-5-4-mini",
+    "prompts": {
+      "call-outcome": "2026-10-16.2+90c7dca7"
+    },
+    "referenceDate": "2026-10-16",
+    "timeZone": "Asia/Riyadh",
+    "credits": 1
+  },
+  "credits": {
+    "before": 698,
+    "after": 704
+  },
+  "runsCreatedByAssistant": 0
+}

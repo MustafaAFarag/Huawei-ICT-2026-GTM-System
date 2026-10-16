@@ -12,6 +12,8 @@ Sign in with `DEMO_EMAIL` / `DEMO_PASSWORD` from the private local `.env`. Serve
 
 The server uses live models and fixture outbound providers. Its API memory cap is 1 GiB after concurrent live chat/PDF generation exceeded the initial 512 MiB cap. Local Terraform state is retained and ignored; no registry, GitHub push or cloud workflow execution was used. The Bicep files and preparation notes below are historical reference.
 
+**16 October local update:** import history and recurring reviews add two database migrations. These features, research/interview exports, PNG export and prompt/call refinements have not been deployed. Rebuild all product images from the new schema and run migrations before any future update; do not use a source-only update that assumes an unchanged schema. See [current status](STATUS.md).
+
 ## Connection and project boundary
 
 | Setting                | Verified value                                                         |

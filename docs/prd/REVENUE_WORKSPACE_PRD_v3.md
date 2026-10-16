@@ -1,6 +1,6 @@
 # Revenue Workspace — Product Requirements v3.1
 
-**Status:** current. **Date:** 13 October 2026; **v3.1 update:** 15 October 2026 (see [Changelog](#changelog)). **Supersedes:** [PRD v2](archive/REVENUE_WORKSPACE_PRD_v2.md) (12 October 2026) and [PRD v1](archive/REVENUE_WORKSPACE_PRD_v1.md) (6 October 2026). **Inputs:** the product owner's answers of 13 October 2026, the Lara meeting transcript, and eleven research reports in [`docs/research/`](../research/README.md) (report 11, added in v3.1, is an anonymised teardown of a real outbound engagement). **Current authorization:** local implementation, focused commits and project-only Azure deployment and inference (owner, 15 October); no repository push or live outreach.
+**Status:** current. **Date:** 13 October 2026; **v3.1 update:** 15 October 2026 (see [Changelog](#changelog)). **Supersedes:** [PRD v2](archive/REVENUE_WORKSPACE_PRD_v2.md) (12 October 2026) and [PRD v1](archive/REVENUE_WORKSPACE_PRD_v1.md) (6 October 2026). **Inputs:** the product owner's answers of 13 October 2026, the Lara meeting transcript, and twelve research reports in [`docs/research/`](../research/README.md) (report 11 is an anonymised real-workflow teardown; report 12 records output-quality research and synthetic evaluations). **Current authorization:** local implementation, focused commits and project-only Azure deployment and inference (owner, 15 October); no repository push or live outreach.
 
 v3 records the product owner's decisions on the v2 proposals and adds the business model, the "one place" component plan, the out-of-the-box plays and the Asset Studio. This document is about the product; competition rules live in [research 06](../research/06-huawei-ict-2026-27-rules.md). Every feature from v1 and v2 stays in the catalogue (§7 and Appendix A) so the team can pull work forward if it finishes early.
 
@@ -587,24 +587,30 @@ Research reports: [01 GTM process and AI](../research/01-gtm-process-and-ai.md),
 
 ## Changelog
 
+**Local checkpoint — 16 October 2026.** Added import revision history, durable scheduled step reviews, approved PNG export, EN/AR interview and research PDFs, editable/date-aware call outcomes, durable opt-out cancellation and measured prompt/copy checks. All new work is local; the public build is unchanged. Remaining acceptance work is listed below.
+
 **v3.1 — 15 October 2026.** Added decisions D18–D21 (Raycast-derived design system, own AI harness on Vercel AI SDK Core, Azure models and Whisper approved, real data read for structure only). Added plays P15–P17, requirement sections §7.14 (14 features from the real-workflow teardown) and §7.15 (AI harness and voice), and the v3.1 gaps in §12. ARB-07 (Arabic UI) is partly delivered early: interface strings and RTL layout exist; Twenty's own RTL is unchanged. Research 11 added.
 
 **v3 — 13 October 2026.** Owner decisions on the v2 proposals, business model, plays, Asset Studio, architecture and plan.
 
-### Implementation checkpoint — 15 October 2026 continuation
+### Implementation checkpoint — 16 October 2026 local continuation
 
-The owner's later unattended-run instruction authorizes project-only Azure deployment and inference. Repository pushes and live outreach remain outside that authorization.
+The 15 October Azure deployment remains unchanged. The 16 October unattended run covers local implementation, inference, output inspection and focused commits. No new deployment, repository push or live outreach was performed. This checkpoint is partial PRD progress, not a completed release.
 
 | Requirements | Implemented behavior | Remaining acceptance work |
 | --- | --- | --- |
-| GAP-01 | Re-import reports added/updated/unchanged outcomes and invalidates stale reviews | File version history UI |
+| GAP-01 | Filename revision history, row added/changed/unchanged counts, field differences, pagination and previous-version links; stale reviews invalidate | Large-file performance remains bounded to the existing 1,000-row import limit |
 | GAP-02 | Near-duplicate import holds, workspace review, atomic exclusion and sequence cancellation | CRM field-merge preview |
 | GAP-03/04/14 | Buckets/rationale/owner/segment controls, angle/register drafting, personal event-claim checks at approval and queue boundaries | Partner play P17 is still later scope |
 | GAP-06 | Visible launch checklist; queue-time holds remain authoritative | A note never bypasses suppression or consent gates |
 | GAP-07 | Event scorecard and asset/holdout counts; confirmed call outcomes sync to CRM | LinkedIn connect/accepted telemetry and general scorecard CRM writeback |
 | GAP-09/10 | Consent-managed reference library, reference rotation and visible evidence-based draft confidence | Native reviewer calibration of confidence |
 | GAP-11 | Branded SDR kit PDF from current workspace context | Automatic delivery on member joining |
-| GAP-12 | Account discovery capture and segment pain/maturity aggregates | Bilingual interview guide/questionnaire generation |
+| GAP-12 | Discovery capture, segment aggregates and role-specific EN/AR interview guides with preview and PDF export | Guide is an HR-focused reviewed-context template; native Arabic review remains open |
 | GAP-13 | Manual member assignment; opt-in balanced import distribution with per-member contact caps | Contact caps currently apply to automatic import assignment |
+| GAP-08 | EN/AR voice notes propose editable outcomes, summaries and delays using workspace-local dates; manual fallback and durable opt-out cancellation | Recorded delay is not an automatically scheduled reminder; failed CRM sync needs attention |
+| DES-02 | Saved-account research brief JSON and EN/AR PDF layouts; facts, hypotheses, unknowns and original citations remain separate | Original source text is preserved rather than AI-translated |
+| STU-07 | Approved A4 PDF and PNG with source-change guards, cached isolated rendering and download feedback | Letter option and PPTX remain open |
+| PLAY-03 | Persisted schedules produce due step reviews, with fresh scope/cost approval and one run identity per occurrence | Full automatic paid play chains are not implemented |
 
 These are implementation states, not claims of external-provider activation or full PRD completion. See [validation](../VALIDATION.md) for executed checks and limitations.

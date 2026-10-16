@@ -1,4 +1,4 @@
-## Active — two-hour output quality and PRD continuation (16 October 2026)
+## Completed — two-hour output quality and PRD continuation (16 October 2026)
 
 Owner instruction: work unattended until scheduled laptop shutdown in two hours; research prompt engineering, inspect outputs, adjust prompts and implement useful remaining features. Start 23:12 UTC; target wrap-up 00:55 UTC (shutdown margin).
 Goal: improve measured assistant/draft output quality and close locally verifiable PRD gaps.
@@ -11,7 +11,10 @@ Stop: no push, deployment, real outreach, new cloud infrastructure or changes to
 - [x] Expose import history and per-file row outcomes: filename versions, added/changed/unchanged counts, field diffs, legacy entries, pagination and tenant isolation. Four service tests and both continuation browser flows pass; additive migration applied locally.
 - [x] Add recurring play reviews: persisted schedules, due review queue, fresh human cost review, one execution key per occurrence, pause/resume/dismiss, role revocation and restart catch-up. Five service checks and all three continuation browser scenarios pass. Scheduled work pauses for cost approval; it does not automatically run paid steps.
 - [x] Add approved PNG export with source-change guards, content-addressed cache, bounded/coalesced rendering and download feedback. Two PNG service tests pass; all 53 backend tests and all 10 browser scenarios pass on this checkpoint.
-- [ ] Complete final static/backend/browser/live checks, inspect outputs, update PRD/status and commit.
+- [x] Evaluate 12 unseen non-HR drafting cases: 12/12 automated checks pass. Translate whole Arabic assets, require original source links, reject new visible numeric claims, and record prompt/model versions on runs. Real Arabic output and adversarial invented-results edit inspected.
+- [x] Improve call logging: workspace-local dates, versioned classification prompt, editable summary/delay, manual no-AI fallback and stale-suggestion protection. Confirmed opt-outs persist and cancel active sequences before CRM calls; CRM failure remains visible. Backend checks pass; live classification 9/12 baseline → 12/12 revised prompt on synthetic cases.
+- [x] Add a bilingual account research brief export (DES-02): dated reviewed facts, hypotheses and unknowns separated, original wording preserved, safe PDFs and unsaved-edit holds. Targeted tests and browser checks pass.
+- [x] Final checks: typecheck, 67 backend tests, 12 browser scenarios, HTTP permissions and engine isolation pass. Fresh live chat/voice and EN/AR saved drafts pass; Arabic assets/PDFs and EN desktop/AR phone captures inspected. PRD/status/research/runbook updated; final diff/secret/link review and focused commits complete. Development processes stopped; restart instructions saved.
 
 Decisions: prioritize working behavior and factual output over cosmetic refinement. Provider sandbox activation stays blocked by missing external accounts. Native Arabic acceptance remains human work.
 
