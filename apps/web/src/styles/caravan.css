@@ -1483,3 +1483,11 @@
 [dir="rtl"] .disclosure[open] > summary::before {
   transform: rotate(-90deg);
 }
+/* Long thread titles must never scroll the sidebar sideways. */
+.sidebar,
+.recents {
+  overflow-x: clip;
+}
+.recents li {
+  min-width: 0;
+}
