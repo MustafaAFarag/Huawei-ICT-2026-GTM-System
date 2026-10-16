@@ -12,6 +12,7 @@ export const metadata: Metadata = {
   title: "Revenue Workspace",
   description:
     "Prepare and review outreach with ready-made plays, cited research and branded assets.",
+  icons: { icon: "/favicon.svg" },
 };
 export const viewport: Viewport = {
   themeColor: [
