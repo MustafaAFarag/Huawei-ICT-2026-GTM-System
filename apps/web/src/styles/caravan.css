@@ -1491,3 +1491,13 @@
 .recents li {
   min-width: 0;
 }
+/* Native dropdown lists: Chromium on Linux draws them white unless options carry colours,
+   which left light text on a white list (workspace picker, filters). */
+select {
+  color-scheme: inherit;
+}
+select option,
+select optgroup {
+  background-color: var(--surface-2);
+  color: var(--text);
+}
