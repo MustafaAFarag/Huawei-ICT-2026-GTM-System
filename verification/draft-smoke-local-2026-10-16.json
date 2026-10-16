@@ -1,0 +1,122 @@
+{
+  "date": "2026-10-16T00:14:44.389Z",
+  "baseURL": "http://localhost:3100",
+  "workspace": "Qimam People",
+  "sequenceCountUnchanged": true,
+  "results": [
+    {
+      "language": "en",
+      "runId": "e430a550-c3c2-439e-8edc-69ccb76a0241",
+      "draftId": "6efd6c96-2bc8-41d7-a531-055aefd477c6",
+      "company": "Kibesh Finance",
+      "state": "succeeded",
+      "seconds": 4.179,
+      "estimatedCredits": 4,
+      "actualCredits": 4,
+      "approvedVersion": null,
+      "configuration": {
+        "model": "gpt-5-4-mini",
+        "prompts": {
+          "drafting": "2026-10-16.3+82a0fd4b",
+          "language": "2026-10-16.3+ddcf64e1"
+        }
+      },
+      "approvedSources": [
+        {
+          "id": "9925034f-1b69-475a-842b-e5e3ce08cf68",
+          "url": "https://kibesh-finance.example/careers",
+          "date": "2026-09-25T00:00:00.000Z",
+          "kind": "fact",
+          "claim": "Kibesh Finance lists 4 open roles on its careers page, including an operations manager.",
+          "source": "Synthetic careers page",
+          "approved": true
+        }
+      ],
+      "touches": [
+        {
+          "day": 0,
+          "body": "Talal, I noticed Kibesh Finance lists 4 open roles on its careers page, including an operations manager. If your team is handling hiring plus payroll and onboarding in-house, an outsourced HR operations desk in Cairo could take on that repeatable work so the people team can stay focused on hiring. Is this relevant to how you want to run operations right now?\nReply stop to opt out.",
+          "channel": "email",
+          "subject": "A question about Kibesh Finance hiring ops",
+          "evidenceIds": [
+            "9925034f-1b69-475a-842b-e5e3ce08cf68"
+          ]
+        },
+        {
+          "day": 3,
+          "body": "Talal, I saw Kibesh Finance has 4 open roles, including an operations manager. If repeatable HR admin and payroll work is still internal, would an outsourced HR operations desk in Cairo be relevant for you?",
+          "channel": "linkedin",
+          "evidenceIds": [
+            "9925034f-1b69-475a-842b-e5e3ce08cf68"
+          ]
+        },
+        {
+          "day": 7,
+          "body": "Before calling: check the recorded communication basis and permitted hours. Do not call without a valid basis or after an opt-out.\n\nHi Talal, I saw Kibesh Finance has 4 open roles on the careers page, including an operations manager. Would it be relevant to explore an outsourced HR operations desk in Cairo for payroll, onboarding, and HR admin?",
+          "channel": "call",
+          "evidenceIds": [
+            "9925034f-1b69-475a-842b-e5e3ce08cf68"
+          ]
+        }
+      ],
+      "checks": []
+    },
+    {
+      "language": "ar-EG",
+      "runId": "0ab930fe-a082-46cb-889a-b65895987662",
+      "draftId": "ef29d477-84f6-4567-bc04-7149099116f6",
+      "company": "Kibesh Finance",
+      "state": "succeeded",
+      "seconds": 3.128,
+      "estimatedCredits": 4,
+      "actualCredits": 4,
+      "approvedVersion": null,
+      "configuration": {
+        "model": "gpt-5-4-mini",
+        "prompts": {
+          "drafting": "2026-10-16.3+82a0fd4b",
+          "language": "2026-10-16.3+ddcf64e1"
+        }
+      },
+      "approvedSources": [
+        {
+          "id": "9925034f-1b69-475a-842b-e5e3ce08cf68",
+          "url": "https://kibesh-finance.example/careers",
+          "date": "2026-09-25T00:00:00.000Z",
+          "kind": "fact",
+          "claim": "Kibesh Finance lists 4 open roles on its careers page, including an operations manager.",
+          "source": "Synthetic careers page",
+          "approved": true
+        }
+      ],
+      "touches": [
+        {
+          "day": 0,
+          "body": "أهلًا Talal،\n\nشايف إن Kibesh Finance عندها 4 وظائف شاغرة على صفحة الوظائف، ومنها مدير عمليات. على الأساس ده، حبيت أسأل إذا كان عندكم مجال تفويض شغل شؤون الموظفين المتكرر زي الرواتب وتهيئة الموظفين الجدد والإدارة الإدارية لفريق في القاهرة، بحيث فريقكم يركز أكتر على التوظيف.\n\nهل ده شيء مناسب ليكم؟\n\nرد بكلمة توقف لو مش حابب تواصل تاني.",
+          "channel": "email",
+          "subject": "هل إدارة شؤون الموظفين عندكم مناسبة للتفويض؟",
+          "evidenceIds": [
+            "9925034f-1b69-475a-842b-e5e3ce08cf68"
+          ]
+        },
+        {
+          "day": 3,
+          "body": "أهلًا Talal، شفت إن Kibesh Finance عندها 4 وظائف شاغرة، ومنها مدير عمليات. هل تفويض شغل شؤون الموظفين المتكرر زي الرواتب وتهيئة الموظفين الجدد لفريق في القاهرة يكون مناسب ليكم؟",
+          "channel": "linkedin",
+          "evidenceIds": [
+            "9925034f-1b69-475a-842b-e5e3ce08cf68"
+          ]
+        },
+        {
+          "day": 7,
+          "body": "قبل الاتصال: اتأكد من الأساس المسجّل للتواصل ومن الوقت المسموح ما تتصلش لو مفيش أساس مناسب أو لو الشخص طلب وقف التواصل.\n\nأهلًا Talal، معاك رسالة قصيرة بخصوص Kibesh Finance. شفت إن عندكم 4 وظائف شاغرة، ومنها مدير عمليات، فحبيت أسأل: هل تفويض شغل شؤون الموظفين المتكرر زي الرواتب وتهيئة الموظفين الجدد ليكم يكون مناسب؟",
+          "channel": "call",
+          "evidenceIds": [
+            "9925034f-1b69-475a-842b-e5e3ce08cf68"
+          ]
+        }
+      ],
+      "checks": []
+    }
+  ]
+}

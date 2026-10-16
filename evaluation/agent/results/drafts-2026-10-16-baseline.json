@@ -1,20 +1,21 @@
 {
   "summary": {
-    "checkedAt": "2026-10-15T23:22:13.292Z",
+    "checkedAt": "2026-10-16T00:19:05.403Z",
     "label": "baseline",
+    "suite": "development-hr",
     "model": "gpt-5-4-mini",
     "prompts": {
       "drafting": "2026-10-16.1+9cbd9ab7",
       "language": "2026-10-15.2+e06cb695"
     },
-    "criteriaVersion": "2026-10-16.3",
+    "criteriaVersion": "2026-10-16.4",
     "regraded": true,
     "cases": 12,
     "passed": 4,
     "judgeMeans": {
-      "grounding": 2.92,
-      "relevance": 3.25,
-      "language": 3
+      "grounding": 3.17,
+      "relevance": 3.33,
+      "language": 2.75
     },
     "limits": "Synthetic cases; same-model judge. Language score capped at 1 for entirely English Arabic-channel bodies; raw judge score retained. Deterministic checks also required. No native Arabic acceptance or campaign effectiveness claim."
   },
@@ -22,14 +23,14 @@
     {
       "id": "hiring-leader-en",
       "language": "en",
-      "ms": 1862,
+      "ms": 1577,
       "pass": true,
       "failures": [],
       "review": {
-        "grounding": 4,
+        "grounding": 5,
         "relevance": 4,
         "language": 5,
-        "reason": "Uses the approved fact only: Lumaro Pay has HR hiring, including payroll. The offer matches the approved capability and the ask is low-pressure. Slightly generic wording like \"teams like yours\" and \"take work off your team\" is still a bit assumptive, but it does not invent specific pain or permission. Language is natural English and preserves names.",
+        "reason": "Uses only the approved fact that Lumaro Pay is hiring in HR, including payroll, and frames the offer as an outsourced HR operations desk without inventing results or relationships. Relevance is solid but still somewhat generic and assumes the hiring implies need, so the ask could be a bit more specific. Language is natural and consistent in English, with names preserved.",
         "rawJudgeLanguage": 5
       },
       "approvedFact": "Lumaro Pay lists three HR vacancies, including a payroll specialist.",
@@ -64,14 +65,14 @@
     {
       "id": "event-founder-en",
       "language": "en",
-      "ms": 1917,
+      "ms": 1778,
       "pass": true,
       "failures": [],
       "review": {
-        "grounding": 1,
-        "relevance": 2,
+        "grounding": 2,
+        "relevance": 3,
         "language": 5,
-        "reason": "Grounding is very weak: it claims shared customers without evidence, implies relevance to Huda’s team without a specific approved need, and turns an exhibitor listing into a soft proof of interest/permission. Relevance is only partial because the offer matches the approved capability, but the copy still uses generic sales framing and a broad ask with no concrete connection beyond the event listing. Language is fine in English with names preserved.",
+        "reason": "Only solid fact is the event listing; the copy turns that into repeated outreach relevance without support for shared customers or any prior relationship. The offer itself is approved, but phrases like “for teams like Lumaro Pay” and “building for the same customers” are unsupported. Language is natural English and names are preserved.",
         "rawJudgeLanguage": 5
       },
       "approvedFact": "Lumaro Pay was listed as a company exhibitor at the Cairo Business Forum on 2 October 2026.",
@@ -106,14 +107,14 @@
     {
       "id": "sparse-finance-en",
       "language": "en",
-      "ms": 1824,
+      "ms": 2045,
       "pass": true,
       "failures": [],
       "review": {
         "grounding": 4,
         "relevance": 4,
         "language": 5,
-        "reason": "Grounded in the approved fact about Lumaro Pay’s public payment settlement service and the approved offer. It avoids claiming a personal relationship or shared customers, and it does not invent results. Relevance is decent, though the link from payment settlement to outsourced HR operations is a bit loose and the phrasing is still somewhat salesy. Language is natural English with names preserved.",
+        "reason": "Uses only the approved fact that Lumaro Pay publicly describes payment settlement and the approved offer. It avoids claiming a personal relationship or prior permission. Relevance is fairly good, but the benefit line (“finance can stay focused on the core work”) is a mild unsupported outcome claim, and the ask is still somewhat salesy. Language is natural English and preserves names correctly.",
         "rawJudgeLanguage": 5
       },
       "approvedFact": "Lumaro Pay's public website describes its payment settlement service.",
@@ -148,9 +149,10 @@
     {
       "id": "hiring-leader-ar-EG",
       "language": "ar-EG",
-      "ms": 2047,
+      "ms": 2028,
       "pass": false,
       "failures": [
+        "The generated draft added an unsupported number. Review the sources and retry.",
         "untranslated English business terms in Arabic",
         "unfilled sender placeholder",
         "placeholder"
@@ -159,7 +161,7 @@
         "grounding": 4,
         "relevance": 4,
         "language": 4,
-        "reason": "النسخة مبنية على حقيقة واحدة فقط: وجود 3 وظائف HR منها payroll specialist، من غير اختراع اجتماع سابق أو إذن تواصل. الربط بالعرض مقبول لأنه يذكر خدمة تشغيل payroll وemployee onboarding كما هي. لكن الصياغة ما زالت تميل لتعميم غير موثق مثل 'فريقكم' و'ممكن نكون مناسبين' بدون سؤال أكثر احتياجًا، وفيها خليط عربي/إنجليزي ومصطلحات HR/payroll/employee onboarding كان الأفضل تعريبها بالكامل في العربية.",
+        "reason": "الربط مبني على fact واحد واضح: وجود 3 وظائف HR ومنهم payroll specialist، والعرض يطابق capability معتمدة. لكن فيه افتراضات تسويقية خفيفة مثل الإيحاء بأن الفريق يحتاج المساعدة أو أنه مناسب لهم بدون دليل مباشر، ومعظم الصياغة جيدة باللهجة المصرية مع بقاء بعض المصطلحات الإنجليزية مثل payroll وemployee onboarding.",
         "rawJudgeLanguage": 4
       },
       "approvedFact": "Lumaro Pay lists three HR vacancies, including a payroll specialist.",
@@ -194,7 +196,7 @@
     {
       "id": "event-founder-ar-EG",
       "language": "ar-EG",
-      "ms": 1986,
+      "ms": 2034,
       "pass": false,
       "failures": [
         "one or more Arabic touches are entirely English",
@@ -204,8 +206,8 @@
         "grounding": 1,
         "relevance": 2,
         "language": 1,
-        "reason": "Uses the exhibitor fact correctly, but adds unsupported claims like “we are both building for the same customers,” assumes a connection between the event listing and Huda personally, and pushes a meeting ask without enough basis. The offer itself is relevant, but the copy stays generic and doesn’t show a concrete need. Arabic is natural and names are preserved.",
-        "rawJudgeLanguage": 5
+        "reason": "Relies on unsupported claims like “we are both building for the same customers” and implies shared context/fit without evidence. The approved fact only supports that Lumaro Pay was an exhibitor, not a personal relationship or permission to contact. The offer is relevant but the copy is still generic and a bit salesy; Arabic is present, but some HR terms are left in English and the wording feels mixed.",
+        "rawJudgeLanguage": 3
       },
       "approvedFact": "Lumaro Pay was listed as a company exhibitor at the Cairo Business Forum on 2 October 2026.",
       "touches": [
@@ -239,9 +241,10 @@
     {
       "id": "sparse-finance-ar-EG",
       "language": "ar-EG",
-      "ms": 2096,
+      "ms": 1474,
       "pass": false,
       "failures": [
+        "The generated draft added an unsupported number. Review the sources and retry.",
         "one or more Arabic touches are entirely English",
         "untranslated English business terms in Arabic"
       ],
@@ -249,8 +252,8 @@
         "grounding": 4,
         "relevance": 4,
         "language": 1,
-        "reason": "يستند إلى حقيقة عامة واحدة فقط عن Lumaro Pay ويعرض العرض الموافق عليه بدون اختلاق عملاء أو لقاءات سابقة. لكن فيه افتراض ضمني إن payment settlement يفتح باب لاحتياج HR، وهذا محتاج صياغة أهدأ. اللغة العربية المصرية مفهومة إجمالًا، مع بعض مصطلحات إنجليزية غير مترجمة مثل payroll وemployee onboarding وservice وoutsourced HR operations desk، ووجود سطر إنجليزي كامل في مكالمة الـcall يضعف الاتساق.",
-        "rawJudgeLanguage": 4
+        "reason": "Grounding is mostly solid: it only cites the approved public fact about Lumaro Pay’s payment settlement service and the approved offer. Relevance is decent and the ask is low-pressure, but it still assumes payroll/onboarding outsourcing is relevant to a finance director with no stated HR pain. Language is not fully natural for Arabic business copy: it keeps several English terms that should be translated (مثل service, payment settlement, outsourced HR operations desk, payroll, employee onboard​",
+        "rawJudgeLanguage": 2
       },
       "approvedFact": "Lumaro Pay's public website describes its payment settlement service.",
       "touches": [
@@ -284,7 +287,7 @@
     {
       "id": "hiring-leader-ar-Gulf",
       "language": "ar-Gulf",
-      "ms": 1881,
+      "ms": 2313,
       "pass": false,
       "failures": [
         "untranslated English business terms in Arabic",
@@ -294,9 +297,9 @@
       "review": {
         "grounding": 2,
         "relevance": 3,
-        "language": 2,
-        "reason": "النسخة تستند فقط إلى حقيقة توظيف HR لدى Lumaro Pay، لكن فيها تعميم غير مبرر مثل 'لفِرق مثل فريقكم' و'خصوصًا مع وجود أكثر من إشارة توظيف' كأنه تشخيص لحاجة داخلية. لا توجد إساءة كبيرة في العرض نفسه لأنه يطابق capability المعتمد، لكن الصياغة ما زالت تسوق بثقة أكثر من اللازم. اللغة فيها خلط واضح بين العربية والإنجليزية في body مثل payroll وemployee onboarding وHR operations، وهذا غير مناسب لطلب العربية الخليجية؛ يجب ترجمتها، مع بقاء اسم الشركة والشخص كما هو. أيضاً 'رد بكلمة توقف…' و'basis التواصل'/ش",
-        "rawJudgeLanguage": 2
+        "language": 1,
+        "reason": "النسخة تعتمد على معلومة واحدة فقط (وجود 3 وظائف HR) لكن تبني عليها استنتاجات غير مثبتة مثل أن لديكم عبء أو حاجة واضحة في payroll/onboarding. العرض نفسه مناسب، لكن الصياغة فيها افتراضات وتقديم عام ومتكرر عبر القنوات. اللغة ليست عربية خالصة: body يحتوي كلمات إنجليزية مثل payroll وemployee onboarding وHR operations، وهذه يجب ترجمتها.",
+        "rawJudgeLanguage": 1
       },
       "approvedFact": "Lumaro Pay lists three HR vacancies, including a payroll specialist.",
       "touches": [
@@ -330,18 +333,18 @@
     {
       "id": "event-founder-ar-Gulf",
       "language": "ar-Gulf",
-      "ms": 1976,
+      "ms": 1974,
       "pass": false,
       "failures": [
         "one or more Arabic touches are entirely English",
         "untranslated English business terms in Arabic"
       ],
       "review": {
-        "grounding": 1,
-        "relevance": 2,
+        "grounding": 2,
+        "relevance": 3,
         "language": 1,
-        "reason": "Uses the exhibitor fact correctly, but invents ‘same customers’ and implies fit for ‘teams like yours’ without evidence. The ask is fairly low-pressure, yet the copy is still generic sales phrasing and the call script includes an odd meta line. Language is mostly Arabic-free English; since the requested dialect is Arabic Gulf, this is weak, and Arabic terms like payroll/onboarding were not translated.",
-        "rawJudgeLanguage": 2
+        "reason": "Uses the approved exhibitor fact and the approved HR ops offer, but adds unsupported claims like “we are both building for the same customers” and “for teams like yours.” The ask is fairly low-pressure, though still a bit salesy and generic. Arabic is mostly fine, but the messages are written in English rather than Gulf Arabic, and the call script includes an odd English compliance line.",
+        "rawJudgeLanguage": 4
       },
       "approvedFact": "Lumaro Pay was listed as a company exhibitor at the Cairo Business Forum on 2 October 2026.",
       "touches": [
@@ -375,14 +378,14 @@
     {
       "id": "sparse-finance-ar-Gulf",
       "language": "ar-Gulf",
-      "ms": 1552,
+      "ms": 1604,
       "pass": true,
       "failures": [],
       "review": {
         "grounding": 4,
         "relevance": 4,
         "language": 3,
-        "reason": "Grounding is mostly solid: it only uses the approved fact about Lumaro Pay’s public site and the approved HR operations offer, without inventing a meeting or permission. Relevance is good because it makes a concrete connection to finance/payments and asks a low-pressure question, though it still assumes HR outsourcing may be relevant without evidence of a pain point. Language is natural Gulf Arabic overall, but it mixes English names/terms like Huda and Lumaro Pay, and the phrasing is slightly L",
+        "reason": "الربط بالمعلومة المسموح بها موجود: ذُكر أن موقع Lumaro Pay يركز على تسوية المدفوعات، وهذا يدعم فقط الإشارة العامة للسياق. لكن الرسالة ما زالت تفترض حاجة محتملة لتشغيل الموارد البشرية الخارجي بدون دليل مباشر على ألم محدد أو موافقة سابقة. اللغة مفهومة وباللهجة الخليجية عمومًا، لكن توجد مزج إنجليزي في الاسم Huda داخل نص عربي، وعبارة \"ردي بكلمة توقف\" جيدة، مع حاجة لصياغة أكثر سلاسة واتساقًا في العربية.",
         "rawJudgeLanguage": 3
       },
       "approvedFact": "Lumaro Pay's public website describes its payment settlement service.",
@@ -417,9 +420,10 @@
     {
       "id": "hiring-leader-ar",
       "language": "ar",
-      "ms": 2098,
+      "ms": 1778,
       "pass": false,
       "failures": [
+        "The generated draft added an unsupported number. Review the sources and retry.",
         "untranslated English business terms in Arabic",
         "unfilled sender placeholder",
         "placeholder"
@@ -427,9 +431,9 @@
       "review": {
         "grounding": 4,
         "relevance": 4,
-        "language": 5,
-        "reason": "الاعتماد على حقيقة واحدة فقط جيد: وجود 3 وظائف HR مفتوحة بما فيها payroll specialist. لا توجد ادعاءات عن عملاء مشتركين أو لقاءات أو إذن مسبق. التحية واللغة العربية مناسبتان، وأسماء Lumaro Pay وHuda محفوظة. لكن النسخة ما زالت فيها تسويق عام قليلًا مثل \"زي شركتكم\" وطلب \"نبذة قصيرة\" بدون سبب أدق، كما أن مكالمة الهاتف تتضمن صياغة حشوية مثل \"راجع أساس التواصل\" غير طبيعية. العرض نفسه مناسب ومترجم بشكل صحيح إلى payroll وemployee onboarding.",
-        "rawJudgeLanguage": 5
+        "language": 4,
+        "reason": "الاستناد جيد لأن الرسالة تعتمد على حقيقة واحدة فقط: وجود 3 وظائف HR مفتوحة في Lumaro Pay، ومنها payroll specialist. العرض مرتبط ومناسب كمقدّمة لخدمة outsourced HR operations تشمل payroll وemployee onboarding، مع طلب منخفض الضغط. اللغة عربية مفهومة وتحافظ على الأسماء، لكن هناك بعض الصياغات الإنجليزية داخل المتن مثل payroll وemployee onboarding وHR operations، والأفضل تعريبها بالكامل، كما أن عبارة 'زي شركتكم' عامة قليلًا لكنها ليست مشكلة كبيرة.",
+        "rawJudgeLanguage": 4
       },
       "approvedFact": "Lumaro Pay lists three HR vacancies, including a payroll specialist.",
       "touches": [
@@ -463,7 +467,7 @@
     {
       "id": "event-founder-ar",
       "language": "ar",
-      "ms": 2132,
+      "ms": 2026,
       "pass": false,
       "failures": [
         "one or more Arabic touches are entirely English",
@@ -473,8 +477,8 @@
         "grounding": 2,
         "relevance": 2,
         "language": 1,
-        "reason": "Uses the approved event listing correctly, but invents a shared-customer claim (“بنوا لنفس العملاء/for the same customers”) and assumes the prospect’s pain/fit. The offer is relevant, yet the outreach is still salesy and slightly pushy (“أسبوع الجاي”, stop line). Arabic is mostly natural, but it mixes stray English terms like Huda, for the same customers, payroll, employee onboarding, and HR operations desk instead of fully translating business terms.",
-        "rawJudgeLanguage": 4
+        "reason": "Uses only the exhibitor fact, but adds unsupported claims like “for the same customers” and “teams like yours,” plus implies a relationship by name. The ask is low-pressure, but it’s still generic outreach and the call note includes irrelevant meta text. Language is mostly Arabic, but the email/LinkedIn/call bodies contain stray English and untranslated business terms such as HR operations desk, payroll, and employee onboarding, which should be Arabic.",
+        "rawJudgeLanguage": 2
       },
       "approvedFact": "Lumaro Pay was listed as a company exhibitor at the Cairo Business Forum on 2 October 2026.",
       "touches": [
@@ -508,7 +512,7 @@
     {
       "id": "sparse-finance-ar",
       "language": "ar",
-      "ms": 2076,
+      "ms": 1630,
       "pass": false,
       "failures": [
         "untranslated English business terms in Arabic",
@@ -517,10 +521,10 @@
       ],
       "review": {
         "grounding": 4,
-        "relevance": 4,
-        "language": 3,
-        "reason": "الاستناد محدود لكنه موجود: يربط الرسالة بحقيقة عامة واحدة عن Lumaro Pay (payment settlement) ويعرض العرض الموافق عليه فقط (payroll وemployee onboarding). لكن لا يوجد دليل على علاقة سابقة أو إذن تواصل، كما أن الربط بين settlement وعمليات الموارد البشرية للفرق المالية يظل ضعيفًا. اللغة العربية مفهومة وطبيعية عمومًا، لكن فيها مصطلحات إنجليزية غير مترجمة مثل payment settlement وpayroll وemployee onboarding وoutsourced HR operations desk، وهذا يضعف درجة اللغة.",
-        "rawJudgeLanguage": 3
+        "relevance": 3,
+        "language": 2,
+        "reason": "الاعتماد على حقيقة واحدة فقط عن الموقع العام مقبول، ولا توجد ادعاءات واضحة عن عملاء مشتركين أو لقاء سابق. لكن الرسالة تتوسع بسرعة إلى افتراض أن الفريق المالي يحتاج خدمة موارد بشرية مُدارة، وهذا ربط غير مدعوم بما يكفي. الصياغة عربية في الغالب، لكن فيها مصطلحات إنجليزية غير مترجمة مثل payment settlement وpayroll وemployee onboarding وoutsourced HR operations desk، كما أن بدء البريد بـ«أستاذة Huda» بدل ترجمة/تعريب الاسم والشكل قد يبدو غير طبيعي.",
+        "rawJudgeLanguage": 2
       },
       "approvedFact": "Lumaro Pay's public website describes its payment settlement service.",
       "touches": [

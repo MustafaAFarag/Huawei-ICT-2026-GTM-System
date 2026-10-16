@@ -18,6 +18,7 @@ import { escapeHtml, digest } from "./policy.js";
 import { publicPage } from "./public-web.js";
 import { assetHtml, injectFonts, stripFonts } from "./asset-template.js";
 import { validateAssetContent } from "./asset-quality.js";
+import { validateDraftContent } from "./draft-quality.js";
 import { prompt } from "./agent/prompts.js";
 export { assetHtml };
 
@@ -415,6 +416,7 @@ export class Providers {
         throw new Error(
           "The generated draft failed the grounded sequence check. Review the sources and retry.",
         );
+      validateDraftContent(result.touches as Touch[],snapshot,facts,offer);
       const callerNote =
         language === "ar-EG"
           ? "قبل الاتصال: اتأكد من الأساس المسجّل للتواصل ومن الوقت المسموح ما تتصلش لو مفيش أساس مناسب أو لو الشخص طلب وقف التواصل."

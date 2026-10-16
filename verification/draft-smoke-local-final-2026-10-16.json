@@ -1,0 +1,122 @@
+{
+  "date": "2026-10-16T00:19:08.645Z",
+  "baseURL": "http://localhost:3100",
+  "workspace": "Qimam People",
+  "sequenceCountUnchanged": true,
+  "results": [
+    {
+      "language": "en",
+      "runId": "53f419c2-a575-47e1-b45b-d5e43ccbf121",
+      "draftId": "b952bcf5-51c1-464e-9a9e-f59422437395",
+      "company": "Kibesh Finance",
+      "state": "succeeded",
+      "seconds": 5.212,
+      "estimatedCredits": 4,
+      "actualCredits": 4,
+      "approvedVersion": null,
+      "configuration": {
+        "model": "gpt-5-4-mini",
+        "prompts": {
+          "drafting": "2026-10-16.5+c81bd3d6",
+          "language": "2026-10-16.3+ddcf64e1"
+        }
+      },
+      "approvedSources": [
+        {
+          "id": "9925034f-1b69-475a-842b-e5e3ce08cf68",
+          "url": "https://kibesh-finance.example/careers",
+          "date": "2026-09-25T00:00:00.000Z",
+          "kind": "fact",
+          "claim": "Kibesh Finance lists 4 open roles on its careers page, including an operations manager.",
+          "source": "Synthetic careers page",
+          "approved": true
+        }
+      ],
+      "touches": [
+        {
+          "day": 0,
+          "body": "Hi Talal,\n\nI noticed Kibesh Finance currently lists 4 open roles on its careers page, including an operations manager. We run an outsourced HR operations desk in Cairo that handles payroll, onboarding, and HR admin.\n\nWould it be relevant to explore whether that kind of support could take repeat HR work off your team?\n\nReply stop to opt out.",
+          "channel": "email",
+          "subject": "Kibesh Finance hiring ops support",
+          "evidenceIds": [
+            "9925034f-1b69-475a-842b-e5e3ce08cf68"
+          ]
+        },
+        {
+          "day": 3,
+          "body": "Hi Talal, I saw Kibesh Finance has 4 open roles listed, including an operations manager. We support payroll, onboarding, and HR admin from Cairo. Would that be relevant for you?",
+          "channel": "linkedin",
+          "evidenceIds": [
+            "9925034f-1b69-475a-842b-e5e3ce08cf68"
+          ]
+        },
+        {
+          "day": 7,
+          "body": "Before calling: check the recorded communication basis and permitted hours. Do not call without a valid basis or after an opt-out.\n\nHi Talal, this is about Kibesh Finance’s open roles list, including the operations manager role. We support payroll, onboarding, and HR admin from Cairo. Would that be relevant for you?",
+          "channel": "call",
+          "evidenceIds": [
+            "9925034f-1b69-475a-842b-e5e3ce08cf68"
+          ]
+        }
+      ],
+      "checks": []
+    },
+    {
+      "language": "ar-EG",
+      "runId": "ad96e5c8-b3df-4e82-a614-7b05ded3bec5",
+      "draftId": "0c762183-579e-4bf9-a667-4d9d732866f7",
+      "company": "Kibesh Finance",
+      "state": "succeeded",
+      "seconds": 5.189,
+      "estimatedCredits": 4,
+      "actualCredits": 4,
+      "approvedVersion": null,
+      "configuration": {
+        "model": "gpt-5-4-mini",
+        "prompts": {
+          "drafting": "2026-10-16.5+c81bd3d6",
+          "language": "2026-10-16.3+ddcf64e1"
+        }
+      },
+      "approvedSources": [
+        {
+          "id": "9925034f-1b69-475a-842b-e5e3ce08cf68",
+          "url": "https://kibesh-finance.example/careers",
+          "date": "2026-09-25T00:00:00.000Z",
+          "kind": "fact",
+          "claim": "Kibesh Finance lists 4 open roles on its careers page, including an operations manager.",
+          "source": "Synthetic careers page",
+          "approved": true
+        }
+      ],
+      "touches": [
+        {
+          "day": 0,
+          "body": "أهلًا Talal،\n\nشايف إن Kibesh Finance عندها 4 وظائف شاغرة على صفحة الوظائف، ومن ضمنها مدير عمليات. على الأساس ده، حبيت أسأل هل يكون مناسب نخفّف عليكم أعمال الموارد البشرية المتكررة زي الرواتب، تهيئة الموظفين الجدد، وأعمال الموارد البشرية الإدارية عن طريق خدمة خارجية في القاهرة، بحيث يفضل فريقكم مركز أكتر على التوظيف؟\n\nهل ده شيء له صلة عندكم؟\n\nلو مش حابين نتابع ابعتوا كلمة توقف.",
+          "channel": "email",
+          "subject": "Talal، بخصوص أدوار التشغيل المفتوحة",
+          "evidenceIds": [
+            "9925034f-1b69-475a-842b-e5e3ce08cf68"
+          ]
+        },
+        {
+          "day": 3,
+          "body": "أهلًا Talal، شفت إن عندكم 4 وظائف شاغرة على صفحة Kibesh Finance، ومن ضمنها مدير عمليات. هل يكون مناسب أشارككم فكرة خدمة خارجية لتشغيل الرواتب وتهيئة الموظفين الجدد وأعمال الموارد البشرية الإدارية؟",
+          "channel": "linkedin",
+          "evidenceIds": [
+            "9925034f-1b69-475a-842b-e5e3ce08cf68"
+          ]
+        },
+        {
+          "day": 7,
+          "body": "قبل الاتصال: اتأكد من الأساس المسجّل للتواصل ومن الوقت المسموح ما تتصلش لو مفيش أساس مناسب أو لو الشخص طلب وقف التواصل.\n\nأهلًا Talal، معاك بخصوص صفحة الوظائف عند Kibesh Finance، لفت نظري إن عندكم 4 وظائف شاغرة ومن ضمنها مدير عمليات. هل يكون مناسب عندكم نرتب أعمال الرواتب وتهيئة الموظفين الجدد وأعمال الموارد البشرية الإدارية عن طريق خدمة خارجية في القاهرة؟",
+          "channel": "call",
+          "evidenceIds": [
+            "9925034f-1b69-475a-842b-e5e3ce08cf68"
+          ]
+        }
+      ],
+      "checks": []
+    }
+  ]
+}

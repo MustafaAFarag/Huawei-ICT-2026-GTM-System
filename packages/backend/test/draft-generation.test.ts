@@ -32,7 +32,7 @@ const valid = () => [
     channel: "email",
     day: 0,
     subject: "A payroll question",
-    body: "A question about the listed role. Is outside support relevant? Reply stop to opt out.",
+    body: "Hi Huda. A question about the listed role. Is outside support relevant? Reply stop to opt out.",
     evidenceIds: ["reviewed"],
   },
   {
@@ -105,5 +105,16 @@ describe("live draft publication contract", () => {
     await expect(draft(touches, "ar-EG")).rejects.toThrow(
       "grounded sequence check",
     );
+  });
+  it("rejects a renamed recipient or invented numeric result", async () => {
+    const renamed = valid();
+    renamed[0]!.body = renamed[0]!.body.replace("Huda", "Hala");
+    await expect(draft(renamed)).rejects.toThrow("first name");
+    const invented = valid();
+    invented[0]!.body += " We saved 60% for 50 clients.";
+    await expect(draft(invented)).rejects.toThrow("unsupported number");
+    const arabicNumber = valid();
+    arabicNumber[0]!.body += " حققنا ٦٠٪ وفورات";
+    await expect(draft(arabicNumber)).rejects.toThrow("unsupported number");
   });
 });

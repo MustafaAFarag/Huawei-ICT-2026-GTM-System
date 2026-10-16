@@ -1,0 +1,529 @@
+{
+  "summary": {
+    "checkedAt": "2026-10-16T00:21:23.305Z",
+    "label": "heldout-v4",
+    "suite": "cross-industry-regression",
+    "model": "gpt-5-4-mini",
+    "prompts": {
+      "drafting": "2026-10-16.5+c81bd3d6",
+      "language": "2026-10-16.3+ddcf64e1"
+    },
+    "criteriaVersion": "2026-10-16.4",
+    "regraded": false,
+    "cases": 12,
+    "passed": 12,
+    "judgeMeans": {
+      "grounding": 4.25,
+      "relevance": 3.92,
+      "language": 4.67
+    },
+    "limits": "Synthetic cases; same-model judge. Language score capped at 1 for entirely English Arabic-channel bodies; raw judge score retained. Deterministic checks also required. No native Arabic acceptance or campaign effectiveness claim.",
+    "caseUse": "Initially held out, then reused to repair name and number validation; this final run is regression evidence, not an untouched holdout."
+  },
+  "results": [
+    {
+      "id": "security-cto-en",
+      "language": "en",
+      "ms": 4377,
+      "pass": true,
+      "failures": [],
+      "review": {
+        "grounding": 4,
+        "relevance": 3,
+        "language": 5,
+        "reason": "Grounded in the approved careers-page fact and the approved offer, but it assumes those vacancies mean a need for alert triage support. The ask is fairly low-pressure, though still a bit generic and benefit-lite. Language is natural English with names preserved.",
+        "rawJudgeLanguage": 5
+      },
+      "approvedFact": "Desert Cloud lists two information security analyst vacancies on its careers page.",
+      "touches": [
+        {
+          "channel": "email",
+          "day": 0,
+          "body": "Hi Huda,\n\nI noticed Desert Cloud lists two information security analyst vacancies on its careers page. We provide a managed security alert triage service that reviews incoming alerts and escalates agreed incidents.\n\nIs alert triage something you are considering support for at Desert Cloud?\n\nReply stop to opt out.",
+          "evidenceIds": [
+            "reviewed-fact"
+          ],
+          "subject": "Question on your security alert coverage"
+        },
+        {
+          "channel": "linkedin",
+          "day": 3,
+          "body": "Hi Huda, I noticed Desert Cloud currently lists two information security analyst vacancies. We provide managed security alert triage that reviews incoming alerts and escalates agreed incidents. Is that a relevant area to explore?",
+          "evidenceIds": [
+            "reviewed-fact"
+          ]
+        },
+        {
+          "channel": "call",
+          "day": 7,
+          "body": "Before calling: check the recorded communication basis and permitted hours. Do not call without a valid basis or after an opt-out.\n\nHi Huda, this is about Desert Cloud’s two information security analyst vacancies and our managed security alert triage service. Is alert triage something you are considering support for?",
+          "evidenceIds": [
+            "reviewed-fact"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "logistics-operations-en",
+      "language": "en",
+      "ms": 3589,
+      "pass": true,
+      "failures": [],
+      "review": {
+        "grounding": 5,
+        "relevance": 4,
+        "language": 5,
+        "reason": "Uses only the approved public fact and approved offer, without inventing customers, meetings, permissions, or results. The ask is low-pressure and specific to delivery exceptions. Minor weakness: it is still somewhat generic and doesn’t tie to any verified operational pain or workflow at Atlas Freight.",
+        "rawJudgeLanguage": 5
+      },
+      "approvedFact": "Atlas Freight describes same-day parcel delivery in Cairo on its public website.",
+      "touches": [
+        {
+          "channel": "email",
+          "day": 0,
+          "body": "Hi Huda,\n\nI saw Atlas Freight describes same-day parcel delivery in Cairo on its public website. I work on a delivery exception coordination service that tracks reported parcel exceptions and contacts the assigned carrier.\n\nCould this be relevant for how your team handles exceptions on same-day deliveries?\n\nReply stop to opt out.",
+          "evidenceIds": [
+            "reviewed-fact"
+          ],
+          "subject": "Same-day Cairo delivery exceptions"
+        },
+        {
+          "channel": "linkedin",
+          "day": 3,
+          "body": "Hi Huda, I noticed Atlas Freight describes same-day parcel delivery in Cairo. I work on a delivery exception coordination service that tracks reported parcel exceptions and contacts the assigned carrier. Would that be relevant for your operations team?",
+          "evidenceIds": [
+            "reviewed-fact"
+          ]
+        },
+        {
+          "channel": "call",
+          "day": 7,
+          "body": "Before calling: check the recorded communication basis and permitted hours. Do not call without a valid basis or after an opt-out.\n\nHi Huda, I’m calling because Atlas Freight describes same-day parcel delivery in Cairo on its public website. I work on a delivery exception coordination service that tracks reported parcel exceptions and contacts the assigned carrier. Would it be relevant to your team to look at how exceptions are coordinated?",
+          "evidenceIds": [
+            "reviewed-fact"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "software-founder-en",
+      "language": "en",
+      "ms": 3780,
+      "pass": true,
+      "failures": [],
+      "review": {
+        "grounding": 5,
+        "relevance": 4,
+        "language": 5,
+        "reason": "Grounded to the approved fact and approved offer with no invented relationship or results. Relevance is decent because it ties the review to the appointment calendar and keeps the ask low-pressure, though it does not explain why this prospect would need it beyond the observed page feature. Language is natural English and preserves names.",
+        "rawJudgeLanguage": 5
+      },
+      "approvedFact": "Nawa Desk's product page offers an Arabic and English appointment calendar.",
+      "touches": [
+        {
+          "channel": "email",
+          "day": 0,
+          "body": "Hi Huda,\n\nI noticed Nawa Desk’s product page offers an Arabic and English appointment calendar. We can review the site for accessibility, document the findings, and prioritize the fixes.\n\nWould that be relevant for you?\n\nReply stop to opt out.",
+          "evidenceIds": [
+            "reviewed-fact"
+          ],
+          "subject": "Accessibility review for the appointment calendar"
+        },
+        {
+          "channel": "linkedin",
+          "day": 3,
+          "body": "Hi Huda — I noticed Nawa Desk’s product page has an Arabic and English appointment calendar. We offer a website accessibility review with documented findings and prioritized fixes. Would that be relevant for you?",
+          "evidenceIds": [
+            "reviewed-fact"
+          ]
+        },
+        {
+          "channel": "call",
+          "day": 7,
+          "body": "Before calling: check the recorded communication basis and permitted hours. Do not call without a valid basis or after an opt-out.\n\nHi Huda, I’m calling because I noticed Nawa Desk’s product page offers an Arabic and English appointment calendar. Would a website accessibility review with documented findings and prioritized fixes be relevant for you?",
+          "evidenceIds": [
+            "reviewed-fact"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "security-cto-ar-EG",
+      "language": "ar-EG",
+      "ms": 4537,
+      "pass": true,
+      "failures": [],
+      "review": {
+        "grounding": 4,
+        "relevance": 4,
+        "language": 4,
+        "reason": "الربط بالحقائق واضح: فيه اعتماد فقط على صفحة الوظائف المذكورة، والعرض نفسه هو فرز التنبيهات والتصعيد. لكن الصياغة بتفترض اهتمام الفريق واحتياجهم بدون دليل مباشر، وفيها نبرة بيع بسيطة. اللغة المصرية مفهومة وطبيعية إجمالًا، مع ملاحظة إن اسم Huda ظاهر بالإنجليزية بدل العربية/التعريب المعتاد، وعبارة \"stop\" في البريد لازم تُصاغ عربيًا بالكامل.",
+        "rawJudgeLanguage": 4
+      },
+      "approvedFact": "Desert Cloud lists two information security analyst vacancies on its careers page.",
+      "touches": [
+        {
+          "channel": "email",
+          "day": 0,
+          "body": "أهلًا Huda،\n\nشفت إن Desert Cloud عندها وظيفتين شاغرين لمحللي أمن معلومات على صفحة الوظائف. لو الفريق ناوي يغطي فرز تنبيهات الأمن ومراجعة التنبيهات الواردة قبل التصعيد، هل ده شيء مناسب ليكم؟\n\nلو حابين نتابع ابعتوا كلمة توقف.",
+          "evidenceIds": [
+            "reviewed-fact"
+          ],
+          "subject": "سؤال سريع عن فرز تنبيهات الأمن"
+        },
+        {
+          "channel": "linkedin",
+          "day": 3,
+          "body": "أهلًا Huda، لاحظت إن Desert Cloud عندها وظيفتين شاغرين لمحللي أمن معلومات. بسأل لو فرز تنبيهات الأمن ومراجعة التنبيهات الواردة قبل التصعيد ممكن يكون مناسب ليكم؟",
+          "evidenceIds": [
+            "reviewed-fact"
+          ]
+        },
+        {
+          "channel": "call",
+          "day": 7,
+          "body": "قبل الاتصال: اتأكد من الأساس المسجّل للتواصل ومن الوقت المسموح ما تتصلش لو مفيش أساس مناسب أو لو الشخص طلب وقف التواصل.\n\nأهلًا Huda، لاحظت إن Desert Cloud عندها وظيفتين شاغرين لمحللي أمن معلومات. هل فرز تنبيهات الأمن ومراجعة التنبيهات الواردة قبل التصعيد شيء مناسب ليكم؟",
+          "evidenceIds": [
+            "reviewed-fact"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "logistics-operations-ar-EG",
+      "language": "ar-EG",
+      "ms": 4998,
+      "pass": true,
+      "failures": [],
+      "review": {
+        "grounding": 5,
+        "relevance": 4,
+        "language": 5,
+        "reason": "الرسائل مبنية على حقيقة عامة منشورة عن Atlas Freight وعلى عرض الخدمة نفسه بدون ادعاء معرفة داخلية أو نتائج محددة. الصياغة مرتبطة بالاستثناءات والتواصل مع الناقل المعيّن بشكل مباشر ومش ضاغطة. الملاحظة الوحيدة إن الرسالة بتسأل بصيغة عامة وممكن تبقى أقوى لو فيها سؤال محدد أو سبب أكثر دقة للتواصل، لكن اللغة المصرية الطبيعية محفوظة وأسماء الشركة والشخص سليمة.",
+        "rawJudgeLanguage": 5
+      },
+      "approvedFact": "Atlas Freight describes same-day parcel delivery in Cairo on its public website.",
+      "touches": [
+        {
+          "channel": "email",
+          "day": 0,
+          "body": "أهلًا Huda،\n\nشفتوا إن Atlas Freight بتقدم تسليم طرود في نفس اليوم في القاهرة. لو عندكم استثناءات تسليم بتتبلغ وبتحتاج متابعة مع الناقل المعيّن، إحنا بنوفر خدمة بتتبع الاستثناءات وبتتواصل مع الناقل مباشرة.\n\nهل ده ممكن يكون مناسب لفريق العمليات عندكم؟\n\nلو مش حابين نتابع ابعتوا كلمة توقف.",
+          "evidenceIds": [
+            "reviewed-fact"
+          ],
+          "subject": "تنسيق استثناءات التسليم في Atlas Freight"
+        },
+        {
+          "channel": "linkedin",
+          "day": 3,
+          "body": "أهلًا Huda، لفت نظري إن Atlas Freight بتقدم تسليم طرود في نفس اليوم في القاهرة. لو متابعة استثناءات التسليم والتواصل مع الناقل المعيّن مهمة عندكم، ممكن ده يبقى مناسب. هل تحبي نكمل الكلام؟",
+          "evidenceIds": [
+            "reviewed-fact"
+          ]
+        },
+        {
+          "channel": "call",
+          "day": 7,
+          "body": "قبل الاتصال: اتأكد من الأساس المسجّل للتواصل ومن الوقت المسموح ما تتصلش لو مفيش أساس مناسب أو لو الشخص طلب وقف التواصل.\n\nأهلًا Huda، لاحظت إن Atlas Freight بتقدم تسليم طرود في نفس اليوم في القاهرة. إحنا بنوفر خدمة بتتبع استثناءات التسليم وبتتواصل مع الناقل المعيّن. هل متابعة الاستثناءات دي عندكم حاجة مناسبة؟",
+          "evidenceIds": [
+            "reviewed-fact"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "software-founder-ar-EG",
+      "language": "ar-EG",
+      "ms": 3859,
+      "pass": true,
+      "failures": [],
+      "review": {
+        "grounding": 4,
+        "relevance": 4,
+        "language": 5,
+        "reason": "النسخة مبنية على fact واحد واضح عن صفحة المنتج وتقويم المواعيد بالعربي والإنجليزي، وتعرض offer المسموح بدون ادعاءات نتائج أو علاقات شخصية. لكنها ما زالت عامة قليلًا في ربط سبب الحاجة للمراجعة الوصولية، وطلب التفاصيل/المتابعة لطيف لكن ممكن يبقى أقل ضغطًا وأكثر تحديدًا. اللغة العربية المصرية طبيعية عمومًا، والأسماء محفوظة.",
+        "rawJudgeLanguage": 5
+      },
+      "approvedFact": "Nawa Desk's product page offers an Arabic and English appointment calendar.",
+      "touches": [
+        {
+          "channel": "email",
+          "day": 0,
+          "body": "أهلًا Huda،\n\nراجعت صفحة المنتج عند Nawa Desk، ولفت نظري إن فيها تقويم مواعيد بالعربي والإنجليزي. لو ده مهم عندكم، أقدر أعمل مراجعة وصولية للموقع مع نتائج مكتوبة وخطوات تحسين مرتبة حسب الأولوية.\n\nهل تحبي أبعتلك تفاصيل أكتر؟\n\nلو مش حابين نتابع ابعتوا كلمة توقف.",
+          "evidenceIds": [
+            "reviewed-fact"
+          ],
+          "subject": "مراجعة وصولية لصفحة المنتج"
+        },
+        {
+          "channel": "linkedin",
+          "day": 3,
+          "body": "أهلًا Huda، لاحظت إن صفحة المنتج عند Nawa Desk فيها تقويم مواعيد بالعربي والإنجليزي. لو مراجعة الوصولية للموقع مع نتائج مكتوبة وخطوات مرتبة حسب الأولوية مناسبة، أبعث تفاصيل؟",
+          "evidenceIds": [
+            "reviewed-fact"
+          ]
+        },
+        {
+          "channel": "call",
+          "day": 7,
+          "body": "قبل الاتصال: اتأكد من الأساس المسجّل للتواصل ومن الوقت المسموح ما تتصلش لو مفيش أساس مناسب أو لو الشخص طلب وقف التواصل.\n\nأهلًا Huda، أنا كنت باخد بالي من صفحة المنتج عند Nawa Desk، وفيها تقويم مواعيد بالعربي والإنجليزي. هل مراجعة وصولية للموقع مع نتائج مكتوبة وخطوات مرتبة حسب الأولوية ممكن تكون مفيدة؟",
+          "evidenceIds": [
+            "reviewed-fact"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "security-cto-ar-Gulf",
+      "language": "ar-Gulf",
+      "ms": 5997,
+      "pass": true,
+      "failures": [],
+      "review": {
+        "grounding": 3,
+        "relevance": 3,
+        "language": 4,
+        "reason": "الاستناد الوحيد هو إعلان الوظائف على صفحة careers، وهذا يثبت وجود وظائف فقط ولا يثبت احتياجًا مباشرًا أو أولوية حالية. العرض مرتبط منطقيًا بفرز تنبيهات الأمن، لكن الصياغة ما زالت عامة قليلًا وفيها افتراض ضمني أن الوظائف تعني حاجة فورية. اللغة عربية مفهومة واللهجة مناسبة إجمالًا، لكن توجد عبارات إنجليزية/مصطلحات غير معرّبة مثل 'call' في النص الوارد للمكالمة و'LinkedIn' و'CTO'، مع بعض الركاكة في الصياغة.",
+        "rawJudgeLanguage": 4
+      },
+      "approvedFact": "Desert Cloud lists two information security analyst vacancies on its careers page.",
+      "touches": [
+        {
+          "channel": "email",
+          "day": 0,
+          "body": "أهلًا Huda،\n\nشفت إن Desert Cloud مدرجة عندها وظيفتين شاغرتين لأخصائيي أمن المعلومات بتاريخ 2026-10-05. نقدّم خدمة خارجية لفرز تنبيهات الأمن، ومراجعة التنبيهات الواردة وتصعيد الحالات المتفق عليها. هل هذا مناسب لكم؟\n\nإذا ما ترغبون بمتابعة التواصل ردّوا بكلمة توقف.",
+          "evidenceIds": [
+            "reviewed-fact"
+          ],
+          "subject": "Huda، بخصوص وظائف أمن المعلومات"
+        },
+        {
+          "channel": "linkedin",
+          "day": 3,
+          "body": "أهلًا Huda، لاحظت إن Desert Cloud مدرجة عندها وظيفتين شاغرتين لأخصائيي أمن المعلومات. إذا يفيدكم، نقدّم خدمة خارجية لفرز تنبيهات الأمن ومراجعة الحالات المتفق عليها. هل هالشي مناسب لكم؟",
+          "evidenceIds": [
+            "reviewed-fact"
+          ]
+        },
+        {
+          "channel": "call",
+          "day": 7,
+          "body": "قبل الاتصال: تأكّد من أساس التواصل المسجّل والوقت المسموح لا تتصل عند غياب الأساس المناسب أو وجود طلب بإيقاف التواصل.\n\nأهلًا Huda، لاحظت إن Desert Cloud عندها وظيفتين شاغرتين لأخصائيي أمن المعلومات. هل يناسبكم نمشي في خدمة خارجية لفرز تنبيهات الأمن ومراجعة التنبيهات الواردة وتصعيد الحالات المتفق عليها؟",
+          "evidenceIds": [
+            "reviewed-fact"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "logistics-operations-ar-Gulf",
+      "language": "ar-Gulf",
+      "ms": 4080,
+      "pass": true,
+      "failures": [],
+      "review": {
+        "grounding": 4,
+        "relevance": 4,
+        "language": 4,
+        "reason": "الاعتماد على fact عام من موقع الشركة فقط، بدون ادعاء تواصل شخصي أو عملاء مشتركين أو نتائج سابقة. العرض مرتبط مباشرة بخدمة approvedOffer وبصياغة منخفضة الضغط، لكن الصلة ما زالت عامة ولم تُظهر مشكلة محددة لدى Atlas Freight. اللغة عربية مفهومة مع بعض الصياغات المتكلّفة قليلًا.",
+        "rawJudgeLanguage": 4
+      },
+      "approvedFact": "Atlas Freight describes same-day parcel delivery in Cairo on its public website.",
+      "touches": [
+        {
+          "channel": "email",
+          "day": 0,
+          "body": "أهلًا Huda،\nلاحظت إن Atlas Freight تعرض خدمة توصيل الطرود في نفس اليوم داخل القاهرة على موقعها. إذا كان من المناسب ربط هذا بنظام يتابع استثناءات التسليم المبلّغة ويتواصل مع الناقل المعيّن، فهل هذا شيء قد يفيد فريق العمليات عندكم؟\nإذا ما ترغبون بمتابعة التواصل ردّوا بكلمة توقف.",
+          "evidenceIds": [
+            "reviewed-fact"
+          ],
+          "subject": "Huda، متابعة استثناءات التوصيل"
+        },
+        {
+          "channel": "linkedin",
+          "day": 3,
+          "body": "أهلًا Huda، رجعت لك بخصوص ملاحظة Atlas Freight عن توصيل الطرود في نفس اليوم داخل القاهرة. عندنا خدمة تتابع استثناءات التسليم المبلّغة وتتواصل مع الناقل المعيّن. هل هذا له صلة عندكم؟",
+          "evidenceIds": [
+            "reviewed-fact"
+          ]
+        },
+        {
+          "channel": "call",
+          "day": 7,
+          "body": "قبل الاتصال: تأكّد من أساس التواصل المسجّل والوقت المسموح لا تتصل عند غياب الأساس المناسب أو وجود طلب بإيقاف التواصل.\n\nأهلًا Huda، أنا حبيت أرجع لملاحظة Atlas Freight عن توصيل الطرود في نفس اليوم داخل القاهرة. هل متابعة استثناءات التسليم المبلّغة والتواصل مع الناقل المعيّن تكون مفيدة عندكم؟",
+          "evidenceIds": [
+            "reviewed-fact"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "software-founder-ar-Gulf",
+      "language": "ar-Gulf",
+      "ms": 4920,
+      "pass": true,
+      "failures": [],
+      "review": {
+        "grounding": 4,
+        "relevance": 4,
+        "language": 4,
+        "reason": "الاستناد الوحيد الواضح هو وجود تقويم مواعيد بالعربي والإنجليزي في صفحة المنتج، وهذا مناسب للتمهيد. لكن الصياغة ما تزال تفترض اهتمامًا مسبقًا بدون دليل، وتحوّل ذلك إلى سؤال تسويقي مباشر. اللغة جيدة عمومًا، مع أن عبارة \"ردّوا بكلمة توقف\" و\"أولويات للإصلاح\" طبيعية، لكن الأفضل توحيد الأسلوب التجاري أكثر وتخفيف التكرار بين القنوات.",
+        "rawJudgeLanguage": 4
+      },
+      "approvedFact": "Nawa Desk's product page offers an Arabic and English appointment calendar.",
+      "touches": [
+        {
+          "channel": "email",
+          "day": 0,
+          "body": "أهلًا Huda،\n\nلاحظت إن صفحة المنتج في Nawa Desk فيها تقويم مواعيد بالعربي والإنجليزي. بما إننا نقدّم مراجعة لإمكانية الوصول مع ملاحظات موثقة وأولويات واضحة للإصلاح، حبيت أسأل إذا هذا شيء مناسب لكم؟\n\nإذا حابين، أرسل لكم ملخصًا أوليًا لما نراجعه.\n\nإذا ما ترغبون بمتابعة التواصل ردّوا بكلمة توقف.",
+          "evidenceIds": [
+            "reviewed-fact"
+          ],
+          "subject": "مراجعة إمكانية الوصول لصفحة المنتج"
+        },
+        {
+          "channel": "linkedin",
+          "day": 3,
+          "body": "أهلًا Huda، رجعت لملاحظة تقويم المواعيد العربي والإنجليزي في صفحة المنتج. عندنا مراجعة لإمكانية الوصول مع ملاحظات موثقة وأولويات للإصلاح. هل هذا مناسب لكم؟",
+          "evidenceIds": [
+            "reviewed-fact"
+          ]
+        },
+        {
+          "channel": "call",
+          "day": 7,
+          "body": "قبل الاتصال: تأكّد من أساس التواصل المسجّل والوقت المسموح لا تتصل عند غياب الأساس المناسب أو وجود طلب بإيقاف التواصل.\n\nأهلًا Huda، لاحظت إن صفحة المنتج عندكم فيها تقويم مواعيد بالعربي والإنجليزي. هل تهمكم مراجعة لإمكانية الوصول مع ملاحظات موثقة وأولويات واضحة للإصلاح؟",
+          "evidenceIds": [
+            "reviewed-fact"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "security-cto-ar",
+      "language": "ar",
+      "ms": 3899,
+      "pass": true,
+      "failures": [],
+      "review": {
+        "grounding": 4,
+        "relevance": 4,
+        "language": 5,
+        "reason": "الاستناد مقبول إلى حقيقة واحدة واضحة عن وظائف محللي أمن المعلومات، ولا توجد ادعاءات عن لقاءات أو عملاء أو نتائج. العرض نفسه يصف قدرة معتمدة فقط. ما زال الربط بين الوظائف واحتياجهم للتنبيه الأمني افتراضيًا قليلًا، وصيغة السؤال جيدة لكنها ما زالت تسويقية بعض الشيء. اللغة العربية سليمة مع بقاء الأسماء كما هي.",
+        "rawJudgeLanguage": 5
+      },
+      "approvedFact": "Desert Cloud lists two information security analyst vacancies on its careers page.",
+      "touches": [
+        {
+          "channel": "email",
+          "day": 0,
+          "body": "أهلًا Huda،\n\nاطلعت على أن Desert Cloud مدرجة لديها وظيفتان شاغرتان لمحللي أمن المعلومات على صفحة الوظائف بتاريخ 2026-10-05. بناءً على ذلك، أشارككم فكرة خدمة مُدارة لفرز تنبيهات الأمن تراجع التنبيهات الواردة وتُصعّد الحوادث المتفق عليها.\n\nهل يكون هذا مناسبًا لكم؟\n\nلإيقاف التواصل يرجى الرد بكلمة توقف.",
+          "evidenceIds": [
+            "reviewed-fact"
+          ],
+          "subject": "Huda، بخصوص فرز تنبيهات الأمن"
+        },
+        {
+          "channel": "linkedin",
+          "day": 3,
+          "body": "أهلًا Huda، رأيت أن Desert Cloud لديها وظيفتان شاغرتان لمحللي أمن المعلومات. أشارك فقط فكرة خدمة مُدارة لفرز تنبيهات الأمن وتُصعّد الحوادث المتفق عليها. هل هذا مناسب لكم؟",
+          "evidenceIds": [
+            "reviewed-fact"
+          ]
+        },
+        {
+          "channel": "call",
+          "day": 7,
+          "body": "قبل الاتصال: تحقّق من الأساس المسجّل للتواصل والوقت المسموح لا تتصل عند غياب الأساس المناسب أو وجود طلب بإيقاف التواصل.\n\nأهلًا Huda، أتواصل لأنني رأيت أن Desert Cloud لديها وظيفتان شاغرتان لمحللي أمن المعلومات. هل تفكرون في خدمة مُدارة لفرز تنبيهات الأمن وتُصعّد الحوادث المتفق عليها؟",
+          "evidenceIds": [
+            "reviewed-fact"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "logistics-operations-ar",
+      "language": "ar",
+      "ms": 3651,
+      "pass": true,
+      "failures": [],
+      "review": {
+        "grounding": 4,
+        "relevance": 4,
+        "language": 5,
+        "reason": "الاعتماد على حقيقة عامة من موقع الشركة فقط، دون ادعاء اجتماع أو عميل مشترك أو إذن مسبق. العرض مرتبط بشكل واضح بقدرة موفّرة ومناسبة نسبيًا لتسليم اليوم نفسه، مع سؤال منخفض الضغط. اللغة العربية طبيعية عمومًا، مع بقاء الأسماء كما هي.",
+        "rawJudgeLanguage": 5
+      },
+      "approvedFact": "Atlas Freight describes same-day parcel delivery in Cairo on its public website.",
+      "touches": [
+        {
+          "channel": "email",
+          "day": 0,
+          "body": "أهلًا Huda،\n\nراجعتُ أن Atlas Freight تذكر على موقعها العام تسليم الطرود في اليوم نفسه في القاهرة. بناءً على ذلك، قد يكون من المناسب النظر في خدمة تنسيق استثناءات التسليم التي تتابع الاستثناءات المبلغ عنها وتتواصل مع شركة النقل المعيّنة. هل هذا مجال له صلة بما تعملون عليه الآن؟\n\nلإيقاف التواصل يرجى الرد بكلمة توقف.",
+          "evidenceIds": [
+            "reviewed-fact"
+          ],
+          "subject": "Huda، بخصوص تسليم الطرود في اليوم نفسه"
+        },
+        {
+          "channel": "linkedin",
+          "day": 3,
+          "body": "أهلًا Huda، لاحظتُ أن Atlas Freight تذكر التسليم في اليوم نفسه داخل القاهرة. إذا كان تنسيق استثناءات التسليم مع شركة النقل المعيّنة له صلة بعملكم، يسعدني توضيح الفكرة. هل يناسبكم هذا الاتجاه؟",
+          "evidenceIds": [
+            "reviewed-fact"
+          ]
+        },
+        {
+          "channel": "call",
+          "day": 7,
+          "body": "قبل الاتصال: تحقّق من الأساس المسجّل للتواصل والوقت المسموح لا تتصل عند غياب الأساس المناسب أو وجود طلب بإيقاف التواصل.\n\nأهلًا Huda، لاحظتُ أن Atlas Freight تذكر التسليم في اليوم نفسه داخل القاهرة. هل تتابعون استثناءات التسليم بطريقة تحتاج تنسيقًا مباشرًا مع شركة النقل المعيّنة؟",
+          "evidenceIds": [
+            "reviewed-fact"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "software-founder-ar",
+      "language": "ar",
+      "ms": 3857,
+      "pass": true,
+      "failures": [],
+      "review": {
+        "grounding": 5,
+        "relevance": 5,
+        "language": 5,
+        "reason": "النسخة مبنية على حقيقة معتمدة واحدة فقط: وجود تقويم مواعيد بالعربية والإنجليزية في صفحة المنتج. لا تفترض ألمًا غير مثبت، ولا تذكر عملاء مشتركين أو لقاءات شخصية أو إذنًا مسبقًا. عرض المراجعة يطابق العرض المعتمد، والسؤال منخفض الضغط. اللغة العربية طبيعية عمومًا مع بقاء الأسماء كما هي.",
+        "rawJudgeLanguage": 5
+      },
+      "approvedFact": "Nawa Desk's product page offers an Arabic and English appointment calendar.",
+      "touches": [
+        {
+          "channel": "email",
+          "day": 0,
+          "body": "أهلًا Huda،\n\nراجعت صفحة المنتج في Nawa Desk، ولاحظت أنكم تعرضون تقويمًا للمواعيد بالعربية والإنجليزية. هذا يخليني أفكر إن مراجعة لإمكانية الوصول قد تكون مفيدة، خصوصًا لو حابين توثيق النتائج وترتيب الإصلاحات حسب الأولوية.\n\nهل يهمكم أشارككم كيف تبدو المراجعة ومخرجاتها؟\n\nلإيقاف التواصل يرجى الرد بكلمة توقف.",
+          "evidenceIds": [
+            "reviewed-fact"
+          ],
+          "subject": "مراجعة إمكانية الوصول لصفحة المنتج"
+        },
+        {
+          "channel": "linkedin",
+          "day": 3,
+          "body": "أهلًا Huda، لاحظت تقويم المواعيد بالعربية والإنجليزية في صفحة المنتج. لو مناسب، أقدر أشارك فكرة مراجعة إمكانية الوصول مع نتائج موثقة وإصلاحات مرتبة بالأولوية. هل هذا شيء له صلة عندكم؟",
+          "evidenceIds": [
+            "reviewed-fact"
+          ]
+        },
+        {
+          "channel": "call",
+          "day": 7,
+          "body": "قبل الاتصال: تحقّق من الأساس المسجّل للتواصل والوقت المسموح لا تتصل عند غياب الأساس المناسب أو وجود طلب بإيقاف التواصل.\n\nأهلًا Huda، لاحظت إن صفحة المنتج عندكم فيها تقويم مواعيد بالعربية والإنجليزية. هل تشوفين إن مراجعة إمكانية الوصول مع نتائج موثقة وإصلاحات مرتبة بالأولوية ممكن تكون مفيدة لكم؟",
+          "evidenceIds": [
+            "reviewed-fact"
+          ]
+        }
+      ]
+    }
+  ]
+}

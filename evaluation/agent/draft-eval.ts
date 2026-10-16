@@ -10,6 +10,7 @@ import {
   db,
 } from "../../packages/backend/src/index.ts";
 import { chatModel } from "../../packages/backend/src/agent/provider.ts";
+import { validateDraftContent } from "../../packages/backend/src/draft-quality.ts";
 import {
   draftChecks,
   type Evidence,
@@ -31,7 +32,7 @@ const offer =
   "An outsourced HR operations desk that runs payroll and employee onboarding.";
 const date = "2026-10-05T00:00:00.000Z";
 type DraftCase = { id: string; title: string; fact: string; kind: string; company?: string; offer?: string };
-const heldout = process.argv.includes("--heldout");
+const heldout = process.argv.includes("--heldout") || process.argv.includes("--cross-industry");
 const cases: DraftCase[] = heldout ? [
   { id: "security-cto", title: "CTO", company: "Desert Cloud", fact: "Desert Cloud lists two information security analyst vacancies on its careers page.", kind: "hiring", offer: "A managed security alert triage service that reviews incoming alerts and escalates agreed incidents." },
   { id: "logistics-operations", title: "Operations Director", company: "Atlas Freight", fact: "Atlas Freight describes same-day parcel delivery in Cairo on its public website.", kind: "sparse", offer: "A delivery exception coordination service that tracks reported parcel exceptions and contacts the assigned carrier." },
@@ -111,6 +112,8 @@ try {
                 { name: "Unconsented Secret Client", consent: false },
               ],
             });
+        try { validateDraftContent(touches,snapshot,evidence.filter(item=>item.kind==="fact"&&item.approved),approvedOffer); }
+        catch(error) { failures.push((error as Error).message); }
         if (
           touches.map((t) => `${t.channel}:${t.day}`).join(",") !==
           "email:0,linkedin:3,call:7"
@@ -225,10 +228,10 @@ try {
   const summary = {
     checkedAt: new Date().toISOString(),
     label,
-    suite: heldout ? "heldout-industries" : "development-hr",
+    suite: heldout ? "cross-industry-regression" : "development-hr",
     model: prior?.summary.model ?? chatModelId(),
     prompts: prior?.summary.prompts ?? promptVersions("drafting", "language"),
-    criteriaVersion: "2026-10-16.3",
+    criteriaVersion: "2026-10-16.4",
     regraded: Boolean(prior),
     cases: results.length,
     passed: results.filter((r) => r.pass).length,
