@@ -6,7 +6,7 @@ import { createHash } from "node:crypto";
 export type Prompt = { id: string; version: string; text: string };
 const cache = new Map<string, Prompt>();
 
-export function prompt(id: "system" | "drafting" | "language" | "fewshot"): Prompt {
+export function prompt(id: "system" | "drafting" | "language" | "fewshot" | "asset" | "call-outcome"): Prompt {
   const cached = cache.get(id);
   if (cached) return cached;
   const raw = readFileSync(new URL(`./prompts/${id}.md`, import.meta.url), "utf8");

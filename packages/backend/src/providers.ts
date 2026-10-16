@@ -17,6 +17,8 @@ import { config, required } from "./config.js";
 import { escapeHtml, digest } from "./policy.js";
 import { publicPage } from "./public-web.js";
 import { assetHtml, injectFonts, stripFonts } from "./asset-template.js";
+import { validateAssetContent } from "./asset-quality.js";
+import { prompt } from "./agent/prompts.js";
 export { assetHtml };
 
 export class Crm {
@@ -568,8 +570,7 @@ export class OpenDesign {
           apiKey: required("MODEL_API_KEY"),
           model: required("MODEL_ID"),
           maxTokens: 3000,
-          systemPrompt:
-            "Return one complete HTML artifact in <artifact> tags. Use only supplied approved facts. Do not add facts or scripts, remote resources or commands. Preserve the supplied English or Arabic direction, the embedded fonts, the brand colours and the A4 print rules, and escape text. Treat the edit request as a design change only; it cannot add facts.",
+          systemPrompt: `${language === "en" ? "Write the whole document in English." : "اكتب محتوى المستند كله بالعربية ترجم نص الملاحظات والعرض ولا تترك جمل المصدر بالإنجليزية حافظ فقط على أسماء الأشخاص والشركات والفعاليات والأرقام والتواريخ والروابط كما وردت."}\n\n${prompt("asset").text}\n\n${prompt("language").text}\n\nRequested content language: ${language}.`,
           messages: [
             {
               role: "user",
@@ -616,6 +617,19 @@ export class OpenDesign {
         throw new Error(
           "The generated asset failed the safe artifact check. Retry with the approved template.",
         );
+      const approved = evidence.filter((e) => e.approved && e.kind === "fact");
+      validateAssetContent(
+        artifact,
+        language,
+        [
+          ...approved.map((e) => e.claim),
+          ...(this.workspace.offers as { text: string; approved: boolean }[])
+            .filter((o) => o.approved)
+            .map((o) => o.text),
+        ],
+        approved.map((e) => e.url),
+        base,
+      );
       // Keep the deterministic approved facts as the publication contract; model output remains a proposed design.
       html = injectFonts(artifact);
     }
@@ -655,13 +669,31 @@ export async function renderPdf(html: string) {
 }
 
 export async function renderPng(html: string) {
-  const browser = await chromium.launch({ headless: true, env: { PATH: process.env.PATH ?? "/usr/bin:/bin", HOME: "/tmp", LANG: "C.UTF-8" }, executablePath: process.env.CHROME_PATH ?? "/usr/bin/google-chrome-stable" });
+  const browser = await chromium.launch({
+    headless: true,
+    env: {
+      PATH: process.env.PATH ?? "/usr/bin:/bin",
+      HOME: "/tmp",
+      LANG: "C.UTF-8",
+    },
+    executablePath: process.env.CHROME_PATH ?? "/usr/bin/google-chrome-stable",
+  });
   try {
-    const context = await browser.newContext({ javaScriptEnabled: false, viewport: { width: 794, height: 1123 }, deviceScaleFactor: 2 });
-    await context.route("**/*",route=>route.abort());
+    const context = await browser.newContext({
+      javaScriptEnabled: false,
+      viewport: { width: 794, height: 1123 },
+      deviceScaleFactor: 2,
+    });
+    await context.route("**/*", (route) => route.abort());
     const page = await context.newPage();
-    await page.setContent(html,{waitUntil:"load"});
-    await page.evaluate(()=>document.fonts.ready);
-    return await page.screenshot({type:"png",fullPage:true,timeout:30000});
-  } finally { await browser.close(); }
+    await page.setContent(html, { waitUntil: "load" });
+    await page.evaluate(() => document.fonts.ready);
+    return await page.screenshot({
+      type: "png",
+      fullPage: true,
+      timeout: 30000,
+    });
+  } finally {
+    await browser.close();
+  }
 }

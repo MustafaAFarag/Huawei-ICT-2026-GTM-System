@@ -1,0 +1,27 @@
+{
+  "events": [
+    "Queued. You can leave this page and return to the saved progress.",
+    "Started make_asset.",
+    "Asset model and prompt versions recorded.",
+    "Completed Kibesh Finance.",
+    "Completed. Review the saved results before the next step."
+  ],
+  "date": "2026-10-15T23:53:53.146Z",
+  "configuration": {
+    "model": "gpt-5-4-mini",
+    "prompts": {
+      "asset": "2026-10-16.1+c38ea64e",
+      "language": "2026-10-16.3+ddcf64e1"
+    }
+  },
+  "company": "Kibesh Finance",
+  "quote": 6,
+  "run": {
+    "state": "succeeded",
+    "error": null,
+    "actualCost": 6
+  },
+  "assetId": "c8ece98c-23e9-4cef-b37f-0fd5ed5fa71a",
+  "htmlBytes": 218578,
+  "seconds": 17
+}

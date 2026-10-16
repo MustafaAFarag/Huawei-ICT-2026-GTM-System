@@ -13,7 +13,7 @@ import type {
   Touch,
 } from "@revenue/contracts";
 import { toolRequest, PLANS, draftChecks } from "@revenue/contracts";
-import { config } from "./config.js";
+import { config, required } from "./config.js";
 import { db, json, serializable } from "./database.js";
 import {
   assertRole,
@@ -29,6 +29,8 @@ import {
 import { Providers, OpenDesign, renderPdf, Crm } from "./providers.js";
 import { Storage } from "./storage.js";
 import { WorkspaceService } from "./workspace.js";
+import { promptVersions } from "./agent/prompts.js";
+import { chatModelId } from "./agent/provider.js";
 
 export class WorkflowService {
   private workspaces = new WorkspaceService();
@@ -818,6 +820,16 @@ export class WorkflowService {
               throw new Error(
                 "Review and approve an offer in company context first.",
               );
+            if (!config.modelFixture)
+              await this.event(
+                id,
+                "model",
+                "Draft model and prompt versions recorded.",
+                {
+                  model: chatModelId(),
+                  prompts: promptVersions("drafting", "language"),
+                },
+              );
             await chargeAttempt(4);
             const content = await this.providers.draft(
               snapshot,
@@ -840,6 +852,16 @@ export class WorkflowService {
               },
             });
           } else if (input.tool === "make_asset") {
+            if (!config.modelFixture)
+              await this.event(
+                id,
+                "model",
+                "Asset model and prompt versions recorded.",
+                {
+                  model: required("MODEL_ID"),
+                  prompts: promptVersions("asset", "language"),
+                },
+              );
             const evidence = prospect.evidence as Evidence[];
             validateEvidence(evidence);
             if (
