@@ -1,0 +1,230 @@
+{
+  "summary": {
+    "date": "2026-10-16T00:07:19.152Z",
+    "label": "candidate",
+    "model": "gpt-5-4-mini",
+    "prompts": {
+      "call-outcome": "2026-10-16.1+941b50fe"
+    },
+    "reference": {
+      "today": "2026-10-16",
+      "timeZone": "Africa/Cairo",
+      "weekdays": [
+        {
+          "en": "Sunday",
+          "ar": "الأحد",
+          "daysUntil": 2,
+          "date": "2026-10-18"
+        },
+        {
+          "en": "Monday",
+          "ar": "الاثنين",
+          "daysUntil": 3,
+          "date": "2026-10-19"
+        },
+        {
+          "en": "Tuesday",
+          "ar": "الثلاثاء",
+          "daysUntil": 4,
+          "date": "2026-10-20"
+        },
+        {
+          "en": "Wednesday",
+          "ar": "الأربعاء",
+          "daysUntil": 5,
+          "date": "2026-10-21"
+        },
+        {
+          "en": "Thursday",
+          "ar": "الخميس",
+          "daysUntil": 6,
+          "date": "2026-10-22"
+        },
+        {
+          "en": "Friday",
+          "ar": "الجمعة",
+          "daysUntil": 0,
+          "date": "2026-10-16"
+        },
+        {
+          "en": "Saturday",
+          "ar": "السبت",
+          "daysUntil": 1,
+          "date": "2026-10-17"
+        }
+      ]
+    },
+    "passed": 10,
+    "total": 12
+  },
+  "results": [
+    {
+      "id": "callback-sunday-en",
+      "note": "Spoke with the contact. Please call back Sunday after payroll closes. No meeting was booked.",
+      "outcome": "call-back",
+      "days": 2,
+      "output": {
+        "outcome": "call-back",
+        "nextStep": "Please call back Sunday after payroll closes.",
+        "followUpDays": 2,
+        "summary": "Spoke with the contact. Please call back Sunday after payroll closes. No meeting was booked."
+      },
+      "passed": true,
+      "latencyMs": 1494
+    },
+    {
+      "id": "callback-sunday-eg",
+      "note": "اتكلمنا وقال كلموني يوم الأحد بعد ما نقفل المرتبات ولسه متفقناش على اجتماع",
+      "outcome": "call-back",
+      "days": 2,
+      "output": {
+        "outcome": "call-back",
+        "nextStep": "كلموني يوم الأحد بعد ما نقفل المرتبات",
+        "followUpDays": 2,
+        "summary": "اتكلمنا وقال كلموني يوم الأحد بعد ما نقفل المرتبات ولسه متفقناش على اجتماع"
+      },
+      "passed": true,
+      "latencyMs": 962
+    },
+    {
+      "id": "callback-tomorrow-gulf",
+      "note": "قال دقوا علي باكر ونكمل السالفة ما حددنا اجتماع",
+      "outcome": "call-back",
+      "days": 1,
+      "output": {
+        "outcome": "call-back",
+        "nextStep": "دقوا علي باكر ونكمل السالفة.",
+        "followUpDays": 1,
+        "summary": "The contact asked to call back tomorrow to continue the conversation, and no meeting was booked."
+      },
+      "passed": true,
+      "latencyMs": 1002
+    },
+    {
+      "id": "callback-two-days",
+      "note": "Asked me to call back in two days. We did not discuss a contract.",
+      "outcome": "call-back",
+      "days": 2,
+      "output": {
+        "outcome": "call-back",
+        "nextStep": "Call back in two days.",
+        "followUpDays": null,
+        "summary": "Asked me to call back in two days. We did not discuss a contract."
+      },
+      "passed": false,
+      "latencyMs": 890
+    },
+    {
+      "id": "optout-eg",
+      "note": "قال مش عايز أي تواصل تاني امسحوا رقمي ومتبعتوش رسائل ولا تتصلوا",
+      "outcome": "opt-out",
+      "days": null,
+      "output": {
+        "outcome": "opt-out",
+        "nextStep": "امسحوا رقمي ومتبعتوش رسائل ولا تتصلوا",
+        "followUpDays": null,
+        "summary": "قال مش عايز أي تواصل تاني."
+      },
+      "passed": true,
+      "latencyMs": 841
+    },
+    {
+      "id": "decline-en",
+      "note": "Not interested in the offer this quarter. No request for a later call.",
+      "outcome": "not-interested",
+      "days": null,
+      "output": {
+        "outcome": "not-interested",
+        "nextStep": "Not interested in the offer this quarter. No request for a later call.",
+        "followUpDays": null,
+        "summary": "Not interested in the offer this quarter; no request for a later call."
+      },
+      "passed": true,
+      "latencyMs": 858
+    },
+    {
+      "id": "no-answer-eg",
+      "note": "اتصلت ومحدش رد ومسبتش رسالة",
+      "outcome": "no-answer",
+      "days": null,
+      "output": {
+        "outcome": "no-answer",
+        "nextStep": "اتصل مرة تانية",
+        "followUpDays": null,
+        "summary": "اتصلت ومحدش رد ومسبتش رسالة."
+      },
+      "passed": true,
+      "latencyMs": 952
+    },
+    {
+      "id": "voicemail-en",
+      "note": "Nobody picked up. I left a short voicemail asking them to reply if interested.",
+      "outcome": "voicemail",
+      "days": null,
+      "output": {
+        "outcome": "voicemail",
+        "nextStep": "Left a short voicemail asking them to reply if interested.",
+        "followUpDays": null,
+        "summary": "Nobody picked up, and a short voicemail was left asking them to reply if interested."
+      },
+      "passed": true,
+      "latencyMs": 983
+    },
+    {
+      "id": "wrong-person-eg",
+      "note": "اللي رد قال الرقم غلط ومفيش حد بالاسم ده",
+      "outcome": "wrong-person",
+      "days": null,
+      "output": {
+        "outcome": "wrong-person",
+        "nextStep": "الرقم غلط ومفيش حد بالاسم ده.",
+        "followUpDays": null,
+        "summary": "اللي رد قال الرقم غلط ومفيش حد بالاسم ده."
+      },
+      "passed": true,
+      "latencyMs": 895
+    },
+    {
+      "id": "booked-en",
+      "note": "We agreed to a product demo meeting on Tuesday at eleven. Send the invitation.",
+      "outcome": "meeting-booked",
+      "days": null,
+      "output": {
+        "outcome": "meeting-booked",
+        "nextStep": "Send the invitation for the product demo meeting on Tuesday at eleven.",
+        "followUpDays": 4,
+        "summary": "We agreed to a product demo meeting on Tuesday at eleven."
+      },
+      "passed": false,
+      "latencyMs": 962
+    },
+    {
+      "id": "mention-meeting-en",
+      "note": "We spoke about a possible demo. They have not agreed to meet or requested a callback yet.",
+      "outcome": "connected",
+      "days": null,
+      "output": {
+        "outcome": "connected",
+        "nextStep": "Spoke about a possible demo; they have not agreed to meet or requested a callback yet.",
+        "followUpDays": null,
+        "summary": "We spoke about a possible demo, but they did not agree to a meeting or ask for a callback."
+      },
+      "passed": true,
+      "latencyMs": 1011
+    },
+    {
+      "id": "conditional-callback-eg",
+      "note": "قال كلموني تاني بعد ما نقفل المرتبات بس مقلش يوم محدد",
+      "outcome": "call-back",
+      "days": null,
+      "output": {
+        "outcome": "call-back",
+        "nextStep": "كلموني تاني بعد ما نقفل المرتبات بس",
+        "followUpDays": null,
+        "summary": "قال كلموني تاني بعد ما نقفل المرتبات بس ومقلش يوم محدد."
+      },
+      "passed": true,
+      "latencyMs": 835
+    }
+  ]
+}

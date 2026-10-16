@@ -117,6 +117,7 @@ export const COSTS: Record<ToolName, number> = {
   onboard: 4,
   assistant: 2,
 };
+export const AI_COSTS = { chat_turn: 1, transcription: 1 } as const;
 export const PLAYS = [
   {
     id: "P1",

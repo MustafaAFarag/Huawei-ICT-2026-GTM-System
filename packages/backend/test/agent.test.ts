@@ -1,4 +1,5 @@
-import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
+import { Crm } from "../src/providers.js";
 import { randomUUID } from "node:crypto";
 import {
   db,
@@ -24,10 +25,20 @@ let prospectId: string;
 
 beforeAll(async () => {
   await db.workspace.create({
-    data: { id: workspaceId, name: "Agent harness test", crmBinding: "A", assetBinding: "A" },
+    data: {
+      id: workspaceId,
+      name: "Agent harness test",
+      crmBinding: "A",
+      assetBinding: "A",
+    },
   });
   await db.user.create({
-    data: { id: userId, name: "Agent tester", email: `${userId}@example.test`, emailVerified: true },
+    data: {
+      id: userId,
+      name: "Agent tester",
+      email: `${userId}@example.test`,
+      emailVerified: true,
+    },
   });
   await db.membership.create({ data: { workspaceId, userId, role: "owner" } });
   const prospect = await db.prospect.create({
@@ -35,14 +46,34 @@ beforeAll(async () => {
       workspaceId,
       ownerId: userId,
       sourceKey: "agent@example.test",
-      snapshot: json({ firstName: "Agent", lastName: "Test", company: "Harness Co", email: "agent@example.test", website: "https://example.com", title: "Founder" }),
+      snapshot: json({
+        firstName: "Agent",
+        lastName: "Test",
+        company: "Harness Co",
+        email: "agent@example.test",
+        website: "https://example.com",
+        title: "Founder",
+      }),
     },
   });
   prospectId = prospect.id;
 });
 afterAll(async () => {
-  for (const model of [db.spendApproval, db.chatMessage, db.usage, db.audit, db.quota, db.budget, db.prospect, db.suppression, db.run])
-    await (model.deleteMany as (args: object) => Promise<unknown>)({ where: { workspaceId } });
+  for (const model of [
+    db.spendApproval,
+    db.chatMessage,
+    db.usage,
+    db.audit,
+    db.quota,
+    db.budget,
+    db.sequence,
+    db.prospect,
+    db.suppression,
+    db.run,
+  ])
+    await (model.deleteMany as (args: object) => Promise<unknown>)({
+      where: { workspaceId },
+    });
   await db.workspace.delete({ where: { id: workspaceId } });
   await db.user.delete({ where: { id: userId } });
   await db.$disconnect();
@@ -51,46 +82,167 @@ afterAll(async () => {
 describe("assistant harness", () => {
   it("streams a reply and turns the action into a quote, never a run", async () => {
     const events: AgentEvent[] = [];
-    await runAgentTurn(actor, "Draft messages for this account", { play: "P1", prospectIds: [prospectId] }, (e) => events.push(e));
+    await runAgentTurn(
+      actor,
+      "Draft messages for this account",
+      { play: "P1", prospectIds: [prospectId] },
+      (e) => events.push(e),
+    );
     const kinds = events.map((e) => e.type);
     expect(kinds[0]).toBe("meta");
     expect(kinds).toContain("text");
     expect(kinds.at(-1)).toBe("done");
-    const quote = events.find((e) => e.type === "quote") as Extract<AgentEvent, { type: "quote" }>;
+    const quote = events.find((e) => e.type === "quote") as Extract<
+      AgentEvent,
+      { type: "quote" }
+    >;
     expect(quote.tool).toBe("draft_messages");
     expect(quote.input.prospectIds).toEqual([prospectId]);
-    expect(await db.spendApproval.count({ where: { workspaceId, approvedAt: null } })).toBe(1);
+    expect(
+      await db.spendApproval.count({
+        where: { workspaceId, approvedAt: null },
+      }),
+    ).toBe(1);
     expect(await db.run.count({ where: { workspaceId } })).toBe(0);
-    const messages = await db.chatMessage.findMany({ where: { workspaceId }, orderBy: { createdAt: "asc" } });
+    const messages = await db.chatMessage.findMany({
+      where: { workspaceId },
+      orderBy: { createdAt: "asc" },
+    });
     expect(messages.map((m) => m.role)).toEqual(["user", "assistant"]);
-    expect((messages[1]!.context as { prompts: Record<string, string> }).prompts.system).toBe(prompt("system").version);
+    expect(
+      (messages[1]!.context as { prompts: Record<string, string> }).prompts
+        .system,
+    ).toBe(prompt("system").version);
   });
 
   it("refuses chat credits above the workspace cap and refunds failed calls", async () => {
     const id = `${workspaceId}:${month()}`;
-    await db.budget.upsert({ where: { id }, create: { id, workspaceId, month: month(), cap: 1 }, update: { cap: 1, used: 0 } });
+    await db.budget.upsert({
+      where: { id },
+      create: { id, workspaceId, month: month(), cap: 1 },
+      update: { cap: 1, used: 0 },
+    });
     const first = await chargeCredits(actor, "chat_turn");
     await expect(chargeCredits(actor, "chat_turn")).rejects.toThrow(/cap/);
     await refundCredits(actor, first.usageId);
     expect((await db.budget.findUniqueOrThrow({ where: { id } })).used).toBe(0);
-    expect((await db.usage.findUniqueOrThrow({ where: { runId: first.usageId } })).state).toBe("refunded");
-    await expect(chargeCredits({ ...actor, role: "viewer" }, "chat_turn")).rejects.toThrow(/viewer/);
+    expect(
+      (await db.usage.findUniqueOrThrow({ where: { runId: first.usageId } }))
+        .state,
+    ).toBe("refunded");
+    await expect(
+      chargeCredits({ ...actor, role: "viewer" }, "chat_turn"),
+    ).rejects.toThrow(/viewer/);
   });
 
   it("validates audio before any transcription", async () => {
-    await expect(transcribeAudio(actor, Buffer.alloc(0), "audio/webm")).rejects.toThrow(/empty/);
-    await expect(transcribeAudio(actor, Buffer.alloc(10), "text/plain")).rejects.toThrow(/Unsupported/);
-    await expect(transcribeAudio(actor, Buffer.alloc(5 * 1024 * 1024), "audio/webm")).rejects.toThrow(/60 seconds/);
-    const result = await transcribeAudio(actor, Buffer.alloc(10), "audio/webm;codecs=opus", "ar");
+    await expect(
+      transcribeAudio(actor, Buffer.alloc(0), "audio/webm"),
+    ).rejects.toThrow(/empty/);
+    await expect(
+      transcribeAudio(actor, Buffer.alloc(10), "text/plain"),
+    ).rejects.toThrow(/Unsupported/);
+    await expect(
+      transcribeAudio(actor, Buffer.alloc(5 * 1024 * 1024), "audio/webm"),
+    ).rejects.toThrow(/60 seconds/);
+    const result = await transcribeAudio(
+      actor,
+      Buffer.alloc(10),
+      "audio/webm;codecs=opus",
+      "ar",
+    );
     expect(result.model).toBe("fixture");
     expect(result.text.length).toBeGreaterThan(0);
   });
 
   it("classifies a dictated call note and records an opt-out as suppression", async () => {
-    const suggestion = await suggestCallOutcome(actor, "Booked a meeting for Tuesday at eleven");
+    const suggestion = await suggestCallOutcome(
+      actor,
+      "Booked a meeting for Tuesday at eleven",
+    );
     expect(suggestion.outcome).toBe("meeting-booked");
-    await saveCallOutcome(actor, prospectId, { outcome: "opt-out", nextStep: "Stop outreach", followUpDays: null, summary: "Asked not to be contacted", note: "please stop" });
-    expect(await db.suppression.count({ where: { workspaceId, identity: "agent@example.test" } })).toBe(1);
-    expect(await db.audit.count({ where: { workspaceId, action: "call.outcome" } })).toBe(1);
+    await saveCallOutcome(actor, prospectId, {
+      outcome: "opt-out",
+      nextStep: "Stop outreach",
+      followUpDays: null,
+      summary: "Asked not to be contacted",
+      note: "please stop",
+    });
+    expect(
+      await db.suppression.count({
+        where: { workspaceId, identity: "agent@example.test" },
+      }),
+    ).toBe(1);
+    expect(
+      await db.audit.count({ where: { workspaceId, action: "call.outcome" } }),
+    ).toBe(1);
+  });
+
+  it("persists a confirmed opt-out and cancels active sequences even when CRM sync fails", async () => {
+    await db.prospect.update({
+      where: { id: prospectId },
+      data: {
+        sourceKey: "source:without-email",
+        crmPersonId: "test-native-person",
+      },
+    });
+    const states = ["queued", "running", "paused", "completed"];
+    for (const state of states)
+      await db.sequence.create({
+        data: {
+          workspaceId,
+          prospectId,
+          draftId: randomUUID(),
+          draftVersion: 1,
+          approvalDigest: "test",
+          sender: "test@example.test",
+          steps: [],
+          state,
+        },
+      });
+    const task = vi
+      .spyOn(Crm.prototype, "task")
+      .mockRejectedValue(new Error("Synthetic CRM outage"));
+    try {
+      const input = {
+        outcome: "opt-out",
+        nextStep: "Stop contact",
+        followUpDays: null,
+        summary: "No more contact",
+        note: "Stop calling",
+      };
+      await expect(
+        saveCallOutcome(actor, prospectId, { ...input, followUpDays: 2 }),
+      ).rejects.toThrow(/opt-out/);
+      const result = await saveCallOutcome(actor, prospectId, input);
+      expect(result).toEqual({
+        saved: true,
+        crmTaskId: null,
+        crmError: "Synthetic CRM outage",
+      });
+      expect(
+        await db.suppression.count({
+          where: { workspaceId, identity: "source:without-email" },
+        }),
+      ).toBe(1);
+      expect(
+        await db.sequence.count({ where: { workspaceId, state: "cancelled" } }),
+      ).toBe(3);
+      expect(
+        await db.sequence.count({ where: { workspaceId, state: "completed" } }),
+      ).toBe(1);
+      const audit = await db.audit.findFirstOrThrow({
+        where: { workspaceId, action: "call.outcome" },
+        orderBy: { createdAt: "desc" },
+      });
+      expect(audit.details).toMatchObject({
+        outcome: "opt-out",
+        crmSync: "failed",
+        crmError: "Synthetic CRM outage",
+      });
+      expect(task).toHaveBeenCalledOnce();
+    } finally {
+      task.mockRestore();
+    }
   });
 });

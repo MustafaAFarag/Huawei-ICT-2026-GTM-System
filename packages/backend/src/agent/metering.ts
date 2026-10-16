@@ -1,13 +1,13 @@
 import { randomUUID } from "node:crypto";
 import { ForbiddenException } from "@nestjs/common";
-import { PLANS, type Actor } from "@revenue/contracts";
+import { AI_COSTS, PLANS, type Actor } from "@revenue/contracts";
 import { db, json, serializable } from "../database.js";
 import { assertRole, month } from "../policy.js";
 
 // Assistant turns and transcriptions cost a fixed, published number of AI credits (BILL-02).
 // The price is shown before the user sends; the charge respects the same workspace, member
 // and plan caps as runs, and writes a usage and audit row.
-export const AI_COSTS = { chat_turn: 1, transcription: 1 } as const;
+export { AI_COSTS };
 export type MeteredAction = keyof typeof AI_COSTS;
 
 export async function chargeCredits(
