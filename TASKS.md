@@ -5,13 +5,13 @@ Done: page/state inventory, current UI evidence, connected redesigned screens an
 Stop: hold application code changes. No push, deployment or implementation of the new Brand book feature during this design pass.
 
 - [x] Audit eight main screens, six Settings sections, account detail/tabs, a saved flipbook and narrow/Arabic views; map create/review/outreach journeys. Preparation in `docs/design/figma-redesign-brief.md`; current-state captures/measurements in `.local/figma-audit/`.
-- [ ] Restore exposed Figma design tools; create a new draft unless the owner supplies an existing target.
-- [ ] Design the app shell, pages, Brand book setup/review and deliverable creation/editor flows.
-- [ ] Review coverage, hierarchy, scrolling, overlays, responsiveness and RTL; deliver the Figma link and remaining decisions.
+- [x] Restore Figma tools and create a new draft: https://www.figma.com/design/XQYMm6aLF8AVUAFje7CpuK . Foundations, light/dark variables and reusable components created.
+- [x] Design the app shell and all eight existing main destinations, account/import details, six Settings sections, Brand book setup/review and every deliverable format. 92 screen/state layouts, plus organized foundations and a linked walkthrough.
+- [x] Review hierarchy, scrolling, overlays, responsiveness and RTL. Native-layer bounds checks pass on all 92 walkthrough frames; no invalid navigation targets. Six explicit journeys pass, including all three brand entry paths. Key desktop, phone, Arabic and dark views visually inspected. Delivery links and limitations in `docs/design/figma-redesign-delivery.md`.
 
 Decisions: retain Caravan/Nabil and chat as the main entry. Brand book accepts a website, PDF/PPTX or a short generation brief; extracted/proposed identity is reviewable before use.
-Access: Figma plugin reports installed/enabled, but no Figma tools are exposed in the current Codex catalog; direct Figma tool probe returned `TypeError: tools.mcp__figma__whoami is not a function`. Requested reconnection and an optional existing draft URL; default target is a new draft. Independent read-only product/UI audit is complete.
-Evidence: populated demonstration workspace has 170 accounts, 12 drafts and 32 deliverables. Accounts content measured 10,632px and review 12,940px at 1440×900; phone review 13,821px at 390×844, without document horizontal overflow. Proposed list/detail review, paginated accounts, dedicated task views and visual identity board. No redesigned Figma frames yet. No application source changes or paid generations.
+Access: restored after reconnection. Owner requested a new draft. File `XQYMm6aLF8AVUAFje7CpuK` belongs to the single connected Student plan. Design scripts/state live in ignored `.local/figma-redesign/`; application code stays unchanged. Inter is available; IBM Plex Sans Arabic is unavailable in Figma, so the draft uses an explicitly documented Noto Sans Arabic fallback.
+Evidence: populated demonstration workspace has 170 accounts, 12 drafts and 32 deliverables. Accounts content measured 10,632px and review 12,940px at 1440×900; phone review 13,821px at 390×844, without document horizontal overflow. Delivered paginated lists, focused review, task views and the visual identity board in Figma. The walkthrough has 1,143 navigation actions and four start points; UI is native text/vectors/components. Its only raster content is the existing Nabil avatar. No application source changes, paid model generations, push or deployment. The prototype simulates core journeys; forms, filtering and downloads are illustrative.
 
 ---
 

@@ -1,8 +1,8 @@
 # Caravan — Figma redesign brief and page inventory
 
-17 October 2026. Design preparation only. Application code is on hold.
+17 October 2026. Figma design pass delivered. Application code remains on hold.
 
-**Delivery status:** current app audited; draft structure and coverage below are prepared. No Figma file or redesigned frames have been created. Figma reports installed/enabled, but this session exposes no Figma tools. Restored tool access is pending; create a new draft by default, or use an existing draft if the owner supplies one. Direct probe returned `TypeError: tools.mcp__figma__whoami is not a function`.
+**Delivery status:** [new Figma draft](https://www.figma.com/design/XQYMm6aLF8AVUAFje7CpuK?node-id=15-6321) created after reconnection. It contains 92 organized screen/state designs and a separate connected walkthrough. See [delivery and verification](figma-redesign-delivery.md) for links, coverage and limitations. No application source changed.
 
 ## Product and outcome
 
@@ -123,7 +123,7 @@ The owner's reference is a visual identity board: color ramps, typography and ap
 
 ## Figma file organization and planned frame checklist
 
-All frames below are **planned**, not yet drawn. Current-state captures should be clearly separated from proposed designs.
+The inventory below guided the design pass. The delivered grouping and exact coverage are recorded in the delivery note. Existing-product captures remain local audit evidence; complete-UI screenshots were not imported into the editable Figma designs.
 
 | Page | Required frames/variants |
 | --- | --- |
