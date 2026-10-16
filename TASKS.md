@@ -1,3 +1,17 @@
+## Current — evidence-led initial ICP (17 October 2026)
+
+Goal: choose Caravan’s strongest initial ideal customer profile using the supplied GTM workflow files and current public market/customer evidence without depending on unavailable buyer interviews.
+Done: explicit primary buyer, user, job, qualification/exclusion rules, comparison with alternatives, cited public examples and honest evidence/confidence boundaries; no invented Caravan customers or purchasing intent.
+Stop: research/documentation only. No outreach, account creation, paid calls, app/Figma changes, deployment or push. Keep private contact data and source identities out of committed research.
+
+- [x] Re-examine private source structures and anonymised workflow patterns: 40 files, 160-row validation workbook, four owner labels, 106 bilingual records and documented follow-up/profile states. Preserve original source files and contact privacy.
+- [x] Verify public customer adoption, relevant service providers, workflows and buyer constraints. First-party regional SDR responsibilities, service catalogues and labelled vendor case studies support the recommendation; exact budgets/purchase intent remain unknown.
+- [x] Recommend the initial ICP, positioning and implementation priorities in `docs/research/15-initial-icp-evidence-case.md`, with six public company examples in the companion CSV. Check links/CSV and review the documentation diff before local commit.
+
+Recommendation: initial focus on Egypt-based HRO/payroll providers selling to GCC employers with a small BD team. Recruitment-only agencies are adjacent for employer acquisition; general outbound agencies are a later channel/segment. This is a research-backed starting decision, not an assertion of Caravan customers or product-market fit; no interview dependency blocks the decision.
+
+---
+
 ## Current — Caravan business and implementation audit (17 October 2026)
 
 Goal: compare the implemented product with the supplied Anthropic Founder’s Playbook and primary Alex Hormozi material; identify what obstructs a clear customer promise and a measurable lead-to-sales workflow.

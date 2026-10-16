@@ -17,6 +17,7 @@ Reports 01–10 feed [Revenue Workspace PRD v3](../prd/REVENUE_WORKSPACE_PRD_v3.
 | [11 — Real workflow teardown](11-real-workflow-teardown.md) | (15 Oct, v3.1) What a real outbound engagement's files show about the process, where the work is manual, public MENA SDR/funding context, and the synthetic demo set derived from it |
 | [12 — Output quality and prompt engineering](12-output-quality-and-prompt-engineering.md) | Primary-source prompt/tool/evaluation guidance, actual bilingual copy and assets, before/after checks, call dates and remaining judge/dialect limits |
 | [14 — Caravan business and implementation audit](14-caravan-business-implementation-audit.md) | Supplied Founder’s Playbook and primary Hormozi guidance compared with actual sourcing, qualification, outreach, outcomes and economics; prioritised gaps and proposed pilot gates |
+| [15 — Initial ICP evidence case](15-initial-icp-evidence-case.md) | A primary buyer selected from fresh private-workflow aggregates and public HRO sales roles/customer stories; competing segments, qualification rules and six public company examples |
 
 ## Lead-reviewer spot checks (12 October 2026)
 

@@ -6,6 +6,8 @@ Caravan has useful working foundations for organising imported prospects, review
 
 This is a judgement about the inspected implementation and available evidence, not proof that customers will reject the product. A competition prototype can reasonably simulate providers. A commercial promise must describe those boundaries accurately.
 
+Owner follow-up: interviews are unavailable under the current time constraint. [Research 15](15-initial-icp-evidence-case.md) now selects an initial ICP from the supplied workflow and public evidence without making interviews a prerequisite for that decision. Commercial outcome and purchase-intent limits below still apply.
+
 ## Reading and evidence
 
 - Supplied PDF: *The Founder’s Playbook: Building an AI-Native Startup*, all 36 pages extracted locally with `pdftotext -layout`. Relevant sections: problem validation, pp. 9–14; focused MVP and scope, pp. 16–18; measurement and repeat usage, pp. 19–20; repeatable growth and economics, p. 22; domain depth, learning and integrations, pp. 26–30. Original: `/home/mustafa/Downloads/Personal Projects/Anthorpic Founder's Playbook.pdf`.
