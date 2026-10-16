@@ -3,6 +3,8 @@
 export const AR: Record<string, string> = {
 
   // Caravan shell, Nabil and the deliverable canvas
+  "Auto (match my message)": "تلقائي (حسب لغة رسالتي)",
+  "Auto language": "لغة تلقائية",
   "Account detail": "تفاصيل الحساب",
   "Ask Nabil for an email, a carousel, a flipbook or a one-pager. Finished work is filed here and on the account.": "اطلب من نبيل بريدًا أو شرائح أو كتيّبًا أو صفحة تعريفية. العمل المنتهي يُحفظ هنا وعلى الحساب.",
   "Brand-level": "على مستوى العلامة",

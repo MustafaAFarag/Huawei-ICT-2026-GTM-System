@@ -77,7 +77,8 @@ export default function Page() {
     [view, setViewState] = useState<View>("Home"),
     [play, setPlay] = useState<ToolRequest["play"]>("P1");
   const [selected, setSelected] = useState<string[]>([]),
-    [language, setLanguage] = useState<ToolRequest["language"]>("en");
+    [language, setLanguage] = useState<ToolRequest["language"]>("en"),
+    [chatLanguage, setChatLanguage] = useState<"auto" | ToolRequest["language"]>("auto");
   const [busy, setBusy] = useState(false),
     [error, setError] = useState(""),
     [notice, setNotice] = useState(""),
@@ -135,8 +136,8 @@ export default function Page() {
   const runActive = Boolean(
     data?.runs.some((r) => ["queued", "running"].includes(r.state)),
   );
-  const contextRef = useRef({ play, selected, language, view, prospect, preview });
-  contextRef.current = { play, selected, language, view, prospect, preview };
+  const contextRef = useRef({ play, selected, chatLanguage, view, prospect, preview });
+  contextRef.current = { play, selected, chatLanguage, view, prospect, preview };
 
   // Assistant UI actions: allowlisted product navigation with a brief visible cursor.
   const assistantAction = async (ui: AssistantUiAction) => {
@@ -212,7 +213,8 @@ export default function Page() {
       return {
         play: c.play,
         prospectIds: c.selected,
-        language: c.language,
+        // Omitted on auto: the API detects the language and dialect from the request.
+        language: c.chatLanguage === "auto" ? undefined : c.chatLanguage,
         uiLanguage,
         screen: c.view,
         activeProspectId: c.prospect?.id,
@@ -468,6 +470,8 @@ export default function Page() {
             setPlay,
             language,
             setLanguage,
+            chatLanguage,
+            setChatLanguage,
             selected,
             setSelected: (update) => setSelected(update),
             setTab,
@@ -494,6 +498,7 @@ export default function Page() {
       busy,
       play,
       language,
+      chatLanguage,
       selected,
       setTab,
       openAsset,

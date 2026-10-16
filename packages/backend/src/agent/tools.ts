@@ -17,7 +17,11 @@ import { month } from "../policy.js";
 // workspace only. Action tools have no execute function: the loop stops on them and the
 // harness turns each call into a governed cost quote that a person approves.
 
-const languages = z.enum(["en", "ar-EG", "ar-Gulf", "ar"]);
+const languages = z
+  .enum(["en", "ar-EG", "ar-Gulf", "ar"])
+  .describe(
+    "Content language. Infer it from the request: the language and dialect the person writes in (Egyptian wording → ar-EG, Gulf wording → ar-Gulf, other Arabic → ar), unless they ask for another language or UI context pins contentLanguage.",
+  );
 const plays = z.enum(["P1", "P2", "P3", "P4"]);
 const ids = z.array(z.uuid()).max(100);
 

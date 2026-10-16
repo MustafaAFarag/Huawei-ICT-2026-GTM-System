@@ -40,6 +40,9 @@ export type WorkspaceValue = {
   setPlay: (play: ToolRequest["play"]) => void;
   language: ToolRequest["language"];
   setLanguage: (language: ToolRequest["language"]) => void;
+  // Nabil's content language: "auto" lets it follow the request's own language and dialect.
+  chatLanguage: "auto" | ToolRequest["language"];
+  setChatLanguage: (language: "auto" | ToolRequest["language"]) => void;
   selected: string[];
   setSelected: (update: (previous: string[]) => string[]) => void;
   setTab: (tab: Tab) => void;

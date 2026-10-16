@@ -14,6 +14,7 @@ import { useWorkspace } from "../workspace-context";
 import { useChat } from "./controller";
 
 const LANGUAGES = [
+  ["auto", "Auto (match my message)"],
   ["en", "English"],
   ["ar-EG", "Arabic (Egypt)"],
   ["ar-Gulf", "Arabic (Gulf)"],
@@ -43,8 +44,8 @@ export function Composer({
     setSelected,
     play,
     setPlay,
-    language,
-    setLanguage,
+    chatLanguage,
+    setChatLanguage,
     activeAssetId,
   } = useWorkspace();
   const [text, setText] = useState("");
@@ -183,8 +184,8 @@ export function Composer({
                 <button
                   type="button"
                   key={value}
-                  aria-pressed={language === value}
-                  onClick={() => setLanguage(value)}
+                  aria-pressed={chatLanguage === value}
+                  onClick={() => setChatLanguage(value)}
                 >
                   <span>{t(label)}</span>
                 </button>
@@ -192,7 +193,7 @@ export function Composer({
             </div>
           )}
           <span className="composer-meta mono">
-            {play} · {language}
+            {play} · {chatLanguage === "auto" ? t("Auto language") : chatLanguage}
           </span>
         </div>
         <div className="composer-actions">
