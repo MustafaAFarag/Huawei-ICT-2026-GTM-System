@@ -1,0 +1,50 @@
+{
+  "summary": {
+    "label": "sol-v4",
+    "model": "gpt-6-1-sol",
+    "judge": "gpt-6-1-sol",
+    "prompts": {
+      "format-email": "2026-10-17.4+c703f7f4",
+      "format-carousel": "2026-10-17.2+4184b40b",
+      "format-flipbook": "2026-10-17.2+134d6591",
+      "language": "2026-10-16.3+ddcf64e1"
+    },
+    "passed": "1/1",
+    "lintClean": 1,
+    "means": {
+      "copy": 4,
+      "grounding": 5,
+      "structure": 5,
+      "language": 5
+    },
+    "usage": {
+      "gpt-6-1-sol": {
+        "input": 2358,
+        "output": 673,
+        "calls": 2
+      }
+    },
+    "usd": 0.0114,
+    "ledgerTotal": 1.6438
+  },
+  "results": [
+    {
+      "id": "outlook-ar",
+      "format": "email-outlook",
+      "language": "ar",
+      "ok": true,
+      "ms": 16603,
+      "pages": 1,
+      "bytes": 8123,
+      "lintErrors": [],
+      "lintWarnings": [],
+      "judge": {
+        "copy": 4,
+        "grounding": 5,
+        "structure": 5,
+        "language": 5,
+        "notes": "أضعف نقطة هي التكرار: المقدمة وقسم المزايا يعيدان مضمون نص المعاينة، ما يطيل رسالة مطلوب أن تكون قصيرة. العرض مطابق للمعلومات المقدمة، والرسالة تركز على فكرة واحدة وزر واحد، والعربية الفصحى سليمة."
+      }
+    }
+  ]
+}

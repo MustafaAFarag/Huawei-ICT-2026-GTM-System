@@ -54,6 +54,27 @@ describe("deliverable formats", () => {
     expect(email.html).toContain("<!--[if mso]>");
   });
 
+  it("keeps every email block (steps, highlights, two-column resources) client-safe", () => {
+    const content = {
+      subject: "A review for your clinic",
+      preheader: "Three fixes you can make this week",
+      heading: "See what to update",
+      intro: "A free one-page website review.",
+      steps: ["Reply to this email", "Pick a slot"],
+      sections: [{ heading: "Noticed", body: "The clinic lists 12 branches.", sourceId: "f1" }],
+      highlights: { heading: "What you get", items: [{ title: "One page", text: "A short review." }, { title: "Three fixes", text: "Changes for this week." }] },
+      resources: { heading: "Next reads", items: [{ title: "Studio", text: "Our work.", label: "Visit", url: "https://nour-studio.example" }, { title: "Source", text: "The page.", label: "Open", url: "https://clinic.example/contact" }] },
+      cta: { label: "Request your review" },
+      signoff: { name: "Nour Studio" },
+    };
+    const gmail = renderContent("email-gmail", content, context()).html;
+    const outlook = renderContent("email-outlook", content, context("ar")).html;
+    expect(lintGmail(gmail).filter((l) => l.level === "error")).toEqual([]);
+    expect(lintOutlook(outlook)).toEqual([]);
+    expect(gmail).toContain('class="col"');
+    expect(gmail).toContain("What you get");
+  });
+
   it("renders Arabic emails right to left", async () => {
     const email = await generateDeliverable("email-gmail", context("ar-EG"), {});
     expect(email.html).toMatch(/<html lang="ar" dir="rtl"/);

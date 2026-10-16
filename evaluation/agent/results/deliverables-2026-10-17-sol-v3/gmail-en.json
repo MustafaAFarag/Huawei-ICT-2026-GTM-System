@@ -1,0 +1,20 @@
+{
+  "subject": "A free website review for your clinic",
+  "preheader": "Nour Studio offers a one-page review with three fixes you can make this week.",
+  "heading": "A starting point for your next website update",
+  "intro": "Nour Studio is a one-person brand and web design studio in Cairo. We’re offering this free review to Dar Al Shifa Clinic.",
+  "sections": [
+    {
+      "heading": "Your booking page",
+      "body": "Dar Al Shifa Clinic’s booking page has no Arabic version and lists only a landline number. These are two details worth considering in a website review.",
+      "sourceId": "n1"
+    }
+  ],
+  "cta": {
+    "label": "Request your free review",
+    "url": "https://nour-studio.example"
+  },
+  "signoff": {
+    "name": "Nour Studio"
+  }
+}

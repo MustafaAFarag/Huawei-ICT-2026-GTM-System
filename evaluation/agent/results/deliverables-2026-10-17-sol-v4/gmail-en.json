@@ -1,0 +1,33 @@
+{
+  "subject": "A free website review for your clinic",
+  "preheader": "Nour Studio offers a one-page review with three fixes you can make this week.",
+  "heading": "See what to update on your website",
+  "intro": "Nour Studio is offering Dar Al Shifa Clinic a free one-page website review, with three fixes you can make this week.",
+  "sections": [
+    {
+      "heading": "A booking-page detail worth reviewing",
+      "body": "Dar Al Shifa Clinic’s booking page has no Arabic version and lists only a landline number.",
+      "sourceId": "n1"
+    }
+  ],
+  "highlights": {
+    "heading": "What you get",
+    "items": [
+      {
+        "title": "One-page format",
+        "text": "Your website review is presented on a single page."
+      },
+      {
+        "title": "Three practical fixes",
+        "text": "The review identifies three changes you can make this week."
+      }
+    ]
+  },
+  "cta": {
+    "label": "Request your free review",
+    "url": "https://nour-studio.example"
+  },
+  "signoff": {
+    "name": "Nour Studio"
+  }
+}

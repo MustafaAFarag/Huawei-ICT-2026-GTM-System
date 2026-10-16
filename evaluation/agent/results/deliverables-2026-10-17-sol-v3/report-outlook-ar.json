@@ -1,0 +1,50 @@
+{
+  "summary": {
+    "label": "sol-v3",
+    "model": "gpt-6-1-sol",
+    "judge": "gpt-6-1-sol",
+    "prompts": {
+      "format-email": "2026-10-17.3+7bbf0aa2",
+      "format-carousel": "2026-10-17.2+4184b40b",
+      "format-flipbook": "2026-10-17.2+134d6591",
+      "language": "2026-10-16.3+ddcf64e1"
+    },
+    "passed": "1/1",
+    "lintClean": 1,
+    "means": {
+      "copy": 4,
+      "grounding": 5,
+      "structure": 5,
+      "language": 5
+    },
+    "usage": {
+      "gpt-6-1-sol": {
+        "input": 2258,
+        "output": 575,
+        "calls": 2
+      }
+    },
+    "usd": 0.0103,
+    "ledgerTotal": 1.621
+  },
+  "results": [
+    {
+      "id": "outlook-ar",
+      "format": "email-outlook",
+      "language": "ar",
+      "ok": true,
+      "ms": 14291,
+      "pages": 1,
+      "bytes": 5296,
+      "lintErrors": [],
+      "lintWarnings": [],
+      "judge": {
+        "copy": 4,
+        "grounding": 5,
+        "structure": 5,
+        "language": 5,
+        "notes": "أضعف نقطة هي النص: المقدمة عامة وتدعو للاطّلاع على العرض بدل طلب المراجعة المجانية مباشرة. يُفضّل إبراز أنها مراجعة من صفحة واحدة تتضمن ثلاثة تعديلات قابلة للتنفيذ هذا الأسبوع داخل متن الرسالة، لا في العنوان والنص التمهيدي فقط."
+      }
+    }
+  ]
+}

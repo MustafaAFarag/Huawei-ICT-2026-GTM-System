@@ -94,10 +94,20 @@ function fixtureContent(template: ContentFormat, context: FormatContext, slides:
       preheader: offer,
       heading: ar ? `فكرة عملية لـ ${company}` : `A practical idea for ${company}`,
       intro: ar ? "لاحظنا نقطة من مصدر تمت مراجعته وجهزنا اقتراحًا قصيرًا." : "We noticed one point from a reviewed source and prepared a short suggestion.",
+      steps: [
+        ar ? "رد على هذه الرسالة" : "Reply to this email",
+        ar ? "اختر موعدًا قصيرًا" : "Pick a short slot",
+      ],
       sections: [
         { heading: ar ? "ما لاحظناه" : "What we noticed", body: fact?.claim ?? offer, sourceId: fact?.id },
-        { heading: ar ? "ما نقترحه" : "What we suggest", body: offer },
       ],
+      highlights: {
+        heading: ar ? "ما ستحصل عليه" : "What you get",
+        items: [
+          { title: ar ? "مراجعة" : "A review", text: offer },
+          { title: ar ? "خطوات واضحة" : "Clear next steps", text: offer },
+        ],
+      },
       cta: { label: ar ? "احجز مكالمة قصيرة" : "Book a short call", url: context.brand.website },
       signoff: { name: context.brand.name },
     } satisfies EmailContent;
