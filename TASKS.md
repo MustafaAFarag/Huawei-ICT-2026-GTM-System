@@ -1,3 +1,20 @@
+## Current — Figma redesign and Brand book flows (17 October 2026)
+
+Goal: recreate and improve the app's pages in an editable Figma draft, with a coherent chat-first workflow, clearer hierarchy and a Brand book flow for generation, PDF/PPTX upload or website extraction.
+Done: page/state inventory, current UI evidence, connected redesigned screens and key task flows in a reviewable Figma draft; desktop, narrow and Arabic layout rules included.
+Stop: hold application code changes. No push, deployment or implementation of the new Brand book feature during this design pass.
+
+- [x] Audit eight main screens, six Settings sections, account detail/tabs, a saved flipbook and narrow/Arabic views; map create/review/outreach journeys. Preparation in `docs/design/figma-redesign-brief.md`; current-state captures/measurements in `.local/figma-audit/`.
+- [ ] Restore exposed Figma design tools; create a new draft unless the owner supplies an existing target.
+- [ ] Design the app shell, pages, Brand book setup/review and deliverable creation/editor flows.
+- [ ] Review coverage, hierarchy, scrolling, overlays, responsiveness and RTL; deliver the Figma link and remaining decisions.
+
+Decisions: retain Caravan/Nabil and chat as the main entry. Brand book accepts a website, PDF/PPTX or a short generation brief; extracted/proposed identity is reviewable before use.
+Access: Figma plugin reports installed/enabled, but no Figma tools are exposed in the current Codex catalog; direct Figma tool probe returned `TypeError: tools.mcp__figma__whoami is not a function`. Requested reconnection and an optional existing draft URL; default target is a new draft. Independent read-only product/UI audit is complete.
+Evidence: populated demonstration workspace has 170 accounts, 12 drafts and 32 deliverables. Accounts content measured 10,632px and review 12,940px at 1440×900; phone review 13,821px at 390×844, without document horizontal overflow. Proposed list/detail review, paginated accounts, dedicated task views and visual identity board. No redesigned Figma frames yet. No application source changes or paid generations.
+
+---
+
 ## Current — immediate assistant actions and unobtrusive progress (16 October 2026)
 
 Goal: finish the interrupted auto-run change, replace the blocking run panel with progress in chat, and contain long deliverable headings.
