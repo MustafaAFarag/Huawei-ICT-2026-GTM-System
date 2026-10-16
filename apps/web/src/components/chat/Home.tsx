@@ -1,5 +1,5 @@
 "use client";
-import { useState, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import {
   IconBook,
   IconBrandInstagram,
@@ -27,11 +27,11 @@ const STARTERS = [
   { label: "Flipbook", icon: IconBook, text: "Create a flipbook that walks a prospect through " },
 ] as const;
 
-function greeting(name: string, t: (text: string) => string) {
+function greeting(name: string, t: (text: string) => string, arabic: boolean) {
   const hour = new Date().getHours();
   const first = name.split(/\s+/)[0] ?? "";
   const part = hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening";
-  return first ? `${t(part)}, ${first}` : t(part);
+  return first ? `${t(part)}${arabic ? "، " : ", "}${first}` : t(part);
 }
 
 // Chat-first home (Jakob's Law: the same pattern as Claude and ChatGPT). With no thread open
@@ -42,16 +42,21 @@ export function Home({
   onQuote,
   onOpenAsset,
   canvas,
+  initialPrefill,
 }: {
+  initialPrefill?: { text: string; key: number } | null;
   userName: string;
   onQuote: (proposal: Proposal) => void;
   onOpenAsset: (asset: Asset) => void;
   canvas?: ReactNode;
 }) {
-  const { t } = usePrefs();
+  const { t, language } = usePrefs();
   const chat = useChat();
   const mood = useNabilMood(chat.activity);
   const [prefill, setPrefill] = useState<{ text: string; key: number } | null>(null);
+  useEffect(() => {
+    if (initialPrefill) setPrefill(initialPrefill);
+  }, [initialPrefill]);
   const empty = !chat.threadId && !chat.live && !chat.messages.length;
 
   if (empty)
@@ -60,7 +65,7 @@ export function Home({
         <div className="home-hero">
           <Nabil mood={mood} size={72} className="home-avatar" />
           <h1 id="home-title" dir="auto">
-            {greeting(userName, t)}
+            {greeting(userName, t, language === "ar")}
           </h1>
           <p className="home-sub">{t("What should Nabil prepare for you today?")}</p>
         </div>

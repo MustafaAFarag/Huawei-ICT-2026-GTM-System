@@ -4,15 +4,17 @@ Goal: rename to Caravan; chat-first home with the Nabil assistant (Strobi avatar
 Done: typecheck, backend tests and new Playwright scenarios pass in EN/AR, desktop/phone, dark/light; live eval compares gpt-5-4-mini with Sol inside USD 10; focused local commit per phase.
 Stop: no push, deploy or real outbound; Azure changes limited to new model deployments on this project's resources; paid eval stops at USD 9 estimated. Preserve `samples/*.csv` edits.
 
-- [ ] Phase 1: brand rename, Nabil avatar, threads, Claude-style shell, chat-first home, floating launcher.
-- [ ] Phase 2: conversation UI, streaming Markdown, composer, deliverable cards.
-- [ ] Phase 3: artifact canvas and Deliverables list filed against thread/account/play.
-- [ ] Phase 4: format registry; HTML email (Outlook + Gmail skill), Instagram carousel, LinkedIn carousel, flipbook.
-- [ ] Phase 5: Nabil system prompt + per-format prompts; gpt-6.1-sol deployment; eval with cost meter.
-- [ ] Phase 6: Linear-style density pass.
+- [x] Phase 1: brand rename, Nabil avatar, threads, Claude-style shell, chat-first home, floating launcher. Thread tests 4/4; live EN thread + launcher checked in browser.
+- [x] Phase 2: conversation UI, streaming Markdown (memoized blocks), composer, step rows, copy/retry/thumbs, deliverable cards.
+- [x] Phase 3: artifact canvas (document/email/slides/flipbook viewers, versions, approve, exports) and Linear-style Deliverables list with format tabs.
+- [x] Phase 4: format registry; Gmail/Outlook emails (both audits clean), Instagram ZIP, LinkedIn PDF, flipbook; gmail-safe-email skill; 8 format tests. Live IG carousel generated, approved and exported in browser.
+- [x] Phase 5: Nabil system prompt + per-format prompts; gpt-6-1-sol deployed; deliverables Sol 10/10 grounding 5.0 vs mini 4.1; agent 30/30 both; metered USD 1.60 (research 13).
+- [x] Phase 6: density pass (metric strip + play list, Settings sub-nav, account detail tabs, collapsible import, flat sections, DESIGN.md §10).
+- [x] Verification: typecheck; 87/87 backend tests (fixture); 15/15 Playwright (3 new Nabil scenarios: thread persistence + safe Markdown, launcher context/Esc/expand/RTL position, canvas carousel/email/flipbook); EN/AR, desktop/phone, dark/light captures in `verification/caravan-*.png`.
 
-Decisions: product Caravan, assistant Nabil (owner, 16 Oct). Keep `@revenue/*` scope and `revenue-*` storage keys. Build email/carousel templates from researched defaults; owner sends examples later.
-Blockers: none yet.
+Decisions: product Caravan, assistant Nabil (owner, 16 Oct). Deliverables on gpt-6-1-sol, chat on gpt-5-4-mini (research 13). Model writes content JSON; trusted templates own markup. Workspace switch keeps the current screen.
+Open: owner email/carousel examples to tune templates; Free-plan "Made with Caravan" mark not yet on new formats; no Stop-button e2e (needs a slow stream); native Arabic review. Keep `@revenue/*` scope and `revenue-*` storage keys. Build email/carousel templates from researched defaults; owner sends examples later.
+Blockers: Claude Opus 5.5 needs Anthropic Marketplace organisation details (industry, organisation name, country) on the new Foundry resource `aif-gtm-command-center-demo`; owner decision. Exact error in research 13.
 
 ---
 

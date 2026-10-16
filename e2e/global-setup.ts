@@ -38,7 +38,8 @@ export default async function globalSetup(config: FullConfig) {
     throw new Error(
       `Browser sign-in failed (${response.status()}); check service readiness or rate-limit cooldown.`,
     );
-  await page.getByRole("heading", { name: "Plays", exact: true }).waitFor();
+  // Home is the chat-first page: the composer proves the workspace loaded.
+  await page.locator("#assistant-input").waitFor();
   await page.context().storageState({ path: ".local/e2e-auth.json" });
   await browser.close();
 }

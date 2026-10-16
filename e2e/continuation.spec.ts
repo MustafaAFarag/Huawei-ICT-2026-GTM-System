@@ -5,7 +5,7 @@ test("research brief exports the saved source record and holds unsaved edits", a
   page,
   context,
 }) => {
-  await page.goto("/");
+  await page.goto("/?s=Plays");
   const me = await (await context.request.get("/api/me")).json();
   const ws = me.workspaces.find((m: any) => m.workspace.name === "Qimam People")
     .workspace.id;
@@ -82,7 +82,7 @@ test("call logging supports manual review and discards stale AI suggestions", as
   page,
   context,
 }) => {
-  await page.goto("/");
+  await page.goto("/?s=Plays");
   const me = await (await context.request.get("/api/me")).json();
   const ws = me.workspaces.find(
     (m: any) => m.workspace.name === "Revenue Demo B",
@@ -107,6 +107,7 @@ test("call logging supports manual review and discards stale AI suggestions", as
     .first()
     .getByRole("button", { name: "Open", exact: true })
     .click();
+  await page.getByRole("tab", { name: "Calls", exact: true }).click();
   const panel = page.locator("section").filter({
     has: page.getByRole("heading", {
       name: "Log a call outcome",
@@ -182,7 +183,7 @@ test("interview guides show bilingual questions and export PDFs without inventin
   page,
   context,
 }) => {
-  await page.goto("/");
+  await page.goto("/?s=Plays");
   const me = await (await context.request.get("/api/me")).json();
   const ws = me.workspaces.find((m: any) => m.workspace.name === "Qimam People")
     .workspace.id;
@@ -235,6 +236,7 @@ test("interview guides show bilingual questions and export PDFs without inventin
     })
     .first();
   await row.getByRole("button", { name: "Open", exact: true }).click();
+  await page.getByRole("tab", { name: "Discovery", exact: true }).click();
   await page
     .getByRole("button", { name: "Prepare interview guide", exact: true })
     .click();
@@ -259,7 +261,7 @@ test("import history groups filename revisions and shows changed fields after re
   page,
   context,
 }) => {
-  await page.goto("/");
+  await page.goto("/?s=Plays");
   const me = await (await context.request.get("/api/me")).json();
   const ws = me.workspaces.find(
     (m: any) => m.workspace.name === "Revenue Demo A",
@@ -316,6 +318,7 @@ test("import history groups filename revisions and shows changed fields after re
   });
   if (await hide.isVisible()) await hide.click();
   await page.getByRole("button", { name: "Accounts", exact: true }).click();
+  await page.getByText("Import a lead list", { exact: true }).first().click();
   await page.getByText("Show import history", { exact: true }).click();
   const row = page.getByRole("row").filter({ hasText: filename }).first();
   await row.getByRole("button", { name: "View import", exact: true }).click();
@@ -326,6 +329,7 @@ test("import history groups filename revisions and shows changed fields after re
   await expect(details.getByText("changed", { exact: true })).toBeVisible();
   await page.reload();
   await page.getByRole("button", { name: "Accounts", exact: true }).click();
+  await page.getByText("Import a lead list", { exact: true }).first().click();
   await page.getByText("Show import history", { exact: true }).click();
   await expect(
     page.getByRole("row").filter({ hasText: filename }).first(),
@@ -336,7 +340,7 @@ test("recurring plays persist a due review and require cost approval before exec
   page,
   context,
 }) => {
-  await page.goto("/");
+  await page.goto("/?s=Plays");
   const me = await (await context.request.get("/api/me")).json();
   const ws = me.workspaces.find(
     (m: any) => m.workspace.name === "Revenue Demo A",
@@ -362,6 +366,7 @@ test("recurring plays persist a due review and require cost approval before exec
     .getByRole("checkbox")
     .check();
   await page.getByRole("button", { name: "Plays", exact: true }).click();
+  await page.getByText("Scheduled reviews", { exact: true }).click();
   await page.getByText("Schedule this play", { exact: true }).click();
   const name = `Synthetic scheduled review ${randomUUID().slice(0, 8)}`;
   await page.getByLabel("Schedule name", { exact: true }).fill(name);

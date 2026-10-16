@@ -168,11 +168,11 @@ export function renderFlipbook(content: FlipbookContent, context: FormatContext)
 <style>${css(context)}
 html,body{background:${c.deep};overflow:hidden}
 .app{height:100%;display:grid;grid-template-rows:minmax(0,1fr) auto}
-.stage{position:relative;display:grid;place-items:center;padding:3vh 4vw;min-height:0}
+.stage{position:relative;display:grid;place-items:center;padding:3vh 4vw;min-height:0;overflow:hidden}
 #book{width:min(100%,calc((100vh - 120px) * 1.414));max-height:100%}
 #book.swipe{width:100%;height:100%;display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:0}
 #book.swipe .page{flex:0 0 100%;height:100%;scroll-snap-align:center;aspect-ratio:auto}
-.bar{display:flex;align-items:center;justify-content:center;gap:16px;padding:12px 16px 18px;color:#fff;font:500 14px/1 ${fontStack(context.language)}}
+.bar{position:relative;z-index:10;display:flex;align-items:center;justify-content:center;gap:16px;padding:12px 16px 18px;color:#fff;font:500 14px/1 ${fontStack(context.language)}}
 .bar button{width:40px;height:40px;border-radius:50%;border:1px solid rgba(255,255,255,.3);background:transparent;color:#fff;font-size:18px;cursor:pointer}
 .bar button:disabled{opacity:.3}
 .bar .count{min-width:72px;text-align:center;font-variant-numeric:tabular-nums}

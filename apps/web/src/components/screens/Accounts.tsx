@@ -95,6 +95,8 @@ export function Accounts() {
     rows.length > 0 && rows.every((p) => selected.includes(p.id));
   return (
     <>
+      <details className="disclosure" open={!data.prospects.length || undefined}>
+        <summary>{t("Import a lead list")}</summary>
       <Panel
         eyebrow="CSV / XLSX"
         title={t("Import a lead list")}
@@ -199,6 +201,7 @@ export function Accounts() {
         )}
       </Panel>
       <ImportHistory key={ws} revision={outcomes} />
+      </details>
       {!data.prospects.length ? (
         <Empty
           title={t("Your first accounts belong here")}

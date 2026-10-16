@@ -119,3 +119,27 @@ Type: Inter / IBM Plex Sans Arabic 10.5pt body, 22pt title, Geist Mono 8pt label
 - **Don't** use coral for errors, links or primary buttons.
 - **Don't** add drop shadows to cards or alternate light and dark bands in one theme.
 - **Don't** introduce a second accent hue.
+
+## 10. Shell, Nabil and density (17 Oct 2026)
+
+**Shell (Claude pattern, Jakob's Law).**
+- Home is a centred composer (max 720px) with Nabil, a greeting and deliverable starters.
+- A conversation is a 760px column. When a deliverable opens, it splits into a 340–440px chat column and a canvas.
+- The sidebar holds: New chat, Search, work screens, Recents (threads), Setup, credits, workspace and user. It collapses to a 56px rail and becomes a drawer below 960px.
+- Other screens get a floating Nabil bubble (56px, inline-end, 24px inset; on the left in RTL). It opens a 400×600 popover, full-screen on phones.
+
+**Nabil.** The Strobi avatar (blue `#5b7fe5` sphere).
+- Its mood follows activity: idle, listening, thinking, searching, working, celebrate, drowsy/sleeping in the launcher.
+- Avatars in message history are a static CSS mark; only live surfaces animate.
+- Motion pauses under reduced motion.
+
+**Density (Linear-style hierarchy).**
+- Screens are sections separated by headings and hairlines, not stacked cards. `.screen .panel` is flat.
+- Use one inline metric strip instead of stat cards.
+- Lists use 36–52px rows: icon tile, title, muted 12px secondary line, mono meta, status badge, relative date.
+- Use progressive disclosure: tabs for account detail and `details.disclosure` for import, launch checklist and schedules. Settings uses a sub-navigation with one section at a time.
+- Secondary information is muted 12px text. Keep at most one primary button per view.
+
+**Deliverable canvas.**
+- Pages render at their real size (A4 794px, slides 1080×1350, email 600/375px) and are scaled into a dotted stage.
+- The toolbar carries: title, format · language, version, status, Edit with Nabil, Approve, then exports and Present.

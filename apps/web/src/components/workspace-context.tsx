@@ -45,6 +45,8 @@ export type WorkspaceValue = {
   setTab: (tab: Tab) => void;
   // Opens a deliverable in the canvas (beside the chat on home, full width elsewhere).
   openAsset: (asset: import("../lib/types").Asset) => void;
+  // Starts a new conversation on the home page with the composer prefilled.
+  askNabil: (prefill: string) => void;
   setProspect: (prospect: Prospect | null) => void;
   setActiveRun: (id: string | null) => void;
   showProposal: (proposal: Proposal) => void;

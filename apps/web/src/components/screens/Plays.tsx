@@ -5,8 +5,8 @@ import {
   type ToolName,
   type ToolRequest,
 } from "@revenue/contracts";
-import { IconArrowRight, IconCheck, IconPlayerPlay } from "@revenue/ui";
-import { Badge, Button, Field, Panel, Select, Stat } from "../primitives";
+import { IconArrowRight, IconCheck } from "@revenue/ui";
+import { Badge, Button, Field, Panel, Select } from "../primitives";
 import { useWorkspace } from "../workspace-context";
 import { usePrefs } from "../../lib/prefs";
 
@@ -49,64 +49,62 @@ export function Plays() {
     .join(", ");
   const budget = data.budgets.find((b) => !b.userId);
   const pending = data.drafts.filter((d) => d.approvedVersion !== d.version);
+  const tierA = data.prospects.filter((p) => p.breakdown.tier === "A").length;
   return (
     <>
-      <div className="stat-row">
-        <Stat
-          label={t("Accounts")}
-          value={data.prospects.length}
-          meta={`${data.prospects.filter((p) => p.breakdown.tier === "A").length} ${t("tier A")}`}
-        />
-        <Stat
-          label={t("Awaiting review")}
-          value={pending.length}
-          meta={`${approvedDrafts.length} ${t("approved")}`}
-        />
-        <Stat
-          label={t("Assets")}
-          value={data.assets.length}
-          meta={`${data.assets.filter((a) => a.approvedAt).length} ${t("approved")}`}
-        />
-        <Stat
-          label={t("AI credits")}
-          value={
-            <bdi>
-              {budget ? budget.used + budget.reserved : 0}
-              <small> / {budget?.cap ?? 0}</small>
-            </bdi>
-          }
-          meter={
-            budget
-              ? { value: budget.used + budget.reserved, max: budget.cap }
-              : undefined
-          }
-          meta={`${budget?.reserved ?? 0} ${t("reserved")}`}
-        />
-      </div>
-      <div className="play-grid">
-        {PLAYS.map((p) => (
-          <button
-            key={p.id}
-            className={`play-card ${play === p.id ? "chosen" : ""}`}
-            aria-pressed={play === p.id}
-            onClick={() => setPlay(p.id)}
-          >
-            <span className="eyebrow">{p.id}</span>
-            <h2>{t(p.name)}</h2>
-            <p>{t(p.description)}</p>
-            <span className="play-foot">
-              <span className="mono">
-                {p.steps.length} {t("steps")}
-              </span>
-              {play === p.id ? (
-                <Badge tone="ok">{t("Selected")}</Badge>
-              ) : (
-                <IconPlayerPlay size={14} aria-hidden />
-              )}
+      <dl className="metric-strip">
+        <div>
+          <dt>{t("Accounts")}</dt>
+          <dd>
+            {data.prospects.length} <span>· {tierA} {t("tier A")}</span>
+          </dd>
+        </div>
+        <div>
+          <dt>{t("Awaiting review")}</dt>
+          <dd>
+            {pending.length} <span>· {approvedDrafts.length} {t("approved")}</span>
+          </dd>
+        </div>
+        <div>
+          <dt>{t("Deliverables")}</dt>
+          <dd>
+            {data.assets.length}{" "}
+            <span>
+              · {data.assets.filter((a) => a.approvedAt).length} {t("approved")}
             </span>
-          </button>
-        ))}
-      </div>
+          </dd>
+        </div>
+        <div>
+          <dt>{t("AI credits")}</dt>
+          <dd>
+            <bdi dir="ltr">
+              {budget ? budget.used + budget.reserved : 0}
+              <span> / {budget?.cap ?? 0}</span>
+            </bdi>
+          </dd>
+        </div>
+      </dl>
+      <div className="plays-layout">
+        <nav className="play-list" aria-label={t("Plays")}>
+          {PLAYS.map((p) => (
+            <button
+              key={p.id}
+              className={play === p.id ? "active" : ""}
+              aria-pressed={play === p.id}
+              onClick={() => setPlay(p.id)}
+            >
+              <span className="mono play-id">{p.id}</span>
+              <span className="play-text">
+                <strong>{t(p.name)}</strong>
+                <span className="muted">{t(p.description)}</span>
+              </span>
+              <span className="mono muted play-steps">
+                {p.steps.length}
+              </span>
+            </button>
+          ))}
+        </nav>
+        <div className="play-run">
       <Panel
         eyebrow={`${currentPlay.id} · ${t("Run sheet")}`}
         title={t(currentPlay.name)}
@@ -199,8 +197,16 @@ export function Plays() {
           })}
         </ol>
       </Panel>
-      <LaunchGate />
-      <ScheduledPlays key={ws} />
+        </div>
+      </div>
+      <details className="disclosure">
+        <summary>{t("Launch checklist")}</summary>
+        <LaunchGate />
+      </details>
+      <details className="disclosure">
+        <summary>{t("Scheduled reviews")}</summary>
+        <ScheduledPlays key={ws} />
+      </details>
     </>
   );
 }

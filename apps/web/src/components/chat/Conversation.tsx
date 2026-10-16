@@ -100,7 +100,7 @@ function StepRow({
         <IconChevronDown size={14} className="step-chevron" aria-hidden />
       </button>
       {open && (
-        <ol className="step-list">
+        <ol className="tool-step-list">
           {(
             steps ??
             names.map((name, i): ToolStep => ({ id: String(i), name, state: "result" }))

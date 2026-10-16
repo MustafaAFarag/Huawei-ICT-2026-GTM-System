@@ -102,6 +102,7 @@ export default function Page() {
     [events, setEvents] = useState<
       { id: number; message: string; kind: string }[]
     >([]);
+  const [homePrefill, setHomePrefill] = useState<{ text: string; key: number } | null>(null);
   const [preview, setPreview] = useState<Asset | null>(null),
     [prospect, setProspect] = useState<Prospect | null>(null);
   const activeWorkspace = useRef(ws);
@@ -252,7 +253,8 @@ export default function Page() {
     setViewState(readUrl().view);
   }, []);
 
-  // The first workspace load restores the conversation from the URL; later switches start fresh.
+  // The first workspace load restores the conversation from the URL; later switches keep the
+  // current screen and start a fresh conversation.
   const urlRestored = useRef(false);
   useEffect(() => {
     setData(null);
@@ -271,7 +273,7 @@ export default function Page() {
       urlRestored.current = true;
       const thread = readUrl().thread;
       if (thread) chat.openThread(thread);
-    } else setViewState("Home");
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ws, refresh]);
 
@@ -470,6 +472,11 @@ export default function Page() {
             setSelected: (update) => setSelected(update),
             setTab,
             openAsset,
+            askNabil: (text) => {
+              setView("Home");
+              chat.newChat();
+              setHomePrefill({ text, key: Date.now() });
+            },
             setProspect,
             setActiveRun,
             showProposal: setProposal,
@@ -490,6 +497,8 @@ export default function Page() {
       selected,
       setTab,
       openAsset,
+      setView,
+      chat.newChat,
       action,
       propose,
     ],
@@ -656,6 +665,7 @@ export default function Page() {
                   onQuote={setProposal}
                   onOpenAsset={openAsset}
                   canvas={canvas}
+                  initialPrefill={homePrefill}
                 />
               ) : null}
               {view === "Home" && activeRun && (

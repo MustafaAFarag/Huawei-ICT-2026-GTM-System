@@ -24,6 +24,9 @@ export function ProspectReview({ prospect }: { prospect: Prospect }) {
   const { ws, canApprove, action, setProspect } = useWorkspace();
   const { t } = usePrefs();
   const [evidence, setEvidence] = useState(prospect.evidence);
+  // Side detail as tabs (progressive disclosure) instead of five stacked panels. Policy
+  // fields stay mounted while hidden because the evidence form submits them.
+  const [side, setSide] = useState<"fit" | "triage" | "calls" | "discovery">("fit");
   useEffect(() => setEvidence(prospect.evidence), [prospect]);
   const update = (index: number, patch: Partial<(typeof evidence)[number]>) =>
     setEvidence((previous) =>
@@ -193,6 +196,27 @@ export function ProspectReview({ prospect }: { prospect: Prospect }) {
         </Panel>
       </div>
       <div className="detail-side">
+        <div className="tabs-inline" role="tablist" aria-label={t("Account detail")}>
+          {(
+            [
+              ["fit", "Fit and policy"],
+              ["triage", "Triage"],
+              ["calls", "Calls"],
+              ["discovery", "Discovery"],
+            ] as const
+          ).map(([id, label]) => (
+            <button
+              key={id}
+              type="button"
+              role="tab"
+              aria-selected={side === id}
+              onClick={() => setSide(id)}
+            >
+              {t(label)}
+            </button>
+          ))}
+        </div>
+        <div hidden={side !== "fit"} className="stack">
         <Panel eyebrow={t("Fit")} title={prospect.score ?? "—"}>
           {prospect.breakdown.tier && (
             <Badge tone="info">
@@ -259,9 +283,14 @@ export function ProspectReview({ prospect }: { prospect: Prospect }) {
             </Button>
           </div>
         </Panel>
-        <TriagePanel key={`triage:${prospect.id}`} prospect={prospect} />
-        <CallLog key={`call:${prospect.id}`} prospect={prospect} />
-        <DiscoveryPanel key={`discovery:${prospect.id}`} prospect={prospect} />
+        </div>
+        {side === "triage" && (
+          <TriagePanel key={`triage:${prospect.id}`} prospect={prospect} />
+        )}
+        {side === "calls" && <CallLog key={`call:${prospect.id}`} prospect={prospect} />}
+        {side === "discovery" && (
+          <DiscoveryPanel key={`discovery:${prospect.id}`} prospect={prospect} />
+        )}
       </div>
     </form>
   );

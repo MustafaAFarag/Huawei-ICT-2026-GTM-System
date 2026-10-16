@@ -549,10 +549,13 @@ class ApiController {
         }),
       })
       .parse(body);
+    // The non-streaming path files its exchange as a new conversation, like the stream does.
+    const thread = await threads.forTurn(actor, input.content);
     await db.chatMessage.create({
       data: {
         workspaceId: ws,
         userId: actor.userId,
+        threadId: thread.id,
         role: "user",
         content: input.content,
         context: json(input.context),
@@ -584,6 +587,7 @@ class ApiController {
       data: {
         workspaceId: ws,
         userId: actor.userId,
+        threadId: thread.id,
         role: "assistant",
         content,
         context: json({ ...input.context, tool }),

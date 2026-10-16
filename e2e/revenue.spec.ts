@@ -8,11 +8,10 @@ const companyName = `Synthetic Test Lab ${randomUUID()
 const email = `noura${randomUUID().slice(0, 8)}@synthetic-demo.example`;
 async function login(page: Page) {
   // The session comes from e2e/global-setup.ts (sign-in is rate-limited).
-  await page.goto("/");
+  await page.goto("/?s=Plays");
   await expect(
     page.getByRole("heading", { name: "Plays", exact: true }),
   ).toBeVisible();
-  await page.getByRole("button", { name: "Hide assistant" }).click();
 }
 test("four plays, bilingual asset, approval invalidation, suppression and workspace isolation", async ({
   page,
@@ -56,6 +55,9 @@ test("four plays, bilingual asset, approval invalidation, suppression and worksp
   await page.getByRole("button", { name: "Save company context" }).click();
   await expect(page.getByRole("status")).toContainText("Company context saved");
   await page.getByRole("button", { name: "Accounts", exact: true }).click();
+  const importSection = page.locator("details.disclosure").first();
+  if ((await importSection.getAttribute("open")) === null)
+    await importSection.locator("> summary").click();
   const csv = `firstName,lastName,email,company,website,title,employees\nNoura,Demo,${email},${companyName},https://example.com,Founder,15\n`;
   await page.getByLabel("Lead file").setInputFiles({
     name: "synthetic.csv",
@@ -112,9 +114,6 @@ test("four plays, bilingual asset, approval invalidation, suppression and worksp
       })
       .toBe("succeeded");
     await page.reload();
-    await page
-      .getByRole("button", { name: "Hide assistant", exact: true })
-      .click();
     // Page refresh resets selection; reselect the same imported record.
     await page.getByRole("button", { name: "Accounts", exact: true }).click();
     await page
@@ -155,13 +154,12 @@ test("four plays, bilingual asset, approval invalidation, suppression and worksp
   expect(
     (await context.request.get(`${base}/assets/${asset.id}/png`)).status(),
   ).toBe(409);
-  await page.getByRole("button", { name: "Asset Studio", exact: true }).click();
-  const card = page
-    .locator(".asset-card")
-    .filter({ hasText: companyName })
-    .first();
-  await card.getByRole("button", { name: "Preview", exact: true }).click();
-  const frame = page.frameLocator("iframe");
+  await page.getByRole("button", { name: "Deliverables", exact: true }).click();
+  // Deliverables is a list; a row opens the canvas with the sandboxed preview.
+  const row = page.locator(".row").filter({ hasText: companyName }).first();
+  await row.click();
+  const canvas = page.locator(".artifact-canvas");
+  const frame = page.frameLocator(".artifact-canvas iframe");
   const previewResponse = await context.request.get(
     `${base}/assets/${asset.id}/html`,
   );
@@ -171,17 +169,16 @@ test("four plays, bilingual asset, approval invalidation, suppression and worksp
   expect(previewResponse.headers()["content-security-policy"]).toContain(
     "frame-ancestors 'self'",
   );
-  await expect(page.locator("iframe")).toHaveAttribute("sandbox", "");
+  await expect(canvas.locator("iframe")).toHaveAttribute("sandbox", "");
   await expect(
     frame.getByRole("heading", { name: "فكرة تساعد فريقك ينمو" }),
   ).toBeVisible();
-  await page.getByRole("button", { name: "Close preview" }).click();
   const assetApproval = context.waitForEvent("response", {
     predicate: (response) =>
       response.url().endsWith(`${base}/assets/${asset.id}/approve`) &&
       response.request().method() === "POST",
   });
-  await card.getByRole("button", { name: "Approve", exact: true }).click();
+  await canvas.getByRole("button", { name: "Approve", exact: true }).click();
   expect((await assetApproval).ok()).toBe(true);
   const pdf = await context.request.get(`${base}/assets/${asset.id}/pdf`);
   expect(pdf.status()).toBe(200);
@@ -193,10 +190,11 @@ test("four plays, bilingual asset, approval invalidation, suppression and worksp
     Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]),
   );
   const imageDownload = page.waitForEvent("download");
-  await card.getByRole("button", { name: "Download PNG", exact: true }).click();
+  await canvas.getByRole("button", { name: "PNG", exact: true }).click();
   expect((await imageDownload).suggestedFilename()).toBe(
     "offer-one-pager-ar-EG.png",
   );
+  await canvas.getByRole("button", { name: "Close preview" }).click();
   await expect(page.getByText("Action needs attention")).toHaveCount(0);
   // Asset assignment is versioned, then current copy is approved again.
   expect(
@@ -409,9 +407,6 @@ test("four plays, bilingual asset, approval invalidation, suppression and worksp
   ).toBe(true);
   await page.reload();
   await expect(page.getByText(chatText, { exact: true })).toBeVisible();
-  await page
-    .getByRole("button", { name: "Hide assistant", exact: true })
-    .click();
   for (const width of [1024, 390]) {
     await page.setViewportSize({ width, height: 844 });
     expect(
