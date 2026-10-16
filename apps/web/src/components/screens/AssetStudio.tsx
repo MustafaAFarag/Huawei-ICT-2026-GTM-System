@@ -61,7 +61,18 @@ export function AssetStudio({ onPreview }: { onPreview: (a: Asset) => void }) {
                     {a.approvedAt ? t("approved") : t("needs review")}
                   </Badge>
                 </div>
-                <h2 dir="auto">{a.title}</h2>
+                <h2>
+                  {t(
+                    a.template === "mini-audit"
+                      ? "Mini-audit report"
+                      : "Offer one-pager",
+                  )}{" "}
+                  {company && (
+                    <>
+                      — <bdi>{company}</bdi>
+                    </>
+                  )}
+                </h2>
                 <p className="muted" dir="auto">
                   {company ? `${company} · ` : ""}
                   {a.approvedAt

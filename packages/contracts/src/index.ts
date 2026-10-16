@@ -96,6 +96,7 @@ export const toolRequest = z.object({
     .enum(["offer-one-pager", "mini-audit"])
     .default("offer-one-pager"),
   website: z.url().optional(),
+  sourceAssetId: z.uuid().optional(),
   message: z.string().min(1).max(3000).optional(),
   draftIds: z.array(z.uuid()).max(100).default([]),
   approvedSpend: z.boolean().default(false),
@@ -233,3 +234,5 @@ export class RevenueClient {
 export * from "./gtm.ts";
 export * from "./import-history.ts";
 export * from "./schedules.ts";
+
+export * from "./assistant.ts";

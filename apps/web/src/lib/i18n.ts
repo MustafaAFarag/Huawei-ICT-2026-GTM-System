@@ -1,16 +1,75 @@
 // Arabic interface strings (business Arabic). Keys are the English source strings;
 // a missing key falls back to English. Generated content language is chosen per play.
 export const AR: Record<string, string> = {
+  Revision: "نسخة معدّلة",
+  "AI replies: 1 credit": "رد الذكاء الاصطناعي: رصيد واحد",
+  "Editing document": "المستند الحالي",
+  "Change the heading, layout or wording…":
+    "غيّر العنوان أو التنسيق أو الصياغة…",
+
+  Egypt: "مصر",
+  "Saudi Arabia": "السعودية",
+  "United Arab Emirates": "الإمارات العربية المتحدة",
+  aiCredits: "رصيد الذكاء الاصطناعي",
+  enrichmentCredits: "رصيد بيانات التواصل",
+  sends: "الإرسالات",
+  exports: "الصادرات",
+
+  "Edit with assistant": "تعديل مع المساعد",
+  "Ask the assistant to change this document. Revisions preserve the original and need a new review before export.":
+    "اطلب من المساعد تعديل المستند تحفظ التعديلات كنسخة جديدة تحتاج مراجعة قبل التصدير",
+  "Requested change": "التعديل المطلوب",
+  "Creates a new unapproved revision. The original is preserved.":
+    "تُنشأ نسخة جديدة غير معتمدة مع الاحتفاظ بالأصل",
+  "Account not found. Reload the workspace.":
+    "لم يُعثر على الحساب أعد تحميل مساحة العمل",
+  "Asset not found. Reload the workspace.":
+    "لم يُعثر على المادة أعد تحميل مساحة العمل",
+  "Accounts selected": "تم تحديد الحسابات",
+  "open screen": "فتح الصفحة",
+  "open account": "فتح الحساب",
+  "open asset": "فتح المادة",
+  "select accounts": "تحديد الحسابات",
+  "get account": "قراءة الحساب",
+  "get draft": "قراءة المسودة",
+  "get asset": "قراءة المادة",
+  "list assets": "عرض المواد",
+  "search accounts": "البحث في الحسابات",
+  "workspace overview": "ملخص مساحة العمل",
+  "review queue": "قائمة المراجعة",
+  "recent runs": "آخر التشغيلات",
+  "make asset": "إعداد مادة",
+  "draft messages": "كتابة الرسائل",
+
+  "Demo owner": "مدير العرض التجريبي",
+  owner: "مالك",
+  operator: "مسؤول تشغيل",
+  reviewer: "مراجع",
+  viewer: "مشاهد",
+  match: "مطابق",
+  "no match": "غير مطابق",
+  unknown: "غير معروف",
+  "B2B decision-making role": "دور مسؤول عن قرارات الأعمال",
+  "Small or growing business (1–200 staff)": "شركة صغيرة أو نامية (١–٢٠٠ موظف)",
+  "Company website available": "موقع الشركة متاح",
+  "Hiring or funding signal": "إشارة توظيف أو تمويل",
+
   "Brief language": "لغة الملخص",
   "Download research brief": "تنزيل ملخص البحث",
-  "Could not export the research brief. Try again.": "تعذر تصدير ملخص البحث حاول مرة أخرى.",
-  "Save source changes before exporting the research brief.": "احفظ تعديلات المصادر قبل تصدير ملخص البحث.",
-  "Exports saved research. Facts, hypotheses and unknowns stay separate; source wording keeps its original language.": "يُصدّر البحث المحفوظ مع فصل الحقائق والفرضيات والأسئلة المفتوحة وتبقى صياغة المصادر بلغتها الأصلية.",
+  "Could not export the research brief. Try again.":
+    "تعذر تصدير ملخص البحث حاول مرة أخرى.",
+  "Save source changes before exporting the research brief.":
+    "احفظ تعديلات المصادر قبل تصدير ملخص البحث.",
+  "Exports saved research. Facts, hypotheses and unknowns stay separate; source wording keeps its original language.":
+    "يُصدّر البحث المحفوظ مع فصل الحقائق والفرضيات والأسئلة المفتوحة وتبقى صياغة المصادر بلغتها الأصلية.",
   "Call summary": "ملخص المكالمة",
   "Follow-up after (days)": "المتابعة بعد عدد من الأيام",
-  "Leave blank when timing is unknown. This records the delay; it does not schedule a reminder.": "اتركه فارغًا إذا لم يُحدّد الوقت يُحفظ التأخير كملاحظة ولا يُجدول تذكيرًا",
-  "Saved to this workspace. CRM sync needs attention; check the connection.": "حُفظت النتيجة في مساحة العمل وتحتاج مزامنة سجل العملاء إلى مراجعة الاتصال",
-  "Call outcome saved to this workspace.": "تم حفظ نتيجة المكالمة في مساحة العمل",
+  "Leave blank when timing is unknown. This records the delay; it does not schedule a reminder.":
+    "اتركه فارغًا إذا لم يُحدّد الوقت يُحفظ التأخير كملاحظة ولا يُجدول تذكيرًا",
+  "Saved to this workspace. CRM sync needs attention; check the connection.":
+    "حُفظت النتيجة في مساحة العمل وتحتاج مزامنة سجل العملاء إلى مراجعة الاتصال",
+  "Call outcome saved to this workspace.":
+    "تم حفظ نتيجة المكالمة في مساحة العمل",
   "Date reference": "مرجع التاريخ",
   "Simulated classification": "تصنيف تجريبي",
   "AI credit per suggestion": "رصيد ذكاء اصطناعي لكل اقتراح",
@@ -22,13 +81,16 @@ export const AR: Record<string, string> = {
   "not interested": "غير مهتم",
   "wrong person": "الشخص غير المقصود",
   "opt out": "طلب وقف التواصل",
-  "voicemail": "بريد صوتي",
+  voicemail: "بريد صوتي",
   "Download PNG": "تنزيل PNG",
   "Preparing image…": "جارٍ إعداد الصورة…",
   "Could not prepare the image. Try again.": "تعذّر إعداد الصورة أعد المحاولة",
-  "Another image export is being prepared. Try again shortly.": "جارٍ إعداد صورة أخرى أعد المحاولة بعد قليل",
-  "Review and approve this asset before exporting it.": "راجع المادة واعتمدها قبل التصدير",
-  "Asset approval changed while preparing the export. Reload and review it.": "تغيّر اعتماد المادة أثناء إعداد الملف أعد التحميل وراجعها",
+  "Another image export is being prepared. Try again shortly.":
+    "جارٍ إعداد صورة أخرى أعد المحاولة بعد قليل",
+  "Review and approve this asset before exporting it.":
+    "راجع المادة واعتمدها قبل التصدير",
+  "Asset approval changed while preparing the export. Reload and review it.":
+    "تغيّر اعتماد المادة أثناء إعداد الملف أعد التحميل وراجعها",
   "Recurring play reviews": "مراجعات الخطط الدورية",
   "Each occurrence prepares a review. You approve its current scope and cost before work starts.":
     "في كل موعد تُجهّز مراجعة تعتمد النطاق والتكلفة الحالية قبل بدء العمل",

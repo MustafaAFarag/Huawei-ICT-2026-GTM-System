@@ -1,6 +1,10 @@
 "use client";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import type { ToolName, ToolRequest } from "@revenue/contracts";
+import type {
+  AssistantUiAction,
+  ToolName,
+  ToolRequest,
+} from "@revenue/contracts";
 import { IconShieldCheck, IconX } from "@revenue/ui";
 import { client } from "../lib/client";
 import { usePrefs } from "../lib/prefs";
@@ -23,11 +27,7 @@ import { Sidebar, Topbar } from "../components/Shell";
 import { CommandPalette } from "../components/CommandPalette";
 import { Assistant } from "../components/Assistant";
 import { RunLog } from "../components/RunLog";
-import {
-  AssetPreviewModal,
-  CostModal,
-  type Proposal,
-} from "../components/Modals";
+import { AssetEditor, CostModal, type Proposal } from "../components/Modals";
 import { SignIn } from "../components/SignIn";
 import {
   TABS,
@@ -74,6 +74,18 @@ export default function Page() {
     [notice, setNotice] = useState(""),
     [chatOpen, setChatOpen] = useState(true),
     [paletteOpen, setPaletteOpen] = useState(false);
+  const [aiCursor, setAiCursor] = useState<{
+    x: number;
+    y: number;
+    label: string;
+  } | null>(null);
+  const cursorTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(
+    () => () => {
+      if (cursorTimer.current) clearTimeout(cursorTimer.current);
+    },
+    [],
+  );
   const [proposal, setProposal] = useState<Proposal | null>(null);
   const [activeRun, setActiveRun] = useState<string | null>(null),
     [events, setEvents] = useState<
@@ -185,6 +197,7 @@ export default function Page() {
   const setTab = useCallback((next: Tab) => {
     setTabState(next);
     setProspect(null);
+    setPreview(null);
   }, []);
   // ⌘K / Ctrl+K opens the palette; "g" then a digit jumps to a screen.
   useEffect(() => {
@@ -281,11 +294,90 @@ export default function Page() {
       setActiveRun(run.id);
       setProposal(null);
     }, t("Action queued. Progress is saved if you leave this page."));
+  const shownAssetRun = useRef<string | null>(null);
+  useEffect(() => {
+    const run = data?.runs.find(
+      (r) =>
+        r.id === activeRun &&
+        r.tool === "make_asset" &&
+        r.state === "succeeded",
+    );
+    if (!run || shownAssetRun.current === run.id) return;
+    const output = run.output as { result?: { id?: string } }[] | null;
+    const result = data?.assets.find((a) => a.id === output?.[0]?.result?.id);
+    if (result) {
+      shownAssetRun.current = run.id;
+      setTabState("Asset Studio");
+      setProspect(null);
+      setPreview(result);
+    }
+  }, [data, activeRun]);
+  const assistantAction = async (ui: AssistantUiAction) => {
+    if (!data || activeWorkspace.current !== ws) return;
+    let target = "";
+    let label = "";
+    if (ui.kind === "navigate") {
+      target = `screen:${ui.screen}`;
+      label = t(ui.screen);
+      setTab(ui.screen);
+    } else if (ui.kind === "open_account") {
+      const record = data.prospects.find((p) => p.id === ui.prospectId);
+      if (!record)
+        throw new Error(t("Account not found. Reload the workspace."));
+      setTab("Accounts");
+      setProspect(record);
+      setSelected([record.id]);
+      target = "account-detail";
+      label = record.snapshot.company;
+    } else if (ui.kind === "open_asset") {
+      const asset = data.assets.find((a) => a.id === ui.assetId);
+      if (!asset) throw new Error(t("Asset not found. Reload the workspace."));
+      setTab("Asset Studio");
+      setPreview(asset);
+      setSelected([asset.prospectId]);
+      target = "asset-preview";
+      label = t("Preview");
+    } else {
+      if (ui.prospectIds.some((id) => !data.prospects.some((p) => p.id === id)))
+        throw new Error(t("Account not found. Reload the workspace."));
+      setSelected(ui.prospectIds);
+      target = `screen:${tab}`;
+      label = t("Accounts selected");
+    }
+    await new Promise<void>((resolve) =>
+      requestAnimationFrame(() => requestAnimationFrame(() => resolve())),
+    );
+    if (activeWorkspace.current !== ws) return;
+    const element = document.querySelector<HTMLElement>(
+      `[data-ai-target="${CSS.escape(target)}"]`,
+    );
+    if (element) {
+      if (ui.kind !== "select_accounts")
+        document.querySelector(".main")?.scrollTo({ top: 0 });
+      element.classList.add("ai-target-active");
+      const box = element.getBoundingClientRect();
+      setAiCursor({
+        x: Math.min(innerWidth - 140, Math.max(12, box.x + box.width / 2)),
+        y: Math.min(innerHeight - 48, Math.max(12, box.y + 20)),
+        label,
+      });
+      if (cursorTimer.current) clearTimeout(cursorTimer.current);
+      cursorTimer.current = setTimeout(() => {
+        setAiCursor(null);
+        document
+          .querySelectorAll(".ai-target-active")
+          .forEach((e) => e.classList.remove("ai-target-active"));
+      }, 1000);
+    }
+  };
   const value = useMemo<WorkspaceValue | null>(
     () =>
       data
         ? {
             ws,
+            screen: tab,
+            activeProspectId: prospect?.id,
+            activeAssetId: preview?.id,
             userId,
             data,
             busy,
@@ -305,7 +397,21 @@ export default function Page() {
             propose,
           }
         : null,
-    [ws, userId, data, busy, play, language, selected, setTab, action, propose],
+    [
+      ws,
+      tab,
+      prospect?.id,
+      preview?.id,
+      userId,
+      data,
+      busy,
+      play,
+      language,
+      selected,
+      setTab,
+      action,
+      propose,
+    ],
   );
   if (authState === "loading")
     return (
@@ -316,7 +422,7 @@ export default function Page() {
       </main>
     );
   if (authState === "signin") return <SignIn onSignedIn={loadMe} />;
-  const modalOpen = Boolean(proposal || preview || paletteOpen);
+  const modalOpen = Boolean(proposal || paletteOpen);
   const heading = prospect ? prospect.snapshot.company : t(tab);
   return (
     <div className={`shell ${chatOpen ? "" : "chat-closed"}`}>
@@ -414,11 +520,26 @@ export default function Page() {
                   <p className="muted">{t(DESCRIPTIONS[tab])}</p>
                 </div>
                 <Badge>
-                  {data.workspace.plan} {t("plan")}
+                  <bdi>{data.workspace.plan}</bdi> {t("plan")}
                 </Badge>
               </div>
               <div key={ws} className="screen">
-                {prospect ? (
+                {preview ? (
+                  <AssetEditor
+                    ws={ws}
+                    asset={
+                      data.assets.find((asset) => asset.id === preview.id) ??
+                      preview
+                    }
+                    onClose={() => setPreview(null)}
+                    onEdit={() => {
+                      setChatOpen(true);
+                      requestAnimationFrame(() =>
+                        document.getElementById("assistant-input")?.focus(),
+                      );
+                    }}
+                  />
+                ) : prospect ? (
                   <ProspectReview prospect={prospect} />
                 ) : (
                   <>
@@ -426,7 +547,12 @@ export default function Page() {
                     {tab === "Accounts" && <Accounts />}
                     {tab === "Review queue" && <ReviewQueue />}
                     {tab === "Asset Studio" && (
-                      <AssetStudio onPreview={setPreview} />
+                      <AssetStudio
+                        onPreview={(asset) => {
+                          setPreview(asset);
+                          setSelected([asset.prospectId]);
+                        }}
+                      />
                     )}
                     {tab === "Sequences" && <Sequences />}
                     {tab === "Company context" && (
@@ -445,14 +571,33 @@ export default function Page() {
         <aside className="assistant" inert={modalOpen}>
           <WorkspaceProvider value={value}>
             <Assistant
+              key={ws}
               chats={chats}
               setChats={setChats}
               onQuote={setProposal}
               onNavigate={setTab}
+              onUiAction={assistantAction}
               onClose={() => setChatOpen(false)}
             />
           </WorkspaceProvider>
         </aside>
+      )}
+      {aiCursor && (
+        <div
+          className="ai-cursor"
+          role="status"
+          style={{ left: aiCursor.x, top: aiCursor.y }}
+        >
+          <svg width="22" height="26" viewBox="0 0 22 26" aria-hidden="true">
+            <path
+              d="M2 2v20l6-6 5 8 4-2-5-8h8Z"
+              fill="currentColor"
+              stroke="var(--surface)"
+              strokeWidth="2"
+            />
+          </svg>
+          <span>{aiCursor.label}</span>
+        </div>
       )}
       {notice && (
         <div className="toast" role="status">
@@ -474,13 +619,6 @@ export default function Page() {
           error={error}
           onCancel={() => setProposal(null)}
           onApprove={() => void launch()}
-        />
-      )}
-      {preview && (
-        <AssetPreviewModal
-          ws={ws}
-          asset={preview}
-          onClose={() => setPreview(null)}
         />
       )}
       <CommandPalette

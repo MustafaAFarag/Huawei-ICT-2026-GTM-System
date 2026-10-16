@@ -4,6 +4,9 @@ import type { ToolRequest } from "@revenue/contracts";
 import { IconX } from "@revenue/ui";
 import { Badge, Button } from "./primitives";
 import { usePrefs } from "../lib/prefs";
+import { assetLabel } from "../lib/asset-label";
+import { useWorkspace } from "./workspace-context";
+import { client } from "../lib/client";
 import type { Asset } from "../lib/types";
 
 export type Proposal = {
@@ -105,6 +108,19 @@ export function CostModal({
           {error}
         </p>
       )}
+      {proposal.input.message && (
+        <div className="revision-request">
+          <strong>{t("Requested change")}</strong>
+          <p dir="auto">{proposal.input.message}</p>
+          {proposal.input.sourceAssetId && (
+            <p className="muted small">
+              {t(
+                "Creates a new unapproved revision. The original is preserved.",
+              )}
+            </p>
+          )}
+        </div>
+      )}
       <div className="cost">
         <strong className="mono">{proposal.quote.estimate}</strong>
         <span>{t("credits maximum")}</span>
@@ -133,37 +149,82 @@ export function CostModal({
   );
 }
 
-export function AssetPreviewModal({
+export function AssetEditor({
   ws,
   asset,
   onClose,
+  onEdit,
 }: {
   ws: string;
   asset: Asset;
   onClose: () => void;
+  onEdit: () => void;
 }) {
   const { t } = usePrefs();
-  useDialog(true, false, onClose);
+  const { canApprove, busy, action } = useWorkspace();
   return (
-    <Dialog label="asset-title" className="asset-preview">
+    <section
+      aria-labelledby="asset-title"
+      className="asset-editor"
+      data-ai-target="asset-preview"
+    >
       <div className="modal-head">
         <div>
           <p className="eyebrow">
-            {asset.template} · {asset.language}
+            {t(
+              asset.template === "mini-audit"
+                ? "Mini-audit report"
+                : "Offer one-pager",
+            )}{" "}
+            · <bdi>{asset.language}</bdi>
           </p>
           <h2 id="asset-title" dir="auto">
-            {asset.title}
+            {assetLabel(asset, t)}
           </h2>
         </div>
-        <Button startIcon={<IconX size={14} />} onClick={onClose}>
-          {t("Close preview")}
-        </Button>
+        <div className="button-row">
+          {!asset.approvedAt ? (
+            <Button
+              variant="primary"
+              disabled={!canApprove || busy}
+              onClick={() =>
+                void action(
+                  () =>
+                    client.workspace(ws, `/assets/${asset.id}/approve`, {
+                      method: "POST",
+                    }),
+                  t("Asset approved for PDF export."),
+                )
+              }
+            >
+              {t("Approve")}
+            </Button>
+          ) : (
+            <a
+              className="btn btn-secondary btn-md"
+              href={`/api/workspaces/${ws}/assets/${asset.id}/pdf`}
+            >
+              {t("Download PDF")}
+            </a>
+          )}
+          <Button variant="ai" onClick={onEdit}>
+            {t("Edit with assistant")}
+          </Button>
+          <Button startIcon={<IconX size={14} />} onClick={onClose}>
+            {t("Close preview")}
+          </Button>
+        </div>
       </div>
+      <p className="muted small">
+        {t(
+          "Ask the assistant to change this document. Revisions preserve the original and need a new review before export.",
+        )}
+      </p>
       <iframe
         title="Sandboxed asset preview"
         sandbox=""
         src={`/api/workspaces/${ws}/assets/${asset.id}/html`}
       />
-    </Dialog>
+    </section>
   );
 }

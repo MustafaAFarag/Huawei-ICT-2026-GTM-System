@@ -56,6 +56,8 @@ import {
   ImportHistoryService,
   ScheduleService,
   assetPng,
+  assetPdf,
+  normalizeAssetBidi,
   assertPngApprovalUnchanged,
 } from "@revenue/backend";
 import type { Actor } from "@revenue/contracts";
@@ -392,17 +394,39 @@ class ApiController {
     const key = format === "pdf" ? asset.pdfKey : asset.htmlKey;
     if (!key)
       throw new HttpException("This export is still being prepared.", 409);
-    const bytes = format === "png" ? await assetPng(ws,asset) : await storage.get(ws,key);
-    if (format === "png") {
-      const current = await db.asset.findFirst({ where: { id, workspaceId: ws } });
-      const prospect = await db.prospect.findFirst({ where: { id: asset.prospectId!, workspaceId: ws } });
-      if(!prospect)throw new HttpException("The source account no longer exists. Reload the workspace.",409);
-      assertPngApprovalUnchanged(asset,current,prospect.evidence);
+    const bytes =
+      format === "png"
+        ? await assetPng(ws, asset)
+        : format === "pdf"
+          ? await assetPdf(ws, asset)
+          : Buffer.from(
+              normalizeAssetBidi(
+                (await storage.get(ws, key)).toString("utf8"),
+                asset.language,
+              ),
+            );
+    if (format !== "html") {
+      const current = await db.asset.findFirst({
+        where: { id, workspaceId: ws },
+      });
+      const prospect = await db.prospect.findFirst({
+        where: { id: asset.prospectId!, workspaceId: ws },
+      });
+      if (!prospect)
+        throw new HttpException(
+          "The source account no longer exists. Reload the workspace.",
+          409,
+        );
+      assertPngApprovalUnchanged(asset, current, prospect.evidence);
     }
-    res.set("Cache-Control","private, no-store");
+    res.set("Cache-Control", "private, no-store");
     res.set(
       "Content-Type",
-      format === "pdf" ? "application/pdf" : format === "png" ? "image/png" : "text/html; charset=utf-8",
+      format === "pdf"
+        ? "application/pdf"
+        : format === "png"
+          ? "image/png"
+          : "text/html; charset=utf-8",
     );
     res.removeHeader("X-Frame-Options");
     res.set(
@@ -736,6 +760,9 @@ app
           prospectIds: string[];
           language?: "en" | "ar-EG" | "ar-Gulf" | "ar";
           uiLanguage?: "en" | "ar";
+          screen?: string;
+          activeProspectId?: string;
+          activeAssetId?: string;
         };
       };
       try {
@@ -749,6 +776,9 @@ app
               prospectIds: z.array(z.uuid()).max(100),
               language: z.enum(["en", "ar-EG", "ar-Gulf", "ar"]).optional(),
               uiLanguage: z.enum(["en", "ar"]).optional(),
+              screen: z.enum(["Plays", "Accounts", "Review queue", "Asset Studio", "Sequences", "Company context", "Settings"]).optional(),
+              activeProspectId: z.uuid().optional(),
+              activeAssetId: z.uuid().optional(),
             }),
           })
           .parse(req.body);

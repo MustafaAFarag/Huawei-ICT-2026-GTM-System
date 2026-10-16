@@ -6,6 +6,9 @@ Start the current local build at [localhost:3100](http://localhost:3100) using [
 
 The new local features are:
 
+- Assistant/UI refinement: safe Markdown for saved and streamed chat; viewport-bound chat/navigation; account detail sections below evidence; translated role labels and isolated mixed-script names/counts. Explicit screen/account/document commands open immediately with a visible target cursor. The open one-pager stays beside chat, accepts grounded AI revisions through the cost review, and offers approval/download in the preview. Each revision preserves its source asset and starts unapproved.
+- Arabic PDF correction: explicit paragraph direction and isolated Latin/numeric runs in generated and legacy asset previews/PDF/PNG exports; cached exports use normalized content, and PDF exports now repeat the approval/source check after rendering.
+
 - Import history: per-filename revisions, previous-version links, row counts and field-level before/after changes, with pagination and workspace isolation.
 - Recurring play reviews: durable schedules create due review items; a person reviews current scope and cost before each paid step. Missed occurrences collapse into one review. Pause, resume, dismiss and role-revocation handling are implemented.
 - Discovery guides: eight role-specific HR discovery questions, English/Arabic preview and printable PDFs; preparing a guide creates no answers or scores.

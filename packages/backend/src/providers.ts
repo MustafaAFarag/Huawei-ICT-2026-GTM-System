@@ -17,6 +17,7 @@ import { config, required } from "./config.js";
 import { escapeHtml, digest } from "./policy.js";
 import { publicPage } from "./public-web.js";
 import { assetHtml, injectFonts, stripFonts } from "./asset-template.js";
+import { normalizeAssetBidi } from "./asset-bidi.js";
 import { validateAssetContent } from "./asset-quality.js";
 import { validateDraftContent } from "./draft-quality.js";
 import { prompt } from "./agent/prompts.js";
@@ -416,7 +417,7 @@ export class Providers {
         throw new Error(
           "The generated draft failed the grounded sequence check. Review the sources and retry.",
         );
-      validateDraftContent(result.touches as Touch[],snapshot,facts,offer);
+      validateDraftContent(result.touches as Touch[], snapshot, facts, offer);
       const callerNote =
         language === "ar-EG"
           ? "قبل الاتصال: اتأكد من الأساس المسجّل للتواصل ومن الوقت المسموح ما تتصلش لو مفيش أساس مناسب أو لو الشخص طلب وقف التواصل."
@@ -545,6 +546,7 @@ export class OpenDesign {
     evidence: Evidence[],
     language: string,
     instructions?: string,
+    sourceHtml?: string,
   ) {
     const brand = this.workspace.brand as unknown as Brand;
     const base = assetHtml(
@@ -558,7 +560,7 @@ export class OpenDesign {
         (o) => o.approved,
       )?.text,
     );
-    let html = base;
+    let html = sourceHtml ?? base;
     if (!config.modelFixture) {
       const { url, token } = this.settings();
       const response = await fetch(`${url}/api/proxy/openai/stream`, {
@@ -577,8 +579,8 @@ export class OpenDesign {
             {
               role: "user",
               content: instructions
-                ? `${stripFonts(base)}\n\nEdit request (design only): ${instructions.slice(0, 500)}`
-                : stripFonts(base),
+                ? `Approved content contract:\n${stripFonts(base)}${sourceHtml ? `\n\nExisting document to revise (preserve its design except requested changes):\n${stripFonts(sourceHtml)}` : ""}\n\nEdit request: ${instructions.slice(0, 1500)}`
+                : stripFonts(sourceHtml ?? base),
             },
           ],
         }),
@@ -635,6 +637,7 @@ export class OpenDesign {
       // Keep the deterministic approved facts as the publication contract; model output remains a proposed design.
       html = injectFonts(artifact);
     }
+    html = normalizeAssetBidi(html, language);
     const saved = await this.request<{ url: string }>("/api/artifacts/save", {
       identifier: randomUUID(),
       title: `${template} — ${snapshot.company}`,

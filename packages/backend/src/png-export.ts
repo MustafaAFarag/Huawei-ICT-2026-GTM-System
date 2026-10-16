@@ -1,6 +1,7 @@
 import { ConflictException, ServiceUnavailableException } from "@nestjs/common";
 import { digest } from "./policy.js";
-import { renderPng } from "./providers.js";
+import { normalizeAssetBidi } from "./asset-bidi.js";
+import { renderPng, renderPdf } from "./providers.js";
 import { Storage } from "./storage.js";
 
 const inFlight = new Map<string, Promise<Buffer>>();
@@ -30,13 +31,24 @@ export function assertPngApprovalUnchanged(
 }
 // Only approved callers reach this renderer. Cache by immutable HTML content and
 // coalesce concurrent requests; cap new browser renders to one per API process.
-export async function assetPng(
+export const assetPng = (
   workspaceId: string,
   asset: { id: string; htmlKey: string },
+) => assetExport(workspaceId, asset, "png");
+export const assetPdf = (
+  workspaceId: string,
+  asset: { id: string; htmlKey: string },
+) => assetExport(workspaceId, asset, "pdf");
+async function assetExport(
+  workspaceId: string,
+  asset: { id: string; htmlKey: string },
+  format: "png" | "pdf",
 ) {
   const storage = new Storage();
-  const html = (await storage.get(workspaceId, asset.htmlKey)).toString("utf8");
-  const key = `${asset.id}-${digest(html).slice(0, 12)}.png`;
+  const html = normalizeAssetBidi(
+    (await storage.get(workspaceId, asset.htmlKey)).toString("utf8"),
+  );
+  const key = `${asset.id}-${digest(html).slice(0, 12)}.${format}`;
   try {
     return await storage.get(workspaceId, key);
   } catch (error) {
@@ -51,8 +63,13 @@ export async function assetPng(
       "Another image export is being prepared. Try again shortly.",
     );
   const rendering = (async () => {
-    const bytes = await renderPng(html);
-    await storage.put(workspaceId, key, bytes, "image/png");
+    const bytes = await (format === "png" ? renderPng(html) : renderPdf(html));
+    await storage.put(
+      workspaceId,
+      key,
+      bytes,
+      format === "png" ? "image/png" : "application/pdf",
+    );
     return bytes;
   })();
   inFlight.set(id, rendering);

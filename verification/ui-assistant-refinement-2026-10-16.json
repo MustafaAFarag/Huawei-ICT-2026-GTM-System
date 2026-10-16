@@ -1,0 +1,38 @@
+{
+  "date": "2026-10-16",
+  "scope": "local UI, assistant actions and mixed-script exports",
+  "typecheck": "pass",
+  "backend": {
+    "passed": 75,
+    "files": 17
+  },
+  "browser": {
+    "passed": 14,
+    "mode": "fixture"
+  },
+  "live": {
+    "navigationMs": 308,
+    "editQuoteMs": 241,
+    "revisionRunId": "9f66cdc2-1157-4e35-8e44-afec66b6f320",
+    "revisionAssetId": "d8c1ab1f-05db-4cc5-b89f-640bf4dad618",
+    "sourceAssetId": "8e0c1104-9ee8-4ddb-ba7a-6c76bbe9564b",
+    "durationMs": 16210,
+    "applicationCredits": 6,
+    "requestedHeading": "تشغيل الموارد البشرية ببساطة",
+    "bodyTextPreserved": true,
+    "originalPreserved": true,
+    "createdUnapproved": true,
+    "manuallyApprovedForExport": true,
+    "pdfPages": 1,
+    "pdfSize": "A4",
+    "rtlVisualInspection": "pass"
+  },
+  "outreach": "simulated only",
+  "push": false,
+  "deployment": false,
+  "limits": [
+    "Navigation uses explicit product actions, not arbitrary browser clicks.",
+    "Ambiguous requests may take longer in the model loop.",
+    "AI-generated claims and dialect still require human review."
+  ]
+}

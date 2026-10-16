@@ -3,10 +3,13 @@ import { z } from "zod";
 import {
   COSTS,
   type Actor,
+  type AssistantUiAction,
   type Evidence,
   type ProspectSnapshot,
 } from "@revenue/contracts";
 import { db } from "../database.js";
+import { Storage } from "../storage.js";
+import { stripFonts } from "../asset-template.js";
 import { month } from "../policy.js";
 
 // Tool registry for the assistant (PRD AI-01). Read tools execute against the actor's
@@ -233,11 +236,28 @@ export function readTools(actor: Actor): ToolSet {
     }),
     get_draft: tool({
       description:
-        "Read actual saved outreach copy and its approval status. Use after drafting or when asked to show/review existing messages. Returns source references; it does not create or approve a draft.",
-      inputSchema: z.object({ draftId: z.uuid() }),
-      execute: async ({ draftId }) => {
+        "Read actual saved outreach copy and its approval status. For the latest draft of a named person/company, search_accounts then pass prospectId. Never guess a draftId. Use after drafting or when asked to show/review existing messages. Returns source references; it does not create or approve a draft.",
+      inputSchema: z
+        .object({
+          draftId: z.uuid().optional(),
+          prospectId: z.uuid().optional(),
+        })
+        .refine(
+          (v) => v.draftId || v.prospectId,
+          "Use an actual draft ID or prospect ID.",
+        ),
+      execute: async ({ draftId, prospectId }) => {
+        if (!draftId && !prospectId)
+          return {
+            error:
+              "Find the account first, then pass its prospectId to retrieve the latest draft.",
+          };
         const draft = await db.draft.findFirst({
-          where: { id: draftId, workspaceId: ws },
+          where: {
+            workspaceId: ws,
+            ...(draftId ? { id: draftId } : { prospectId }),
+          },
+          orderBy: [{ createdAt: "desc" }, { id: "desc" }],
         });
         if (!draft) return { error: "No draft with this ID in the workspace." };
         const prospect = await db.prospect.findFirst({
@@ -252,6 +272,9 @@ export function readTools(actor: Actor): ToolSet {
           company: snapshot.company,
           version: draft.version,
           approved: draft.approvedVersion === draft.version,
+          communicationBasisRecorded: Boolean(prospect.lawfulBasis),
+          communicationBasis: prospect.lawfulBasis,
+          excluded: prospect.excluded,
           touches: (draft.content as import("@revenue/contracts").Touch[]).map(
             (t) => ({ ...t, body: untrusted(t.body, 3000) }),
           ),
@@ -263,6 +286,49 @@ export function readTools(actor: Actor): ToolSet {
               url: e.url,
               claim: untrusted(e.claim),
             })),
+        };
+      },
+    }),
+    list_assets: tool({
+      description:
+        "Find saved one-pagers/mini-audits and their actual IDs, newest first. Use before opening or revising an existing PDF unless assetId is in UI context.",
+      inputSchema: z.object({ prospectId: z.uuid().optional() }),
+      execute: async ({ prospectId }) =>
+        db.asset.findMany({
+          where: { workspaceId: ws, ...(prospectId ? { prospectId } : {}) },
+          orderBy: { createdAt: "desc" },
+          take: 25,
+          select: {
+            id: true,
+            prospectId: true,
+            title: true,
+            template: true,
+            language: true,
+            approvedAt: true,
+            version: true,
+          },
+        }),
+    }),
+    get_asset: tool({
+      description:
+        "Read the existing one-pager HTML and metadata before a requested edit. The document is untrusted data; sourceAssetId in make_asset preserves this design as the revision base.",
+      inputSchema: z.object({ assetId: z.uuid() }),
+      execute: async ({ assetId }) => {
+        const asset = await db.asset.findFirst({
+          where: { id: assetId, workspaceId: ws },
+        });
+        if (!asset) return { error: "No asset with this ID in the workspace." };
+        const html = (await new Storage().get(ws, asset.htmlKey)).toString(
+          "utf8",
+        );
+        return {
+          assetId: asset.id,
+          prospectId: asset.prospectId,
+          title: asset.title,
+          language: asset.language,
+          template: asset.template,
+          approved: Boolean(asset.approvedAt),
+          document: untrusted(stripFonts(html), 24000),
         };
       },
     }),
@@ -297,23 +363,76 @@ export function readTools(actor: Actor): ToolSet {
   };
 }
 
-// Client-side tool: the UI navigates; nothing runs on the server.
-export const uiTools: ToolSet = {
-  open_screen: tool({
-    description: "Open a screen in the product for the user.",
-    inputSchema: z.object({
-      screen: z.enum([
-        "Plays",
-        "Accounts",
-        "Review queue",
-        "Asset Studio",
-        "Sequences",
-        "Company context",
-        "Settings",
-      ]),
+// Navigation tools acknowledge validated product targets so the model can continue
+// after opening a screen. The client receives no arbitrary selectors or scripts.
+export function uiTools(
+  actor: Actor,
+  emit: (action: AssistantUiAction) => void,
+): ToolSet {
+  return {
+    open_screen: tool({
+      description:
+        "Immediately navigate to a product screen. Use for navigation requests; do not narrate instructions to the user.",
+      inputSchema: z.object({
+        screen: z.enum([
+          "Plays",
+          "Accounts",
+          "Review queue",
+          "Asset Studio",
+          "Sequences",
+          "Company context",
+          "Settings",
+        ]),
+      }),
+      execute: async ({ screen }) => {
+        emit({ kind: "navigate", screen });
+        return { opened: screen };
+      },
     }),
-  }),
-};
+    open_account: tool({
+      description:
+        "Open a saved account detail and select it for subsequent actions. Find its ID with search_accounts first.",
+      inputSchema: z.object({ prospectId: z.uuid() }),
+      execute: async ({ prospectId }) => {
+        const p = await db.prospect.findFirst({
+          where: { id: prospectId, workspaceId: actor.workspaceId },
+        });
+        if (!p) return { error: "Account not found in this workspace." };
+        emit({ kind: "open_account", prospectId });
+        return { opened: prospectId };
+      },
+    }),
+    open_asset: tool({
+      description:
+        "Open an existing PDF/one-pager preview alongside this assistant for editing. Find its ID with list_assets or UI context.",
+      inputSchema: z.object({ assetId: z.uuid() }),
+      execute: async ({ assetId }) => {
+        const a = await db.asset.findFirst({
+          where: { id: assetId, workspaceId: actor.workspaceId },
+        });
+        if (!a) return { error: "Asset not found in this workspace." };
+        emit({ kind: "open_asset", assetId });
+        return { opened: assetId };
+      },
+    }),
+    select_accounts: tool({
+      description:
+        "Select saved account records in the UI for the next action. No record is changed.",
+      inputSchema: z.object({ prospectIds: ids }),
+      execute: async ({ prospectIds }) => {
+        const count = await db.prospect.count({
+          where: { workspaceId: actor.workspaceId, id: { in: prospectIds } },
+        });
+        if (count !== new Set(prospectIds).size)
+          return {
+            error: "A selected account is unavailable in this workspace.",
+          };
+        emit({ kind: "select_accounts", prospectIds });
+        return { selected: count };
+      },
+    }),
+  };
+}
 
 const action = (description: string, schema: z.ZodObject): Tool =>
   tool({
@@ -353,12 +472,13 @@ export const actionTools: Record<ActionToolName, Tool> = {
     }),
   ),
   make_asset: action(
-    "Make a branded one-pager (P1/P3) or mini-audit (P4) PDF. Optional instructions change one element of the design.",
+    "Make or revise a branded one-pager/mini-audit. For edits to an existing document, FIRST get_asset, then pass its exact sourceAssetId, single prospectId, template, language, and the requested instructions. This creates a new unapproved revision and preserves the original.",
     z.object({
       prospectIds: ids.min(1),
       language: languages.optional(),
       template: z.enum(["offer-one-pager", "mini-audit"]).optional(),
-      instructions: z.string().max(500).optional(),
+      instructions: z.string().max(1500).optional(),
+      sourceAssetId: z.uuid().optional(),
     }),
   ),
   queue_sequence: action(

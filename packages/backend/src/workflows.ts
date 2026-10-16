@@ -62,6 +62,34 @@ export class WorkflowService {
       throw new BadRequestException("Select at least one prospect.");
     if (input.tool === "queue_sequence" && !drafts.length)
       throw new BadRequestException("Select at least one approved draft.");
+    const sourceAsset = input.sourceAssetId
+      ? await db.asset.findFirst({
+          where: { id: input.sourceAssetId, workspaceId: actor.workspaceId },
+        })
+      : null;
+    if (
+      input.sourceAssetId &&
+      (!sourceAsset ||
+        input.tool !== "make_asset" ||
+        prospects.length !== 1 ||
+        sourceAsset.prospectId !== prospects[0]!.id ||
+        sourceAsset.template !== input.template ||
+        sourceAsset.language !== input.language)
+    )
+      throw new BadRequestException(
+        "The asset revision must match one source asset, account, template and language in this workspace.",
+      );
+    if (sourceAsset && !input.message?.trim())
+      throw new BadRequestException(
+        "Describe the change before requesting an asset revision.",
+      );
+    if (
+      sourceAsset &&
+      sourceAsset.evidenceDigest !== digest(prospects[0]!.evidence)
+    )
+      throw new BadRequestException(
+        "Evidence changed. Generate a new asset from the current sources before editing.",
+      );
     const {
       requestKey,
       spendApprovalId,
@@ -94,6 +122,14 @@ export class WorkflowService {
     ]);
     const scopeDigest = digest({
       operation,
+      sourceAsset: sourceAsset
+        ? {
+            id: sourceAsset.id,
+            version: sourceAsset.version,
+            htmlKey: sourceAsset.htmlKey,
+            evidenceDigest: sourceAsset.evidenceDigest,
+          }
+        : null,
       spending: {
         plan: workspace.plan,
         limits,
@@ -880,6 +916,21 @@ export class WorkflowService {
               evidence,
               input.language,
               input.message,
+              input.sourceAssetId
+                ? (
+                    await this.storage.get(
+                      workspace.id,
+                      (
+                        await db.asset.findFirstOrThrow({
+                          where: {
+                            id: input.sourceAssetId,
+                            workspaceId: workspace.id,
+                          },
+                        })
+                      ).htmlKey,
+                    )
+                  ).toString("utf8")
+                : undefined,
             );
             const assetId = randomUUID();
             const htmlKey = `${assetId}.html`,
@@ -906,7 +957,7 @@ export class WorkflowService {
                 language: input.language,
                 engineVersion: OpenDesign.version,
                 engineProjectId: generated.engineProjectId,
-                title: `${input.template} — ${snapshot.company}`,
+                title: `${input.template} — ${snapshot.company}${input.sourceAssetId ? " · revision" : ""}`,
                 htmlKey,
                 pdfKey,
                 evidenceDigest: digest(evidence),

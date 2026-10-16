@@ -1,7 +1,7 @@
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { randomUUID } from "node:crypto";
 import { db, json } from "@revenue/backend";
-import { readTools } from "../src/agent/tools.js";
+import { readTools, uiTools } from "../src/agent/tools.js";
 
 const ws = randomUUID(),
   userId = randomUUID();
@@ -116,6 +116,43 @@ describe("grounded assistant read tools", () => {
       truncated: false,
     });
     expect(draft.sources[0].id).toBe("approved");
+  });
+  it("finds the latest saved draft from an actual prospect ID, without guessing draft IDs", async () => {
+    const draft = await run("get_draft", { prospectId });
+    expect(draft.draftId).toBe(draftId);
+    expect(draft.communicationBasisRecorded).toBe(true);
+    expect((await run("get_draft", {})).error).toBeTruthy();
+  });
+  it("only emits navigation for records in this workspace", async () => {
+    const events: unknown[] = [];
+    const tools = uiTools(actor, (event) => events.push(event));
+    const exec = (name: string, input: unknown) =>
+      (tools[name]!.execute! as any)(input, {
+        toolCallId: "test",
+        messages: [],
+      });
+    expect(
+      await exec("open_account", { prospectId: randomUUID() }),
+    ).toHaveProperty("error");
+    expect(await exec("open_asset", { assetId: randomUUID() })).toHaveProperty(
+      "error",
+    );
+    expect(
+      await exec("select_accounts", {
+        prospectIds: [prospectId, randomUUID()],
+      }),
+    ).toHaveProperty("error");
+    expect(events).toHaveLength(0);
+    await exec("open_account", { prospectId });
+    await exec("open_screen", { screen: "Settings" });
+    expect(events).toEqual([
+      { kind: "open_account", prospectId },
+      { kind: "navigate", screen: "Settings" },
+    ]);
+    expect(await run("list_assets", {}, randomUUID())).toEqual([]);
+    expect(
+      (await run("get_asset", { assetId: randomUUID() })).error,
+    ).toBeTruthy();
   });
   it("does not disclose another workspace's accounts, drafts or runs", async () => {
     const other = randomUUID();

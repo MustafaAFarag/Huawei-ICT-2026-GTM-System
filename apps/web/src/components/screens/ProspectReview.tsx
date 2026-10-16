@@ -33,6 +33,7 @@ export function ProspectReview({ prospect }: { prospect: Prospect }) {
   return (
     <form
       className="detail-grid"
+      data-ai-target="account-detail"
       onSubmit={(e) => {
         e.preventDefault();
         const f = new FormData(e.currentTarget);
@@ -191,7 +192,7 @@ export function ProspectReview({ prospect }: { prospect: Prospect }) {
           </div>
         </Panel>
       </div>
-      <aside className="detail-side">
+      <div className="detail-side">
         <Panel eyebrow={t("Fit")} title={prospect.score ?? "—"}>
           {prospect.breakdown.tier && (
             <Badge tone="info">
@@ -200,9 +201,11 @@ export function ProspectReview({ prospect }: { prospect: Prospect }) {
           )}
           <ul className="breakdown">
             {prospect.breakdown.breakdown?.map((r) => (
-              <li key={r.rule}>
-                <span>{r.rule}</span>
-                <span className="mono">+{r.points}</span>
+              <li key={t(r.rule)}>
+                <span>{t(r.rule)}</span>
+                <bdi className="mono" dir="ltr">
+                  +{r.points}
+                </bdi>
                 <Badge
                   tone={
                     r.state === "match"
@@ -212,7 +215,7 @@ export function ProspectReview({ prospect }: { prospect: Prospect }) {
                         : "neutral"
                   }
                 >
-                  {r.state}
+                  {t(r.state)}
                 </Badge>
               </li>
             )) ?? <li className="muted">{t("Not scored")}</li>}
@@ -222,9 +225,9 @@ export function ProspectReview({ prospect }: { prospect: Prospect }) {
           <div className="stack">
             <Field label={t("Country")}>
               <Select name="country" defaultValue={prospect.country}>
-                <option value="EG">Egypt</option>
-                <option value="SA">Saudi Arabia</option>
-                <option value="AE">United Arab Emirates</option>
+                <option value="EG">{t("Egypt")}</option>
+                <option value="SA">{t("Saudi Arabia")}</option>
+                <option value="AE">{t("United Arab Emirates")}</option>
               </Select>
             </Field>
             <Field label={t("Communication basis")}>
@@ -259,7 +262,7 @@ export function ProspectReview({ prospect }: { prospect: Prospect }) {
         <TriagePanel key={`triage:${prospect.id}`} prospect={prospect} />
         <CallLog key={`call:${prospect.id}`} prospect={prospect} />
         <DiscoveryPanel key={`discovery:${prospect.id}`} prospect={prospect} />
-      </aside>
+      </div>
     </form>
   );
 }

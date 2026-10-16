@@ -34,7 +34,7 @@ export function Wordmark() {
   return (
     <div className="wordmark">
       <span className="mark" aria-hidden />
-      <span>Revenue Workspace</span>
+      <bdi>Revenue Workspace</bdi>
     </div>
   );
 }
@@ -96,6 +96,7 @@ export function Sidebar({
           const Icon = TAB_ICONS[name];
           return (
             <button
+              data-ai-target={`screen:${name}`}
               key={name}
               aria-label={t(name)}
               aria-current={tab === name ? "page" : undefined}
@@ -117,12 +118,14 @@ export function Sidebar({
             <div className="usage-head">
               <span className="eyebrow">{t("AI credits")}</span>
               <span className="mono">
-                {budget.used + budget.reserved}/{budget.cap}
+                <bdi dir="ltr">
+                  {budget.used + budget.reserved}/{budget.cap}
+                </bdi>
               </span>
             </div>
             <Meter value={budget.used + budget.reserved} max={budget.cap} />
             <span className="muted small">
-              {data.workspace.plan} {t("plan")}
+              <bdi>{data.workspace.plan}</bdi> {t("plan")}
             </span>
           </div>
         )}
@@ -131,8 +134,10 @@ export function Sidebar({
             {(userName[0] ?? "?").toUpperCase()}
           </span>
           <div className="user-meta">
-            <p className="truncate">{userName}</p>
-            <Badge>{data?.role ?? t("Loading")}</Badge>
+            <p className="truncate" dir="auto">
+              {t(userName)}
+            </p>
+            <Badge>{t(data?.role ?? "Loading")}</Badge>
           </div>
           <button
             className="icon-button"
@@ -163,7 +168,9 @@ export function Topbar({
   return (
     <header className="topbar">
       <span className="crumbs">
-        <span className="truncate">{workspaceName ?? t("Loading workspace…")}</span>
+        <bdi className="truncate">
+          {workspaceName ?? t("Loading workspace…")}
+        </bdi>
         <span className="slash" aria-hidden>
           /
         </span>

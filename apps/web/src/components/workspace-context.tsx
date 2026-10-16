@@ -17,6 +17,9 @@ export type Tab = (typeof TABS)[number];
 
 export type WorkspaceValue = {
   ws: string;
+  screen: Tab;
+  activeProspectId?: string;
+  activeAssetId?: string;
   userId: string;
   data: Dashboard;
   busy: boolean;

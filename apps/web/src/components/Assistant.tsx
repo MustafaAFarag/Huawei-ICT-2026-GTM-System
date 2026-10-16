@@ -1,7 +1,10 @@
 "use client";
+import { assistantUiAction, type AssistantUiAction } from "@revenue/contracts";
 import { useEffect, useRef, useState } from "react";
 import { IconArrowUp, IconCoin, IconSparkles, IconX } from "@revenue/ui";
 import { Badge, Button } from "./primitives";
+import { assetLabel } from "../lib/asset-label";
+import { ChatMarkdown } from "./Markdown";
 import { VoiceButton } from "./VoiceButton";
 import { TABS, useWorkspace, type Tab } from "./workspace-context";
 import type { Proposal } from "./Modals";
@@ -12,11 +15,17 @@ import type { Chat } from "../lib/types";
 type ToolChip = { id: string; name: string; state: string; summary?: string };
 type Live = { text: string; tools: ToolChip[]; error?: string };
 type Event =
-  | { type: "meta"; model: string; live: boolean; prompts: Record<string, string> }
+  | {
+      type: "meta";
+      model: string;
+      live: boolean;
+      prompts: Record<string, string>;
+    }
   | { type: "text"; delta: string }
   | { type: "tool"; id: string; name: string; state: string; summary?: string }
   | { type: "quote"; input: Proposal["input"]; quote: Proposal["quote"] }
   | { type: "navigate"; screen: string }
+  | { type: "ui_action"; action: AssistantUiAction }
   | { type: "error"; message: string }
   | { type: "done"; credits: number; steps: number };
 
@@ -32,38 +41,58 @@ export function Assistant({
   setChats,
   onQuote,
   onNavigate,
+  onUiAction,
   onClose,
 }: {
   chats: Chat[];
   setChats: (chats: Chat[]) => void;
   onQuote: (proposal: Proposal) => void;
   onNavigate: (tab: Tab) => void;
+  onUiAction: (action: AssistantUiAction) => Promise<void>;
   onClose: () => void;
 }) {
-  const { ws, data, play, selected, language, canWrite, action } = useWorkspace();
+  const {
+    ws,
+    screen,
+    activeProspectId,
+    activeAssetId,
+    data,
+    play,
+    selected,
+    language,
+    canWrite,
+    action,
+  } = useWorkspace();
   const { t, language: uiLanguage } = usePrefs();
+  const currentAsset = data.assets.find((a) => a.id === activeAssetId);
   const [chatInput, setChatInput] = useState("");
   const [live, setLive] = useState<Live | null>(null);
   const [streaming, setStreaming] = useState(false);
-  const [meta, setMeta] = useState<{ model: string; live: boolean } | null>(null);
+  const [meta, setMeta] = useState<{ model: string; live: boolean } | null>(
+    null,
+  );
   const [quote, setQuote] = useState<Proposal | null>(null);
   const [voiceError, setVoiceError] = useState("");
   const history = useRef<HTMLDivElement>(null);
   const abort = useRef<AbortController | null>(null);
+  const mounted = useRef(true);
   useEffect(() => {
     history.current?.scrollTo({ top: history.current.scrollHeight });
   }, [chats.length, live?.text, live?.tools.length]);
-  useEffect(() => () => abort.current?.abort(), []);
+  useEffect(() => {
+    mounted.current = true;
+    return () => {
+      mounted.current = false;
+      abort.current?.abort();
+    };
+  }, []);
   const send = async (content: string) => {
     if (!content.trim() || streaming) return;
     setStreaming(true);
     setQuote(null);
     setLive({ text: "", tools: [] });
     setChatInput("");
-    setChats([
-      ...chats,
-      { id: `local-${Date.now()}`, role: "user", content },
-    ]);
+    setChats([...chats, { id: `local-${Date.now()}`, role: "user", content }]);
     abort.current = new AbortController();
     try {
       const response = await fetch(`/api/workspaces/${ws}/chat/stream`, {
@@ -71,13 +100,23 @@ export function Assistant({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           content,
-          context: { play, prospectIds: selected, language, uiLanguage },
+          context: {
+            play,
+            prospectIds: selected,
+            language,
+            uiLanguage,
+            screen,
+            activeProspectId,
+            activeAssetId,
+          },
         }),
         signal: abort.current.signal,
       });
       if (!response.ok || !response.body) {
         const body = await response.json().catch(() => ({}));
-        throw new Error(body.message ?? t("The assistant is unavailable. Try again."));
+        throw new Error(
+          body.message ?? t("The assistant is unavailable. Try again."),
+        );
       }
       const reader = response.body.getReader();
       const decoder = new TextDecoder();
@@ -92,7 +131,8 @@ export function Assistant({
           const line = frame.split("\n").find((l) => l.startsWith("data: "));
           if (!line) continue;
           const event = JSON.parse(line.slice(6)) as Event;
-          if (event.type === "meta") setMeta({ model: event.model, live: event.live });
+          if (event.type === "meta")
+            setMeta({ model: event.model, live: event.live });
           else if (event.type === "text")
             setLive((l) => (l ? { ...l, text: l.text + event.delta } : l));
           else if (event.type === "tool")
@@ -102,13 +142,26 @@ export function Assistant({
                     ...l,
                     tools: [
                       ...l.tools.filter((c) => c.id !== event.id),
-                      { id: event.id, name: event.name, state: event.state, summary: event.summary },
+                      {
+                        id: event.id,
+                        name: event.name,
+                        state: event.state,
+                        summary: event.summary,
+                      },
                     ],
                   }
                 : l,
             );
-          else if (event.type === "quote") setQuote({ input: event.input, quote: event.quote });
-          else if (event.type === "navigate" && TABS.includes(event.screen as Tab))
+          else if (event.type === "quote")
+            setQuote({ input: event.input, quote: event.quote });
+          else if (event.type === "ui_action") {
+            const parsed = assistantUiAction.safeParse(event.action);
+            if (parsed.success && mounted.current)
+              await onUiAction(parsed.data);
+          } else if (
+            event.type === "navigate" &&
+            TABS.includes(event.screen as Tab)
+          )
             onNavigate(event.screen as Tab);
           else if (event.type === "error")
             setLive((l) => (l ? { ...l, error: event.message } : l));
@@ -122,10 +175,15 @@ export function Assistant({
           error: (error as Error).message,
         }));
     } finally {
+      if (!mounted.current) return;
       setStreaming(false);
       try {
-        setChats(await client.workspace<Chat[]>(ws, "/chat"));
-        setLive((l) => (l?.error ? { text: "", tools: [], error: l.error } : null));
+        const savedChats = await client.workspace<Chat[]>(ws, "/chat");
+        if (!mounted.current) return;
+        setChats(savedChats);
+        setLive((l) =>
+          l?.error ? { text: "", tools: [], error: l.error } : null,
+        );
       } catch {
         /* keep the streamed text if history cannot reload */
       }
@@ -140,11 +198,15 @@ export function Assistant({
         </span>
         <strong>{t("Workspace assistant")}</strong>
         {meta && (
-          <span className="mono muted small" title={t("Model")}>
+          <span className="mono muted small model-label" title={meta.model}>
             {meta.live ? meta.model : "fixture"}
           </span>
         )}
-        <button className="icon-button" aria-label={t("Close assistant")} onClick={onClose}>
+        <button
+          className="icon-button"
+          aria-label={t("Close assistant")}
+          onClick={onClose}
+        >
           <IconX size={16} />
         </button>
       </header>
@@ -153,7 +215,18 @@ export function Assistant({
         <Badge>
           {selected.length} {t("selected")}
         </Badge>
-        <Badge>{language}</Badge>
+        <Badge>
+          {activeAssetId
+            ? (data.assets.find((a) => a.id === activeAssetId)?.language ??
+              language)
+            : language}
+        </Badge>
+        {activeAssetId && (
+          <span className="assistant-document" dir="auto">
+            {t("Editing document")}:{" "}
+            <bdi>{currentAsset ? assetLabel(currentAsset, t) : ""}</bdi>
+          </span>
+        )}
       </div>
       <div className="chat-history" ref={history} aria-live="polite">
         {!chats.length && !live && (
@@ -167,12 +240,21 @@ export function Assistant({
             </p>
             <p className="muted small">
               {data.modelFixture
-                ? t("Fixture assistant · structured action suggestions. Model access is pending.")
-                : t("Model proposals use reviewed context. Each action needs your cost approval.")}
+                ? t(
+                    "Fixture assistant · structured action suggestions. Model access is pending.",
+                  )
+                : t(
+                    "Model proposals use reviewed context. Each action needs your cost approval.",
+                  )}
             </p>
             <div className="suggestions">
               {SUGGESTIONS.map((s) => (
-                <button key={s} dir="auto" disabled={!canWrite} onClick={() => void send(s)}>
+                <button
+                  key={s}
+                  dir="auto"
+                  disabled={!canWrite}
+                  onClick={() => void send(s)}
+                >
                   {s}
                 </button>
               ))}
@@ -181,13 +263,15 @@ export function Assistant({
         )}
         {chats.map((c) => (
           <div className={`chat-message ${c.role}`} key={c.id}>
-            <small className="eyebrow">{c.role === "user" ? t("You") : t("Assistant")}</small>
-            <p dir="auto">{c.content}</p>
+            <small className="eyebrow">
+              {c.role === "user" ? t("You") : t("Assistant")}
+            </small>
+            <ChatMarkdown text={c.content} />
             {c.role === "assistant" && c.context?.tools?.length ? (
               <div className="tool-chips">
                 {c.context.tools.map((name, i) => (
                   <span key={i} className="tool-chip mono">
-                    {name.replaceAll("_", " ")}
+                    {t(name.replaceAll("_", " "))}
                   </span>
                 ))}
               </div>
@@ -205,17 +289,17 @@ export function Assistant({
                     className={`tool-chip mono state-${tool.state}`}
                     title={tool.summary}
                   >
-                    {tool.name.replaceAll("_", " ")}
+                    {t(tool.name.replaceAll("_", " "))}
                     {tool.state === "called" && " …"}
                   </span>
                 ))}
               </div>
             )}
             {live.text ? (
-              <p dir="auto">
-                {live.text}
+              <>
+                <ChatMarkdown text={live.text} />
                 {streaming && <span className="caret" aria-hidden />}
-              </p>
+              </>
             ) : (
               streaming && <p className="shimmer">{t("Thinking…")}</p>
             )}
@@ -226,9 +310,12 @@ export function Assistant({
           <div className="quote-card">
             <div>
               <p className="eyebrow">{t("Proposed action")}</p>
-              <strong className="step-name">{quote.input.tool.replaceAll("_", " ")}</strong>
+              <strong className="step-name">
+                {quote.input.tool.replaceAll("_", " ")}
+              </strong>
               <p className="muted small">
-                {quote.quote.audience || t("Workspace")} {t("selected")} · {quote.input.language}
+                {quote.quote.audience || t("Workspace")} {t("selected")} ·{" "}
+                {quote.input.language}
               </p>
             </div>
             <span className="quote-cost mono">
@@ -261,14 +348,20 @@ export function Assistant({
               void send(chatInput);
             }
           }}
-          placeholder={t("Prepare a draft for these accounts…")}
+          placeholder={t(
+            activeAssetId
+              ? "Change the heading, layout or wording…"
+              : "Prepare a draft for these accounts…",
+          )}
           required
           maxLength={3000}
         />
         {voiceError && <p className="error-text small">{voiceError}</p>}
         <div className="compose-bar">
           <span className="muted small mono">
-            {data.modelFixture ? "↵ " + t("send") : `${t("1 credit per message")} · ↵`}
+            {data.modelFixture
+              ? "↵ " + t("send")
+              : `${t("AI replies: 1 credit")} · ↵`}
           </span>
           <div className="compose-actions">
             <VoiceButton

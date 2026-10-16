@@ -1,3 +1,19 @@
+## Current — assistant actions, readable chat and bilingual output (16 October 2026)
+
+Goal: fix screenshot-reported chat/layout/bidi defects and let the assistant navigate records and revise the viewed one-pager visibly.
+Done: safe Markdown in saved/streaming chat; viewport-bound side panels; isolated mixed-script names and PDF text; scoped assistant navigation with visible target feedback; existing-asset revisions through the cost review, saved as a new unapproved asset; EN/AR browser and PDF checks; focused reviewed local commits.
+Stop: no push, deployment, real outbound, destructive changes or unrelated sample edits.
+
+- [x] Readable Markdown and compact, bounded EN/AR shell/account layout.
+- [x] Mixed-script PDF/preview fixes and bilingual labels/names.
+- [x] Context-aware assistant tools for navigation, saved draft lookup and asset revision.
+- [x] Local backend/browser/live-model checks, output inspection and self-review: 75 backend checks, 14 browser scenarios, final focused 5-browser/5-backend reruns, typecheck and a real six-credit Arabic asset revision pass. Focused local commit prepared; no push or deployment.
+
+Decisions: preserve the existing visual design. Show real allowlisted product actions with a brief cursor/highlight; avoid unrestricted browser execution. AI asset edits create a separate unapproved version and keep existing cost/source/role controls.
+Blockers: none currently.
+
+---
+
 ## Completed — two-hour output quality and PRD continuation (16 October 2026)
 
 Owner instruction: work unattended until scheduled laptop shutdown in two hours; research prompt engineering, inspect outputs, adjust prompts and implement useful remaining features. Start 23:12 UTC; target wrap-up 00:55 UTC (shutdown margin).

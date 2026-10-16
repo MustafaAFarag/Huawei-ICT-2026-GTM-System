@@ -78,15 +78,20 @@ export function Settings() {
             return (
               <div key={name} className={`plan ${current ? "current" : ""}`}>
                 <div className="plan-head">
-                  <h3>{name}</h3>
+                  <h3>
+                    <bdi>{name}</bdi>
+                  </h3>
                   {current && <Badge tone="ok">{t("Current")}</Badge>}
                 </div>
                 <p className="plan-price">
-                  <span className="mono">${plan.price}</span>
+                  <bdi className="mono" dir="ltr">
+                    ${plan.price}
+                  </bdi>
                   <small> / {t("month")}</small>
                 </p>
                 <small className="mono muted">
-                  {plan.aiCredits.toLocaleString("en-US")} AI credits
+                  <bdi dir="ltr">{plan.aiCredits.toLocaleString("en-US")}</bdi>{" "}
+                  {t("AI credits")}
                 </small>
                 <Button
                   size="sm"
@@ -118,10 +123,10 @@ export function Settings() {
         <ul className="quota-list">
           {data.quotas.map((q) => (
             <li key={q.kind}>
-              <span>{q.kind}</span>
-              <span className="mono">
+              <span>{t(q.kind)}</span>
+              <bdi className="mono" dir="ltr">
                 {q.used + q.reserved} / {q.cap}
-              </span>
+              </bdi>
               <Meter value={q.used + q.reserved} max={q.cap} />
             </li>
           ))}
@@ -150,7 +155,7 @@ export function Settings() {
         >
           <div className="form-grid">
             {QUOTA_KEYS.map((k) => (
-              <Field key={k} label={k}>
+              <Field key={k} label={t(k)}>
                 <Input
                   name={k}
                   type="number"
@@ -166,7 +171,12 @@ export function Settings() {
             {data.members.map((m) => (
               <Field
                 key={m.userId}
-                label={`${m.user.name} · ${m.role} ${t("monthly credits")}`}
+                label={
+                  <>
+                    <bdi>{t(m.user.name)}</bdi> · {t(m.role)} ·{" "}
+                    {t("monthly credits")}
+                  </>
+                }
               >
                 <Input
                   name={`member:${m.userId}`}
@@ -232,7 +242,11 @@ export function Settings() {
             .map((m) => (
               <Field
                 key={m.userId}
-                label={`${m.user.name} · ${t("Contact cap")}`}
+                label={
+                  <>
+                    <bdi>{t(m.user.name)}</bdi> · {t("Contact cap")}
+                  </>
+                }
               >
                 <Input
                   name={`contacts:${m.userId}`}

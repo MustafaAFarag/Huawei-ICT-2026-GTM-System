@@ -80,6 +80,24 @@ afterAll(async () => {
 });
 
 describe("assistant harness", () => {
+  it("opens explicit screens immediately without a model charge, quote or run", async () => {
+    const events: AgentEvent[] = [];
+    await runAgentTurn(
+      actor,
+      "Open Settings",
+      { play: "P1", prospectIds: [] },
+      (event) => events.push(event),
+    );
+    expect(events).toContainEqual({
+      type: "ui_action",
+      action: { kind: "navigate", screen: "Settings" },
+    });
+    expect(events.find((event) => event.type === "done")).toMatchObject({
+      credits: 0,
+    });
+    expect(events.some((event) => event.type === "quote")).toBe(false);
+    await db.chatMessage.deleteMany({ where: { workspaceId } });
+  });
   it("streams a reply and turns the action into a quote, never a run", async () => {
     const events: AgentEvent[] = [];
     await runAgentTurn(

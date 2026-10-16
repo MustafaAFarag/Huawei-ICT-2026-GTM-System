@@ -1,6 +1,7 @@
 import { readFileSync } from "node:fs";
 import { createRequire } from "node:module";
 import type { Brand, Evidence, ProspectSnapshot } from "@revenue/contracts";
+import { normalizeAssetBidi } from "./asset-bidi.js";
 import { escapeHtml } from "./policy.js";
 
 // Print tokens follow design-systems/revenue/DESIGN.md §8. Fonts are embedded because
@@ -18,10 +19,30 @@ let fontCss: string | undefined;
 function fonts() {
   if (fontCss !== undefined) return fontCss;
   const faces = [
-    ["Inter", "@fontsource-variable/inter", "inter-latin-wght-normal.woff2", "100 900"],
-    ["Geist Mono", "@fontsource-variable/geist-mono", "geist-mono-latin-wght-normal.woff2", "100 900"],
-    ["IBM Plex Sans Arabic", "@fontsource/ibm-plex-sans-arabic", "ibm-plex-sans-arabic-arabic-400-normal.woff2", "400"],
-    ["IBM Plex Sans Arabic", "@fontsource/ibm-plex-sans-arabic", "ibm-plex-sans-arabic-arabic-600-normal.woff2", "600"],
+    [
+      "Inter",
+      "@fontsource-variable/inter",
+      "inter-latin-wght-normal.woff2",
+      "100 900",
+    ],
+    [
+      "Geist Mono",
+      "@fontsource-variable/geist-mono",
+      "geist-mono-latin-wght-normal.woff2",
+      "100 900",
+    ],
+    [
+      "IBM Plex Sans Arabic",
+      "@fontsource/ibm-plex-sans-arabic",
+      "ibm-plex-sans-arabic-arabic-400-normal.woff2",
+      "400",
+    ],
+    [
+      "IBM Plex Sans Arabic",
+      "@fontsource/ibm-plex-sans-arabic",
+      "ibm-plex-sans-arabic-arabic-600-normal.woff2",
+      "600",
+    ],
   ] as const;
   fontCss = faces
     .map(([family, pkg, file, weight]) => {
@@ -75,7 +96,9 @@ export function assetHtml(
   const title = audit
     ? L("A short website review", "مراجعة سريعة لموقعك")
     : L("An idea for your next stage", "فكرة تساعد فريقك ينمو");
-  const facts = evidence.filter((item) => item.approved && item.kind === "fact");
+  const facts = evidence.filter(
+    (item) => item.approved && item.kind === "fact",
+  );
   const hosts = new Set(
     facts.map((item) => {
       try {
@@ -135,5 +158,8 @@ footer{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px;margin-
 html[dir=rtl] footer{font-family:"IBM Plex Sans Arabic",sans-serif;font-size:8pt}
 bdi{unicode-bidi:isolate}
 @media print{.sheet{padding:0}}`;
-  return `<!doctype html><html lang="${arabic ? "ar" : "en"}" dir="${arabic ? "rtl" : "ltr"}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${escapeHtml(title)}</title><style>${css}</style></head><body><article class="sheet"><div class="top"><span class="brand"><i></i><span dir="auto">${escapeHtml(brand.name || "Revenue Workspace")}</span></span><p class="eyebrow">${L("Prepared for your team", "مُعد خصيصًا لفريقك")} · <bdi>${date}</bdi></p></div><header class="hero"><p class="eyebrow">${audit ? L("Website review", "مراجعة الموقع") : L("One-page idea", "فكرة في صفحة")}</p><h1>${title}</h1><h2 dir="auto">${escapeHtml(snapshot.company)}</h2></header>${simulated ? `<p class="label">${L("Synthetic demonstration data · template generation is simulated", "بيانات تجريبية مصطنعة · ليست توصية تجارية حقيقية")}</p>` : ""}<p class="lede">${L("These observations come from the reviewed sources below. Review this document before sharing it.", "الملاحظات دي مبنية على المصادر اللي راجعناها سوا ومحتاجة مراجعتك قبل المشاركة")}</p><div class="facts"><div class="fact"><p class="eyebrow">${L("Observations", "ملاحظات")}</p><b>${facts.length}</b></div><div class="fact"><p class="eyebrow">${L("Sources", "مصادر")}</p><b>${hosts.size}</b></div><div class="fact"><p class="eyebrow">${L("Reviewed", "تمت مراجعتها")}</p><b>100%</b></div></div><ol class="obs-list">${rows}</ol>${offerSection}<footer><span><span dir="auto">${escapeHtml(brand.name)}</span> · <bdi>${escapeHtml(brand.website)}</bdi></span><span>${L("Sources and dates accompany each observation", "المصدر والتاريخ موضحين تحت كل ملاحظة")}</span></footer></article></body></html>`;
+  return normalizeAssetBidi(
+    `<!doctype html><html lang="${arabic ? "ar" : "en"}" dir="${arabic ? "rtl" : "ltr"}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${escapeHtml(title)}</title><style>${css}</style></head><body><article class="sheet"><div class="top"><span class="brand"><i></i><span dir="auto">${escapeHtml(brand.name || "Revenue Workspace")}</span></span><p class="eyebrow">${L("Prepared for your team", "مُعد خصيصًا لفريقك")} · <bdi>${date}</bdi></p></div><header class="hero"><p class="eyebrow">${audit ? L("Website review", "مراجعة الموقع") : L("One-page idea", "فكرة في صفحة")}</p><h1>${title}</h1><h2 dir="auto">${escapeHtml(snapshot.company)}</h2></header>${simulated ? `<p class="label">${L("Synthetic demonstration data · template generation is simulated", "بيانات تجريبية مصطنعة · ليست توصية تجارية حقيقية")}</p>` : ""}<p class="lede">${L("These observations come from the reviewed sources below. Review this document before sharing it.", "الملاحظات دي مبنية على المصادر اللي راجعناها سوا ومحتاجة مراجعتك قبل المشاركة")}</p><div class="facts"><div class="fact"><p class="eyebrow">${L("Observations", "ملاحظات")}</p><b>${facts.length}</b></div><div class="fact"><p class="eyebrow">${L("Sources", "مصادر")}</p><b>${hosts.size}</b></div><div class="fact"><p class="eyebrow">${L("Reviewed", "تمت مراجعتها")}</p><b>100%</b></div></div><ol class="obs-list">${rows}</ol>${offerSection}<footer><span><span dir="auto">${escapeHtml(brand.name)}</span> · <bdi>${escapeHtml(brand.website)}</bdi></span><span>${L("Sources and dates accompany each observation", "المصدر والتاريخ موضحين تحت كل ملاحظة")}</span></footer></article></body></html>`,
+    language,
+  );
 }
