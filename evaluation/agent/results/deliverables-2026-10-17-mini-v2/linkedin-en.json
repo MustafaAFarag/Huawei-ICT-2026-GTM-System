@@ -1,0 +1,66 @@
+{
+  "title": "What breaks first at 50 staff",
+  "handle": "Qimam People",
+  "slides": [
+    {
+      "kind": "hook",
+      "heading": "What breaks first at 50 staff",
+      "body": "Payroll, onboarding, and admin start competing for the same people."
+    },
+    {
+      "kind": "point",
+      "kicker": "Pressure",
+      "heading": "The workload stops fitting one role",
+      "body": "A growing team can outgrow a single HR generalist fast."
+    },
+    {
+      "kind": "point",
+      "kicker": "Payroll",
+      "heading": "Payroll needs a fixed owner",
+      "body": "When no one owns it, pay runs turn into a monthly scramble."
+    },
+    {
+      "kind": "point",
+      "kicker": "Onboarding",
+      "heading": "New hires need a repeatable start",
+      "body": "Without a clear handoff, each joiner may get a different experience."
+    },
+    {
+      "kind": "list",
+      "kicker": "Signals",
+      "heading": "Signs the team is stretched",
+      "bullets": [
+        "Payroll questions pile up",
+        "Onboarding takes longer",
+        "Admin work gets delayed"
+      ]
+    },
+    {
+      "kind": "stat",
+      "kicker": "Market",
+      "heading": "Some teams add HR hires",
+      "stat": {
+        "value": "4",
+        "label": "open payroll and HR administrator vacancies listed by Nile Logistics"
+      },
+      "sourceId": "q1"
+    },
+    {
+      "kind": "point",
+      "kicker": "Option",
+      "heading": "An outsourced desk can help",
+      "body": "Qimam People runs payroll and employee onboarding for growing teams."
+    },
+    {
+      "kind": "cta",
+      "heading": "See if it fits your team",
+      "body": "If you are past 50 staff, start with a quick conversation with Qimam People."
+    }
+  ],
+  "caption": "When headcount grows, payroll and onboarding can start pulling in different directions.\nThat is often the point where a fixed owner matters.\nQimam People runs payroll and employee onboarding for growing teams.\nSee if it fits your team.",
+  "hashtags": [
+    "#HROperations",
+    "#Payroll",
+    "#Hiring"
+  ]
+}

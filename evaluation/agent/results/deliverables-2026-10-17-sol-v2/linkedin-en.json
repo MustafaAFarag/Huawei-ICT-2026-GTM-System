@@ -1,0 +1,57 @@
+{
+  "title": "Past 50 Staff Without a Payroll Team",
+  "slides": [
+    {
+      "kind": "hook",
+      "heading": "Past 50 Staff: Who Runs Your Payroll?",
+      "body": "Use the milestone to check responsibilities—not assume something will break."
+    },
+    {
+      "kind": "point",
+      "kicker": "Payroll",
+      "heading": "Who Is Responsible for Running Payroll?",
+      "body": "Without an in-house payroll team, can you name the person responsible for every payroll run?"
+    },
+    {
+      "kind": "point",
+      "kicker": "Employee onboarding",
+      "heading": "Who Handles Each New Employee?",
+      "body": "When someone joins, is responsibility for employee onboarding clearly assigned?"
+    },
+    {
+      "kind": "point",
+      "kicker": "Workload",
+      "heading": "What Else Are Those People Handling?",
+      "body": "Are payroll and employee onboarding sitting alongside someone’s main role? Check whether those responsibilities have dedicated capacity."
+    },
+    {
+      "kind": "point",
+      "kicker": "Next hires",
+      "heading": "Could Your Current Setup Handle More Staff?",
+      "body": "Before another round of hiring, ask whether you want to keep these responsibilities inside the business."
+    },
+    {
+      "kind": "point",
+      "kicker": "Who we serve",
+      "heading": "For Growing Egyptian and Saudi Companies",
+      "body": "Qimam People serves companies with 30–300 staff that do not have an in-house payroll team."
+    },
+    {
+      "kind": "point",
+      "kicker": "An alternative",
+      "heading": "Give Payroll and Onboarding an External Desk",
+      "body": "Qimam People is an outsourced HR operations desk in Cairo that runs payroll and employee onboarding."
+    },
+    {
+      "kind": "cta",
+      "heading": "Contact Qimam People",
+      "body": "Discuss your payroll and employee onboarding needs: https://qimam-people.example"
+    }
+  ],
+  "caption": "Past 50 staff without an in-house payroll team?\nStart by checking responsibility, workload and capacity for your next hires.\nContact Qimam People: https://qimam-people.example",
+  "hashtags": [
+    "#Payroll",
+    "#HROperations",
+    "#EmployeeOnboarding"
+  ]
+}

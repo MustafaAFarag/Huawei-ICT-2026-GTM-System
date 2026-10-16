@@ -1,0 +1,19 @@
+{
+  "subject": "Nile Logistics’ payroll and HR vacancies",
+  "preheader": "Visit Qimam People’s website to explore an outsourced option for employee operations.",
+  "heading": "Payroll and onboarding, handled externally",
+  "intro": "Qimam People is an outsourced HR operations desk in Cairo that runs payroll and employee onboarding.",
+  "sections": [
+    {
+      "body": "Nile Logistics’ careers page lists four open payroll and HR administrator vacancies. Would an outsourced service be worth considering alongside those openings?",
+      "sourceId": "q1"
+    }
+  ],
+  "cta": {
+    "label": "Visit Qimam People",
+    "url": "https://qimam-people.example"
+  },
+  "signoff": {
+    "name": "Qimam People"
+  }
+}

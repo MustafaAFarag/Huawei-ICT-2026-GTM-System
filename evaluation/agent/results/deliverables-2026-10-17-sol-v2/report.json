@@ -1,0 +1,212 @@
+{
+  "summary": {
+    "label": "sol-v2",
+    "model": "gpt-6-1-sol",
+    "judge": "gpt-6-1-sol",
+    "prompts": {
+      "format-email": "2026-10-17.2+37d60237",
+      "format-carousel": "2026-10-17.2+4184b40b",
+      "format-flipbook": "2026-10-17.2+134d6591",
+      "language": "2026-10-16.3+ddcf64e1"
+    },
+    "passed": "10/10",
+    "lintClean": 10,
+    "means": {
+      "copy": 3.7,
+      "grounding": 5,
+      "structure": 5,
+      "language": 4.8
+    },
+    "usage": {
+      "gpt-6-1-sol": {
+        "input": 23890,
+        "output": 9281,
+        "calls": 20
+      }
+    },
+    "usd": 0.1406,
+    "ledgerTotal": 0.2727
+  },
+  "results": [
+    {
+      "id": "gmail-en",
+      "format": "email-gmail",
+      "language": "en",
+      "ok": true,
+      "ms": 12141,
+      "pages": 1,
+      "bytes": 4891,
+      "lintErrors": [],
+      "lintWarnings": [],
+      "judge": {
+        "copy": 4,
+        "grounding": 5,
+        "structure": 5,
+        "language": 5,
+        "notes": "The weakest point is the generic heading and introductory question; leading with the specific booking-page issue would make the email more direct. The copy is otherwise concise, fully grounded in the supplied information, and focused on one offer with one CTA."
+      }
+    },
+    {
+      "id": "gmail-ar",
+      "format": "email-gmail",
+      "language": "ar-EG",
+      "ok": true,
+      "ms": 14620,
+      "pages": 1,
+      "bytes": 4701,
+      "lintErrors": [],
+      "lintWarnings": [],
+      "judge": {
+        "copy": 4,
+        "grounding": 5,
+        "structure": 5,
+        "language": 5,
+        "notes": "أضعف نقطة هي خصوصية الرسالة: النص عام رغم توفر معلومات عن الوظائف الشاغرة والتوسع في المخازن. والـpreheader بيشرح وظيفة الزر بدل ما يوضح الخدمة بشكل مباشر. الرسالة ملتزمة بالمعلومات المقدمة، وبفكرة واحدة وزر واحد، ولغتها المصرية مناسبة."
+      }
+    },
+    {
+      "id": "outlook-en",
+      "format": "email-outlook",
+      "language": "en",
+      "ok": true,
+      "ms": 12019,
+      "pages": 1,
+      "bytes": 4738,
+      "lintErrors": [],
+      "lintWarnings": [],
+      "judge": {
+        "copy": 4,
+        "grounding": 5,
+        "structure": 5,
+        "language": 5,
+        "notes": "Weakest point: the copy reads like an initial outreach rather than a follow-up. The preheader and website CTA are also generic, though the email is concise and clearly connects the vacancies to the supplied offer."
+      }
+    },
+    {
+      "id": "outlook-ar",
+      "format": "email-outlook",
+      "language": "ar",
+      "ok": true,
+      "ms": 13125,
+      "pages": 1,
+      "bytes": 4644,
+      "lintErrors": [],
+      "lintWarnings": [],
+      "judge": {
+        "copy": 4,
+        "grounding": 5,
+        "structure": 5,
+        "language": 5,
+        "notes": "أضعف نقطة هي وضوح الدعوة إلى الإجراء: النص والزر يركّزان على زيارة موقع الاستوديو بدل طلب المراجعة المجانية مباشرة. يُفضّل إبراز العرض داخل متن الرسالة واستخدام «طلب المراجعة المجانية» للزر."
+      }
+    },
+    {
+      "id": "instagram-en",
+      "format": "instagram-carousel",
+      "language": "en",
+      "ok": true,
+      "ms": 18704,
+      "pages": 7,
+      "bytes": 221160,
+      "lintErrors": [],
+      "lintWarnings": [],
+      "judge": {
+        "copy": 4,
+        "grounding": 5,
+        "structure": 5,
+        "language": 5,
+        "notes": "Weakest point: the CTA asks readers to request a review but gives no destination or contact method. Include the supplied brand website to make the next step clear. Otherwise, the copy is concise, grounded and naturally written, with a clear hook and one focused topic per slide."
+      }
+    },
+    {
+      "id": "instagram-ar",
+      "format": "instagram-carousel",
+      "language": "ar-EG",
+      "ok": true,
+      "ms": 18286,
+      "pages": 6,
+      "bytes": 220993,
+      "lintErrors": [],
+      "lintWarnings": [],
+      "judge": {
+        "copy": 4,
+        "grounding": 5,
+        "structure": 5,
+        "language": 5,
+        "notes": "أضعف نقطة هي تكرار سؤال وضوح الحجز في العنوان والكابشن من غير إضافة زاوية جديدة. باقي المحتوى واضح ومناسب لطول الكاروسيل، باللهجة المصرية الطبيعية، وكل شريحة فيها فكرة واحدة والـCTA في الآخر. العرض والرابط مطابقان للبيانات المقدّمة، ومفيش أرقام أو نتائج مختلقة."
+      }
+    },
+    {
+      "id": "linkedin-en",
+      "format": "linkedin-carousel",
+      "language": "en",
+      "ok": true,
+      "ms": 25410,
+      "pages": 8,
+      "bytes": 222163,
+      "lintErrors": [],
+      "lintWarnings": [],
+      "judge": {
+        "copy": 3,
+        "grounding": 5,
+        "structure": 5,
+        "language": 5,
+        "notes": "The weakest point is copy: the carousel reframes the requested 'what breaks first' topic as a series of responsibility checks without clearly answering it. Repeated questions about ownership and capacity make the sequence feel less focused. Claims stay within the supplied company and offer details; the carousel has a hook first, one idea per slide, and a final CTA."
+      }
+    },
+    {
+      "id": "linkedin-ar",
+      "format": "linkedin-carousel",
+      "language": "ar-Gulf",
+      "ok": true,
+      "ms": 21942,
+      "pages": 6,
+      "bytes": 220670,
+      "lintErrors": [],
+      "lintWarnings": [],
+      "judge": {
+        "copy": 4,
+        "grounding": 5,
+        "structure": 5,
+        "language": 4,
+        "notes": "أضعف نقطة هي الصياغة: شريحة تشغيل الرواتب تكرر كلمة «تشغيل» دون إضافة معيار يساعد القارئ على اتخاذ القرار. اللغة سليمة، لكنها تمزج الفصحى بتعبيرات خليجية خفيفة مثل «عندكم»، بدل الحفاظ على نبرة خليجية متسقة. المحتوى مستند إلى المعلومات المقدمة، وتسلسل الشرائح واضح وينتهي بدعوة للتواصل."
+      }
+    },
+    {
+      "id": "flipbook-en",
+      "format": "flipbook",
+      "language": "en",
+      "ok": true,
+      "ms": 38052,
+      "pages": 8,
+      "bytes": 269208,
+      "lintErrors": [],
+      "lintWarnings": [],
+      "judge": {
+        "copy": 3,
+        "grounding": 5,
+        "structure": 5,
+        "language": 5,
+        "notes": "The weakest point is copy: the short guide is weighed down by repeated caveats and internal-review language such as 'approved service scope' and 'supplied offer.' It spends more space explaining what is unknown than explaining the desk, although the limited supplied details constrain that explanation. Grounding is sound, and the flipbook has a cover, coherent sequence and final CTA."
+      }
+    },
+    {
+      "id": "flipbook-ar",
+      "format": "flipbook",
+      "language": "ar-EG",
+      "ok": true,
+      "ms": 34815,
+      "pages": 6,
+      "bytes": 269025,
+      "lintErrors": [],
+      "lintWarnings": [],
+      "judge": {
+        "copy": 3,
+        "grounding": 5,
+        "structure": 5,
+        "language": 4,
+        "notes": "أضعف نقطة هي الإطالة والتكرار، خصوصًا في صفحتي «نقطة البداية» و«مثال موثّق»؛ اختصارهما سيجعل الدليل أسرع وأسهل في القراءة. الحقائق والعرض موثّقان بلا نتائج مختلقة، والتسلسل واضح وينتهي بدعوة للتواصل. اللغة مصرية طبيعية عمومًا، لكن «هذا الأسبوع» أنسب بصيغة «الأسبوع ده»."
+      }
+    }
+  ]
+}

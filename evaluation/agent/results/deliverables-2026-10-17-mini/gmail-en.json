@@ -1,0 +1,33 @@
+{
+  "subject": "Free website review for clinics with outdated sites",
+  "preheader": "See three practical fixes for your clinic site, including booking and contact page improvements.",
+  "heading": "A free review of your clinic website",
+  "intro": "Nour Studio offers a free one-page website review for clinic owners.\n\nYou will get three practical fixes you can make this week, focused on clarity, trust, and easier patient contact.",
+  "sections": [
+    {
+      "heading": "What the review covers",
+      "body": "We look at the main page people use to decide whether to contact you, book, or call. The review is short and specific, so you can see what matters most first.",
+      "bullets": [
+        "Booking flow",
+        "Mobile clarity",
+        "Contact details"
+      ]
+    },
+    {
+      "heading": "A useful example for clinics",
+      "body": "For Dar Al Shifa Clinic, the booking page appears to have no Arabic version and lists only a landline number. Those are the kinds of issues that can make a site harder to use for patients.",
+      "sourceId": "n1"
+    },
+    {
+      "heading": "What you receive",
+      "body": "You will get a simple note with three fixes you can apply this week. The goal is to make your site easier to understand and easier to act on."
+    }
+  ],
+  "cta": {
+    "label": "Get the free review",
+    "url": "https://nour-studio.example"
+  },
+  "signoff": {
+    "name": "Nour Studio"
+  }
+}

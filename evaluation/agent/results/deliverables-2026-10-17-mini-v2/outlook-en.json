@@ -1,0 +1,28 @@
+{
+  "subject": "Payroll support for Nile Logistics",
+  "preheader": "Qimam People can run payroll and employee onboarding for growing teams without an in-house payroll desk.",
+  "heading": "A simpler way to cover payroll and onboarding",
+  "intro": "Hi Mona,\n\nI’m reaching out because Nile Logistics currently lists payroll and HR administrator vacancies on its careers page. Qimam People offers an outsourced HR operations desk that can take payroll and employee onboarding off your team’s plate.",
+  "sections": [
+    {
+      "heading": "What the service covers",
+      "body": "Our approved offer is built for companies that want a dedicated HR operations desk without building one in-house.",
+      "bullets": [
+        "Payroll",
+        "Employee onboarding"
+      ]
+    },
+    {
+      "heading": "Why it may help your team",
+      "body": "If you are still hiring for these roles, this can be a practical way to keep the work covered while the team grows.",
+      "sourceId": "q1"
+    }
+  ],
+  "cta": {
+    "label": "Visit our website",
+    "url": "https://qimam-people.example"
+  },
+  "signoff": {
+    "name": "Qimam People"
+  }
+}

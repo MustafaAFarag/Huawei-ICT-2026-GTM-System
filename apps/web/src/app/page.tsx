@@ -657,7 +657,13 @@ export default function Page() {
                   onOpenAsset={openAsset}
                   canvas={canvas}
                 />
-              ) : (
+              ) : null}
+              {view === "Home" && activeRun && (
+                <div className="home-runlog">
+                  <RunLog activeRun={activeRun} events={events} />
+                </div>
+              )}
+              {view !== "Home" ? (
                 <div className="content">
                   {!preview && (
                     <div className="page-heading">
@@ -692,7 +698,7 @@ export default function Page() {
                     <RunLog activeRun={activeRun} events={events} />
                   </div>
                 </div>
-              )}
+              ) : null}
               {view !== "Home" && (
                 <div inert={modalOpen}>
                   <Launcher
@@ -708,11 +714,6 @@ export default function Page() {
                 </div>
               )}
             </WorkspaceProvider>
-          )}
-          {view === "Home" && activeRun && (
-            <div className="home-runlog">
-              <RunLog activeRun={activeRun} events={events} />
-            </div>
           )}
         </main>
         {aiCursor && (

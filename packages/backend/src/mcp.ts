@@ -2,7 +2,7 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
 import type { Request, Response } from "express";
 import { z } from "zod";
-import { tools, type Actor } from "@revenue/contracts";
+import { tools, assetTemplates, type Actor } from "@revenue/contracts";
 import { WorkflowService } from "./workflows.js";
 import { safeError } from "./policy.js";
 export async function handleMcp(
@@ -24,7 +24,7 @@ export async function handleMcp(
           spendApprovalId: z.uuid().optional(),
           play: z.enum(["P1", "P2", "P3", "P4"]).optional(),
           language: z.enum(["en", "ar-EG", "ar-Gulf", "ar"]).optional(),
-          template: z.enum(["offer-one-pager", "mini-audit"]).optional(),
+          template: z.enum(assetTemplates).optional(),
           website: z.url().optional(),
           message: z.string().min(1).max(3000).optional(),
         },

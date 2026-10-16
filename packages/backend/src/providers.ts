@@ -638,12 +638,16 @@ export class OpenDesign {
       html = injectFonts(artifact);
     }
     html = normalizeAssetBidi(html, language);
+    return { html, engineProjectId: await this.save(`${template} — ${snapshot.company}`, html) };
+  }
+  // Stores a finished artifact in this workspace's isolated engine; returns its URL.
+  async save(title: string, html: string) {
     const saved = await this.request<{ url: string }>("/api/artifacts/save", {
       identifier: randomUUID(),
-      title: `${template} — ${snapshot.company}`,
+      title,
       html,
     });
-    return { html, engineProjectId: saved.url };
+    return saved.url;
   }
 }
 

@@ -96,3 +96,20 @@ resource "azurerm_cognitive_deployment" "tts" {
   }
   depends_on = [azurerm_cognitive_deployment.transcribe]
 }
+
+# Stronger model for deliverable generation and evaluation (17 Oct 2026). Small capacity:
+# it is called only for emails, carousels, flipbooks and judged evaluation runs.
+resource "azurerm_cognitive_deployment" "sol" {
+  name                 = "gpt-6-1-sol"
+  cognitive_account_id = azurerm_cognitive_account.openai.id
+  model {
+    format  = "OpenAI"
+    name    = "gpt-6.1-sol"
+    version = "2026-09-29"
+  }
+  sku {
+    name     = "GlobalStandard"
+    capacity = var.sol_capacity
+  }
+  depends_on = [azurerm_cognitive_deployment.tts]
+}

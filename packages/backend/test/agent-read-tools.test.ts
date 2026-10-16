@@ -39,8 +39,9 @@ beforeAll(async () => {
       }),
     })),
   });
+  // The one record with a recorded basis (unordered findFirst made this test flaky).
   const prospect = await db.prospect.findFirstOrThrow({
-    where: { workspaceId: ws },
+    where: { workspaceId: ws, lawfulBasis: "consent" },
   });
   prospectId = prospect.id;
   await db.prospect.update({

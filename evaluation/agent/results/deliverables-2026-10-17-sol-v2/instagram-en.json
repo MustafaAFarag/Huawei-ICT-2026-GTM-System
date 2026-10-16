@@ -1,0 +1,50 @@
+{
+  "title": "Could Your Clinic Website Be Losing Bookings?",
+  "slides": [
+    {
+      "kind": "hook",
+      "heading": "Could Your Clinic Website Be Losing Bookings?",
+      "body": "Check what patients can find before asking them to book."
+    },
+    {
+      "kind": "point",
+      "heading": "Are Your Clinic’s Services Clear?",
+      "body": "Can a patient tell whether your clinic offers the care they’re looking for?"
+    },
+    {
+      "kind": "list",
+      "heading": "Can Patients Plan Their Visit?",
+      "bullets": [
+        "Is the address easy to find?",
+        "Are opening hours clearly shown?",
+        "Are contact details current?"
+      ]
+    },
+    {
+      "kind": "point",
+      "heading": "Check the Website on Your Phone",
+      "body": "Can you read the text, open the menu and tap the contact details without zooming?"
+    },
+    {
+      "kind": "point",
+      "heading": "Is the Booking Step Obvious?",
+      "body": "Can a patient tell exactly how to request an appointment from the page they’re reading?"
+    },
+    {
+      "kind": "point",
+      "heading": "Choose One Unanswered Patient Question",
+      "body": "Which missing detail could you clarify first: services, location, opening hours or how to book?"
+    },
+    {
+      "kind": "cta",
+      "heading": "Request Your Free Website Review",
+      "body": "Nour Studio offers a free one-page website review with three fixes you can make this week."
+    }
+  ],
+  "caption": "What does a patient need to know before booking at your clinic?\nUse these questions to check your current website.\nRequest your free website review.",
+  "hashtags": [
+    "#ClinicWebsite",
+    "#WebsiteDesign",
+    "#EgyptianBusiness"
+  ]
+}

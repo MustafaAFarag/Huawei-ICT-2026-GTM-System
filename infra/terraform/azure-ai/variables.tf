@@ -32,3 +32,9 @@ variable "budget_contact" {
   description = "Email that receives budget alerts."
   type        = string
 }
+
+variable "sol_capacity" {
+  description = "gpt-6.1-sol GlobalStandard capacity in thousands of tokens per minute."
+  type        = number
+  default     = 50
+}

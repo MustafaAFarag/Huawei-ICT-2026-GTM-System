@@ -43,7 +43,10 @@ export function chatModel(): LanguageModel {
       baseURL: required("MODEL_BASE_URL"),
       apiKey: required("MODEL_API_KEY"),
     }).chatModel(deployment);
-  return azureProvider().chat(deployment);
+  // gpt-6.x accepts function tools with reasoning only on the Responses API.
+  return process.env.AI_CHAT_API === "responses"
+    ? azureProvider().responses(deployment)
+    : azureProvider().chat(deployment);
 }
 
 export function chatModelId() {

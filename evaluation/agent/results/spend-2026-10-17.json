@@ -1,0 +1,48 @@
+{
+  "runs": [
+    {
+      "label": "trial",
+      "model": "gpt-5-4-mini",
+      "usd": 0.0044545,
+      "at": "2026-10-16T14:03:59.658Z"
+    },
+    {
+      "label": "mini",
+      "model": "gpt-5-4-mini",
+      "usd": 0.06766,
+      "at": "2026-10-16T14:06:27.988Z"
+    },
+    {
+      "label": "mini-v2",
+      "model": "gpt-5-4-mini",
+      "usd": 0.059868,
+      "at": "2026-10-16T14:09:03.562Z"
+    },
+    {
+      "label": "sol-v2",
+      "model": "gpt-6-1-sol",
+      "usd": 0.14059,
+      "at": "2026-10-16T14:13:43.437Z"
+    },
+    {
+      "label": "agent-gpt-5-4-mini",
+      "model": "gpt-5-4-mini",
+      "usd": 0.351321,
+      "at": "2026-10-16T14:17:16.354Z"
+    },
+    {
+      "label": "agent-gpt-6-1-sol",
+      "model": "gpt-6-1-sol",
+      "usd": 0.026526,
+      "at": "2026-10-16T14:18:16.780Z"
+    },
+    {
+      "label": "agent-gpt-6-1-sol",
+      "model": "gpt-6-1-sol",
+      "usd": 0.950116,
+      "at": "2026-10-16T14:23:05.841Z"
+    }
+  ],
+  "total": 1.6006,
+  "note": "Metered model spend for the 17 Oct evaluation. Draft-eval runs are not metered (estimated under USD 0.50 together). Zero-cost entries from failed Sol chat-completions attempts removed."
+}

@@ -16,6 +16,7 @@ import {
   score,
   chatModelId,
   promptVersions,
+  modelUsage,
   type AgentEvent,
 } from "../../packages/backend/src/index.ts";
 
@@ -188,7 +189,7 @@ for (const p of prospects) {
 const judge = createAzure({
   resourceName: process.env.AZURE_OPENAI_RESOURCE!,
   apiKey: process.env.AZURE_OPENAI_API_KEY!,
-}).chat(process.env.AI_CHAT_DEPLOYMENT ?? "gpt-5-4-mini");
+}).chat(process.env.EVAL_JUDGE ?? process.env.AI_CHAT_DEPLOYMENT ?? "gpt-5-4-mini");
 const arabicRe = /[؀-ۿ]/;
 const results: Record<string, unknown>[] = [];
 const actor = { userId: user.id, workspaceId: ws, role: "owner" as const };
@@ -318,7 +319,20 @@ const summary = {
     : null,
   medianMs: ms[Math.floor(ms.length / 2)] ?? null,
   p95Ms: ms[Math.floor(ms.length * 0.95)] ?? null,
+  usage: Object.fromEntries(modelUsage),
 };
+// Spend ledger shared with deliverable-eval.ts (USD per 1M tokens, Azure retail prices).
+const PRICES: Record<string, [number, number]> = { "gpt-5-4-mini": [0.75, 4.5], "gpt-6-1-sol": [2, 10] };
+const usd = [...modelUsage.entries()].reduce((sum, [id, u]) => {
+  const [i, o] = PRICES[id] ?? [2, 10];
+  return sum + (u.input * i + u.output * o) / 1e6;
+}, 0);
+const ledgerPath = "evaluation/agent/results/spend-2026-10-17.json";
+const ledger = JSON.parse(await readFile(ledgerPath, "utf8").catch(() => '{"runs":[],"total":0}'));
+ledger.runs.push({ label: `agent-${summary.model}`, model: summary.model, usd, at: new Date().toISOString() });
+ledger.total = Number((ledger.total + usd).toFixed(4));
+await writeFile(ledgerPath, JSON.stringify(ledger, null, 2));
+Object.assign(summary, { usd: Number(usd.toFixed(4)), ledgerTotal: ledger.total });
 await mkdir("evaluation/agent/results", { recursive: true });
 await writeFile(
   process.env.EVAL_REPORT_PATH ??

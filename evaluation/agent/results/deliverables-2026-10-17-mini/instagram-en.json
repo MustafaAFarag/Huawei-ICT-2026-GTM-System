@@ -1,0 +1,55 @@
+{
+  "title": "Clinic websites lose bookings",
+  "slides": [
+    {
+      "kind": "hook",
+      "heading": "Why clinic websites lose bookings",
+      "body": "Small issues on the homepage can send patients to another clinic."
+    },
+    {
+      "kind": "point",
+      "kicker": "First look",
+      "heading": "Slow pages stop bookings",
+      "body": "If your site loads slowly, people leave before they see your services."
+    },
+    {
+      "kind": "point",
+      "kicker": "Trust",
+      "heading": "Missing details create doubt",
+      "body": "Hours, location, and contact info should be easy to find in one glance."
+    },
+    {
+      "kind": "list",
+      "kicker": "Fix this week",
+      "heading": "Three fast website fixes",
+      "bullets": [
+        "Speed up the homepage",
+        "Show booking details first",
+        "Make the call button visible"
+      ]
+    },
+    {
+      "kind": "point",
+      "kicker": "Mobile",
+      "heading": "Phones need the shortest path",
+      "body": "Most visitors are on mobile, so the booking path should take only a few taps."
+    },
+    {
+      "kind": "point",
+      "kicker": "Proof",
+      "heading": "Clarity beats extra design",
+      "body": "A clear website helps people decide faster than a fancy one with hidden actions."
+    },
+    {
+      "kind": "cta",
+      "heading": "Get a free review",
+      "body": "Send your website link and get three fixes you can make this week."
+    }
+  ],
+  "caption": "Clinic websites often lose bookings for simple reasons.\nSlow pages, hidden details, and weak mobile flow push people away.\nSend your website link and get three fixes you can make this week.",
+  "hashtags": [
+    "#WebDesign",
+    "#ClinicMarketing",
+    "#SmallBusiness"
+  ]
+}

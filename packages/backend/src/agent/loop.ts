@@ -1,6 +1,7 @@
 import { directNavigation, directAssetRevision } from "./direct-actions.js";
 import { randomUUID } from "node:crypto";
 import { isStepCount, streamText, type ModelMessage } from "ai";
+import { ASSET_FORMATS } from "@revenue/contracts";
 import type {
   Actor,
   ToolName,
@@ -19,6 +20,7 @@ import {
   type ActionToolName,
 } from "./tools.js";
 import { chargeCredits, refundCredits } from "./metering.js";
+import { modelUsage } from "../model.js";
 
 // The assistant harness (PRD AI-01, decision D19). We own the loop: system prompt, history,
 // tool registry, step cap, and the stop on every action tool. Action calls become cost
@@ -76,9 +78,13 @@ const workflows = new WorkflowService();
 
 function toolRequestFor(
   name: ActionToolName,
-  input: Record<string, unknown>,
+  raw: Record<string, unknown>,
   context: AgentContext,
 ): ToolRequest {
+  // Strict tool schemas let models send null for omitted optional fields.
+  const input = Object.fromEntries(
+    Object.entries(raw).filter(([, value]) => value !== null),
+  );
   const play = (input.play as ToolRequest["play"]) ?? context.play;
   return {
     tool: name,
@@ -91,6 +97,7 @@ function toolRequestFor(
     template:
       (input.template as ToolRequest["template"]) ??
       (play === "P4" ? "mini-audit" : "offer-one-pager"),
+    slides: input.slides as number | undefined,
     website: input.website as string | undefined,
     sourceAssetId: input.sourceAssetId as string | undefined,
     message: input.instructions as string | undefined,
@@ -107,7 +114,22 @@ function short(value: unknown) {
 }
 
 // Deterministic stand-in used when MODEL_MODE is not live (tests and offline demos).
+function fixtureTemplate(content: string): ToolRequest["template"] | undefined {
+  const email = /html\s*e-?mail|newsletter|بريد\s*html|نشرة/i.test(content);
+  return email && /outlook/i.test(content)
+    ? "email-outlook"
+    : email
+      ? "email-gmail"
+      : /instagram|إنستغرام|انستجرام/i.test(content)
+        ? "instagram-carousel"
+        : /carousel|شرائح/i.test(content)
+          ? "linkedin-carousel"
+          : /flip.?book|booklet|كتيب|كتيّب/i.test(content)
+            ? "flipbook"
+            : undefined;
+}
 function fixtureTool(content: string): ToolName {
+  if (fixtureTemplate(content)) return "make_asset";
   return /pre.?flight|mailbox|inbox/i.test(content)
     ? "preflight"
     : /audit|website/i.test(content)
@@ -169,7 +191,11 @@ export async function runAgentTurn(
   let steps = 0;
   let credits = 0;
   const toolLog: { name: string; input?: unknown }[] = [];
-  const quotes: { tool: ToolName; quoteId: string }[] = [];
+  const quotes: { tool: ToolName; quoteId: string; template?: string }[] = [];
+  const quoteLabel = (q: { tool: ToolName; template?: string }) =>
+    q.tool === "make_asset" && q.template
+      ? `a ${ASSET_FORMATS[q.template as keyof typeof ASSET_FORMATS]?.label ?? "deliverable"}`
+      : q.tool.replaceAll("_", " ");
   const pending: { name: ActionToolName; input: Record<string, unknown> }[] =
     [];
   const say = (delta: string) => {
@@ -201,9 +227,10 @@ export async function runAgentTurn(
     const reply = `I can prepare ${tool.replaceAll("_", " ")} for your selected records. Review the proposed action and its cost below. This is the fixture assistant; no model call or live message will be made.`;
     for (const word of reply.split(/(?<= )/)) say(word);
     toolLog.push({ name: tool });
+    const template = tool === "make_asset" ? fixtureTemplate(content) : undefined;
     pending.push({
       name: tool as ActionToolName,
-      input: { prospectIds: context.prospectIds },
+      input: { prospectIds: context.prospectIds, ...(template ? { template } : {}) },
     });
     steps = 1;
   } else {
@@ -280,6 +307,12 @@ export async function runAgentTurn(
         else if (part.type === "finish-step") steps++;
         else if (part.type === "error") throw part.error;
       }
+      const usage = await result.totalUsage;
+      const used = modelUsage.get(chatModelId()) ?? { input: 0, output: 0, calls: 0 };
+      used.input += usage.inputTokens ?? 0;
+      used.output += usage.outputTokens ?? 0;
+      used.calls += 1;
+      modelUsage.set(chatModelId(), used);
     } catch (error) {
       if (!text) await refundCredits(actor, charge.usageId);
       const message =
@@ -310,7 +343,7 @@ export async function runAgentTurn(
         ...(threadId ? { threadId } : {}),
       };
       const quote = await workflows.quote(actor, input);
-      quotes.push({ tool: call.name, quoteId: quote.id });
+      quotes.push({ tool: call.name, quoteId: quote.id, template: input.template });
       emit({ type: "quote", tool: call.name, input, quote });
     } catch (error) {
       const message = safeError(error);
@@ -335,7 +368,7 @@ export async function runAgentTurn(
     say(
       context.uiLanguage === "ar" || /[\u0600-\u06FF]/.test(content)
         ? `جهزت عرض تكلفة للإجراء ده. لسه ما اتنفذش حاجة — راجع التكلفة ووافق عليها عشان يبدأ.`
-        : `I prepared a cost quote for ${quotes[0].tool.replaceAll("_", " ")}. Nothing has run yet — review and approve the cost to start it.`,
+        : `I prepared a cost quote for ${quoteLabel(quotes[0])}. Nothing has run yet — review and approve the cost to start it; the result opens in the canvas and is saved under Deliverables.`,
     );
   const saved = await db.chatMessage.create({
     data: {

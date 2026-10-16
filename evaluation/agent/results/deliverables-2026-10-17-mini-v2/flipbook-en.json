@@ -1,0 +1,90 @@
+{
+  "title": "How Qimam People Helps",
+  "subtitle": "For Nile Logistics, this is a short guide to an outsourced HR operations desk for payroll and onboarding support.",
+  "pages": [
+    {
+      "kind": "cover",
+      "heading": "How Qimam People Helps",
+      "body": "For Nile Logistics, this is a short guide to an outsourced HR operations desk for payroll and onboarding support."
+    },
+    {
+      "kind": "editorial",
+      "kicker": "Context",
+      "heading": "Why this matters now",
+      "body": "Nile Logistics currently lists four open payroll and HR administrator vacancies on its careers page. That can make day-to-day people operations harder to keep consistent as the team grows.\n\nQimam People is an outsourced HR operations desk based in Cairo. It is built for companies with 30–300 staff that do not have an in-house payroll team."
+    },
+    {
+      "kind": "steps",
+      "kicker": "Method",
+      "heading": "What the desk covers",
+      "items": [
+        {
+          "title": "Run payroll",
+          "text": "Qimam People handles payroll operations as an outsourced service."
+        },
+        {
+          "title": "Support onboarding",
+          "text": "It also runs employee onboarding so new starters can be brought in through one team."
+        },
+        {
+          "title": "One operating desk",
+          "text": "Payroll and onboarding sit together, instead of being split across several internal owners."
+        }
+      ]
+    },
+    {
+      "kind": "editorial",
+      "kicker": "Evidence",
+      "heading": "What we can point to",
+      "body": "Nile Logistics lists four open payroll and HR administrator vacancies. That is a clear sign that these responsibilities are active enough to need dedicated attention.\n\nThe company also says it opened 3 new warehouses in Alexandria this year. Growth like that often comes with more coordination across people operations, payroll, and onboarding."
+    },
+    {
+      "kind": "steps",
+      "kicker": "Working together",
+      "heading": "How it typically fits in",
+      "items": [
+        {
+          "title": "Share the basics",
+          "text": "You align on the payroll and onboarding work that needs support."
+        },
+        {
+          "title": "Set the handoff",
+          "text": "The outsourced desk takes on the agreed HR operations work."
+        },
+        {
+          "title": "Keep it moving",
+          "text": "Your team stays focused on people leadership while operations are handled through the desk."
+        }
+      ]
+    },
+    {
+      "kind": "list",
+      "kicker": "For Nile",
+      "heading": "When this is a fit",
+      "items": [
+        {
+          "title": "Open vacancies",
+          "text": "You have payroll and HR admin gaps to cover."
+        },
+        {
+          "title": "Growing headcount",
+          "text": "Your team is expanding and needs steady operations support."
+        },
+        {
+          "title": "No payroll team",
+          "text": "You want payroll run without building a full in-house function."
+        }
+      ]
+    },
+    {
+      "kind": "cta",
+      "kicker": "Next step",
+      "heading": "Talk to Qimam People",
+      "body": "If you want to see how the outsourced HR operations desk could support Nile Logistics, visit Qimam People or start a conversation at the website.",
+      "cta": {
+        "label": "Visit website",
+        "url": "https://qimam-people.example"
+      }
+    }
+  ]
+}

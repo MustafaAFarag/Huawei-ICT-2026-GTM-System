@@ -16,6 +16,7 @@ import {
   IconThumbUp,
   IconThumbUpFilled,
 } from "@revenue/ui";
+import { ASSET_FORMATS, type AssetTemplate } from "@revenue/contracts";
 import { usePrefs } from "../../lib/prefs";
 import { assetLabel } from "../../lib/asset-label";
 import type { Asset, Chat } from "../../lib/types";
@@ -143,7 +144,8 @@ export function DeliverableCard({
       <span className="deliverable-meta">
         <strong dir="auto">{asset ? assetLabel(asset, t) : fallbackTitle}</strong>
         <span className="muted small">
-          {t(template)} · v{asset?.version ?? 1} ·{" "}
+          {t(ASSET_FORMATS[template as AssetTemplate]?.label ?? template)} · v
+          {asset?.version ?? 1} ·{" "}
           {asset?.approvedAt ? t("Approved") : t("Draft · needs review")}
         </span>
       </span>
@@ -233,10 +235,15 @@ function QuoteCard({ quote, onReview }: { quote: Proposal; onReview: () => void 
       <div>
         <p className="eyebrow">{t("Needs your approval")}</p>
         <strong className="step-name">
-          {t(STEP_LABELS[quote.input.tool] ?? quote.input.tool.replaceAll("_", " "))}
+          {quote.input.tool === "make_asset"
+            ? t(ASSET_FORMATS[quote.input.template as AssetTemplate]?.label ?? "Deliverable")
+            : t(STEP_LABELS[quote.input.tool] ?? quote.input.tool.replaceAll("_", " "))}
         </strong>
         <p className="muted small">
-          {quote.quote.audience || t("Workspace")} {t("selected")} ·{" "}
+          {quote.quote.audience
+            ? `${quote.quote.audience} ${t("selected")}`
+            : t("Brand-level")}{" "}
+          ·{" "}
           <bdi>{quote.input.language}</bdi>
         </p>
       </div>
@@ -316,7 +323,11 @@ export function Conversation({
                 )}
                 <MessageActions
                   message={message}
-                  canRetry={!chat.live && message.id === lastAssistant?.id}
+                  canRetry={
+                    !chat.live &&
+                    !message.context?.deliverable &&
+                    message.id === lastAssistant?.id
+                  }
                 />
               </div>
             </div>

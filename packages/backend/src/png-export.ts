@@ -2,6 +2,12 @@ import { ConflictException, ServiceUnavailableException } from "@nestjs/common";
 import { digest } from "./policy.js";
 import { normalizeAssetBidi } from "./asset-bidi.js";
 import { renderPng, renderPdf } from "./providers.js";
+import {
+  isContentFormat,
+  renderA4Pdf,
+  renderSlidesPdf,
+  renderSlidesZip,
+} from "./formats/index.js";
 import { Storage } from "./storage.js";
 
 const inFlight = new Map<string, Promise<Buffer>>();
@@ -31,23 +37,28 @@ export function assertPngApprovalUnchanged(
 }
 // Only approved callers reach this renderer. Cache by immutable HTML content and
 // coalesce concurrent requests; cap new browser renders to one per API process.
-export const assetPng = (
-  workspaceId: string,
-  asset: { id: string; htmlKey: string },
-) => assetExport(workspaceId, asset, "png");
-export const assetPdf = (
-  workspaceId: string,
-  asset: { id: string; htmlKey: string },
-) => assetExport(workspaceId, asset, "pdf");
+type ExportAsset = { id: string; htmlKey: string; template?: string };
+export const assetPng = (workspaceId: string, asset: ExportAsset) =>
+  assetExport(workspaceId, asset, "png");
+export const assetPdf = (workspaceId: string, asset: ExportAsset) =>
+  assetExport(workspaceId, asset, "pdf");
+export const assetZip = (workspaceId: string, asset: ExportAsset) =>
+  assetExport(workspaceId, asset, "zip");
+const SLIDES = ["instagram-carousel", "linkedin-carousel"];
 async function assetExport(
   workspaceId: string,
-  asset: { id: string; htmlKey: string },
-  format: "png" | "pdf",
+  asset: ExportAsset,
+  format: "png" | "pdf" | "zip",
 ) {
   const storage = new Storage();
-  const html = normalizeAssetBidi(
-    (await storage.get(workspaceId, asset.htmlKey)).toString("utf8"),
-  );
+  // Flipbook PDFs print the static page view; the interactive file carries a script.
+  const source =
+    asset.template === "flipbook" && format === "pdf"
+      ? `${asset.id}.print.html`
+      : asset.htmlKey;
+  const raw = (await storage.get(workspaceId, source)).toString("utf8");
+  // Format templates already isolate mixed scripts; reparsing would alter email markup.
+  const html = isContentFormat(asset.template ?? "") ? raw : normalizeAssetBidi(raw);
   const key = `${asset.id}-${digest(html).slice(0, 12)}.${format}`;
   try {
     return await storage.get(workspaceId, key);
@@ -63,12 +74,27 @@ async function assetExport(
       "Another image export is being prepared. Try again shortly.",
     );
   const rendering = (async () => {
-    const bytes = await (format === "png" ? renderPng(html) : renderPdf(html));
+    const slides = SLIDES.includes(asset.template ?? "");
+    const bytes = Buffer.from(
+      await (format === "zip"
+        ? renderSlidesZip(html)
+        : format === "png"
+          ? renderPng(html)
+          : slides
+            ? renderSlidesPdf(html)
+            : asset.template === "flipbook"
+              ? renderA4Pdf(html)
+              : renderPdf(html)),
+    );
     await storage.put(
       workspaceId,
       key,
       bytes,
-      format === "png" ? "image/png" : "application/pdf",
+      format === "png"
+        ? "image/png"
+        : format === "zip"
+          ? "application/zip"
+          : "application/pdf",
     );
     return bytes;
   })();

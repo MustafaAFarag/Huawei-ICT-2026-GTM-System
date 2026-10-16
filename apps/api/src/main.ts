@@ -1,5 +1,9 @@
 import "reflect-metadata";
-import { toolRequest } from "@revenue/contracts";
+import {
+  toolRequest,
+  ASSET_FORMATS,
+  type AssetTemplate,
+} from "@revenue/contracts";
 import {
   Controller,
   Get,
@@ -57,6 +61,12 @@ import {
   ImportHistoryService,
   ScheduleService,
   ThreadService,
+  assetBasis,
+  assetZip,
+  isContentFormat,
+  lintFor,
+  oneSlide,
+  pageCount,
   assetPng,
   assetPdf,
   normalizeAssetBidi,
@@ -297,10 +307,8 @@ class ApiController {
     const asset = await db.asset.findFirstOrThrow({
       where: { id, workspaceId: ws },
     });
-    const prospect = await db.prospect.findFirstOrThrow({
-      where: { id: asset.prospectId!, workspaceId: ws },
-    });
-    if (asset.evidenceDigest !== digest(prospect.evidence))
+    const basis = await assetBasis(ws, asset);
+    if (basis === null || asset.evidenceDigest !== digest(basis))
       throw new HttpException(
         "Evidence changed. Generate and review a new asset.",
         409,
@@ -367,6 +375,22 @@ class ApiController {
       );
     return senderEvent(await actorFor(req.headers, ws), body);
   }
+  @ApiOperation({ summary: "Deliverable page count, size and client compatibility checks" })
+  @Get("workspaces/:workspaceId/assets/:id/meta") async assetMeta(
+    @Req() req: Request,
+    @Param("workspaceId") ws: string,
+    @Param("id") id: string,
+  ) {
+    await actorFor(req.headers, ws);
+    const asset = await db.asset.findFirst({ where: { id, workspaceId: ws } });
+    if (!asset) throw new HttpException("Asset not found.", 404);
+    const html = (await storage.get(ws, asset.htmlKey)).toString("utf8");
+    return {
+      pages: pageCount(asset.template, html),
+      bytes: Buffer.byteLength(html, "utf8"),
+      lint: lintFor(asset.template, html),
+    };
+  }
   @Get("workspaces/:workspaceId/assets/:id/:format") async asset(
     @Req() req: Request,
     @Res() res: Response,
@@ -376,51 +400,42 @@ class ApiController {
   ) {
     await actorFor(req.headers, ws);
     const asset = await db.asset.findFirst({ where: { id, workspaceId: ws } });
-    if (!asset || !["html", "pdf", "png"].includes(format))
-      throw new HttpException("Asset not found.", 404);
-    if (
-      format !== "html" &&
-      (!asset.approvedAt ||
-        asset.evidenceDigest !==
-          digest(
-            (
-              await db.prospect.findFirstOrThrow({
-                where: { id: asset.prospectId!, workspaceId: ws },
-              })
-            ).evidence,
-          ))
-    )
-      throw new HttpException(
-        "Review and approve this asset before exporting it.",
-        409,
-      );
-    const key = format === "pdf" ? asset.pdfKey : asset.htmlKey;
-    if (!key)
-      throw new HttpException("This export is still being prepared.", 409);
-    const bytes =
-      format === "png"
-        ? await assetPng(ws, asset)
-        : format === "pdf"
-          ? await assetPdf(ws, asset)
-          : Buffer.from(
-              normalizeAssetBidi(
-                (await storage.get(ws, key)).toString("utf8"),
-                asset.language,
-              ),
-            );
+    const spec = asset ? ASSET_FORMATS[asset.template as AssetTemplate] : undefined;
+    // html is the sandboxed preview; download, pdf, png and zip are approved exports.
+    const allowed =
+      format === "html" ||
+      (format === "download" && spec?.exports.includes("html")) ||
+      (["pdf", "png", "zip"].includes(format) &&
+        spec?.exports.includes(format as "pdf"));
+    if (!asset || !spec || !allowed) throw new HttpException("Asset not found.", 404);
     if (format !== "html") {
-      const current = await db.asset.findFirst({
-        where: { id, workspaceId: ws },
-      });
-      const prospect = await db.prospect.findFirst({
-        where: { id: asset.prospectId!, workspaceId: ws },
-      });
-      if (!prospect)
+      const basis = await assetBasis(ws, asset);
+      if (basis === null)
         throw new HttpException(
           "The source account no longer exists. Reload the workspace.",
           409,
         );
-      assertPngApprovalUnchanged(asset, current, prospect.evidence);
+      if (!asset.approvedAt || asset.evidenceDigest !== digest(basis))
+        throw new HttpException(
+          "Review and approve this asset before exporting it.",
+          409,
+        );
+    }
+    const content = isContentFormat(asset.template);
+    const raw = async () => (await storage.get(ws, asset.htmlKey)).toString("utf8");
+    let bytes: Buffer;
+    if (format === "png") bytes = await assetPng(ws, asset);
+    else if (format === "zip") bytes = await assetZip(ws, asset);
+    else if (format === "pdf") bytes = await assetPdf(ws, asset);
+    else {
+      let html = content ? await raw() : normalizeAssetBidi(await raw(), asset.language);
+      const slide = Number(req.query.slide);
+      if (format === "html" && spec.viewer === "slides" && slide > 0) html = oneSlide(html, slide);
+      bytes = Buffer.from(html);
+    }
+    if (format !== "html") {
+      const current = await db.asset.findFirst({ where: { id, workspaceId: ws } });
+      assertPngApprovalUnchanged(asset, current, await assetBasis(ws, asset));
     }
     res.set("Cache-Control", "private, no-store");
     res.set(
@@ -429,17 +444,23 @@ class ApiController {
         ? "application/pdf"
         : format === "png"
           ? "image/png"
-          : "text/html; charset=utf-8",
+          : format === "zip"
+            ? "application/zip"
+            : "text/html; charset=utf-8",
     );
     res.removeHeader("X-Frame-Options");
+    // Only the trusted flipbook template runs script, and only in an opaque-origin sandbox.
+    // Email previews may show hosted HTTPS images (brand logos), as the inbox would.
     res.set(
       "Content-Security-Policy",
-      "sandbox; frame-ancestors 'self'; default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:",
+      spec.viewer === "flipbook"
+        ? "sandbox allow-scripts; frame-ancestors 'self'; default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src data:"
+        : `sandbox; frame-ancestors 'self'; default-src 'none'; style-src 'unsafe-inline'; img-src data:${spec.viewer === "email" ? " https:" : ""}; font-src data:`,
     );
     if (format !== "html")
       res.set(
         "Content-Disposition",
-        `attachment; filename="${asset.template}-${asset.language}.${format}"`,
+        `attachment; filename="${asset.template}-${asset.language}.${format === "download" ? "html" : format}"`,
       );
     res.send(bytes);
   }

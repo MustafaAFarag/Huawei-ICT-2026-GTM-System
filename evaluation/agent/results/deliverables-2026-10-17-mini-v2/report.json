@@ -1,0 +1,217 @@
+{
+  "summary": {
+    "label": "mini-v2",
+    "model": "gpt-5-4-mini",
+    "judge": "gpt-6-1-sol",
+    "prompts": {
+      "format-email": "2026-10-17.2+37d60237",
+      "format-carousel": "2026-10-17.2+4184b40b",
+      "format-flipbook": "2026-10-17.2+134d6591",
+      "language": "2026-10-16.3+ddcf64e1"
+    },
+    "passed": "10/10",
+    "lintClean": 10,
+    "means": {
+      "copy": 3.5,
+      "grounding": 4.1,
+      "structure": 4.7,
+      "language": 4.4
+    },
+    "usage": {
+      "gpt-5-4-mini": {
+        "input": 16096,
+        "output": 3324,
+        "calls": 10
+      },
+      "gpt-6-1-sol": {
+        "input": 7419,
+        "output": 1800,
+        "calls": 10
+      }
+    },
+    "usd": 0.0599,
+    "ledgerTotal": 0.1321
+  },
+  "results": [
+    {
+      "id": "gmail-en",
+      "format": "email-gmail",
+      "language": "en",
+      "ok": true,
+      "ms": 3044,
+      "pages": 1,
+      "bytes": 6285,
+      "lintErrors": [],
+      "lintWarnings": [],
+      "judge": {
+        "copy": 4,
+        "grounding": 1,
+        "structure": 5,
+        "language": 5,
+        "notes": "Grounding is weakest: 'no obligation' adds an unsupported offer term, and 'We look at one page' assumes a review scope not specified by the one-page deliverable. The copy is clear but generic and does not use the approved booking-page finding."
+      }
+    },
+    {
+      "id": "gmail-ar",
+      "format": "email-gmail",
+      "language": "ar-EG",
+      "ok": true,
+      "ms": 3049,
+      "pages": 1,
+      "bytes": 6195,
+      "lintErrors": [],
+      "lintWarnings": [],
+      "judge": {
+        "copy": 3,
+        "grounding": 5,
+        "structure": 5,
+        "language": 3,
+        "notes": "أضعف نقطة هي الصياغة العامة والمتكررة: العنوان والمقدمة والقسم الأول يعيدون وصف الخدمة دون إضافة واضحة، والتحية لا تستخدم اسم Mona. اللغة تمزج المصرية بالفصحى، مثل «ما عندهاش» مقابل «تحتاج تشغيلًا»، فتبدو غير متجانسة. الادعاءات مستندة إلى العرض المقدم، لكن ربط فقرة زيارة الموقع بالمصدر q1 غير مناسب؛ فهو يخص الوظائف المفتوحة."
+      }
+    },
+    {
+      "id": "outlook-en",
+      "format": "email-outlook",
+      "language": "en",
+      "ok": true,
+      "ms": 2758,
+      "pages": 1,
+      "bytes": 6538,
+      "lintErrors": [],
+      "lintWarnings": [],
+      "judge": {
+        "copy": 3,
+        "grounding": 5,
+        "structure": 4,
+        "language": 5,
+        "notes": "The weakest point is copy: it reads like an initial outreach rather than the requested follow-up. 'Our approved offer' is internal-facing language, and the sections repeat the service description. The single website CTA is clear but generic."
+      }
+    },
+    {
+      "id": "outlook-ar",
+      "format": "email-outlook",
+      "language": "ar",
+      "ok": true,
+      "ms": 2643,
+      "pages": 1,
+      "bytes": 6022,
+      "lintErrors": [],
+      "lintWarnings": [],
+      "judge": {
+        "copy": 4,
+        "grounding": 5,
+        "structure": 5,
+        "language": 5,
+        "notes": "أضعف نقطة هي الاختصار والتحديد: تتكرر تفاصيل المراجعة في المقدمة والقسم التالي، والنقاط مثل «عرض أوضح» و«تنظيم أفضل» عامة ولا تضيف قيمة واضحة. حذفها أو اختصار القسم يجعل الرسالة أقصر وأنسب للطلب."
+      }
+    },
+    {
+      "id": "instagram-en",
+      "format": "instagram-carousel",
+      "language": "en",
+      "ok": true,
+      "ms": 2637,
+      "pages": 7,
+      "bytes": 220992,
+      "lintErrors": [],
+      "lintWarnings": [],
+      "judge": {
+        "copy": 4,
+        "grounding": 5,
+        "structure": 4,
+        "language": 5,
+        "notes": "Weakest point: the copy is generic and slightly repetitive, especially the 'Small changes can matter' slide. Replace it with a concrete clinic booking check. The carousel has a hook, focused slides and a final CTA, but the CTA needs a clear action such as visiting the supplied website."
+      }
+    },
+    {
+      "id": "instagram-ar",
+      "format": "instagram-carousel",
+      "language": "ar-EG",
+      "ok": true,
+      "ms": 3166,
+      "pages": 6,
+      "bytes": 220690,
+      "lintErrors": [],
+      "lintWarnings": [],
+      "judge": {
+        "copy": 4,
+        "grounding": 4,
+        "structure": 5,
+        "language": 4,
+        "notes": "أضعف نقطة هي دقة عرض الخدمة: «نراجع صفحة واحدة» بتغيّر العرض من مراجعة للموقع في تقرير من صفحة واحدة إلى مراجعة صفحة واحدة من الموقع. وضّح إن المراجعة مجانية وبتشمل 3 تعديلات للأسبوع ده داخل شرائح العرض والدعوة للتواصل. اللغة مصرية عمومًا، لكن «تبدو أقل جاهزية» صياغة رسمية ومبهمة."
+      }
+    },
+    {
+      "id": "linkedin-en",
+      "format": "linkedin-carousel",
+      "language": "en",
+      "ok": true,
+      "ms": 3508,
+      "pages": 8,
+      "bytes": 221959,
+      "lintErrors": [],
+      "lintWarnings": [],
+      "judge": {
+        "copy": 4,
+        "grounding": 5,
+        "structure": 4,
+        "language": 5,
+        "notes": "Weakest point: the copy lists several pressures but never clearly answers what breaks first or why growth past 50 staff exposes it. The Nile Logistics vacancies are accurately sourced, but that slide interrupts the diagnostic sequence without directly supporting it. The carousel otherwise has a clear opening hook, focused slides, a final CTA, and natural English."
+      }
+    },
+    {
+      "id": "linkedin-ar",
+      "format": "linkedin-carousel",
+      "language": "ar-Gulf",
+      "ok": true,
+      "ms": 2949,
+      "pages": 6,
+      "bytes": 220708,
+      "lintErrors": [],
+      "lintWarnings": [],
+      "judge": {
+        "copy": 3,
+        "grounding": 5,
+        "structure": 5,
+        "language": 4,
+        "notes": "أضعف نقطة هي عمومية النص: «تشغيلًا أوضح» و«تركيز ثابت» لا يوضحان مؤشرات عملية للحاجة إلى الخدمة، مع تكرار ضغط التشغيل وملاءمة الخدمة في أكثر من موضع. البنية مناسبة: خطاف أولًا، فكرة لكل شريحة، ودعوة للتواصل أخيرًا. اللهجة خليجية مفهومة، لكن بعض الصياغات تميل إلى الفصحى الإدارية."
+      }
+    },
+    {
+      "id": "flipbook-en",
+      "format": "flipbook",
+      "language": "en",
+      "ok": true,
+      "ms": 5740,
+      "pages": 7,
+      "bytes": 267537,
+      "lintErrors": [],
+      "lintWarnings": [],
+      "judge": {
+        "copy": 3,
+        "grounding": 1,
+        "structure": 5,
+        "language": 5,
+        "notes": "Grounding is weakest: vacancies are presented as existing staffing gaps, and warehouse expansion is treated as confirmed headcount growth; neither is established by the supplied facts. The guide also repeats the vacancies and service scope, while offering only a generic explanation of how the desk works. The cover, sequence and final CTA are clear, and the English is natural."
+      }
+    },
+    {
+      "id": "flipbook-ar",
+      "format": "flipbook",
+      "language": "ar-EG",
+      "ok": true,
+      "ms": 6213,
+      "pages": 6,
+      "bytes": 267672,
+      "lintErrors": [],
+      "lintWarnings": [],
+      "judge": {
+        "copy": 3,
+        "grounding": 5,
+        "structure": 5,
+        "language": 3,
+        "notes": "أضعف نقطة هي عمومية التعديلات: «لغة أوضح» و«رقم أسهل» لا يقدّمان خطوات تنفيذية محددة، واقتراح عرض الرقم لا يعالج اقتصار التواصل على رقم أرضي. اللغة تمزج المصري بالفصحى، خصوصًا في «الذين يريدون… ويعرفوا» و«نحدد أين يحصل اللبس». التسلسل واضح وينتهي بدعوة واحدة، والمثال والعرض وبيانات البراند ملتزمة بالمعلومات supplied."
+      }
+    }
+  ]
+}

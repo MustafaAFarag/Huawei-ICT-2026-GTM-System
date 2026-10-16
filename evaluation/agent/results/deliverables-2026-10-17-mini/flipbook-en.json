@@ -1,0 +1,92 @@
+{
+  "title": "How the HR Desk Works",
+  "subtitle": "For Nile Logistics and similar growing teams: a clear view of how outsourced HR operations can support payroll and onboarding.",
+  "pages": [
+    {
+      "kind": "cover",
+      "heading": "How the HR Desk Works",
+      "body": "For Nile Logistics and similar growing teams: a clear view of how outsourced HR operations can support payroll and onboarding."
+    },
+    {
+      "kind": "editorial",
+      "kicker": "Context",
+      "heading": "Why teams reach this point",
+      "body": "When a company grows, HR work grows with it. Payroll, employee onboarding, and day-to-day admin can start taking time away from planning, manager support, and hiring.\n\nFor teams with 30 to 300 staff, this often happens before a full internal operations team is in place. An outsourced HR operations desk gives you a dedicated way to handle the recurring work without building everything from scratch."
+    },
+    {
+      "kind": "list",
+      "kicker": "Method",
+      "heading": "What the desk handles",
+      "items": [
+        {
+          "title": "Payroll runs",
+          "text": "We manage the recurring payroll workflow, checks, and coordination needed to keep pay cycles moving."
+        },
+        {
+          "title": "Onboarding support",
+          "text": "We help structure employee onboarding so new starters get the right setup and information on time."
+        },
+        {
+          "title": "HR admin",
+          "text": "We take on routine HR operations tasks that otherwise sit with a busy people or finance team."
+        },
+        {
+          "title": "Clear handoffs",
+          "text": "We align with your internal team on what stays in-house and what the desk handles."
+        }
+      ]
+    },
+    {
+      "kind": "editorial",
+      "kicker": "Evidence",
+      "heading": "Why this is relevant now",
+      "body": "Nile Logistics currently lists four open payroll and HR administrator vacancies on its careers page. That is a clear sign that these responsibilities are active and worth organizing.\n\nThe company also says it opened 3 new warehouses in Alexandria this year. Growth like that usually increases coordination needs across payroll, onboarding, and HR administration. An outsourced desk can help create structure while the team keeps expanding.",
+      "sourceId": "q1"
+    },
+    {
+      "kind": "steps",
+      "kicker": "Working together",
+      "heading": "How engagement usually looks",
+      "items": [
+        {
+          "title": "Review needs",
+          "text": "We look at your current payroll and onboarding process and identify where support is needed."
+        },
+        {
+          "title": "Define scope",
+          "text": "We agree which HR operations tasks the desk will run and which tasks stay with your team."
+        },
+        {
+          "title": "Set rhythm",
+          "text": "We establish the regular cadence for handovers, updates, and approvals."
+        },
+        {
+          "title": "Operate and adjust",
+          "text": "We run the process, keep communication clear, and refine the workflow as needs change."
+        }
+      ]
+    },
+    {
+      "kind": "editorial",
+      "kicker": "Outcome",
+      "heading": "What you get",
+      "body": "The goal is not to replace your people team. It is to give it reliable operational support so routine work does not slow growth.\n\nThat means a clearer process for payroll and onboarding, less admin pressure on your internal team, and a simpler way to scale HR operations as headcount rises."
+    },
+    {
+      "kind": "cta",
+      "kicker": "Next step",
+      "heading": "See if it fits",
+      "body": "If you want to explore how Qimam People could support your payroll and onboarding operations, start with a short conversation.",
+      "cta": {
+        "label": "Visit Qimam People",
+        "url": "https://qimam-people.example"
+      }
+    },
+    {
+      "kind": "editorial",
+      "kicker": "Note",
+      "heading": "Built for growing teams",
+      "body": "Qimam People is an outsourced HR operations desk in Cairo for companies with 30 to 300 staff. It is designed for growing Egyptian and Saudi businesses that do not yet have a full in-house payroll team."
+    }
+  ]
+}

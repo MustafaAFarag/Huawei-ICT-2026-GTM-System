@@ -21,7 +21,7 @@ import {
 const label = process.argv[2] ?? "candidate";
 if (!/^[a-z0-9-]+$/i.test(label))
   throw new Error("Use a short alphanumeric report label.");
-const reportPath = `evaluation/agent/results/drafts-2026-10-16-${label}.json`;
+const reportPath = `evaluation/agent/results/drafts-${process.env.EVAL_DATE ?? "2026-10-16"}-${label}.json`;
 const prior = process.argv.includes("--regrade")
   ? (JSON.parse(await readFile(reportPath, "utf8")) as {
       summary: { model: string; prompts: Record<string, string> };

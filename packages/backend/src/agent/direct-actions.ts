@@ -1,3 +1,4 @@
+import { isContentFormat } from "../formats/index.js";
 import type {
   Actor,
   AssistantUiAction,
@@ -119,7 +120,7 @@ export async function directAssetRevision(
   )
     return null;
   if (
-    !/heading|title|layout|colou?r|font|text|wording|paragraph|section|document|one.pager|pdf|عنوان|تصميم|لون|تنسيق|خط|صياغ|نص|فقرة|المستند|الصفحة/.test(
+    !/heading|title|layout|colou?r|font|text|wording|paragraph|section|document|one.pager|pdf|slide|subject|button|page|caption|عنوان|تصميم|لون|تنسيق|خط|صياغ|نص|فقرة|المستند|الصفحة|شريحة|الشرائح|زر/.test(
       request,
     )
   )
@@ -127,10 +128,12 @@ export async function directAssetRevision(
   const asset = await db.asset.findFirst({
     where: { id: assetId, workspaceId: actor.workspaceId },
   });
-  if (!asset?.prospectId) return null;
+  if (!asset) return null;
+  // Brand-level deliverables (emails, carousels, flipbooks) have no account.
+  if (!asset.prospectId && !isContentFormat(asset.template)) return null;
   return {
     sourceAssetId: asset.id,
-    prospectIds: [asset.prospectId],
+    prospectIds: asset.prospectId ? [asset.prospectId] : [],
     template: asset.template,
     language: asset.language,
     instructions: content,

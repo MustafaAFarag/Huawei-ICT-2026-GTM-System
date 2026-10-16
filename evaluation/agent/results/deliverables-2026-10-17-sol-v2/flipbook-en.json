@@ -1,0 +1,88 @@
+{
+  "title": "Your HR Operations Desk",
+  "subtitle": "For Nile Logistics: a short guide to what Qimam People runs and what to clarify before working together.",
+  "pages": [
+    {
+      "kind": "cover",
+      "kicker": "Qimam People",
+      "heading": "Your HR Operations Desk",
+      "body": "For Nile Logistics: a short guide to what Qimam People runs and what to clarify before working together."
+    },
+    {
+      "kind": "editorial",
+      "kicker": "The context",
+      "heading": "Start with the operating question",
+      "body": "Nile Logistics lists four open payroll and HR administrator vacancies on its careers page. That is a useful starting point for a conversation about how you want these responsibilities handled, rather than a reason to assume outsourcing is the right answer.\n\nWhich responsibilities do you want to keep within your team, and which would you consider placing with an external desk? The distinction is worth discussing before comparing an outsourced service with the roles you are recruiting for.",
+      "sourceId": "q1"
+    },
+    {
+      "kind": "list",
+      "kicker": "The model",
+      "heading": "What the desk does",
+      "items": [
+        {
+          "title": "An external operating desk",
+          "text": "Qimam People provides an outsourced HR operations desk, rather than an in-house team."
+        },
+        {
+          "title": "Payroll",
+          "text": "The desk runs payroll."
+        },
+        {
+          "title": "Employee onboarding",
+          "text": "The desk runs employee onboarding."
+        }
+      ]
+    },
+    {
+      "kind": "editorial",
+      "kicker": "Company evidence",
+      "heading": "Consider the warehouse context",
+      "body": "Nile Logistics says it opened 3 new warehouses in Alexandria this year. That provides another topic for your discussion: whether the way you organise employee operations suits the locations you now have.\n\nThe announcement does not establish how many employees joined, how responsibilities are divided between sites, or whether your current arrangements need to change. Those are questions for your team. Use the expansion as context for the conversation, not as proof that a particular service is needed.",
+      "sourceId": "q2"
+    },
+    {
+      "kind": "editorial",
+      "kicker": "Service fit",
+      "heading": "Who the service is for",
+      "body": "Qimam People is an outsourced HR operations desk in Cairo for companies with 30–300 staff. Its customers are growing Egyptian and Saudi companies without an in-house payroll team.\n\nFor Nile Logistics, the useful fit check is whether your headcount and current team structure match that audience. The reviewed company facts do not establish either point. If your organisation differs from this profile, raise that distinction directly rather than assuming the service is suitable.",
+      "sourceId": "q1"
+    },
+    {
+      "kind": "steps",
+      "kicker": "Working together",
+      "heading": "Questions to settle together",
+      "body": "Use these as discussion questions, not as a promised implementation process.",
+      "items": [
+        {
+          "title": "Clarify the scope",
+          "text": "Which responsibilities would you want the desk to run, and which would remain with Nile Logistics?"
+        },
+        {
+          "title": "Clarify the working arrangement",
+          "text": "Who would be the point of contact on your side, and how would you want to work with the desk?"
+        },
+        {
+          "title": "Clarify practical requirements",
+          "text": "What information, access and approvals would the arrangement require? Confirm the details with Qimam People before proceeding."
+        }
+      ]
+    },
+    {
+      "kind": "editorial",
+      "kicker": "Before deciding",
+      "heading": "Leave no assumptions unstated",
+      "body": "This guide describes the approved service scope; it is not a detailed operating agreement. Pricing, implementation timing, systems, reporting arrangements and service commitments are not specified in the supplied offer. Treat each as a question to resolve, not an included feature.\n\nYour decision can then rest on the arrangement actually discussed with Qimam People. Ask for clarity wherever a detail matters to your team, and distinguish agreed responsibilities from expectations that have not yet been confirmed."
+    },
+    {
+      "kind": "cta",
+      "kicker": "Next step",
+      "heading": "Bring your questions",
+      "body": "Discuss whether the desk fits Nile Logistics. Start with your current team structure and the responsibilities you would consider outsourcing.",
+      "cta": {
+        "label": "Visit Qimam People",
+        "url": "https://qimam-people.example"
+      }
+    }
+  ]
+}

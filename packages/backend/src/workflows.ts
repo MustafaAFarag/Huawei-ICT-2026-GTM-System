@@ -12,7 +12,13 @@ import type {
   ToolRequest,
   Touch,
 } from "@revenue/contracts";
-import { toolRequest, PLANS, draftChecks } from "@revenue/contracts";
+import {
+  toolRequest,
+  PLANS,
+  draftChecks,
+  ASSET_FORMATS,
+  COSTS,
+} from "@revenue/contracts";
 import { config, required } from "./config.js";
 import { db, json, serializable } from "./database.js";
 import {
@@ -28,6 +34,14 @@ import {
 } from "./policy.js";
 import { Providers, OpenDesign, renderPdf, Crm } from "./providers.js";
 import { Storage } from "./storage.js";
+import {
+  deliverableModelId,
+  formatContext,
+  generateDeliverable,
+  isContentFormat,
+  promptFor,
+  type ContentFormat,
+} from "./formats/index.js";
 import { WorkspaceService } from "./workspace.js";
 import { promptVersions } from "./agent/prompts.js";
 import { chatModelId } from "./agent/provider.js";
@@ -53,10 +67,13 @@ export class WorkflowService {
       throw new NotFoundException(
         "A selected record is unavailable in this workspace.",
       );
+    const workspaceDeliverable =
+      input.tool === "make_asset" && isContentFormat(input.template);
     if (
       !["preflight", "onboard", "queue_sequence", "assistant"].includes(
         input.tool,
       ) &&
+      !workspaceDeliverable &&
       !prospects.length
     )
       throw new BadRequestException("Select at least one prospect.");
@@ -71,8 +88,8 @@ export class WorkflowService {
       input.sourceAssetId &&
       (!sourceAsset ||
         input.tool !== "make_asset" ||
-        prospects.length !== 1 ||
-        sourceAsset.prospectId !== prospects[0]!.id ||
+        prospects.length > 1 ||
+        (sourceAsset.prospectId ?? null) !== (prospects[0]?.id ?? null) ||
         sourceAsset.template !== input.template ||
         sourceAsset.language !== input.language)
     )
@@ -85,7 +102,10 @@ export class WorkflowService {
       );
     if (
       sourceAsset &&
-      sourceAsset.evidenceDigest !== digest(prospects[0]!.evidence)
+      sourceAsset.evidenceDigest !==
+        (prospects[0]
+          ? digest(prospects[0].evidence)
+          : workspaceBasisDigest(await this.workspaces.workspace(actor)))
     )
       throw new BadRequestException(
         "Evidence changed. Generate a new asset from the current sources before editing.",
@@ -442,6 +462,100 @@ export class WorkflowService {
     if (!run) throw new NotFoundException("Run not found.");
     return db.run.update({ where: { id }, data: { cancelledAt: new Date() } });
   }
+  // Email, carousel and flipbook deliverables: model-written content JSON rendered by
+  // trusted templates, stored with its content so revisions can start from it.
+  private async makeContentAsset(
+    workspace: Awaited<ReturnType<WorkspaceService["workspace"]>>,
+    input: ToolRequest,
+    runId: string,
+    prospect: { id: string; snapshot: unknown; evidence: unknown } | null,
+  ) {
+    const template = input.template as ContentFormat;
+    const evidence = (prospect?.evidence as Evidence[] | undefined) ?? [];
+    const snapshot = prospect?.snapshot as ProspectSnapshot | undefined;
+    await this.event(runId, "model", "Deliverable model and prompt versions recorded.", {
+      model: config.modelFixture ? "fixture" : deliverableModelId(),
+      prompts: promptVersions(promptFor(template).id as "format-email", "language"),
+    });
+    const source = input.sourceAssetId
+      ? await db.asset.findFirstOrThrow({
+          where: { id: input.sourceAssetId, workspaceId: workspace.id },
+        })
+      : null;
+    const previous = source
+      ? JSON.parse(
+          (await this.storage.get(workspace.id, `${source.id}.json`)).toString("utf8"),
+        )
+      : undefined;
+    const context = formatContext({
+      workspace,
+      snapshot,
+      evidence,
+      language: input.language,
+    });
+    const generated = await generateDeliverable(template, context, {
+      instructions: input.message,
+      slides: input.slides,
+      previous,
+    });
+    const assetId = randomUUID();
+    const htmlKey = `${assetId}.html`;
+    await this.storage.put(workspace.id, htmlKey, Buffer.from(generated.html), "text/html");
+    await this.storage.put(
+      workspace.id,
+      `${assetId}.json`,
+      Buffer.from(JSON.stringify(generated.content)),
+      "application/json",
+    );
+    if (generated.printHtml)
+      await this.storage.put(
+        workspace.id,
+        `${assetId}.print.html`,
+        Buffer.from(generated.printHtml),
+        "text/html",
+      );
+    const label = ASSET_FORMATS[template].label;
+    const subject = snapshot?.company ?? workspace.name;
+    const title = `${(generated.content as { title?: string; subject?: string }).title ?? (generated.content as { subject?: string }).subject ?? label}`.slice(0, 120);
+    const engine = await new OpenDesign(workspace)
+      .save(title, generated.html)
+      .catch(() => null);
+    const created = await db.asset.create({
+      data: {
+        id: assetId,
+        workspaceId: workspace.id,
+        prospectId: prospect?.id ?? null,
+        runId,
+        template,
+        language: input.language,
+        version: source ? source.version + 1 : 1,
+        engineVersion: OpenDesign.version,
+        engineProjectId: engine,
+        title: `${title} — ${subject}${source ? " · revision" : ""}`,
+        htmlKey,
+        pdfKey: null,
+        evidenceDigest: prospect ? digest(prospect.evidence) : workspaceBasisDigest(workspace),
+        threadId: input.threadId ?? null,
+        playId: input.play,
+      },
+    });
+    await fileDeliverable(workspace.id, input.threadId, created);
+    await new Crm(workspace)
+      .upsertObject("gtmAssets", "GtmAsset", assetId, {
+        name: created.title,
+        kind: template,
+        language: input.language,
+        snapshot: {
+          productAssetId: assetId,
+          prospectId: prospect?.id ?? null,
+          url: `${config.webOrigin}/api/workspaces/${workspace.id}/assets/${assetId}/html`,
+        },
+        editableHtml: null,
+        campaignVersion: created.version,
+      })
+      .catch(() => {});
+    return created;
+  }
   private async event(
     runId: string,
     kind: string,
@@ -718,6 +832,15 @@ export class WorkflowService {
             { sequenceId: sequence.id },
           );
         }
+      } else if (
+        input.tool === "make_asset" &&
+        isContentFormat(input.template) &&
+        !prospects.length
+      ) {
+        await chargeAttempt(COSTS.make_asset);
+        const result = await this.makeContentAsset(workspace, input, id, null);
+        outputs.push({ prospectId: null, result });
+        await this.event(id, "progress", `Prepared ${result.title}.`);
       } else {
         for (const prospect of prospects) {
           if ((await db.run.findUniqueOrThrow({ where: { id } })).cancelledAt)
@@ -887,6 +1010,13 @@ export class WorkflowService {
                 evidenceDigest: digest(evidence),
               },
             });
+          } else if (
+            input.tool === "make_asset" &&
+            isContentFormat(input.template)
+          ) {
+            validateEvidence(prospect.evidence as Evidence[]);
+            await chargeAttempt(COSTS.make_asset);
+            result = await this.makeContentAsset(workspace, input, id, prospect);
           } else if (input.tool === "make_asset") {
             if (!config.modelFixture)
               await this.event(
@@ -1148,4 +1278,38 @@ async function fileDeliverable(
     where: { id: threadId },
     data: { updatedAt: new Date() },
   });
+}
+
+
+// A workspace-level deliverable (no account) is approved against the approved offer,
+// company context and brand it was written from.
+export function workspaceBasis(workspace: {
+  offers: unknown;
+  company: unknown;
+  brand: unknown;
+}) {
+  return {
+    offers: (workspace.offers as { approved: boolean }[]).filter((o) => o.approved),
+    company: workspace.company,
+    brand: workspace.brand,
+  };
+}
+export const workspaceBasisDigest = (
+  workspace: Parameters<typeof workspaceBasis>[0],
+) => digest(workspaceBasis(workspace));
+
+// The sources an asset was approved against: its account's evidence, or the workspace
+// basis for account-free deliverables. Null when the account was deleted.
+export async function assetBasis(
+  workspaceId: string,
+  asset: { prospectId: string | null },
+) {
+  if (asset.prospectId) {
+    const prospect = await db.prospect.findFirst({
+      where: { id: asset.prospectId, workspaceId },
+    });
+    return prospect ? prospect.evidence : null;
+  }
+  const workspace = await db.workspace.findUniqueOrThrow({ where: { id: workspaceId } });
+  return workspaceBasis(workspace);
 }

@@ -16,7 +16,7 @@ function font(pkg: string, file: string) {
   }
 }
 let fontCss: string | undefined;
-function fonts() {
+export function fonts() {
   if (fontCss !== undefined) return fontCss;
   const faces = [
     [
@@ -62,11 +62,11 @@ export const stripFonts = (html: string) =>
 export const injectFonts = (html: string) =>
   html.replace(/<style>/i, `<style>/*fonts*/${fonts()}/*/fonts*/`);
 
-const hex = (value: string | undefined, fallback: string) =>
+export const hex = (value: string | undefined, fallback: string) =>
   value && /^#[0-9a-f]{6}$/i.test(value) ? value : fallback;
 
 // Picks readable text for the brand band (WCAG relative luminance).
-function onColor(color: string) {
+export function onColor(color: string) {
   const [r, g, b] = [1, 3, 5].map((i) => {
     const c = parseInt(color.slice(i, i + 2), 16) / 255;
     return c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4;

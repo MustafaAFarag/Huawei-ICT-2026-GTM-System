@@ -1,0 +1,207 @@
+{
+  "summary": {
+    "label": "mini",
+    "model": "gpt-5-4-mini",
+    "judge": "gpt-6-1-sol",
+    "prompts": {
+      "format-email": "2026-10-17.1+9cd9f040",
+      "format-carousel": "2026-10-17.1+a676a7ae",
+      "format-flipbook": "2026-10-17.1+196d8221",
+      "language": "2026-10-16.3+ddcf64e1"
+    },
+    "passed": "9/10",
+    "lintClean": 9,
+    "means": {
+      "copy": 3.33,
+      "grounding": 2.33,
+      "structure": 4.67,
+      "language": 4.44
+    },
+    "usage": {
+      "gpt-5-4-mini": {
+        "input": 19186,
+        "output": 4785,
+        "calls": 13
+      },
+      "gpt-6-1-sol": {
+        "input": 7159,
+        "output": 1742,
+        "calls": 9
+      }
+    },
+    "usd": 0.0677,
+    "ledgerTotal": 0.0722
+  },
+  "results": [
+    {
+      "id": "gmail-en",
+      "format": "email-gmail",
+      "language": "en",
+      "ok": true,
+      "ms": 3058,
+      "pages": 1,
+      "bytes": 6930,
+      "lintErrors": [],
+      "lintWarnings": [],
+      "judge": {
+        "copy": 4,
+        "grounding": 5,
+        "structure": 5,
+        "language": 5,
+        "notes": "The weakest point is copy: the intro and 'What you receive' section repeat the same offer, making the email longer than necessary. Combine them and keep the specific booking-page observation."
+      }
+    },
+    {
+      "id": "gmail-ar",
+      "format": "email-gmail",
+      "language": "ar-EG",
+      "ok": true,
+      "ms": 6001,
+      "pages": 1,
+      "bytes": 6092,
+      "lintErrors": [],
+      "lintWarnings": [],
+      "judge": {
+        "copy": 3,
+        "grounding": 5,
+        "structure": 5,
+        "language": 4,
+        "notes": "أضعف نقطة هي الصياغة: تكرار وصف خدمة الرواتب والتهيئة عبر العنوان والمقدمة والأقسام يجعل الإيميل أطول من اللازم وأقل تحديدًا. يمكن اختصاره وتخصيصه لمُنى بالاستناد إلى وظائف الرواتب والموارد البشرية المعلنة لدى Nile Logistics. الرسالة ملتزمة بالخدمة والمعلومات المقدمة، وتعرض فكرة واحدة وزرًا واحدًا، لكن لغتها تمزج بين الفصحى والمصرية بدل الحفاظ على نبرة مصرية متسقة."
+      }
+    },
+    {
+      "id": "outlook-en",
+      "format": "email-outlook",
+      "language": "en",
+      "ok": true,
+      "ms": 3374,
+      "pages": 1,
+      "bytes": 6035,
+      "lintErrors": [],
+      "lintWarnings": [],
+      "judge": {
+        "copy": 3,
+        "grounding": 1,
+        "structure": 4,
+        "language": 5,
+        "notes": "Weakest point: grounding. A 'clear single point of contact' is an unsupported service detail. The email is also repetitive and reads like initial outreach rather than a follow-up. It stays on one topic, uses one CTA, and has natural English."
+      }
+    },
+    {
+      "id": "outlook-ar",
+      "format": "email-outlook",
+      "language": "ar",
+      "ok": true,
+      "ms": 5949,
+      "pages": 1,
+      "bytes": 8305,
+      "lintErrors": [],
+      "lintWarnings": [],
+      "judge": {
+        "copy": 3,
+        "grounding": 5,
+        "structure": 5,
+        "language": 5,
+        "notes": "أضعف نقطة هي الإيجاز: الرسالة أطول من المطلوب، وتكرر مراجعة صفحة واحدة والتعديلات الثلاثة في المقدمة والأقسام. يُفضّل اختصارها إلى فقرة قصيرة وثلاث نقاط وزر واحد، مع استبدال «أول صفحة» بـ«صفحة واحدة» لتطابق العرض بدقة."
+      }
+    },
+    {
+      "id": "instagram-en",
+      "format": "instagram-carousel",
+      "language": "en",
+      "ok": true,
+      "ms": 2974,
+      "pages": 7,
+      "bytes": 221193,
+      "lintErrors": [],
+      "lintWarnings": [],
+      "judge": {
+        "copy": 4,
+        "grounding": 1,
+        "structure": 4,
+        "language": 5,
+        "notes": "Weakest point: grounding. “Most visitors are on mobile” is an unsupported audience claim; no traffic data was supplied. Replace it with “On mobile, the booking path should take only a few taps.” The carousel has a clear hook and final CTA, but the fixes slide would flow better after all problem slides. Mention that the free review is one page to match the supplied offer more precisely."
+      }
+    },
+    {
+      "id": "instagram-ar",
+      "format": "instagram-carousel",
+      "language": "ar-EG",
+      "ok": true,
+      "ms": 3234,
+      "pages": 6,
+      "bytes": 220744,
+      "lintErrors": [],
+      "lintWarnings": [],
+      "judge": {
+        "copy": 4,
+        "grounding": 1,
+        "structure": 5,
+        "language": 5,
+        "notes": "Grounding is the weakest point: the two-second cutoff and claim that most visits come from mobile are unsupported by the supplied facts. Saying any small slowdown costs a booking also overstates causality. The carousel otherwise has a clear hook, one idea per slide, a final CTA matching the offer, and natural Egyptian Arabic."
+      }
+    },
+    {
+      "id": "linkedin-en",
+      "format": "linkedin-carousel",
+      "language": "en",
+      "ok": false,
+      "ms": 6020,
+      "error": "The linkedin carousel draft failed validation: The draft added unsupported numbers (50). Retry; numbers must come from reviewed sources."
+    },
+    {
+      "id": "linkedin-ar",
+      "format": "linkedin-carousel",
+      "language": "ar-Gulf",
+      "ok": true,
+      "ms": 3120,
+      "pages": 6,
+      "bytes": 221037,
+      "lintErrors": [],
+      "lintWarnings": [],
+      "judge": {
+        "copy": 3,
+        "grounding": 1,
+        "structure": 5,
+        "language": 2,
+        "notes": "أضعف نقطة هي الاستناد للمعطيات: «تقييم سريع» عرض غير مذكور ضمن الخدمة المقدّمة، والقول إن الأخطاء والتأخير يزيدان بسرعة غير مدعوم. رقم الوظائف الأربع مطابق للمصدر q1. اللغة تمزج المصري والخليجي، مثل «بقت» و«ما عندكمش»، بدل الالتزام بالخليجي المطلوب. عنوان «لما تبيّن حاجة للتشغيل الخارجي» غير طبيعي. الهيكل مناسب: خطاف أولًا، فكرة لكل شريحة، ودعوة للإجراء أخيرًا."
+      }
+    },
+    {
+      "id": "flipbook-en",
+      "format": "flipbook",
+      "language": "en",
+      "ok": true,
+      "ms": 6670,
+      "pages": 8,
+      "bytes": 268500,
+      "lintErrors": [],
+      "lintWarnings": [],
+      "judge": {
+        "copy": 3,
+        "grounding": 1,
+        "structure": 4,
+        "language": 5,
+        "notes": "Grounding is the weakest point: routine HR administration, payroll checks, defined handoffs, and the engagement process are presented as established services without supplied support. The evidence page uses both q1 and q2 but cites only q1. Copy is clear but repetitive for a short guide. The flipbook has a cover and coherent sequence, but the final informational page weakens the CTA ending."
+      }
+    },
+    {
+      "id": "flipbook-ar",
+      "format": "flipbook",
+      "language": "ar-EG",
+      "ok": true,
+      "ms": 6376,
+      "pages": 6,
+      "bytes": 268040,
+      "lintErrors": [],
+      "lintWarnings": [],
+      "judge": {
+        "copy": 3,
+        "grounding": 1,
+        "structure": 5,
+        "language": 4,
+        "notes": "أضعف نقطة هي الاستناد للمعلومات: عبارة «نسبة كبيرة بتتراجع قبل ما تحجز» ادعاء غير مدعوم بالحقائق المقدّمة. الملاحظة عن غياب النسخة العربية والاكتفاء برقم أرضي موثّقة، واسم الاستوديو ورابطه صحيحان. التسلسل واضح وينتهي بدعوة لاتخاذ إجراء، لكن النص فيه تكرار، وبعض الصياغات رسمية أكثر من المصري المطلوب."
+      }
+    }
+  ]
+}

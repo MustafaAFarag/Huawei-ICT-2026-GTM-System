@@ -15,7 +15,7 @@ const visibleText = (html: string) =>
       .replace(/<!--[\s\S]*?-->/g, " ")
       .replace(/<[^>]*>/g, " "),
   );
-const numbers = (text: string) =>
+export const numbers = (text: string) =>
   (
     text
       .replace(/[٠-٩]/g, (c) => String(c.charCodeAt(0) - 0x660))

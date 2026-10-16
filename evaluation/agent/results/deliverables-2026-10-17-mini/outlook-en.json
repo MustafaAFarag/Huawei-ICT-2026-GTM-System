@@ -1,0 +1,24 @@
+{
+  "subject": "Payroll support for Nile Logistics",
+  "preheader": "A simple way to cover payroll and onboarding while you keep hiring moving.",
+  "heading": "Payroll and onboarding support for Nile Logistics",
+  "intro": "Hi Mona,\n\nI’m reaching out about a simple way to help cover payroll and employee onboarding while your team keeps hiring moving.\n\nQimam People provides an outsourced HR operations desk for companies that want steady support without building a full in-house payroll team.",
+  "sections": [
+    {
+      "heading": "Why this may be relevant",
+      "body": "Your careers page currently lists payroll and HR administrator vacancies. If those roles are taking time to fill, an outsourced desk can keep the work covered in the meantime.",
+      "sourceId": "q1"
+    },
+    {
+      "heading": "What we handle",
+      "body": "We run payroll and employee onboarding as one managed service. That gives your internal team a lighter workload and a clear single point of contact for day-to-day HR operations."
+    }
+  ],
+  "cta": {
+    "label": "See the service",
+    "url": "https://qimam-people.example"
+  },
+  "signoff": {
+    "name": "Qimam People"
+  }
+}

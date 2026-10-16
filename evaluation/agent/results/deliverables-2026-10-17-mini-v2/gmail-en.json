@@ -1,0 +1,29 @@
+{
+  "subject": "Free website review for clinics in Cairo",
+  "preheader": "See three fixes that can improve your clinic site this week, with no cost or obligation.",
+  "heading": "A simple review for clinic websites",
+  "intro": "If your clinic website is not helping visitors take the next step, a quick review can show what to improve.\n\nNour Studio offers a free one-page website review with three fixes you can make this week.",
+  "sections": [
+    {
+      "heading": "What the review gives you",
+      "body": "We look at one page and point out the most useful changes for a clinic website.",
+      "bullets": [
+        "Three practical fixes",
+        "Clearer next steps for visitors",
+        "A simple view of what to update first"
+      ]
+    },
+    {
+      "heading": "Who it is for",
+      "body": "This is for clinic owners and managers who want a clearer website without starting a full redesign.",
+      "sourceId": "n1"
+    }
+  ],
+  "cta": {
+    "label": "Get the free review",
+    "url": "https://nour-studio.example"
+  },
+  "signoff": {
+    "name": "Nour Studio"
+  }
+}
