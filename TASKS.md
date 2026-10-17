@@ -1,3 +1,21 @@
+## Current — Lara Opus positioning and PRD debate (17 October 2026)
+
+Goal: debate Caravan’s positioning, initial ICP and PRD/feature gaps with the explicitly requested Lara Claude Opus 5.5 at High effort.
+Done: independent challenge, evidence-backed rebuttal and second review; documented final recommendation, unresolved objections and scoped PRD/feature amendments with acceptance criteria.
+Stop: strategy/documentation only. No application/Figma changes, outreach, paid project-model calls, deployment or push; no private source contacts in reports. Preserve unrelated CSV edits and avatar archive.
+
+- [ ] Round 1: independently challenge the current ICP, differentiation and PRD.
+- [ ] Rebut and verify disputed implementation/market claims; send the original context and disagreements in a fresh second-round task.
+- [ ] Consolidate positioning, evidence confidence, PRD amendments and feature priorities; validate documentation and commit locally.
+
+Blocker: T3 rejected the first `delegate_task` before creating a task: `This account is at 86% of quota. Stop implementation on it and shift to an account under 80%.` Requested target was `claude-lara`, `claude-opus-5-5`, effort `high`. No child task ID was created. Asked the owner to choose Claude Personal (10% weekly used) or wait for Lara; do not bypass the gate or substitute an account silently. The round-one brief is prepared.
+
+Recheck after owner reported the blocker should be off: capabilities advertise Lara as runnable with no constraints, but an actual `delegate_task` retry still returns the same 86% quota rejection. No task was started by that retry either.
+
+Handoff requested by owner: stop here; owner will start the debate in a new session. Full context, next steps and evidence are in `docs/handovers/2026-10-17-positioning-debate.md`. No new session was launched and no debate consensus is claimed.
+
+---
+
 ## Current — evidence-led initial ICP (17 October 2026)
 
 Goal: choose Caravan’s strongest initial ideal customer profile using the supplied GTM workflow files and current public market/customer evidence without depending on unavailable buyer interviews.
