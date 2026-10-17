@@ -1,6 +1,16 @@
 "use client";
 import { useEffect, useState } from "react";
-import { Badge, Button, Empty, Panel, Skeleton } from "./primitives";
+import {
+  Badge,
+  Button,
+  Check,
+  Empty,
+  Field,
+  Input,
+  Panel,
+  Select,
+  Skeleton,
+} from "./primitives";
 import { useWorkspace } from "./workspace-context";
 import { usePrefs } from "../lib/prefs";
 import { client } from "../lib/client";
@@ -97,6 +107,13 @@ type Scorecard = {
   holdout: Group;
   minimumSample: number;
   calls: number;
+  positive: number;
+  batches: {
+    batchId: string;
+    createdAt: string;
+    sequences: number;
+    play: string | null;
+  }[];
 };
 type Discovery = {
   segment: string;
@@ -114,12 +131,29 @@ export function ResultsPanel() {
   } | null>(null);
   const [error, setError] = useState(false);
   const [retry, setRetry] = useState(0);
+  // A4: simulated activity stays out of the funnel unless the person asks for it.
+  const [batch, setBatch] = useState("");
+  const [from, setFrom] = useState("");
+  const [to, setTo] = useState("");
+  const [includeSimulated, setIncludeSimulated] = useState(false);
+  // Another workspace starts from a clean view; a filter change keeps the controls mounted.
+  useEffect(() => {
+    setResults(null);
+    setBatch("");
+  }, [ws]);
   useEffect(() => {
     let active = true;
     setError(false);
-    setResults(null);
+    const query = new URLSearchParams();
+    if (batch) query.set("batch", batch);
+    if (from) query.set("from", from);
+    if (to) query.set("to", to);
+    if (includeSimulated) query.set("includeSimulated", "true");
     void Promise.all([
-      client.workspace<Scorecard>(ws, "/scorecard"),
+      client.workspace<Scorecard>(
+        ws,
+        `/scorecard${query.size ? `?${query}` : ""}`,
+      ),
       client.workspace<Discovery[]>(ws, "/discovery"),
     ])
       .then(([scorecard, discovery]) => {
@@ -131,7 +165,7 @@ export function ResultsPanel() {
     return () => {
       active = false;
     };
-  }, [ws, data, retry]);
+  }, [ws, data, retry, batch, from, to, includeSimulated]);
   return (
     <Panel
       title={t("Funnel and discovery")}
@@ -146,13 +180,54 @@ export function ResultsPanel() {
         <Skeleton rows={4} />
       ) : (
         <div className="stack">
+          <div className="toolbar">
+            <Field label={t("Batch")}>
+              <Select value={batch} onChange={(e) => setBatch(e.target.value)}>
+                <option value="">{t("All batches")}</option>
+                {results.scorecard.batches.map((b) => (
+                  <option key={b.batchId} value={b.batchId}>
+                    {`${b.createdAt.slice(0, 10)} · ${b.play ?? b.batchId.slice(0, 8)} · ${b.sequences}`}
+                  </option>
+                ))}
+              </Select>
+            </Field>
+            <Field label={t("From")}>
+              <Input
+                type="date"
+                value={from}
+                max={to || undefined}
+                onChange={(e) => setFrom(e.target.value)}
+              />
+            </Field>
+            <Field label={t("To")}>
+              <Input
+                type="date"
+                value={to}
+                min={from || undefined}
+                onChange={(e) => setTo(e.target.value)}
+              />
+            </Field>
+            <Check
+              label={t("Include simulated")}
+              checked={includeSimulated}
+              onChange={(e) => setIncludeSimulated(e.target.checked)}
+            />
+          </div>
           <dl className="funnel-stages">
-            {results.scorecard.stages.map(({ stage, count }) => (
+            {results.scorecard.stages.flatMap(({ stage, count }) => [
               <div key={stage}>
                 <dt>{t(stage)}</dt>
                 <dd className="mono">{count}</dd>
-              </div>
-            ))}
+              </div>,
+              ...(stage === "replied"
+                ? [
+                    <div key="positive">
+                      <dt>{t("Positive reply (confirmed)")}</dt>
+                      <dd className="mono">{results.scorecard.positive}</dd>
+                    </div>,
+                  ]
+                : []),
+            ])}
           </dl>
           <div className="table-wrap">
             <table>

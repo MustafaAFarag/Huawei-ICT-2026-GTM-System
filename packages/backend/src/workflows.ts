@@ -788,6 +788,9 @@ export class WorkflowService {
                 sender: (currentWorkspace.preflight as Preflight).mailbox,
                 state: "simulated",
                 holdout,
+                // A4: every sequence queued by this run belongs to one batch and play version.
+                batchId: id,
+                playVersionId: current.playVersionId,
                 nextAt: new Date(),
                 steps: json(
                   (current.content as Touch[]).map((t) => ({

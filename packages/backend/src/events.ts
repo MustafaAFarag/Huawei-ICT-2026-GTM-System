@@ -62,6 +62,7 @@ export async function senderEvent(
         sequenceId: sequence.id,
         kind: input.kind,
         occurredAt,
+        provenance: simulated ? "simulated" : "live",
       },
     });
     if (["replied", "opt_out"].includes(input.kind)) {

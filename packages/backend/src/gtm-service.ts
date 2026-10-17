@@ -2,7 +2,6 @@ import { BadRequestException, NotFoundException } from "@nestjs/common";
 import { z } from "zod";
 import {
   BUCKETS,
-  FUNNEL,
   PLAYS,
   angleFor,
   draftChecks,
@@ -26,6 +25,7 @@ import { injectFonts } from "./asset-template.js";
 import { renderPdf } from "./providers.js";
 import { discoveryGuide, discoveryGuideHtml } from "./discovery-guide.js";
 import { researchBrief, researchBriefHtml } from "./research-brief.js";
+import { labelReply, scorecard, type ScorecardFilters } from "./scorecard.js";
 
 // PRD v3.1 §7.14 features that sit beside the play engine: triage, duplicates, launch gate,
 // scorecard, SDR onboarding kit and discovery capture.
@@ -302,64 +302,15 @@ export class GtmService {
     return { ready: items.every((i) => i.ok), items };
   }
 
-  // GAP-07: funnel from sequences, provider events and confirmed call outcomes.
-  async scorecard(actor: Actor) {
-    const ws = actor.workspaceId;
-    const [sequences, events, calls] = await Promise.all([
-      db.sequence.findMany({
-        where: { workspaceId: ws },
-        select: { id: true, holdout: true, prospectId: true },
-      }),
-      db.providerEvent.findMany({
-        where: { workspaceId: ws },
-        select: { kind: true, sequenceId: true },
-      }),
-      db.audit.findMany({
-        where: { workspaceId: ws, action: "call.outcome" },
-        select: { details: true, targetId: true },
-      }),
-    ]);
-    const seqWith = (kind: string) =>
-      new Set(events.filter((e) => e.kind === kind).map((e) => e.sequenceId));
-    const delivered = seqWith("delivered"),
-      replied = seqWith("replied");
-    const outcome = (o: string) =>
-      new Set(
-        calls
-          .filter((c) => (c.details as { outcome?: string }).outcome === o)
-          .map((c) => c.targetId),
-      );
-    const meetings = outcome("meeting-booked");
-    const counts = {
-      prepared: sequences.length,
-      delivered: sequences.filter(
-        (s) => delivered.has(s.id) || replied.has(s.id),
-      ).length,
-      replied: sequences.filter((s) => replied.has(s.id)).length,
-      meeting: meetings.size,
-      agreed: outcome("agreed").size,
-    };
-    const group = (holdout: boolean) => {
-      const list = sequences.filter((s) => s.holdout === holdout);
-      const d = list.filter(
-        (s) => delivered.has(s.id) || replied.has(s.id),
-      ).length;
-      const r = list.filter((s) => replied.has(s.id)).length;
-      return {
-        sequences: list.length,
-        delivered: d,
-        replied: r,
-        replyRate: d ? r / d : null,
-      };
-    };
-    return {
-      stages: FUNNEL.map((stage) => ({ stage, count: counts[stage] })),
-      asset: group(false),
-      holdout: group(true),
-      // Below this sample size no lift claim is shown (SEQ-08).
-      minimumSample: 100,
-      calls: calls.length,
-    };
+  // GAP-07 / A4: funnel of distinct prospects from sequences, non-simulated provider events and
+  // confirmed call outcomes. See scorecard.ts.
+  scorecard(actor: Actor, filters: ScorecardFilters = {}) {
+    return scorecard(actor, filters);
+  }
+
+  // A4: a person confirms whether a reply was positive; the scorecard never infers it.
+  labelReply(actor: Actor, prospectId: string, value: unknown) {
+    return labelReply(actor, prospectId, value);
   }
 
   // GAP-11: SDR onboarding kit generated from workspace context.
