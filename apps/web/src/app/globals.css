@@ -743,16 +743,6 @@ span.tone-ai {
   font-size: var(--text-sm);
   font-weight: 600;
 }
-.mark {
-  inline-size: 18px;
-  block-size: 18px;
-  border-radius: 5px;
-  background: linear-gradient(135deg, #ff8a8a, var(--ai) 55%, #c9363b);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.35),
-    0 0 16px rgba(255, 99, 99, 0.35);
-  transform: rotate(45deg) scale(0.82);
-}
 .workspace-picker {
   display: grid;
   gap: 6px;

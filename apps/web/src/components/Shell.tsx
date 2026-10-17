@@ -21,6 +21,7 @@ import { Badge, Kbd, Meter } from "./primitives";
 import { TAB_LABELS, type Tab } from "./workspace-context";
 import type { Dashboard, Membership, Thread } from "../lib/types";
 import { usePrefs } from "../lib/prefs";
+import { Logo } from "./brand/Logo";
 
 export const TAB_ICONS: Record<Tab, ComponentType<{ size?: number }>> = {
   Plays: IconPlayerPlay,
@@ -31,16 +32,17 @@ export const TAB_ICONS: Record<Tab, ComponentType<{ size?: number }>> = {
   "Company context": IconBuilding,
   Settings: IconSettings,
 };
-const WORK_TABS: Tab[] = ["Asset Studio", "Accounts", "Plays", "Review queue", "Sequences"];
+const WORK_TABS: Tab[] = [
+  "Asset Studio",
+  "Accounts",
+  "Plays",
+  "Review queue",
+  "Sequences",
+];
 const SETUP_TABS: Tab[] = ["Company context", "Settings"];
 
 export function Wordmark() {
-  return (
-    <div className="wordmark">
-      <span className="mark" aria-hidden />
-      <bdi>Caravan</bdi>
-    </div>
-  );
+  return <Logo variant="wordmark" />;
 }
 
 // Claude-style sidebar: new chat and search first, work screens, then recent conversations.
@@ -112,7 +114,12 @@ export function Sidebar({
     <>
       <div className="sidebar-top">
         <div className="sidebar-brand">
-          <button type="button" className="brand-home" onClick={onHome} aria-label="Caravan home">
+          <button
+            type="button"
+            className="brand-home"
+            onClick={onHome}
+            aria-label="Caravan home"
+          >
             <Wordmark />
           </button>
           <button
@@ -135,7 +142,11 @@ export function Sidebar({
             <IconEdit size={16} />
             <span className="nav-label">{t("New chat")}</span>
           </button>
-          <button type="button" onClick={onPalette} title={collapsed ? t("Search") : undefined}>
+          <button
+            type="button"
+            onClick={onPalette}
+            title={collapsed ? t("Search") : undefined}
+          >
             <IconSearch size={16} />
             <span className="nav-label">{t("Search")}</span>
             <Kbd>⌘K</Kbd>
@@ -150,19 +161,32 @@ export function Sidebar({
           {t("Recents")}
         </h2>
         {threads.length === 0 ? (
-          <p className="muted small recents-empty">{t("Conversations with Nabil appear here.")}</p>
+          <p className="muted small recents-empty">
+            {t("Conversations with Nabil appear here.")}
+          </p>
         ) : (
           <ul>
             {threads.map((thread) => (
-              <li key={thread.id} className={thread.id === threadId && view === "Home" ? "active" : ""}>
+              <li
+                key={thread.id}
+                className={
+                  thread.id === threadId && view === "Home" ? "active" : ""
+                }
+              >
                 <button
                   type="button"
                   className="recent"
-                  aria-current={thread.id === threadId && view === "Home" ? "page" : undefined}
+                  aria-current={
+                    thread.id === threadId && view === "Home"
+                      ? "page"
+                      : undefined
+                  }
                   onClick={() => onThread(thread.id)}
                 >
                   <span className="truncate" dir="auto">
-                    {thread.title === "Earlier conversation" ? t(thread.title) : thread.title}
+                    {thread.title === "Earlier conversation"
+                      ? t(thread.title)
+                      : thread.title}
                   </span>
                 </button>
                 <button
