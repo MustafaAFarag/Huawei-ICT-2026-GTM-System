@@ -13,7 +13,7 @@ export const metadata: Metadata = {
   title: "Caravan",
   description:
     "Caravan: tell Nabil what to prepare. Researched accounts, reviewed outreach and branded deliverables for MENA teams.",
-  icons: { icon: "/favicon.svg" },
+  icons: { icon: [{ url: "/favicon.svg", type: "image/svg+xml" }] },
 };
 export const viewport: Viewport = {
   themeColor: [

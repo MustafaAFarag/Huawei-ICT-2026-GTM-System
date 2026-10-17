@@ -42,6 +42,111 @@
   padding: 0;
   border-radius: var(--radius-control);
 }
+
+/* ---------- Logo (Route C) ----------
+   Component: components/brand/Logo.tsx. Source art: docs/brand/route-c/. The mark and the
+   letters are separate SVGs of equal height, so the collapsed rail can hide the letters. */
+[data-theme="light"] {
+  --logo-route: #3f5a45;
+  --logo-dot: #e8765a;
+  --logo-text: #20231f;
+}
+[data-theme="dark"] {
+  --logo-route: #f3f0e7;
+  --logo-dot: #e8765a;
+  --logo-text: #f3f0e7;
+}
+.logo {
+  --logo-h: 20px;
+  display: flex;
+  align-items: center;
+  gap: calc(var(--logo-h) * var(--logo-gap));
+}
+.logo svg {
+  display: block;
+  flex: none;
+  block-size: var(--logo-h);
+  inline-size: auto;
+  overflow: visible;
+}
+.logo-mark {
+  aspect-ratio: 1;
+}
+.logo-route {
+  stroke: var(--logo-route);
+}
+.logo-dot {
+  fill: var(--logo-dot);
+}
+.logo-text {
+  fill: var(--logo-text);
+}
+.signin-hero .logo {
+  --logo-h: 40px;
+}
+
+/* Intro animation (mark-animated.svg): the route draws, the dots pop one after another, then the
+   letters slide in from the mark's side. Classes, not ids, so several logos can share a page.
+   Reduced motion shows the finished logo. */
+.logo-animated .logo-route {
+  stroke-dasharray: 166.16;
+  animation: logo-draw 600ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+.logo-animated .logo-dot {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: logo-pop 280ms cubic-bezier(0.3, 1.6, 0.5, 1) both;
+}
+.logo-animated .logo-wp-1 {
+  animation-delay: 250ms;
+}
+.logo-animated .logo-wp-2 {
+  animation-delay: 370ms;
+}
+.logo-animated .logo-wp-3 {
+  animation-delay: 490ms;
+}
+.logo-animated .logo-terminal {
+  animation-delay: 620ms;
+}
+.logo-animated .logo-letters {
+  --logo-slide: -8px;
+  animation: logo-letters-in 400ms var(--ease, ease-out) 700ms both;
+}
+.logo-animated[dir="rtl"] .logo-letters {
+  --logo-slide: 8px;
+}
+@keyframes logo-draw {
+  from {
+    stroke-dashoffset: 166.16;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@keyframes logo-pop {
+  from {
+    transform: scale(0);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+@keyframes logo-letters-in {
+  from {
+    opacity: 0;
+    transform: translateX(var(--logo-slide));
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .logo-animated :is(.logo-route, .logo-dot, .logo-letters) {
+    animation: none;
+  }
+}
 .sidebar .nav {
   flex: none;
   overflow: visible;
@@ -150,7 +255,7 @@
   flex-direction: column;
   padding: 0;
 }
-.sidebar-collapsed .wordmark bdi,
+.sidebar-collapsed .logo-letters,
 .sidebar-collapsed .nav-label,
 .sidebar-collapsed .nav .kbd,
 .sidebar-collapsed .nav .count,
@@ -1097,7 +1202,7 @@
   .sidebar-collapsed
     .sidebar
     :is(
-      .wordmark bdi,
+      .logo-letters,
       .nav-label,
       .recents,
       .usage,

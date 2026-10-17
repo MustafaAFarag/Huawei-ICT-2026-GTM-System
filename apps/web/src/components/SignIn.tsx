@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { Button, Field, Input } from "./primitives";
-import { Wordmark } from "./Shell";
+import { Logo } from "./brand/Logo";
 import { usePrefs } from "../lib/prefs";
 import { client } from "../lib/client";
 
@@ -18,7 +18,7 @@ export function SignIn({ onSignedIn }: { onSignedIn: () => Promise<void> }) {
   return (
     <main className="signin">
       <section className="signin-hero" aria-hidden>
-        <Wordmark />
+        <Logo variant="lockup" animated />
         <div className="signin-copy">
           <p className="eyebrow">{t("Go-to-market command center")}</p>
           <p className="signin-display">
@@ -67,7 +67,12 @@ export function SignIn({ onSignedIn }: { onSignedIn: () => Promise<void> }) {
             }}
           >
             <Field label={t("Email")}>
-              <Input name="email" type="email" autoComplete="username" required />
+              <Input
+                name="email"
+                type="email"
+                autoComplete="username"
+                required
+              />
             </Field>
             <Field label={t("Password")}>
               <Input
