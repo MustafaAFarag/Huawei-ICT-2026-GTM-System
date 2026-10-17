@@ -138,7 +138,9 @@ function fixtureTemplate(content: string): ToolRequest["template"] | undefined {
           ? "linkedin-carousel"
           : /flip.?book|booklet|كتيب|كتيّب/i.test(content)
             ? "flipbook"
-            : undefined;
+            : /capability profile|company profile|ملف القدرات|ملف قدرات|ملف الشركة/i.test(content)
+              ? "capability-profile"
+              : undefined;
 }
 function fixtureTool(content: string): ToolName {
   if (fixtureTemplate(content)) return "make_asset";

@@ -11,7 +11,7 @@ import { FORMAT_ICONS } from "../chat/Conversation";
 
 const GROUPS = [
   { id: "all", label: "All", match: () => true },
-  { id: "documents", label: "Documents", match: (t: string) => ["offer-one-pager", "mini-audit"].includes(t) },
+  { id: "documents", label: "Documents", match: (t: string) => ["offer-one-pager", "mini-audit", "capability-profile"].includes(t) },
   { id: "emails", label: "Emails", match: (t: string) => t.startsWith("email") },
   { id: "carousels", label: "Carousels", match: (t: string) => t.endsWith("carousel") },
   { id: "flipbooks", label: "Flipbooks", match: (t: string) => t === "flipbook" },
@@ -98,6 +98,11 @@ export function AssetStudio({ onPreview }: { onPreview: (a: Asset) => void }) {
                     <bdi>{a.language}</bdi>
                   </span>
                   <span className="row-meta mono muted">v{a.version ?? 1}</span>
+                  {a.template === "capability-profile" && (
+                    <span title={t("Ships with an asset-vs-no-asset holdout: a share of sequences go out without this profile.")}>
+                      <Badge tone="info">{t("Holdout test")}</Badge>
+                    </span>
+                  )}
                   <Badge tone={a.approvedAt ? "ok" : "warn"}>
                     {a.approvedAt ? t("Approved") : t("Needs review")}
                   </Badge>

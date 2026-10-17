@@ -20,12 +20,21 @@ import {
   renderFlipbookPrint,
   type FlipbookContent,
 } from "./flipbook.js";
+import {
+  fixtureProfileContent,
+  profileContent,
+  profilePageCount,
+  renderCapabilityProfile,
+  requireProfileInputs,
+  type ProfileContent,
+} from "./capability-profile.js";
 import { arabic, checkContent, type FormatContext } from "./shared.js";
 
 export * from "./shared.js";
 export { lintGmail, lintOutlook } from "./email.js";
 export { oneSlide, slideCount } from "./slides.js";
 export { flipbookPageCount } from "./flipbook.js";
+export { PROFILE_DEFAULT_HOLDOUT, profilePageCount } from "./capability-profile.js";
 
 // Formats whose content JSON is written by the model and rendered by trusted templates.
 export const CONTENT_FORMATS = [
@@ -34,6 +43,7 @@ export const CONTENT_FORMATS = [
   "instagram-carousel",
   "linkedin-carousel",
   "flipbook",
+  "capability-profile",
 ] as const satisfies readonly AssetTemplate[];
 export type ContentFormat = (typeof CONTENT_FORMATS)[number];
 export const isContentFormat = (template: string): template is ContentFormat =>
@@ -55,7 +65,9 @@ function schemaFor(template: ContentFormat) {
     ? emailContent
     : template === "flipbook"
       ? flipbookContent
-      : carouselContent;
+      : template === "capability-profile"
+        ? profileContent
+        : carouselContent;
 }
 export function promptFor(template: ContentFormat) {
   return prompt(
@@ -63,7 +75,9 @@ export function promptFor(template: ContentFormat) {
       ? "format-email"
       : template === "flipbook"
         ? "format-flipbook"
-        : "format-carousel",
+        : template === "capability-profile"
+          ? "format-capability-profile"
+          : "format-carousel",
   );
 }
 
@@ -77,6 +91,10 @@ export function renderContent(template: ContentFormat, content: unknown, context
     const html = renderFlipbook(book, context);
     return { html, printHtml: renderFlipbookPrint(book, context), content, pages: flipbookPageCount(html) };
   }
+  if (template === "capability-profile") {
+    const html = renderCapabilityProfile(content as ProfileContent, context);
+    return { html, content, pages: profilePageCount(html) };
+  }
   const carousel = normalizeCarousel(content as CarouselContent);
   const html = renderCarousel(carousel, context, template === "instagram-carousel" ? "instagram" : "linkedin");
   return { html, content: carousel, pages: slideCount(html) };
@@ -84,6 +102,7 @@ export function renderContent(template: ContentFormat, content: unknown, context
 
 // Deterministic content for fixture mode and tests: built only from approved inputs.
 function fixtureContent(template: ContentFormat, context: FormatContext, slides: number): unknown {
+  if (template === "capability-profile") return fixtureProfileContent(context);
   const ar = arabic(context.language);
   const fact = context.facts[0];
   const company = context.snapshot?.company ?? context.brand.name;
@@ -149,6 +168,7 @@ export async function generateDeliverable(
   options: { instructions?: string; slides?: number; previous?: unknown },
 ): Promise<Generated> {
   const spec = ASSET_FORMATS[template];
+  if (template === "capability-profile") requireProfileInputs(context);
   const slides = Math.min(
     spec.slides?.max ?? 12,
     Math.max(spec.slides?.min ?? 3, options.slides ?? spec.slides?.default ?? 7),
@@ -165,6 +185,9 @@ export async function generateDeliverable(
       brand: { name: context.brand.name, website: context.brand.website },
       company: context.company,
       approvedOffer: context.offer ?? null,
+      ...(template === "capability-profile"
+        ? { approvedOffers: context.offers ?? [], consentedReferences: context.references ?? [] }
+        : {}),
       account: context.snapshot
         ? {
             company: context.snapshot.company,
@@ -213,6 +236,7 @@ export function lintFor(template: string, html: string): LintItem[] {
 export function pageCount(template: string, html: string) {
   if (template === "instagram-carousel" || template === "linkedin-carousel") return slideCount(html);
   if (template === "flipbook") return flipbookPageCount(html);
+  if (template === "capability-profile") return profilePageCount(html);
   return 1;
 }
 
@@ -269,13 +293,29 @@ export function formatContext(input: {
   snapshot?: FormatContext["snapshot"];
   evidence: Evidence[];
   language: string;
+  holdoutPercent?: number;
 }): FormatContext {
   const brand = input.workspace.brand as FormatContext["brand"];
-  const company = input.workspace.company as { description?: string; icp?: string };
+  const company = input.workspace.company as {
+    description?: string;
+    descriptionAr?: string;
+    icp?: string;
+    references?: { name: string; nameAr?: string; consent: boolean }[];
+  };
+  const offers = input.workspace.offers as { text: string; textAr?: string; approved: boolean }[];
+  // Arabic documents prefer the workspace's own Arabic fields when it has them.
+  const ar = arabic(input.language);
+  const offerText = (o: { text: string; textAr?: string }) => (ar && o.textAr?.trim()) || o.text;
+  const description = (ar && company.descriptionAr?.trim()) || company.description;
   return {
     brand: { ...brand, name: brand.name || input.workspace.name, website: brand.website ?? "" },
-    company: [company.description, company.icp ? `Customers: ${company.icp}` : ""].filter(Boolean).join(" "),
-    offer: (input.workspace.offers as { text: string; approved: boolean }[]).find((o) => o.approved)?.text,
+    company: [description, company.icp ? `Customers: ${company.icp}` : ""].filter(Boolean).join(" "),
+    offer: offers.filter((o) => o.approved).map(offerText)[0],
+    offers: offers.filter((o) => o.approved).map(offerText),
+    references: (company.references ?? [])
+      .filter((r) => r.consent === true)
+      .map((r) => (ar && r.nameAr?.trim()) || r.name),
+    holdoutPercent: input.holdoutPercent,
     snapshot: input.snapshot,
     facts: input.evidence.filter((e) => e.approved && e.kind === "fact"),
     language: input.language,
