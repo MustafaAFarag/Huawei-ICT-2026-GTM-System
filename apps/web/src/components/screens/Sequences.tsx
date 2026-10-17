@@ -6,6 +6,7 @@ import { usePrefs } from "../../lib/prefs";
 import { client } from "../../lib/client";
 
 import { ResultsPanel } from "../GtmPanels";
+import { ExportBatches } from "../ExportBatches";
 
 export function Sequences() {
   const { ws, data, canWrite, busy, action } = useWorkspace();
@@ -14,6 +15,7 @@ export function Sequences() {
     return (
       <div className="stack-lg">
         <ResultsPanel />
+        <ExportBatches />
         <Empty
           title={t("No sequences prepared yet")}
           icon={<IconClock size={18} />}
@@ -27,6 +29,7 @@ export function Sequences() {
   return (
     <div className="stack-lg">
       <ResultsPanel />
+      <ExportBatches />
       {data.sequences.map((s) => {
         const prospect = data.prospects.find((p) => p.id === s.prospectId);
         const draft = data.drafts.find((d) => d.id === s.draftId);

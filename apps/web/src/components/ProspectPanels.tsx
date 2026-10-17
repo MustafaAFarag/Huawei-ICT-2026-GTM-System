@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { BUCKETS, angleFor } from "@revenue/contracts";
+import { BUCKETS, angleFor, inferMaturity } from "@revenue/contracts";
 import {
   Badge,
   Button,
@@ -98,7 +98,12 @@ export function TriagePanel({ prospect }: { prospect: Prospect }) {
           </div>
           <div>
             <dt className="eyebrow">{t("Maturity")}</dt>
-            <dd className="mono">{plan.maturity}</dd>
+            <dd className="mono">
+              {plan.maturity}
+              {s.maturitySource !== "confirmed" && (
+                <span className="muted"> ({t("inferred")})</span>
+              )}
+            </dd>
           </div>
           <div>
             <dt className="eyebrow">{t("Register")}</dt>
@@ -142,24 +147,21 @@ export function TriagePanel({ prospect }: { prospect: Prospect }) {
   );
 }
 
-const PAINS = [
-  "payroll",
-  "hiring",
-  "onboarding",
-  "compliance",
-  "retention",
-  "training",
-  "hr-admin",
-  "cost",
-];
-
 // GAP-12: discovery pilot capture (play P15).
 export function DiscoveryPanel({ prospect }: { prospect: Prospect }) {
-  const { ws, canWrite, busy, action, setProspect } = useWorkspace();
-  const { t } = usePrefs();
+  const { ws, data, canWrite, busy, action, setProspect } = useWorkspace();
+  const { t, language } = usePrefs();
+  // Set-up options, pain topics and the maturity dimension come from the workspace pack.
+  const { pack } = data;
   const existing = prospect.snapshot.discovery;
   const [band, setBand] = useState(existing?.headcountBand ?? "11-25");
-  const [setup, setSetup] = useState(existing?.hrSetup ?? "none");
+  const [setup, setSetup] = useState(
+    existing?.hrSetup ?? pack.setupField?.options[0]?.value ?? "",
+  );
+  const [maturityBand, setMaturityBand] = useState<string>(
+    prospect.snapshot.hrMaturity ??
+      inferMaturity(prospect.snapshot.employees, pack.maturity.bands),
+  );
   const [pains, setPains] = useState<Record<string, number>>(
     existing?.pains ?? {},
   );
@@ -183,20 +185,43 @@ export function DiscoveryPanel({ prospect }: { prospect: Prospect }) {
                 ))}
               </Select>
             </Field>
-            <Field label={t("HR set-up")}>
-              <Select value={setup} onChange={(e) => setSetup(e.target.value)}>
-                {["none", "founder", "1-3", "team"].map((v) => (
-                  <option key={v} value={v}>
-                    {t(v)}
+            {pack.setupField && (
+              <Field label={pack.setupField.label[language]}>
+                <Select
+                  value={setup}
+                  onChange={(e) => setSetup(e.target.value)}
+                >
+                  {pack.setupField.options.map((o) => (
+                    <option key={o.value} value={o.value}>
+                      {o.label[language]}
+                    </option>
+                  ))}
+                </Select>
+              </Field>
+            )}
+            <Field
+              label={`${t("Maturity band")} (${
+                prospect.snapshot.maturitySource === "confirmed"
+                  ? t("confirmed")
+                  : t("inferred")
+              })`}
+            >
+              <Select
+                value={maturityBand}
+                onChange={(e) => setMaturityBand(e.target.value)}
+              >
+                {pack.maturity.bands.map((b) => (
+                  <option key={b.id} value={b.id}>
+                    {b.id} · {b.label[language]}
                   </option>
                 ))}
               </Select>
             </Field>
           </div>
           <div className="pain-grid">
-            {PAINS.map((pain) => (
+            {pack.pains.map(({ key: pain, label }) => (
               <label key={pain} className="pain">
-                <span>{t(pain)}</span>
+                <span>{label[language]}</span>
                 <input
                   type="range"
                   min={1}
@@ -210,7 +235,7 @@ export function DiscoveryPanel({ prospect }: { prospect: Prospect }) {
               </label>
             ))}
           </div>
-          <Field label={`${t("Maturity")} (0–4)`}>
+          <Field label={`${pack.maturity.dimension[language]} (0–4)`}>
             <input
               type="range"
               min={0}
@@ -237,15 +262,21 @@ export function DiscoveryPanel({ prospect }: { prospect: Prospect }) {
                   method: "POST",
                   body: JSON.stringify({
                     headcountBand: band,
-                    hrSetup: setup,
+                    ...(pack.setupField ? { hrSetup: setup } : {}),
                     pains,
                     maturity,
+                    maturityBand,
                     notes,
                   }),
                 });
                 setProspect({
                   ...prospect,
-                  snapshot: { ...prospect.snapshot, discovery },
+                  snapshot: {
+                    ...prospect.snapshot,
+                    hrMaturity: maturityBand as Prospect["snapshot"]["hrMaturity"],
+                    maturitySource: "confirmed",
+                    discovery,
+                  },
                 });
               }, t("Discovery answers saved."))
             }

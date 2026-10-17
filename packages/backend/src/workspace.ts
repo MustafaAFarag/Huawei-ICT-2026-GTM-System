@@ -11,10 +11,13 @@ import type {
 } from "@revenue/contracts";
 import {
   COUNTRIES,
+  PACK_IDS,
   PLANS,
   angleFor,
   duplicateKeys,
   draftChecks,
+  inferMaturity,
+  packFor,
 } from "@revenue/contracts";
 import { db, json, serializable } from "./database.js";
 import { assertRole, digest, month, validateEvidence } from "./policy.js";
@@ -123,6 +126,8 @@ export class WorkspaceService {
     ]);
     return {
       workspace,
+      // The active workflow pack's public data (PRD v3.2 A2); the UI reads its wording from here.
+      pack: packFor(workspace.pack),
       role: actor.role,
       prospects,
       drafts,
@@ -148,6 +153,30 @@ export class WorkspaceService {
         },
       }),
     };
+  }
+  // PK-01: the owner picks the workflow pack. Existing records keep their data; only wording,
+  // pain topics and maturity bands for new work follow the pack.
+  async setPack(actor: Actor, value: unknown) {
+    assertRole(actor, "admin");
+    const input = z.object({ pack: z.enum(PACK_IDS) }).parse(value);
+    const current = await this.workspace(actor);
+    if (current.pack !== input.pack)
+      await serializable(async (tx) => {
+        await tx.workspace.update({
+          where: { id: actor.workspaceId },
+          data: { pack: input.pack },
+        });
+        await tx.audit.create({
+          data: {
+            workspaceId: actor.workspaceId,
+            userId: actor.userId,
+            action: "pack.updated",
+            targetId: null,
+            details: json({ from: current.pack, to: input.pack }),
+          },
+        });
+      });
+    return { pack: packFor(input.pack) };
   }
   async configure(actor: Actor, value: unknown) {
     assertRole(actor, "admin");
@@ -444,7 +473,13 @@ export class WorkspaceService {
             approved: boolean;
           }[];
           const inferred = angleFor(
-            parsed.data,
+            {
+              ...parsed.data,
+              hrMaturity: inferMaturity(
+                parsed.data.employees,
+                packFor(workspace.pack).maturity.bands,
+              ),
+            },
             (workspace.company as { angles?: Record<string, string> }).angles,
             offers.find((o) => o.approved)?.text,
           );
@@ -452,6 +487,7 @@ export class WorkspaceService {
             ...parsed.data,
             persona: inferred.persona,
             hrMaturity: inferred.maturity,
+            maturitySource: "inferred",
             register: inferred.register,
             ...(inferred.angle ? { angle: inferred.angle } : {}),
           };
@@ -562,13 +598,22 @@ export class WorkspaceService {
               const current = await tx.prospect.findUniqueOrThrow({
                 where: { id: prospect.id },
               });
+              // A maturity band confirmed in discovery is not overwritten by the import's inference.
+              const incoming: ProspectSnapshot = { ...snapshot };
+              if (
+                (current.snapshot as ProspectSnapshot).maturitySource ===
+                "confirmed"
+              ) {
+                delete incoming.hrMaturity;
+                delete incoming.maturitySource;
+              }
               // Keep fields the import does not carry (triage, segment, discovery…).
               merged = {
                 ...(current.snapshot as object),
-                ...snapshot,
+                ...incoming,
               } as ProspectSnapshot;
               changed = digest(current.snapshot) !== digest(merged);
-              changes = Object.keys(snapshot)
+              changes = Object.keys(incoming)
                 .filter(
                   (key) =>
                     digest(
@@ -576,7 +621,7 @@ export class WorkspaceService {
                         null,
                     ) !==
                     digest(
-                      (snapshot as unknown as Record<string, unknown>)[key] ??
+                      (incoming as unknown as Record<string, unknown>)[key] ??
                         null,
                     ),
                 )
@@ -586,7 +631,7 @@ export class WorkspaceService {
                     (current.snapshot as Record<string, unknown>)[field] ??
                     null,
                   after:
-                    (snapshot as unknown as Record<string, unknown>)[field] ??
+                    (incoming as unknown as Record<string, unknown>)[field] ??
                     null,
                 }));
               if (changed) {

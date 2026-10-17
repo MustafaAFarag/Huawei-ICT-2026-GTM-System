@@ -402,6 +402,9 @@ export const AR: Record<string, string> = {
   onboarding: "تهيئة الموظفين",
   hiring: "التوظيف",
   payroll: "الرواتب",
+  "Maturity band": "شريحة النضج",
+  inferred: "مستنتج",
+  confirmed: "مؤكَّد",
   team: "فريق",
   none: "لا يوجد",
   "HR set-up": "فريق الموارد البشرية",
@@ -659,6 +662,41 @@ export const AR: Record<string, string> = {
   "Contact suppressed. Future touches across plays are cancelled.":
     "تم حظر جهة الاتصال. أُلغيت الرسائل القادمة في كل الخطط.",
   "Record opt-out": "تسجيل إلغاء الاشتراك",
+  // Approved-batch export (EXP-01)
+  "Approved-batch export": "تصدير الدفعة المعتمدة",
+  "For your own sender · nothing is sent from here":
+    "للمرسل الخاص بك · لا يُرسل شيء من هنا",
+  "Only approved drafts for contacts with a recorded basis are exported, each with its approval digest. Upload the sender's outcomes to see them under the batch.":
+    "تُصدَّر فقط المسودات المعتمدة لجهات الاتصال ذات الأساس المسجّل، ومعها بصمة الاعتماد. ارفع نتائج المرسل لتظهر تحت الدفعة.",
+  "Could not load exports. Try again.": "تعذّر تحميل التصديرات. حاول مرة أخرى.",
+  "No approved drafts yet.": "لا توجد مسودات معتمدة بعد.",
+  "Approved drafts": "المسودات المعتمدة",
+  "Export approved batch": "تصدير الدفعة المعتمدة",
+  "No draft passed the export checks. See the reasons below.":
+    "لم تجتز أي مسودة فحوص التصدير. راجع الأسباب أدناه.",
+  "Batch exported. Download the CSV below.":
+    "تم تصدير الدفعة. نزّل ملف CSV أدناه.",
+  "Not exported": "لم تُصدَّر",
+  "No exports yet.": "لا توجد تصديرات بعد.",
+  drafts: "مسودات",
+  "Download CSV": "تنزيل CSV",
+  "Outcomes CSV": "ملف النتائج CSV",
+  "Outcomes imported. Review the row results below.":
+    "تم استيراد النتائج. راجع نتيجة كل صف أدناه.",
+  "Columns: sequence_id or email, outcome, occurred_at":
+    "الأعمدة: sequence_id أو email، وoutcome، وoccurred_at",
+  imported: "تم استيراده",
+  "already imported": "مستورد سابقًا",
+  rejected: "مرفوض",
+  Imported: "تم الاستيراد",
+  "Already imported": "مستورد سابقًا",
+  "Sequence does not belong to this export": "التسلسل لا يتبع هذا التصدير",
+  "Email is not in this export": "البريد غير موجود في هذا التصدير",
+  "Email does not match the sequence": "البريد لا يطابق التسلسل",
+  "Email matches more than one sequence": "البريد يطابق أكثر من تسلسل",
+  "occurred_at must be a valid date": "يجب أن يكون occurred_at تاريخًا صحيحًا",
+  "occurred_at is in the future": "occurred_at في المستقبل",
+  "Row needs a sequence_id or an email": "الصف يحتاج sequence_id أو بريدًا",
   // Company context
   "Company context saved. Existing approvals were invalidated.":
     "تم حفظ سياق الشركة. أُلغيت الموافقات السابقة.",
