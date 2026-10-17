@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import { COUNTRIES, type Country } from "@revenue/contracts";
 import { IconArrowRight, IconExternalLink, IconPlus } from "@revenue/ui";
 import {
   Badge,
@@ -20,14 +21,34 @@ import { CallLog } from "../CallLog";
 import { DiscoveryPanel, TriagePanel } from "../ProspectPanels";
 import { ResearchBrief } from "../ResearchBrief";
 
+// Labels go through t() at render time. Only EG, SA and AE have a reviewed channel rule;
+// the rest stay blocked until one exists.
+const COUNTRY_LABEL: Record<Country, string> = {
+  EG: "Egypt",
+  SA: "Saudi Arabia",
+  AE: "United Arab Emirates",
+  KW: "Kuwait",
+  QA: "Qatar",
+  BH: "Bahrain",
+  OM: "Oman",
+};
+
 export function ProspectReview({ prospect }: { prospect: Prospect }) {
   const { ws, canApprove, action, setProspect } = useWorkspace();
   const { t } = usePrefs();
   const [evidence, setEvidence] = useState(prospect.evidence);
+  const [basisType, setBasisType] = useState<"consent" | "relationship">(
+    "relationship",
+  );
+  const [basisSource, setBasisSource] = useState("");
+  const [basisDate, setBasisDate] = useState(() =>
+    new Date().toISOString().slice(0, 10),
+  );
   // Side detail as tabs (progressive disclosure) instead of five stacked panels. Policy
   // fields stay mounted while hidden because the evidence form submits them.
   const [side, setSide] = useState<"fit" | "triage" | "calls" | "discovery">("fit");
   useEffect(() => setEvidence(prospect.evidence), [prospect]);
+  useEffect(() => setBasisSource(""), [prospect.id]);
   const update = (index: number, patch: Partial<(typeof evidence)[number]>) =>
     setEvidence((previous) =>
       previous.map((v, i) => (i === index ? { ...v, ...patch } : v)),
@@ -49,7 +70,14 @@ export function ProspectReview({ prospect }: { prospect: Prospect }) {
               body: JSON.stringify({
                 evidence,
                 lawfulBasis: f.get("lawfulBasis"),
-                country: f.get("country"),
+                country: f.get("country") || null,
+                basisEvidence: basisSource.trim()
+                  ? {
+                      type: basisType,
+                      source: basisSource.trim(),
+                      date: basisDate,
+                    }
+                  : undefined,
                 consentAt: f.get("consentAt")
                   ? new Date(String(f.get("consentAt"))).toISOString()
                   : null,
@@ -58,6 +86,7 @@ export function ProspectReview({ prospect }: { prospect: Prospect }) {
             },
           );
           setProspect(updated);
+          setBasisSource("");
         }, t("Evidence saved. Previous copy approvals were invalidated."));
       }}
     >
@@ -248,10 +277,13 @@ export function ProspectReview({ prospect }: { prospect: Prospect }) {
         <Panel eyebrow={t("Compliance")} title={t("Contact policy")}>
           <div className="stack">
             <Field label={t("Country")}>
-              <Select name="country" defaultValue={prospect.country}>
-                <option value="EG">{t("Egypt")}</option>
-                <option value="SA">{t("Saudi Arabia")}</option>
-                <option value="AE">{t("United Arab Emirates")}</option>
+              <Select name="country" defaultValue={prospect.country ?? ""}>
+                <option value="">{t("Not set · blocked")}</option>
+                {COUNTRIES.map((code) => (
+                  <option key={code} value={code}>
+                    {t(COUNTRY_LABEL[code])}
+                  </option>
+                ))}
               </Select>
             </Field>
             <Field label={t("Communication basis")}>
@@ -272,6 +304,61 @@ export function ProspectReview({ prospect }: { prospect: Prospect }) {
                 type="datetime-local"
                 defaultValue={prospect.consentAt?.slice(0, 16) ?? ""}
               />
+            </Field>
+            <Field label={t("Basis evidence")}>
+              <div className="stack">
+                {prospect.basisEvidence?.length ? (
+                  <ul className="breakdown">
+                    {prospect.basisEvidence.map((entry, index) => (
+                      <li key={`${entry.recordedAt}:${index}`}>
+                        <Badge tone="info">
+                          {entry.type === "consent"
+                            ? t("Recorded consent")
+                            : t("Existing relationship")}
+                        </Badge>
+                        <span dir="auto">{entry.source}</span>
+                        <bdi className="mono" dir="ltr">
+                          {entry.date}
+                        </bdi>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p className="muted">{t("No basis evidence recorded")}</p>
+                )}
+                <Select
+                  aria-label={t("Evidence type")}
+                  value={basisType}
+                  disabled={!canApprove}
+                  onChange={(e) =>
+                    setBasisType(e.target.value as "consent" | "relationship")
+                  }
+                >
+                  <option value="consent">{t("Recorded consent")}</option>
+                  <option value="relationship">
+                    {t("Existing relationship")}
+                  </option>
+                </Select>
+                <Input
+                  aria-label={t("Evidence source")}
+                  placeholder={t("Evidence source")}
+                  dir="auto"
+                  maxLength={500}
+                  value={basisSource}
+                  disabled={!canApprove}
+                  onChange={(e) => setBasisSource(e.target.value)}
+                />
+                <Input
+                  aria-label={t("Evidence date")}
+                  type="date"
+                  value={basisDate}
+                  disabled={!canApprove}
+                  onChange={(e) => setBasisDate(e.target.value)}
+                />
+                <p className="muted">
+                  {t("Fill in the source to record evidence with the next save.")}
+                </p>
+              </div>
             </Field>
             <Check
               name="excluded"

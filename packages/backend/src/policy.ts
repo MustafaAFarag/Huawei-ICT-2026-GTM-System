@@ -144,20 +144,31 @@ export function channelHolds(
     country: string | null;
     lawfulBasis: string | null;
     consentAt: Date | null;
+    basisEvidence: unknown;
     excluded: boolean;
     snapshot: unknown;
   },
   marketingLicence: boolean,
 ) {
   const holds: string[] = [];
-  const rule = COUNTRY_RULES[prospect.country as keyof typeof COUNTRY_RULES];
-  if (!rule)
+  const rule = prospect.country
+    ? COUNTRY_RULES[prospect.country as keyof typeof COUNTRY_RULES]
+    : undefined;
+  if (!prospect.country) holds.push("Set the country before contact");
+  else if (!rule)
     holds.push(
       "This country is blocked until a reviewed channel policy is configured",
     );
   else {
     if (!(rule.bases as readonly string[]).includes(prospect.lawfulBasis ?? ""))
       holds.push(rule.name);
+    else if (
+      !(Array.isArray(prospect.basisEvidence) ? prospect.basisEvidence : []).some(
+        (entry) =>
+          (entry as { type?: string } | null)?.type === prospect.lawfulBasis,
+      )
+    )
+      holds.push(`Record evidence for the ${prospect.lawfulBasis} basis`);
     if (
       prospect.lawfulBasis === "consent" &&
       (!prospect.consentAt || prospect.consentAt.getTime() > Date.now())

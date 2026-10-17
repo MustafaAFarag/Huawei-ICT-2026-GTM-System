@@ -129,6 +129,57 @@ describe("PostgreSQL-backed governance", () => {
       workspaces.reviewProspect({ ...actor, role: "operator" }, prospectId, {}),
     ).rejects.toThrow("cannot approve");
   });
+  it("never changes a stored country on re-review and records basis evidence", async () => {
+    const make = (sourceKey: string, country: string | null) =>
+      db.prospect.create({
+        data: {
+          workspaceId,
+          ownerId: userId,
+          sourceKey,
+          country,
+          snapshot: json({ firstName: "Country", email: sourceKey }),
+        },
+      });
+    const sa = await make("sa@example.test", "SA");
+    const review = (id: string, body: object) =>
+      workspaces.reviewProspect(actor, id, { evidence: [], ...body });
+    // Country omitted: the stored value stays.
+    expect((await review(sa.id, { lawfulBasis: "relationship" })).country).toBe(
+      "SA",
+    );
+    // A GCC country without a reviewed rule is representable.
+    expect((await review(sa.id, { country: "KW" })).country).toBe("KW");
+    // Explicit null clears it.
+    expect((await review(sa.id, { country: null })).country).toBeNull();
+    // A prospect imported without a country stays unset.
+    const unset = await make("unset@example.test", null);
+    expect((await review(unset.id, {})).country).toBeNull();
+    await expect(review(sa.id, { country: "FR" })).rejects.toThrow();
+    // Evidence is appended with the actor and a timestamp; re-reviews keep earlier entries.
+    await review(sa.id, {
+      country: "SA",
+      lawfulBasis: "relationship",
+      basisEvidence: {
+        type: "relationship",
+        source: "Signed engagement letter",
+        date: "2026-09-01",
+      },
+    });
+    const kept = await review(sa.id, { lawfulBasis: "relationship" });
+    expect(kept.country).toBe("SA");
+    expect(kept.basisEvidence).toEqual([
+      expect.objectContaining({
+        type: "relationship",
+        source: "Signed engagement letter",
+        date: "2026-09-01",
+        recordedBy: userId,
+        recordedAt: expect.any(String),
+      }),
+    ]);
+    await expect(
+      review(sa.id, { basisEvidence: { type: "relationship", source: "", date: "2026-09-01" } }),
+    ).rejects.toThrow();
+  });
   it("rejects a stale audience/evidence approval", async () => {
     const request = await approved(input());
     await db.prospect.update({
@@ -347,6 +398,7 @@ it("holds unknown, stale and future sender checks and future consent", () => {
         country: "EG",
         lawfulBasis: "consent",
         consentAt: new Date(Date.now() + 3600000),
+        basisEvidence: [],
         excluded: false,
         snapshot: { email: "demo@example.test" },
       },

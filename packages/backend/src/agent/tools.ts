@@ -42,6 +42,7 @@ function summary(p: {
   country: string | null;
   language: string;
   lawfulBasis: string | null;
+  basisEvidence: unknown;
 }) {
   const s = p.snapshot as ProspectSnapshot;
   const evidence = p.evidence as Evidence[];
@@ -64,6 +65,9 @@ function summary(p: {
     reviewedFacts: evidence.filter((e) => e.approved && e.kind === "fact")
       .length,
     communicationBasisRecorded: Boolean(p.lawfulBasis),
+    basisEvidenceCount: Array.isArray(p.basisEvidence)
+      ? p.basisEvidence.length
+      : 0,
     hasEmail: Boolean(s.email),
     excluded: p.excluded,
   };
@@ -279,6 +283,9 @@ export function readTools(actor: Actor): ToolSet {
           approved: draft.approvedVersion === draft.version,
           communicationBasisRecorded: Boolean(prospect.lawfulBasis),
           communicationBasis: prospect.lawfulBasis,
+          basisEvidenceCount: Array.isArray(prospect.basisEvidence)
+            ? prospect.basisEvidence.length
+            : 0,
           excluded: prospect.excluded,
           touches: (draft.content as import("@revenue/contracts").Touch[]).map(
             (t) => ({ ...t, body: untrusted(t.body, 3000) }),

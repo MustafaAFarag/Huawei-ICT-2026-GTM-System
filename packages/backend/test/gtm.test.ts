@@ -136,22 +136,71 @@ describe("GTM rules (pure)", () => {
     expect(groups).toHaveLength(1);
     expect(groups[0]!.map((r) => r.id).sort()).toEqual(["1", "2"]);
   });
-  it("holds dropped, existing and HOLD-segment accounts", () => {
+  describe("country and basis evidence (A3)", () => {
+    const evidence = (type: "consent" | "relationship") => [
+      {
+        type,
+        source: "Signed engagement letter",
+        date: "2026-09-01",
+        recordedBy: "user-1",
+        recordedAt: "2026-09-02T10:00:00.000Z",
+      },
+    ];
     const base = {
-      country: "SA",
-      lawfulBasis: "relationship",
+      country: "SA" as string | null,
+      lawfulBasis: "relationship" as string | null,
       consentAt: null,
+      basisEvidence: evidence("relationship") as unknown,
       excluded: false,
+      snapshot: { email: "a@b.example" },
     };
-    const holds = (extra: object) =>
-      channelHolds(
-        { ...base, snapshot: { email: "a@b.example", ...extra } },
-        false,
+    const holds = (extra: object = {}) =>
+      channelHolds({ ...base, ...extra }, false);
+    it("holds dropped, existing and HOLD-segment accounts", () => {
+      const withSnapshot = (extra: object) =>
+        holds({ snapshot: { email: "a@b.example", ...extra } });
+      expect(withSnapshot({ bucket: "drop" }).join()).toMatch(/Drop/);
+      expect(withSnapshot({ bucket: "existing" }).join()).toMatch(
+        /Existing clients/,
       );
-    expect(holds({ bucket: "drop" }).join()).toMatch(/Drop/);
-    expect(holds({ bucket: "existing" }).join()).toMatch(/Existing clients/);
-    expect(holds({ segment: "HOLD" }).join()).toMatch(/on hold/);
-    expect(holds({})).toEqual([]);
+      expect(withSnapshot({ segment: "HOLD" }).join()).toMatch(/on hold/);
+      expect(withSnapshot({})).toEqual([]);
+    });
+    it("holds a relationship basis that has no evidence", () => {
+      expect(holds({ basisEvidence: [] })).toEqual([
+        "Record evidence for the relationship basis",
+      ]);
+      expect(holds({ basisEvidence: evidence("consent") })).toEqual([
+        "Record evidence for the relationship basis",
+      ]);
+    });
+    it("holds a consent basis without matching evidence, and keeps the timestamp check", () => {
+      const consent = {
+        country: "AE",
+        lawfulBasis: "consent",
+        consentAt: new Date(Date.now() - 3600000),
+      };
+      expect(holds({ ...consent, basisEvidence: [] })).toEqual([
+        "Record evidence for the consent basis",
+      ]);
+      expect(holds({ ...consent, basisEvidence: evidence("consent") })).toEqual(
+        [],
+      );
+      expect(
+        holds({ ...consent, consentAt: null, basisEvidence: evidence("consent") }),
+      ).toEqual(["Record the consent timestamp"]);
+    });
+    it("holds Kuwait, Qatar, Bahrain and Oman as country blocked", () => {
+      for (const country of ["KW", "QA", "BH", "OM"])
+        expect(holds({ country })).toEqual([
+          "This country is blocked until a reviewed channel policy is configured",
+        ]);
+    });
+    it("holds a prospect with no country", () => {
+      expect(holds({ country: null })).toEqual([
+        "Set the country before contact",
+      ]);
+    });
   });
 });
 
