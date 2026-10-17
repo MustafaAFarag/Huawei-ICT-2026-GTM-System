@@ -14,6 +14,7 @@ import {
   Req,
   Res,
   Body,
+  Query,
   Module,
   HttpException,
   BadRequestException,
@@ -641,11 +642,36 @@ class ApiController {
     const input = z.object({ draftIds: z.array(z.uuid()).max(100) }).parse(body);
     return gtm.launchGate(await actorFor(req.headers, ws), input.draftIds);
   }
+  @ApiOperation({ summary: "Funnel of distinct prospects; simulated events are excluded unless requested" })
   @Get("workspaces/:workspaceId/scorecard") async scorecard(
     @Req() req: Request,
     @Param("workspaceId") ws: string,
+    @Query() query: unknown,
   ) {
-    return gtm.scorecard(await actorFor(req.headers, ws));
+    const date = z.union([z.iso.date(), z.iso.datetime()]);
+    const input = z
+      .object({
+        batch: z.uuid().optional(),
+        from: date.optional(),
+        to: date.optional(),
+        includeSimulated: z.enum(["true", "false"]).optional(),
+      })
+      .parse(query);
+    return gtm.scorecard(await actorFor(req.headers, ws), {
+      batchId: input.batch,
+      from: input.from,
+      to: input.to,
+      includeSimulated: input.includeSimulated === "true",
+    });
+  }
+  @ApiOperation({ summary: "A reviewer confirms whether a prospect's reply was positive, neutral or negative" })
+  @Post("workspaces/:workspaceId/prospects/:prospectId/reply-label") async replyLabel(
+    @Req() req: Request,
+    @Param("workspaceId") ws: string,
+    @Param("prospectId") prospectId: string,
+    @Body() body: unknown,
+  ) {
+    return gtm.labelReply(await actorFor(req.headers, ws), prospectId, body);
   }
   @Get("workspaces/:workspaceId/sdr-kit") async sdrKit(
     @Req() req: Request,
