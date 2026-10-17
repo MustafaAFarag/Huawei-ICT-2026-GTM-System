@@ -1,6 +1,6 @@
 // Pure GTM rules shared by the server and the UI (PRD v3.1 §7.14).
 import type { Evidence, ProspectSnapshot, Touch } from "./index.js";
-import { PACKS, type MaturityBand } from "./packs.js";
+import { PACKS, type MaturityBand } from "./packs.ts";
 
 export type Persona = NonNullable<ProspectSnapshot["persona"]>;
 export type Maturity = NonNullable<ProspectSnapshot["hrMaturity"]>;
