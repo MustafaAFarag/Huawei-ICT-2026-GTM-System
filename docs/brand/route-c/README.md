@@ -29,7 +29,7 @@ All files here are redrawn from exact geometry by `build.py`, not traced from th
 | `lockup-arabic.svg`, `wordmark-arabic.svg`, `lockup-bilingual.svg` | Arabic and bilingual versions |
 | `mark.svg`, `mark-mono-ink.svg`, `mark-paper-on-green.svg`, `mark-paper-on-ink.svg` | Symbol variants |
 | `app-icon-1024.svg`, `app-icon-1024-light.svg`, `favicon-32.svg`, `favicon-16.svg` | Icons |
-| `route-stroke.svg` | Animation source: `#route` (open path, length 166.17) and `#waypoint-1..3`, `#terminal` |
+| `route-stroke.svg` | Animation source: `#route` (open path, length 166.16) and `#waypoint-1..3`, `#terminal` |
 | `mark-animated.svg` | Self-contained CSS intro; respects `prefers-reduced-motion` |
 
 ## Animation
