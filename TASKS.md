@@ -6,11 +6,14 @@ Goal: 3–5 logo concepts plus a recommendation. Done: five concepts generated, 
 - [x] Deployed `gpt-image-2-5-sunburst` (gpt-image-2.5-sunburst, GlobalStandard, capacity 1) on project resource `aoai-gtm-command-center-demo` (Azure for Students). 6 calls, 18,932 output image tokens; about USD 0.60 at the published USD 30 per 1M rate (Azure price unconfirmed).
 - [x] Five concepts × 2 variants and one brand board in ignored `.local/logo-gen/out/`; labelled sheet `.local/logo-gen/concepts-labelled.png`. Owner chose A "Route C" (17 Oct): the mark doubles as the C in the "Caravan" wordmark and suits animation. Raw AI output; final mark must be redrawn as vector in Figma before use (copyright and consistency).
 - [x] Vector logo system. The Claude Personal Figma task failed before doing any work: `Claude API rate limit reached. Try again later.` Main agent built it instead as exact SVG geometry: `docs/brand/route-c/` (17 SVGs, spec, generator, animated preview). Checked renders, favicon at 16/32 px, mono knockouts and the intro animation in a headless browser.
-- [ ] Next: import the SVGs into Figma page "13 Logo · Route C" when a Figma connector is available; native Arabic review; trademark search.
+- [x] Figma page "13 Logo · Route C" (node 52:14): components and 7 frames built, verified as native vectors, geometry matches spec.json, IDs in `.local/logo-gen/figma/state.json`.
+- [ ] Next: native Arabic review; trademark search.
 
 Blocker (17 Oct): Lara headless run (Opus 5.5 High, connectors enabled, no relay because the relay disables connectors) stopped before any Figma call. Its claude.ai Figma connector reports "require authentication", and OAuth cannot run non-interactively. Fix: open `claude-lara` interactively and authorise Figma (`/mcp`), then rerun `.local/logo-gen/lara/brief.txt`. No Figma or repo changes were made; cost USD 0.65.
 
 Rerun after the owner re-authorised Figma: built page "13 Logo · Route C" with 7 frames (wordmark, construction, lockups, colour/mono, app icon and favicons, animation storyboard, usage), and PNGs are in `.local/logo-gen/figma/`. The run then hit `You've hit your session limit · resets 3:40pm (Africa/Cairo)` after 93 turns (reported cost USD 5.85). `state.json` was not written. The 17 SVGs went through Figma's upload endpoint with `scaleMode=FILL`, so whether the logo is native vectors or SVG image fills is unverified. Next: after the reset, confirm vector nodes, write state.json, check the geometry numerically.
+
+Verification pass (17 Oct, Lara, 11 turns, USD 1.40, no Figma changes): 0 image fills; all logo and icon components are VECTOR groups. On `logo/mark` Colour `63:744`: stroke 14, waypoint centres (38.371, 18.05), (16, 50), (38.371, 81.95), terminal (76.046, 71.855) Ø21, all equal to spec.json. Overflow: 3 non-clipping cases. One is a round stroke cap in 00 Components (4.7 px); two are deliberate 13g "don't" examples (stretch 11.3 px, shadow 7.8 px). `state.json` written.
 
 ---
 
