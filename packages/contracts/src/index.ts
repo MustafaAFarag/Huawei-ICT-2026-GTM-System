@@ -96,6 +96,7 @@ export const assetTemplates = [
   "instagram-carousel",
   "linkedin-carousel",
   "flipbook",
+  "capability-profile",
 ] as const;
 export type AssetTemplate = (typeof assetTemplates)[number];
 export type AssetExport = "pdf" | "png" | "zip" | "html";
@@ -153,6 +154,13 @@ export const ASSET_FORMATS: Record<
     size: { width: 794, height: 1123 },
     exports: ["html", "pdf"],
     slides: { min: 6, max: 12, default: 8 },
+  },
+  // A6: brand-level company profile (A4), with an account-tailored cover when an account is given.
+  "capability-profile": {
+    label: "Capability profile",
+    viewer: "document",
+    size: { width: 794, height: 1123 },
+    exports: ["html", "pdf"],
   },
 };
 

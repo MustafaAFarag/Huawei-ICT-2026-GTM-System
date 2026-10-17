@@ -15,7 +15,8 @@ export type PromptId =
   | "call-outcome"
   | "format-email"
   | "format-carousel"
-  | "format-flipbook";
+  | "format-flipbook"
+  | "format-capability-profile";
 export function prompt(id: PromptId): Prompt {
   const cached = cache.get(id);
   if (cached) return cached;

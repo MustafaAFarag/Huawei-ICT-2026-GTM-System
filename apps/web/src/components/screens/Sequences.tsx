@@ -29,6 +29,10 @@ export function Sequences() {
       <ResultsPanel />
       {data.sequences.map((s) => {
         const prospect = data.prospects.find((p) => p.id === s.prospectId);
+        const draft = data.drafts.find((d) => d.id === s.draftId);
+        const profile = data.assets.find(
+          (a) => a.id === draft?.assetId && a.template === "capability-profile",
+        );
         return (
           <Panel
             key={s.id}
@@ -38,7 +42,18 @@ export function Sequences() {
                 : t("Asset group assignment")
             }
             title={<span dir="auto">{prospect?.snapshot.company}</span>}
-            actions={<Badge tone={toneFor(s.state)}>{s.state}</Badge>}
+            actions={
+              <>
+                {profile && (
+                  <Badge tone={s.holdout ? "warn" : "info"}>
+                    {s.holdout
+                      ? t("Holdout · profile withheld")
+                      : t("Capability profile attached")}
+                  </Badge>
+                )}
+                <Badge tone={toneFor(s.state)}>{s.state}</Badge>
+              </>
+            }
           >
             <ol className="touch-timeline compact">
               {s.steps.map((step, i) => (

@@ -73,8 +73,12 @@ export function ReviewQueue() {
               .company ?? "Prospect"
           }
           prospect={data.prospects.find((p) => p.id === d.prospectId)}
+          // The brand-level capability profile (no account) can go on any draft.
           assets={data.assets.filter(
-            (a) => a.prospectId === d.prospectId && a.approvedAt,
+            (a) =>
+              a.approvedAt &&
+              (a.prospectId === d.prospectId ||
+                (a.prospectId === null && a.template === "capability-profile")),
           )}
           onAttach={(assetId) =>
             action(

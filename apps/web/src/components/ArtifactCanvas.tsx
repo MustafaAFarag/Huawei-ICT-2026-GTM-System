@@ -330,6 +330,11 @@ export function ArtifactCanvas({
         {versions.length <= 1 && versionIndex >= 0 && (
           <span className="mono muted small">v1</span>
         )}
+        {asset.template === "capability-profile" && (
+          <span title={t("Ships with an asset-vs-no-asset holdout: a share of sequences go out without this profile.")}>
+            <Badge tone="info">{t("Holdout test")}</Badge>
+          </span>
+        )}
         <Badge tone={asset.approvedAt ? "ok" : "warn"}>
           {asset.approvedAt ? t("Approved") : t("Needs review")}
         </Badge>

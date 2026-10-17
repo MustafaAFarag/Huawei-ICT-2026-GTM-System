@@ -43,7 +43,7 @@ export type Draft = {
 };
 export type Asset = {
   id: string;
-  prospectId: string;
+  prospectId: string | null;
   title: string;
   language: string;
   template: string;
@@ -100,6 +100,7 @@ export type Dashboard = {
   sequences: {
     id: string;
     prospectId: string;
+    draftId?: string;
     state: string;
     holdout: boolean;
     steps: { channel: string; body: string; state: string }[];

@@ -61,6 +61,11 @@ export const AR: Record<string, string> = {
     "مساعد تجريبي · لا يتم استدعاء أي نموذج.",
   Flipbook: "كتيّب تفاعلي",
   "Flipbook preview": "معاينة الكتيّب",
+  "Capability profile": "ملف القدرات",
+  "Create a capability profile for ": "أنشئ ملف قدرات لـ ",
+  "Holdout test": "اختبار المقارنة",
+  "Ships with an asset-vs-no-asset holdout: a share of sequences go out without this profile.":
+    "يأتي مع اختبار مقارنة بمادة وبدون مادة: جزء من التسلسلات يُرسل بدون هذا الملف.",
   "Gmail clips above 102 KB": "Gmail يقص الرسائل الأكبر من 102 كيلوبايت",
   "Good reply": "رد جيد",
   "Poor reply": "رد ضعيف",
@@ -646,6 +651,8 @@ export const AR: Record<string, string> = {
     "اعتمد كل رسالة، وشغّل فحص المرسل، وعالج قيود الدولة والموافقة قبل تجهيز التسلسل.",
   "No asset · holdout assignment": "بدون مادة · مجموعة ضابطة",
   "Asset group assignment": "مجموعة المادة",
+  "Holdout · profile withheld": "مجموعة ضابطة · الملف غير مرفق",
+  "Capability profile attached": "ملف القدرات مرفق",
   "Simulated reply recorded. Remaining touches across plays are cancelled.":
     "تم تسجيل رد تجريبي. أُلغيت الرسائل المتبقية في كل الخطط.",
   "Record simulated reply": "تسجيل رد تجريبي",

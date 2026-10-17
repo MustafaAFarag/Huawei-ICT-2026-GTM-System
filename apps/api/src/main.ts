@@ -51,7 +51,6 @@ import {
   safeError,
   handleMcp,
   senderEvent,
-  serializable,
   runAgentTurn,
   transcribeAudio,
   MAX_AUDIO_BYTES,
@@ -64,6 +63,7 @@ import {
   ScheduleService,
   ThreadService,
   assetBasis,
+  attachAssetToDraft,
   assetZip,
   isContentFormat,
   lintFor,
@@ -345,39 +345,7 @@ class ApiController {
     const input = z
       .object({ assetId: z.uuid(), version: z.number().int().positive() })
       .parse(body);
-    return serializable(async (tx) => {
-      const draft = await tx.draft.findFirstOrThrow({
-        where: { id, workspaceId: ws },
-      });
-      const asset = await tx.asset.findFirstOrThrow({
-        where: {
-          id: input.assetId,
-          workspaceId: ws,
-          prospectId: draft.prospectId,
-          approvedAt: { not: null },
-        },
-      });
-      if (draft.version !== input.version)
-        throw new HttpException("This draft changed. Reload it.", 409);
-      await tx.sequence.updateMany({
-        where: {
-          workspaceId: ws,
-          draftId: id,
-          state: { notIn: ["completed", "failed", "cancelled"] },
-        },
-        data: { state: "cancelled" },
-      });
-      return tx.draft.update({
-        where: { id },
-        data: {
-          assetId: asset.id,
-          version: { increment: 1 },
-          approvedVersion: null,
-          approvedAt: null,
-          approvedBy: null,
-        },
-      });
-    });
+    return attachAssetToDraft(ws, id, input);
   }
   @Post("workspaces/:workspaceId/events/simulate") async simulate(
     @Req() req: Request,

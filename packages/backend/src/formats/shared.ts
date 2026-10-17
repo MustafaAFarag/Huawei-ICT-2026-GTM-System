@@ -15,6 +15,11 @@ export type FormatContext = {
   facts: Evidence[];
   language: string;
   date: string;
+  // Capability profile (A6): every approved offer, the references with recorded consent,
+  // and the asset-vs-no-asset holdout share it ships with.
+  offers?: string[];
+  references?: string[];
+  holdoutPercent?: number;
 };
 
 export const esc = escapeHtml;
@@ -87,6 +92,8 @@ export function checkContent(
       [
         ...context.facts.map((f) => `${f.claim} ${f.date}`),
         context.offer ?? "",
+        ...(context.offers ?? []),
+        ...(context.references ?? []),
         context.company,
         context.brand.name,
         context.snapshot?.company ?? "",

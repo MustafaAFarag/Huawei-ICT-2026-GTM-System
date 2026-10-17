@@ -25,6 +25,7 @@ const STARTERS = [
   { label: "Instagram carousel", icon: IconBrandInstagram, text: "Create an Instagram carousel about " },
   { label: "LinkedIn carousel", icon: IconBrandLinkedin, text: "Create a LinkedIn carousel about " },
   { label: "Flipbook", icon: IconBook, text: "Create a flipbook that walks a prospect through " },
+  { label: "Capability profile", icon: IconFileText, text: "Create a capability profile for " },
 ] as const;
 
 function greeting(name: string, t: (text: string) => string, arabic: boolean) {

@@ -104,9 +104,13 @@ export class WorkflowService {
     if (
       sourceAsset &&
       sourceAsset.evidenceDigest !==
-        (prospects[0]
-          ? digest(prospects[0].evidence)
-          : workspaceBasisDigest(await this.workspaces.workspace(actor)))
+        digest(
+          deliverableBasis(
+            sourceAsset.template,
+            await this.workspaces.workspace(actor),
+            prospects[0]?.evidence ?? null,
+          ),
+        )
     )
       throw new BadRequestException(
         "Evidence changed. Generate a new asset from the current sources before editing.",
@@ -493,6 +497,7 @@ export class WorkflowService {
       snapshot,
       evidence,
       language: input.language,
+      holdoutPercent: input.holdoutPercent,
     });
     const generated = await generateDeliverable(template, context, {
       instructions: input.message,
@@ -535,7 +540,7 @@ export class WorkflowService {
         title: `${title} — ${subject}${source ? " · revision" : ""}`,
         htmlKey,
         pdfKey: null,
-        evidenceDigest: prospect ? digest(prospect.evidence) : workspaceBasisDigest(workspace),
+        evidenceDigest: digest(deliverableBasis(template, workspace, prospect?.evidence ?? null)),
         threadId: input.threadId ?? null,
         playId: input.play,
       },
@@ -1308,18 +1313,37 @@ export const workspaceBasisDigest = (
   workspace: Parameters<typeof workspaceBasis>[0],
 ) => digest(workspaceBasis(workspace));
 
+// What a deliverable is approved against. Account deliverables use the account's evidence;
+// account-free ones use the workspace basis. A capability profile is built from the workspace
+// (offers, references with consent) and, when tailored, also from the account's evidence, so
+// it is bound to both and a withdrawn reference or offer stales its approval.
+export function deliverableBasis(
+  template: string,
+  workspace: Parameters<typeof workspaceBasis>[0],
+  evidence: unknown | null,
+) {
+  if (evidence === null) return workspaceBasis(workspace);
+  return template === "capability-profile"
+    ? { workspace: workspaceBasis(workspace), evidence }
+    : evidence;
+}
+
 // The sources an asset was approved against: its account's evidence, or the workspace
 // basis for account-free deliverables. Null when the account was deleted.
 export async function assetBasis(
   workspaceId: string,
-  asset: { prospectId: string | null },
+  asset: { prospectId: string | null; template?: string },
 ) {
+  const workspace = async () =>
+    db.workspace.findUniqueOrThrow({ where: { id: workspaceId } });
   if (asset.prospectId) {
     const prospect = await db.prospect.findFirst({
       where: { id: asset.prospectId, workspaceId },
     });
-    return prospect ? prospect.evidence : null;
+    if (!prospect) return null;
+    return asset.template === "capability-profile"
+      ? deliverableBasis(asset.template, await workspace(), prospect.evidence)
+      : prospect.evidence;
   }
-  const workspace = await db.workspace.findUniqueOrThrow({ where: { id: workspaceId } });
-  return workspaceBasis(workspace);
+  return workspaceBasis(await workspace());
 }
