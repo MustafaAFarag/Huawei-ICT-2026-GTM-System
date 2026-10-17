@@ -8,6 +8,8 @@ Goal: 3–5 logo concepts plus a recommendation. Done: five concepts generated, 
 - [x] Vector logo system. The Claude Personal Figma task failed before doing any work: `Claude API rate limit reached. Try again later.` Main agent built it instead as exact SVG geometry: `docs/brand/route-c/` (17 SVGs, spec, generator, animated preview). Checked renders, favicon at 16/32 px, mono knockouts and the intro animation in a headless browser.
 - [ ] Next: import the SVGs into Figma page "13 Logo · Route C" when a Figma connector is available; native Arabic review; trademark search.
 
+Blocker (17 Oct): Lara headless run (Opus 5.5 High, connectors enabled, no relay because the relay disables connectors) stopped before any Figma call. Its claude.ai Figma connector reports "require authentication", and OAuth cannot run non-interactively. Fix: open `claude-lara` interactively and authorise Figma (`/mcp`), then rerun `.local/logo-gen/lara/brief.txt`. No Figma or repo changes were made; cost USD 0.65.
+
 ---
 
 ## Current — Figma v3.2 account follow-up flow (17 October 2026)
