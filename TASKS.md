@@ -1,3 +1,14 @@
+## Current — Caravan logo concepts (17 October 2026)
+
+Goal: 3–5 logo concepts plus a recommendation. Done: five concepts generated, small-size test, brand board for the recommended one. Stop: concepts only; no app, Figma or repo asset changes yet.
+
+- [x] Research (two Sonnet 5.5 High subagents): logo process, AI-logo clichés, bilingual lockups, image-model prompting, IP limits.
+- [x] Deployed `gpt-image-2-5-sunburst` (gpt-image-2.5-sunburst, GlobalStandard, capacity 1) on project resource `aoai-gtm-command-center-demo` (Azure for Students). 6 calls, 18,932 output image tokens; about USD 0.60 at the published USD 30 per 1M rate (Azure price unconfirmed).
+- [x] Five concepts × 2 variants and one brand board in ignored `.local/logo-gen/out/`; labelled sheet `.local/logo-gen/concepts-labelled.png`. Owner chose A "Route C" (17 Oct): the mark doubles as the C in the "Caravan" wordmark and suits animation. Raw AI output; final mark must be redrawn as vector in Figma before use (copyright and consistency).
+- [ ] Claude Personal Opus 5.5 High builds the vector logo system in Figma (symbol, C-as-mark wordmark, Arabic lockup, app icon/favicon, construction, animation storyboard) and exports SVG/PNG to `.local/logo-gen/vector/`.
+
+---
+
 ## Current — Figma v3.2 account follow-up flow (17 October 2026)
 
 Goal: add the agreed v3.2 purpose, pages and flow (PRD D22, PK-01, SCR-01, CMP-01/02, GAP-07, EXP-01, STU-09) to Figma file `XQYMm6aLF8AVUAFje7CpuK`.
