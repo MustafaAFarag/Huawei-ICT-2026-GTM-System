@@ -7,6 +7,7 @@ import {
   json,
   month,
   required,
+  resolveRubric,
   score,
   type DemoProspect,
   type DemoWorkspace,
@@ -221,7 +222,7 @@ async function seedWorkspace(
     });
   const saved = [];
   for (const p of spec.prospects) {
-    const result = p.scored ? score(p.snapshot) : null;
+    const result = p.scored ? score(p.snapshot, resolveRubric(workspace)) : null;
     const ownerId = (p.snapshot.owner && ids.get(p.snapshot.owner)) || user.id;
     const row = {
       snapshot: json(p.snapshot),

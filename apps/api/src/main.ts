@@ -40,6 +40,7 @@ import {
   json,
   config,
   WorkspaceService,
+  RubricService,
   WorkflowService,
   Storage,
   assertRole,
@@ -78,6 +79,7 @@ const gtm = new GtmService();
 const importHistory = new ImportHistoryService();
 const schedules = new ScheduleService();
 const threads = new ThreadService();
+const rubrics = new RubricService();
 const workspaceService = new WorkspaceService(),
   workflows = new WorkflowService(),
   storage = new Storage();
@@ -132,6 +134,19 @@ class ApiController {
     @Body() body: unknown,
   ) {
     return workspaceService.configure(await actorFor(req.headers, id), body);
+  }
+  @Get("workspaces/:workspaceId/rubric") async rubric(
+    @Req() req: Request,
+    @Param("workspaceId") id: string,
+  ) {
+    return rubrics.get(await actorFor(req.headers, id));
+  }
+  @Patch("workspaces/:workspaceId/rubric") async updateRubric(
+    @Req() req: Request,
+    @Param("workspaceId") id: string,
+    @Body() body: unknown,
+  ) {
+    return rubrics.update(await actorFor(req.headers, id), body);
   }
   @Get("workspaces/:workspaceId/imports") async imports(
     @Req() req: Request,

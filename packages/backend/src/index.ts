@@ -3,6 +3,8 @@ export * from "./config.js";
 export * from "./database.js";
 export * from "./auth.js";
 export * from "./policy.js";
+export * from "./rubric-core.js";
+export * from "./rubric.js";
 export * from "./providers.js";
 export * from "./storage.js";
 export * from "./vault.js";
