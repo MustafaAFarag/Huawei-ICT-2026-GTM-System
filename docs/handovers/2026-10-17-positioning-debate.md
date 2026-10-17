@@ -120,3 +120,7 @@ Figma work is already delivered: 92 screen/state designs plus a native connected
 - Walkthrough: https://www.figma.com/proto/XQYMm6aLF8AVUAFje7CpuK?node-id=17-12&starting-point-node-id=17-12&scaling=contain
 
 The cover is native editable text/artwork with the original Nabil portrait; its three entry links were preserved and bounds/render checked. The brand-book flows there are design proposals. No new brand extraction, generated imagery, live contact provider or live sender capability should be inferred from those screens.
+
+## Outcome (17 October 2026, Claude Skylink session)
+
+The debate ran. Lara was rejected again by the T3 quota gate (87%); the owner chose native Claude Opus 5.5 High subagents on the Skylink account as reviewers. Round 1, the main rebuttal and a fresh round 2 are complete. The result, with corrections to research 15, eight proposed PRD amendments and remaining disagreements, is in [research 16](../research/16-positioning-debate-and-prd-amendments.md). The PRD, application and Figma are unchanged.
