@@ -1,0 +1,71 @@
+{
+ "designBox": 100,
+ "centre": [
+  50.0,
+  50.0
+ ],
+ "centrelineRadius": 34.0,
+ "strokeWidth": 14.0,
+ "outerDiameter": 82.0,
+ "strokeToOuterDiameter": 0.171,
+ "startAngleDeg": -40.0,
+ "sweepDeg": 280.0,
+ "opening": "right, 80 degrees",
+ "waypoints": {
+  "t": [
+   0.25,
+   0.5,
+   0.75
+  ],
+  "anglesFromStartDeg": [
+   70.0,
+   140.0,
+   210.0
+  ],
+  "diameter": 8.68
+ },
+ "terminalDiameter": 21.0,
+ "clearSpace": "terminal diameter x2 = 42.0 units",
+ "routeLength": 166.16,
+ "wordmark": {
+  "font": "Inter Variable instanced at wght 600 (OFL)",
+  "markHeightToCapHeight": 1.06,
+  "gapEm": 0.045,
+  "trackingEm": -0.01
+ },
+ "arabic": {
+  "font": "IBM Plex Sans Arabic 600 (OFL)",
+  "text": "كارافان",
+  "review": "native Arabic review required"
+ },
+ "favicon": {
+  "waypoints": false,
+  "strokeWidth": 20,
+  "terminalDiameter": 26
+ },
+ "palette": {
+  "ink": "#20231F",
+  "green": "#3F5A45",
+  "coral": "#E8765A",
+  "paper": "#F3F0E7"
+ },
+ "files": [
+  "app-icon-1024-light.svg",
+  "app-icon-1024.svg",
+  "favicon-16.svg",
+  "favicon-32.svg",
+  "lockup-arabic.svg",
+  "lockup-bilingual.svg",
+  "lockup-horizontal.svg",
+  "lockup-stacked.svg",
+  "mark-animated.svg",
+  "mark-mono-ink.svg",
+  "mark-paper-on-green.svg",
+  "mark-paper-on-ink.svg",
+  "mark.svg",
+  "route-stroke.svg",
+  "wordmark-arabic.svg",
+  "wordmark-c-as-mark-reversed.svg",
+  "wordmark-c-as-mark.svg"
+ ]
+}

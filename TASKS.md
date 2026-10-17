@@ -5,7 +5,8 @@ Goal: 3–5 logo concepts plus a recommendation. Done: five concepts generated, 
 - [x] Research (two Sonnet 5.5 High subagents): logo process, AI-logo clichés, bilingual lockups, image-model prompting, IP limits.
 - [x] Deployed `gpt-image-2-5-sunburst` (gpt-image-2.5-sunburst, GlobalStandard, capacity 1) on project resource `aoai-gtm-command-center-demo` (Azure for Students). 6 calls, 18,932 output image tokens; about USD 0.60 at the published USD 30 per 1M rate (Azure price unconfirmed).
 - [x] Five concepts × 2 variants and one brand board in ignored `.local/logo-gen/out/`; labelled sheet `.local/logo-gen/concepts-labelled.png`. Owner chose A "Route C" (17 Oct): the mark doubles as the C in the "Caravan" wordmark and suits animation. Raw AI output; final mark must be redrawn as vector in Figma before use (copyright and consistency).
-- [ ] Claude Personal Opus 5.5 High builds the vector logo system in Figma (symbol, C-as-mark wordmark, Arabic lockup, app icon/favicon, construction, animation storyboard) and exports SVG/PNG to `.local/logo-gen/vector/`.
+- [x] Vector logo system. The Claude Personal Figma task failed before doing any work: `Claude API rate limit reached. Try again later.` Main agent built it instead as exact SVG geometry: `docs/brand/route-c/` (17 SVGs, spec, generator, animated preview). Checked renders, favicon at 16/32 px, mono knockouts and the intro animation in a headless browser.
+- [ ] Next: import the SVGs into Figma page "13 Logo · Route C" when a Figma connector is available; native Arabic review; trademark search.
 
 ---
 
