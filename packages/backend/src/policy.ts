@@ -4,9 +4,11 @@ import type {
   Evidence,
   Preflight,
   ProspectSnapshot,
+  Rubric,
   ToolRequest,
 } from "@revenue/contracts";
-import { COSTS } from "@revenue/contracts";
+import { COSTS, DEFAULT_RUBRIC } from "@revenue/contracts";
+import { matchRole } from "./rubric-core.js";
 import { BadRequestException, ForbiddenException } from "@nestjs/common";
 
 export function digest(value: unknown): string {
@@ -42,35 +44,65 @@ export function estimate(input: ToolRequest) {
     )
   );
 }
-export function score(snapshot: ProspectSnapshot) {
-  const rules = [
+// PRD v3.2 A1: weights, size band, tiers and minimum come from the workspace rubric.
+// Each breakdown row keeps `rule` (English, self-explaining) and adds a stable `id`, `params`
+// and `detail` so the UI can translate it; older readers that only use rule/points/state work.
+export function score(
+  snapshot: ProspectSnapshot,
+  rubric: Rubric = DEFAULT_RUBRIC,
+) {
+  const employees = snapshot.employees;
+  const matchedRole = matchRole(snapshot.title ?? "", rubric.role.keywords);
+  const candidates: {
+    id: "role" | "size" | "website" | "signal";
+    name: string;
+    points: number;
+    known: boolean;
+    match: boolean;
+    params?: { min: number; max: number };
+    detail?: string;
+  }[] = [
     {
+      id: "role",
       name: "B2B decision-making role",
-      points: 30,
+      points: rubric.role.points,
       known: Boolean(snapshot.title),
-      match: /founder|ceo|director|head|manager|owner/i.test(snapshot.title),
+      match: matchedRole !== undefined,
+      detail: matchedRole,
     },
     {
-      name: "Small or growing business (1–200 staff)",
-      points: 25,
-      known: snapshot.employees !== undefined,
+      id: "size",
+      name: `Company size in band (${rubric.size.min}–${rubric.size.max} staff)`,
+      points: rubric.size.points,
+      known: employees !== undefined,
       match:
-        Number(snapshot.employees) >= 1 && Number(snapshot.employees) <= 200,
+        employees !== undefined &&
+        Number(employees) >= rubric.size.min &&
+        Number(employees) <= rubric.size.max,
+      params: { min: rubric.size.min, max: rubric.size.max },
+      detail: employees === undefined ? undefined : String(employees),
     },
     {
+      id: "website",
       name: "Company website available",
-      points: 20,
+      points: rubric.website.points,
       known: Boolean(snapshot.website),
       match: Boolean(snapshot.website),
     },
     {
+      id: "signal",
       name: "Hiring or funding signal",
-      points: 25,
+      points: rubric.signal.points,
       known: snapshot.hiring !== undefined || snapshot.funding !== undefined,
       match: snapshot.hiring === true || snapshot.funding === true,
     },
-  ].map((rule) => ({
+  ];
+  const rules = candidates.map((rule) => ({
+    id: rule.id,
     rule: rule.name,
+    ...(rule.params ? { params: rule.params } : {}),
+    ...(rule.detail ? { detail: rule.detail } : {}),
+    weight: rule.points,
     points: rule.match ? rule.points : 0,
     state: !rule.known ? "unknown" : rule.match ? "match" : "no match",
   }));
@@ -79,8 +111,9 @@ export function score(snapshot: ProspectSnapshot) {
     : rules.reduce((sum, rule) => sum + rule.points, 0);
   return {
     score: total,
-    tier: total >= 75 ? "A" : total >= 50 ? "B" : "C",
-    disqualified: Boolean(snapshot.existingClient) || total < 50,
+    tier:
+      total >= rubric.tiers.a ? "A" : total >= rubric.tiers.b ? "B" : "C",
+    disqualified: Boolean(snapshot.existingClient) || total < rubric.minimum,
     breakdown: rules,
   };
 }

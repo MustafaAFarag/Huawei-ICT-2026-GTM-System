@@ -189,6 +189,8 @@ export const AR: Record<string, string> = {
   unknown: "غير معروف",
   "B2B decision-making role": "دور مسؤول عن قرارات الأعمال",
   "Small or growing business (1–200 staff)": "شركة صغيرة أو نامية (١–٢٠٠ موظف)",
+  "Company size in band": "حجم الشركة ضمن النطاق",
+  staff: "موظف",
   "Company website available": "موقع الشركة متاح",
   "Hiring or funding signal": "إشارة توظيف أو تمويل",
 

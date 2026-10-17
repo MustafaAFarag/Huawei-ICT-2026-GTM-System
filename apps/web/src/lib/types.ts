@@ -12,7 +12,16 @@ export type Prospect = {
   score: number | null;
   breakdown: {
     tier?: string;
-    breakdown?: { rule: string; points: number; state: string }[];
+    breakdown?: {
+      rule: string;
+      points: number;
+      state: string;
+      // Added by the workspace rubric (PRD v3.2 A1); older stored scores only have rule/points/state.
+      id?: "role" | "size" | "website" | "signal";
+      params?: { min: number; max: number };
+      detail?: string;
+      weight?: number;
+    }[];
   };
   evidence: Evidence[];
   country: string | null;

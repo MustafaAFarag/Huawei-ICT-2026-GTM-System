@@ -33,6 +33,7 @@ import {
   safeError,
 } from "./policy.js";
 import { Providers, OpenDesign, renderPdf, Crm } from "./providers.js";
+import { resolveRubric } from "./rubric-core.js";
 import { Storage } from "./storage.js";
 import {
   deliverableModelId,
@@ -725,7 +726,12 @@ export class WorkflowService {
                   .marketingLicence === true,
               ),
             ];
-            if (score(prospect.snapshot as ProspectSnapshot).disqualified)
+            if (
+              score(
+                prospect.snapshot as ProspectSnapshot,
+                resolveRubric(currentWorkspace),
+              ).disqualified
+            )
               holds.push(
                 "This account is below the deterministic qualification threshold",
               );
@@ -842,6 +848,7 @@ export class WorkflowService {
         outputs.push({ prospectId: null, result });
         await this.event(id, "progress", `Prepared ${result.title}.`);
       } else {
+        const rubric = resolveRubric(workspace);
         for (const prospect of prospects) {
           if ((await db.run.findUniqueOrThrow({ where: { id } })).cancelledAt)
             throw new Error("Cancelled. Completed work is preserved.");
@@ -851,7 +858,7 @@ export class WorkflowService {
               input.tool,
             ) &&
             (prospect.excluded ||
-              score(snapshot).disqualified ||
+              score(snapshot, rubric).disqualified ||
               (await db.suppression.findUnique({
                 where: {
                   workspaceId_identity: {
@@ -876,7 +883,7 @@ export class WorkflowService {
           }
           let result: unknown;
           if (input.tool === "score_accounts") {
-            result = score(snapshot);
+            result = score(snapshot, rubric);
             await db.prospect.update({
               where: { id: prospect.id },
               data: {
@@ -936,7 +943,7 @@ export class WorkflowService {
               (await this.providers.enrich(
                 workspace.id,
                 snapshot,
-                score(snapshot).tier,
+                score(snapshot, rubric).tier,
               ));
             if (!cache) {
               await db.cacheEntry.upsert({

@@ -475,7 +475,7 @@ export const actionTools: Record<ActionToolName, Tool> = {
     z.object({ prospectIds: ids.min(1), play: plays.optional() }),
   ),
   score_accounts: action(
-    "Score prospects 0–100 with the deterministic rubric and assign tiers.",
+    "Score prospects 0–100 with the workspace qualification rubric (role keywords in English and Arabic, company-size band, website, signal) and assign tiers.",
     z.object({ prospectIds: ids.min(1) }),
   ),
   enrich_contacts: action(

@@ -35,7 +35,14 @@ const COUNTRY_LABEL: Record<Country, string> = {
 
 export function ProspectReview({ prospect }: { prospect: Prospect }) {
   const { ws, canApprove, action, setProspect } = useWorkspace();
-  const { t } = usePrefs();
+  const { t, language } = usePrefs();
+  const num = (value: number) =>
+    value.toLocaleString(language === "ar" ? "ar-EG" : "en");
+  // Size rules carry the workspace band, so build the translated name from its parameters.
+  const ruleName = (r: NonNullable<Prospect["breakdown"]["breakdown"]>[number]) =>
+    r.id === "size" && r.params
+      ? `${t("Company size in band")} (${num(r.params.min)}–${num(r.params.max)} ${t("staff")})`
+      : t(r.rule);
   const [evidence, setEvidence] = useState(prospect.evidence);
   const [basisType, setBasisType] = useState<"consent" | "relationship">(
     "relationship",
@@ -254,8 +261,8 @@ export function ProspectReview({ prospect }: { prospect: Prospect }) {
           )}
           <ul className="breakdown">
             {prospect.breakdown.breakdown?.map((r) => (
-              <li key={t(r.rule)}>
-                <span>{t(r.rule)}</span>
+              <li key={r.id ?? r.rule}>
+                <span>{ruleName(r)}</span>
                 <bdi className="mono" dir="ltr">
                   +{r.points}
                 </bdi>

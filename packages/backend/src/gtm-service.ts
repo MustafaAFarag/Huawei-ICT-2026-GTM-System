@@ -22,6 +22,7 @@ import {
   score,
   validateEvidence,
 } from "./policy.js";
+import { resolveRubric } from "./rubric-core.js";
 import { injectFonts } from "./asset-template.js";
 import { renderPdf } from "./providers.js";
 import { discoveryGuide, discoveryGuideHtml } from "./discovery-guide.js";
@@ -247,6 +248,7 @@ export class GtmService {
     const marketingLicence =
       (workspace.company as { marketingLicence?: boolean }).marketingLicence ===
       true;
+    const rubric = resolveRubric(workspace);
     for (const draft of drafts) {
       const prospect = await db.prospect.findUniqueOrThrow({
         where: { id: draft.prospectId },
@@ -275,7 +277,7 @@ export class GtmService {
         draft.evidenceDigest !== digest(prospect.evidence)
       )
         holds.push("Approve the current draft and evidence");
-      if (score(snapshot).disqualified)
+      if (score(snapshot, rubric).disqualified)
         holds.push("Below the qualification threshold");
       for (const check of draftChecks(
         draft.content as Touch[],
@@ -391,6 +393,7 @@ export class GtmService {
       );
       personas.set(`${a.persona}`, (personas.get(a.persona) ?? 0) + 1);
     }
+    const rubric = resolveRubric(workspace);
     const row = (cells: string[]) =>
       `<tr>${cells.map((c) => `<td>${c}</td>`).join("")}</tr>`;
     const color = /^#[0-9a-f]{6}$/i.test(brand.primary ?? "")
@@ -419,7 +422,7 @@ li{margin:3px 0}section{break-inside:avoid}</style></head><body>
     }</table>
 <p>Register: founder voice for founders and CEOs; leader voice for HR, finance and operations leaders.</p></section>
 <section><h2>Who is in the list</h2><table><tr><th>Persona</th><th>Contacts</th></tr>${[...personas].map(([k, v]) => row([escapeHtml(k), String(v)])).join("")}</table></section>
-<section><h2>Scoring rubric (out of 100)</h2><table><tr><th>Rule</th><th>Points</th></tr>${row(["Decision-making role", "30"])}${row(["Small or growing business (1–200 staff)", "25"])}${row(["Company website available", "20"])}${row(["Hiring or funding signal", "25"])}</table><p>Tier A ≥ 75, B ≥ 50, below 50 is disqualified and never enriched.</p></section>
+<section><h2>Scoring rubric (out of 100)</h2><table><tr><th>Rule</th><th>Points</th></tr>${row([`Decision-making role (title contains ${escapeHtml(rubric.role.keywords.slice(0, 6).join(", "))}${rubric.role.keywords.length > 6 ? ", …" : ""})`, String(rubric.role.points)])}${row([`Company size in band (${rubric.size.min}–${rubric.size.max} staff)`, String(rubric.size.points)])}${row(["Company website available", String(rubric.website.points)])}${row(["Hiring or funding signal", String(rubric.signal.points)])}</table><p>Tier A ≥ ${rubric.tiers.a}, B ≥ ${rubric.tiers.b}, below ${rubric.minimum} is disqualified and never enriched.</p></section>
 <section><h2>Plays you will run</h2><ul>${PLAYS.map((p) => `<li><b>${p.id} ${escapeHtml(p.name)}</b> — ${escapeHtml(p.description)}</li>`).join("")}</ul></section>
 <section><h2>References you may name</h2><ul>${(company.references ?? []).map((r) => `<li>${escapeHtml(r.name)} — ${r.consent ? "consent recorded" : "<b>do not name</b>"}</li>`).join("") || "<li>None recorded.</li>"}</ul></section>
 <section><h2>Rules</h2><ul><li>Every email carries an opt-out line.</li><li>Event references stay at company level; never claim a personal meeting.</li><li>Cite only reviewed, dated facts. Generic messages get no replies.</li><li>Existing clients and dropped accounts never enter cold sequences.</li><li>Spending runs within reserved caps; sending waits for human approval.</li></ul></section>
