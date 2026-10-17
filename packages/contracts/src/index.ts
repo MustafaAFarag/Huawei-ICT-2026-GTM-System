@@ -44,6 +44,8 @@ export type ProspectSnapshot = {
   bucket?: "client" | "partner" | "drop" | "existing";
   persona?: "founder" | "people-leader" | "finance" | "operations" | "sales";
   hrMaturity?: "P1a" | "P1b" | "P2";
+  // "inferred" until a person confirms the band in discovery (PRD v3.2 A2); absent = inferred.
+  maturitySource?: "inferred" | "confirmed";
   register?: "founder" | "leader";
   angle?: string;
   owner?: string;
@@ -51,7 +53,8 @@ export type ProspectSnapshot = {
   triageNote?: string;
   discovery?: {
     headcountBand: string;
-    hrSetup: string;
+    // Only packs with a set-up field (HR) store it.
+    hrSetup?: string;
     pains: Record<string, number>;
     maturity: number;
     notes: string;

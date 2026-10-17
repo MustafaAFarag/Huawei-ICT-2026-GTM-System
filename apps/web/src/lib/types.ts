@@ -1,6 +1,7 @@
 import type {
   BasisEvidence,
   Evidence,
+  Pack,
   ProspectSnapshot,
   ToolName,
   Touch,
@@ -64,6 +65,7 @@ export type Run = {
   actualCost: number;
 };
 export type Dashboard = {
+  pack: Pack;
   role: string;
   fixture: boolean;
   modelFixture: boolean;

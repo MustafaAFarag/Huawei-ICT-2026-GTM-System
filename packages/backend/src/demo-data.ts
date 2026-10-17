@@ -216,6 +216,7 @@ function makeProspects(r: Rand, wsKey: string, p: Profile, used: Set<string>) {
         bucket: "client",
         persona,
         hrMaturity,
+        maturitySource: "inferred",
         register,
         angle: ANGLES[`${persona}:${hrMaturity}`],
         owner: p.owners ? pick(r, p.owners) : undefined,
