@@ -1,4 +1,5 @@
 import type {
+  BasisEvidence,
   Evidence,
   ProspectSnapshot,
   ToolName,
@@ -14,9 +15,10 @@ export type Prospect = {
     breakdown?: { rule: string; points: number; state: string }[];
   };
   evidence: Evidence[];
-  country: string;
+  country: string | null;
   lawfulBasis: string | null;
   consentAt: string | null;
+  basisEvidence: BasisEvidence[];
   excluded: boolean;
   crmPersonId: string | null;
   ownerId: string;

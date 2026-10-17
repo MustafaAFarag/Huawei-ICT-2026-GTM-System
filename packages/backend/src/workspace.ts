@@ -4,11 +4,13 @@ import ExcelJS from "exceljs";
 import { parse as parseCsv } from "csv-parse/sync";
 import type {
   Actor,
+  BasisEvidence,
   Evidence,
   ProspectSnapshot,
   Touch,
 } from "@revenue/contracts";
 import {
+  COUNTRIES,
   PLANS,
   angleFor,
   duplicateKeys,
@@ -680,7 +682,15 @@ export class WorkspaceService {
         evidence: evidenceSchema,
         lawfulBasis: z.enum(["consent", "relationship", ""]).default(""),
         consentAt: z.iso.datetime().nullable().default(null),
-        country: z.enum(["EG", "SA", "AE"]).default("EG"),
+        // Omitted keeps the stored country; null clears it. Never defaults (PRD v3.2 A3).
+        country: z.enum(COUNTRIES).nullable().optional(),
+        basisEvidence: z
+          .object({
+            type: z.enum(["consent", "relationship"]),
+            source: z.string().trim().min(1).max(500),
+            date: z.iso.date(),
+          })
+          .optional(),
         excluded: z.boolean().default(false),
       })
       .parse(value);
@@ -689,10 +699,26 @@ export class WorkspaceService {
         where: { id, workspaceId: actor.workspaceId },
       });
       if (!prospect) throw new NotFoundException("Prospect not found.");
+      const { basisEvidence: newEvidence, ...fields } = input;
+      const recorded: BasisEvidence[] = Array.isArray(prospect.basisEvidence)
+        ? (prospect.basisEvidence as unknown as BasisEvidence[])
+        : [];
       const updated = await tx.prospect.update({
         where: { id },
         data: {
-          ...input,
+          ...fields,
+          basisEvidence: json(
+            newEvidence
+              ? [
+                  ...recorded,
+                  {
+                    ...newEvidence,
+                    recordedBy: actor.userId,
+                    recordedAt: new Date().toISOString(),
+                  },
+                ]
+              : recorded,
+          ),
           evidence: json(input.evidence),
           consentAt: input.consentAt ? new Date(input.consentAt) : null,
         },

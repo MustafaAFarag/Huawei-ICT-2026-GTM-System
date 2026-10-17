@@ -1,4 +1,4 @@
-import type { Evidence, ProspectSnapshot } from "@revenue/contracts";
+import type { BasisEvidence, Evidence, ProspectSnapshot } from "@revenue/contracts";
 
 // Deterministic synthetic demo data (research 11 §5). Every name, company, domain and number
 // is invented: domains end in .example and phones use the 55 5xx reserved-looking pattern.
@@ -98,6 +98,8 @@ export type DemoProspect = {
   language: string;
   lawfulBasis: string | null;
   consentAt: string | null;
+  // Evidence behind lawfulBasis (PRD v3.2 A3). recordedBy "seed" is replaced by the seeding user.
+  basisEvidence: BasisEvidence[];
   excluded: boolean;
   scored: boolean;
 };
@@ -253,14 +255,31 @@ function makeProspects(r: Rand, wsKey: string, p: Profile, used: Set<string>) {
           source: "Synthetic about page",
         });
       const consent = chance(r, 0.35);
+      const lawfulBasis = consent ? pick(r, ["consent", "relationship"] as const) : null;
+      const consentAt = consent ? new Date(Date.UTC(2026, 8, 1 + Math.floor(r() * 40))).toISOString() : null;
       out.push({
         sourceKey: (email || `${company}:${firstName}:${lastName}`).toLowerCase(),
         snapshot,
         evidence,
         country,
         language: p.language(country, r),
-        lawfulBasis: consent ? pick(r, ["consent", "relationship"]) : null,
-        consentAt: consent ? new Date(Date.UTC(2026, 8, 1 + Math.floor(r() * 40))).toISOString() : null,
+        lawfulBasis,
+        consentAt,
+        basisEvidence:
+          lawfulBasis && consentAt
+            ? [
+                {
+                  type: lawfulBasis,
+                  source:
+                    lawfulBasis === "consent"
+                      ? "Demo: opt-in form submission"
+                      : "Demo: existing business relationship on file",
+                  date: consentAt.slice(0, 10),
+                  recordedBy: "seed",
+                  recordedAt: consentAt,
+                },
+              ]
+            : [],
         excluded: false,
         scored: chance(r, 0.75),
       });

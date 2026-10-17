@@ -233,6 +233,7 @@ async function seedWorkspace(
       lawfulBasis: p.lawfulBasis,
       consentAt: p.consentAt ? new Date(p.consentAt) : null,
       country: p.country,
+      basisEvidence: json(p.basisEvidence.map((entry) => ({ ...entry, recordedBy: user.id }))),
       excluded: p.excluded,
     };
     saved.push(
