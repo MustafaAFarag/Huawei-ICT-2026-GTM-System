@@ -141,7 +141,7 @@ export const COUNTRY_RULES = {
 } as const;
 export function channelHolds(
   prospect: {
-    country: string;
+    country: string | null;
     lawfulBasis: string | null;
     consentAt: Date | null;
     excluded: boolean;

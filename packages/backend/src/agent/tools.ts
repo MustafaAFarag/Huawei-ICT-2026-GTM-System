@@ -39,7 +39,7 @@ function summary(p: {
   breakdown: unknown;
   evidence: unknown;
   excluded: boolean;
-  country: string;
+  country: string | null;
   language: string;
   lawfulBasis: string | null;
 }) {

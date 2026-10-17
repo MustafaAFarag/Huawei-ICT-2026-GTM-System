@@ -248,7 +248,7 @@ export function Composer({
           {data.modelFixture
             ? t("Fixture assistant · no model call is made.")
             : t(
-                "Nabil proposes actions; you approve every cost. 1 credit per reply.",
+                "Nabil proposes actions. Spending stays within your caps; nothing is sent without your approval. 1 credit per reply.",
               )}
         </p>
       )}

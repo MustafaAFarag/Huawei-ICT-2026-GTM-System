@@ -306,5 +306,6 @@ export class RevenueClient {
 export * from "./gtm.ts";
 export * from "./import-history.ts";
 export * from "./schedules.ts";
+export * from "./packs.ts";
 
 export * from "./assistant.ts";

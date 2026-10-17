@@ -18,7 +18,7 @@ import { Composer } from "./Composer";
 import { Conversation } from "./Conversation";
 
 const STARTERS = [
-  { label: "Find accounts", icon: IconSearch, text: "Find the best accounts to contact this week and explain why." },
+  { label: "Rank my accounts", icon: IconSearch, text: "Rank my accounts by fit and explain each score." },
   { label: "Draft outreach", icon: IconSend, text: "Draft a three-step outreach sequence for " },
   { label: "One-pager", icon: IconFileText, text: "Create an offer one-pager for " },
   { label: "HTML email", icon: IconMail, text: "Create an HTML email (Gmail-safe) announcing " },

@@ -1,3 +1,19 @@
+## Current — v3.2 build, all slices in parallel waves (18 October 2026)
+
+Goal: implement the logo, A1–A8 and the Figma redesign. Plan: `/home/mustafa/.claude-skylink/plans/next-open-a-new-polymorphic-eclipse.md`.
+Done: A1–A8 acceptance tests pass; pages match Figma (desktop, phone, Arabic; 4 states); typecheck, test and e2e green; `feat/v32` merged to local `main`; no worktrees left.
+Stop: no push, deploy, prospect contact or paid model calls. Synthetic data only.
+Lane: native `hub-worker` (Sonnet 5.5 high), one task per worktree; `hub-tester` black-box tests; main session reviews and merges.
+
+- [x] Wave 0: `feat/v32` branch; migration `20261018000100_v32_foundation` (pack, rubric, nullable country, basisEvidence, Sequence batchId/playVersionId, ProviderEvent provenance, ExportBatch); `contracts/src/packs.ts`; A8 wording; "Rank my accounts" starter.
+- [x] Fixed tests calling paid models: `.env` has `MODEL_MODE=live`, so `pnpm test` used Azure. `apps/api/vitest.config.ts` now forces fixture mode. The 4 baseline failures were caused by this.
+- [ ] Wave 1: T1 logo · T2 A3 country/basis · T3 A1 rubric · T4 A2 packs · T5 A4 batches/scorecard · T6 A5 export/import · T7 A6 capability profile
+- [ ] Wave 1 gate: e2e, fresh seed, A1–A8 acceptance check
+- [ ] Wave 2: Figma frame export; U0 shell/tokens; U1–U7 pages
+- [ ] Final: full checks, walkthrough, merge to main, worktrees removed
+
+---
+
 ## Next — implementation start (handoff 17 October 2026)
 
 Design, positioning (PRD v3.2) and logo are done; none is in the app yet. Start a new session from `docs/handovers/2026-10-17-implementation-start.md`: proposed slices 1–8+ (logo in app first, then the A3/A8 fixes, A1, A2, A4, A5, A6, then the UI redesign page by page). Ask the owner which implementer lane to use.

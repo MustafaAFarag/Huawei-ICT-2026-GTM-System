@@ -422,7 +422,7 @@ li{margin:3px 0}section{break-inside:avoid}</style></head><body>
 <section><h2>Scoring rubric (out of 100)</h2><table><tr><th>Rule</th><th>Points</th></tr>${row(["Decision-making role", "30"])}${row(["Small or growing business (1–200 staff)", "25"])}${row(["Company website available", "20"])}${row(["Hiring or funding signal", "25"])}</table><p>Tier A ≥ 75, B ≥ 50, below 50 is disqualified and never enriched.</p></section>
 <section><h2>Plays you will run</h2><ul>${PLAYS.map((p) => `<li><b>${p.id} ${escapeHtml(p.name)}</b> — ${escapeHtml(p.description)}</li>`).join("")}</ul></section>
 <section><h2>References you may name</h2><ul>${(company.references ?? []).map((r) => `<li>${escapeHtml(r.name)} — ${r.consent ? "consent recorded" : "<b>do not name</b>"}</li>`).join("") || "<li>None recorded.</li>"}</ul></section>
-<section><h2>Rules</h2><ul><li>Every email carries an opt-out line.</li><li>Event references stay at company level; never claim a personal meeting.</li><li>Cite only reviewed, dated facts. Generic messages get no replies.</li><li>Existing clients and dropped accounts never enter cold sequences.</li><li>A person approves every message and every cost before it runs.</li></ul></section>
+<section><h2>Rules</h2><ul><li>Every email carries an opt-out line.</li><li>Event references stay at company level; never claim a personal meeting.</li><li>Cite only reviewed, dated facts. Generic messages get no replies.</li><li>Existing clients and dropped accounts never enter cold sequences.</li><li>Spending runs within reserved caps; sending waits for human approval.</li></ul></section>
 </body></html>`;
     await audit(actor, "kit.generated", null, {});
     return renderPdf(injectFonts(html));

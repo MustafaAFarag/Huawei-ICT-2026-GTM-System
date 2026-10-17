@@ -77,6 +77,8 @@ model Workspace {
   offers      Json @default("[]")
   preflight   Json @default("{}")
   timezone    String @default("Africa/Cairo")
+  pack        String @default("hr-services")
+  rubric      Json?
   crmBinding  String
   assetBinding String
   createdAt   DateTime @default(now())
@@ -118,7 +120,8 @@ model Prospect {
   ownerId     String
   lawfulBasis String?
   consentAt   DateTime?
-  country     String @default("EG")
+  country     String?
+  basisEvidence Json @default("[]")
   excluded    Boolean @default(false)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -241,9 +244,12 @@ model Sequence {
   holdout     Boolean @default(false)
   nextAt      DateTime?
   steps       Json
+  batchId     String?
+  playVersionId String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   @@index([workspaceId, prospectId])
+  @@index([workspaceId, batchId])
 }
 
 model Suppression {
@@ -323,6 +329,18 @@ model ProviderEvent {
   kind        String
   occurredAt  DateTime
   receivedAt  DateTime @default(now())
+  provenance  String @default("simulated")
+  @@index([workspaceId, provenance])
+}
+
+model ExportBatch {
+  id          String @id @default(uuid())
+  workspaceId String
+  createdBy   String
+  digest      String
+  items       Json
+  createdAt   DateTime @default(now())
+  @@index([workspaceId, createdAt])
 }
 
 model ChatThread {

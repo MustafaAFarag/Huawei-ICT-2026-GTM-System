@@ -47,8 +47,8 @@ export const AR: Record<string, string> = {
   "Create an offer one-pager for ": "أنشئ صفحة عرض تعريفية لـ ",
   "Draft a three-step outreach sequence for ":
     "اكتب تسلسل تواصل من ثلاث خطوات لـ ",
-  "Find the best accounts to contact this week and explain why.":
-    "حدّد أفضل الحسابات للتواصل هذا الأسبوع واشرح السبب.",
+  "Rank my accounts by fit and explain each score.":
+    "رتّب حساباتي حسب الملاءمة واشرح كل تقييم.",
   "Desktop width": "عرض سطح المكتب",
   "Phone width": "عرض الهاتف",
   "Draft · needs review": "مسودة · تحتاج مراجعة",
@@ -56,7 +56,7 @@ export const AR: Record<string, string> = {
   Editing: "قيد التعديل",
   "Edit with Nabil": "تعديل مع نبيل",
   "Email preview": "معاينة البريد",
-  "Find accounts": "إيجاد حسابات",
+  "Rank my accounts": "رتّب حساباتي",
   "Fixture assistant · no model call is made.":
     "مساعد تجريبي · لا يتم استدعاء أي نموذج.",
   Flipbook: "كتيّب تفاعلي",
@@ -70,8 +70,8 @@ export const AR: Record<string, string> = {
   "Message Nabil": "راسل نبيل",
   "Nabil assistant": "المساعد نبيل",
   "Nabil is unavailable. Try again.": "نبيل غير متاح الآن. حاول مرة أخرى.",
-  "Nabil proposes actions; you approve every cost. 1 credit per reply.":
-    "نبيل يقترح الإجراءات وأنت تعتمد كل تكلفة. رصيد واحد لكل رد.",
+  "Nabil proposes actions. Spending stays within your caps; nothing is sent without your approval. 1 credit per reply.":
+    "نبيل يقترح الإجراءات. الإنفاق يبقى ضمن حدودك، ولا يُرسل شيء دون موافقتك. رصيد واحد لكل رد.",
   "Needs review": "تحتاج مراجعة",
   "Needs your approval": "تحتاج موافقتك",
   "New chat": "محادثة جديدة",
