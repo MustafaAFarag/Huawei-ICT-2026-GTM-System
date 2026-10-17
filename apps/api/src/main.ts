@@ -149,6 +149,13 @@ class ApiController {
   ) {
     return rubrics.update(await actorFor(req.headers, id), body);
   }
+  @Patch("workspaces/:workspaceId/pack") async setPack(
+    @Req() req: Request,
+    @Param("workspaceId") id: string,
+    @Body() body: unknown,
+  ) {
+    return workspaceService.setPack(await actorFor(req.headers, id), body);
+  }
   @Get("workspaces/:workspaceId/imports") async imports(
     @Req() req: Request,
     @Param("workspaceId") ws: string,

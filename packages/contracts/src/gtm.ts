@@ -1,5 +1,6 @@
 // Pure GTM rules shared by the server and the UI (PRD v3.1 §7.14).
 import type { Evidence, ProspectSnapshot, Touch } from "./index.js";
+import { PACKS, type MaturityBand } from "./packs.js";
 
 export type Persona = NonNullable<ProspectSnapshot["persona"]>;
 export type Maturity = NonNullable<ProspectSnapshot["hrMaturity"]>;
@@ -14,9 +15,17 @@ export function inferPersona(title = ""): Persona {
   if (/sales|commercial|growth|revenue|مبيعات/i.test(title)) return "sales";
   return "operations";
 }
-export function inferMaturity(employees?: number): Maturity {
-  if (!employees || employees < 25) return "P1a";
-  return employees < 150 ? "P1b" : "P2";
+// Bands come from the workspace pack (PRD v3.2 A2); the HR pack's bands are the default.
+export function inferMaturity(
+  employees?: number,
+  bands: MaturityBand[] = PACKS["hr-services"].maturity.bands,
+): Maturity {
+  const first = bands[0]!;
+  if (!employees) return first.id;
+  return (
+    bands.find((b) => b.maxEmployees === null || employees < b.maxEmployees) ??
+    first
+  ).id;
 }
 export const registerFor = (persona: Persona): "founder" | "leader" =>
   persona === "founder" ? "founder" : "leader";

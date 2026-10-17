@@ -6,6 +6,8 @@ import {
   angleFor,
   draftChecks,
   duplicateGroups,
+  inferMaturity,
+  packFor,
   type Actor,
   type Preflight,
   type ProspectSnapshot,
@@ -81,7 +83,7 @@ export class GtmService {
   async interviewGuide(actor: Actor, prospectId: string, language: "en" | "ar", format: "json" | "pdf" = "json") {
     const prospect = await prospectOf(actor, prospectId);
     const workspace = await db.workspace.findUniqueOrThrow({ where: { id: actor.workspaceId } });
-    const guide = discoveryGuide(prospect.snapshot as ProspectSnapshot, prospect.evidence as import("@revenue/contracts").Evidence[], workspace.name, language);
+    const guide = discoveryGuide(prospect.snapshot as ProspectSnapshot, prospect.evidence as import("@revenue/contracts").Evidence[], workspace.name, language, packFor(workspace.pack));
     if (format === "json") return guide;
     return renderPdf(injectFonts(discoveryGuideHtml(guide)));
   }
@@ -382,22 +384,52 @@ li{margin:3px 0}section{break-inside:avoid}</style></head><body>
     return renderPdf(injectFonts(html));
   }
 
-  // GAP-12: discovery pilot capture (play P15).
+  // GAP-12: discovery pilot capture (play P15). The shape follows the workspace pack (PRD v3.2 A2):
+  // the set-up field is required only for packs that define one, and pains must be pack topics.
   async discovery(actor: Actor, prospectId: string, value: unknown) {
     assertRole(actor, "write");
-    const input = z
-      .object({
-        headcountBand: z.enum(["1-10", "11-25", "26-50", "51-200", "200+"]),
-        hrSetup: z.enum(["none", "founder", "1-3", "team"]),
-        pains: z.record(z.string().max(40), z.number().int().min(1).max(5)),
-        maturity: z.number().int().min(0).max(4),
-        notes: z.string().max(2000).default(""),
-      })
-      .parse(value);
+    const workspace = await db.workspace.findUniqueOrThrow({
+      where: { id: actor.workspaceId },
+    });
+    const pack = packFor(workspace.pack);
+    const painKeys = new Set(pack.pains.map((p) => p.key));
+    const bands = pack.maturity.bands.map((b) => b.id) as [string, ...string[]];
+    const base = z.object({
+      headcountBand: z.enum(["1-10", "11-25", "26-50", "51-200", "200+"]),
+      pains: z
+        .record(z.string().max(40), z.number().int().min(1).max(5))
+        .refine((p) => Object.keys(p).every((k) => painKeys.has(k)), {
+          message: `Pains must be topics of the ${pack.label.en} pack.`,
+        }),
+      maturity: z.number().int().min(0).max(4),
+      // Optional correction of the band inferred at import; capture confirms it either way.
+      maturityBand: z.enum(bands).optional(),
+      notes: z.string().max(2000).default(""),
+    });
+    const setup = pack.setupField;
+    const { hrSetup, maturityBand, ...input } = (
+      setup
+        ? base.extend({
+            hrSetup: z.enum(setup.options.map((o) => o.value) as [string, ...string[]]),
+          })
+        : base
+    ).parse(value) as z.infer<typeof base> & { hrSetup?: string };
     const prospect = await prospectOf(actor, prospectId);
-    const snapshot = {
-      ...(prospect.snapshot as ProspectSnapshot),
-      discovery: { ...input, capturedAt: new Date().toISOString() },
+    const current = prospect.snapshot as ProspectSnapshot;
+    const snapshot: ProspectSnapshot = {
+      ...current,
+      hrMaturity: (maturityBand ??
+        current.hrMaturity ??
+        inferMaturity(current.employees, pack.maturity.bands)) as ProspectSnapshot["hrMaturity"],
+      maturitySource: "confirmed",
+      discovery: {
+        headcountBand: input.headcountBand,
+        ...(setup && hrSetup ? { hrSetup } : {}),
+        pains: input.pains,
+        maturity: input.maturity,
+        notes: input.notes,
+        capturedAt: new Date().toISOString(),
+      },
     };
     await db.prospect.update({
       where: { id: prospectId },
@@ -405,6 +437,7 @@ li{margin:3px 0}section{break-inside:avoid}</style></head><body>
     });
     await audit(actor, "discovery.captured", prospectId, {
       maturity: input.maturity,
+      pack: pack.id,
     });
     return snapshot.discovery;
   }
