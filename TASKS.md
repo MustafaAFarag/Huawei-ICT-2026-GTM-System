@@ -7,8 +7,14 @@ Lane: native `hub-worker` (Sonnet 5.5 high), one task per worktree; `hub-tester`
 
 - [x] Wave 0: `feat/v32` branch; migration `20261018000100_v32_foundation` (pack, rubric, nullable country, basisEvidence, Sequence batchId/playVersionId, ProviderEvent provenance, ExportBatch); `contracts/src/packs.ts`; A8 wording; "Rank my accounts" starter.
 - [x] Fixed tests calling paid models: `.env` has `MODEL_MODE=live`, so `pnpm test` used Azure. `apps/api/vitest.config.ts` now forces fixture mode. The 4 baseline failures were caused by this.
-- [ ] Wave 1: T1 logo · T2 A3 country/basis · T3 A1 rubric · T4 A2 packs · T5 A4 batches/scorecard · T6 A5 export/import · T7 A6 capability profile
-- [ ] Wave 1 gate: e2e, fresh seed, A1–A8 acceptance check
+- [x] Wave 1: T1 logo · T2 A3 country/basis · T3 A1 rubric · T4 A2 packs · T5 A4 batches/scorecard · T6 A5 export/import · T7 A6 capability profile. All merged into `feat/v32`.
+  - T4, T6, T7 first workers stopped on the session limit; their work was rebased and finished by fresh workers. Main session review fixed T6 to qualify exports against the workspace rubric (not the default).
+  - Black-box tests (hub-tester): `v32-t2-country` (26), `v32-t3-rubric` (52), `v32-t5-scorecard` (31); T7 worker added `capability-profile.test.ts` (16), T6 a scorecard-by-batch check.
+- [x] Wave 1 gate (18 Oct): fresh DB, migrate, seed; `pnpm test` 28 files / 256 tests; `pnpm test:e2e` 16/16; typecheck clean. Opus audit recorded.
+  - Gate fixes: `contracts/gtm.ts` imported `./packs.js` (Next could not resolve it; web 500). Review form recorded consent evidence as "relationship" (consent prospects stayed held); evidence type now follows the basis. E2E specs set country and consent evidence (A3) and no longer depend on leftovers from earlier runs.
+  - E2E needs Twenty (`docker compose up -d twenty twenty-worker`) and the Open Design engines (`docker compose --profile engines up -d open-design-a open-design-b`); `infra:up` starts neither.
+  - A1–A6 covered by unit tests; A7 row and switch rule present in the PRD; A8 phrases gone from code and PRD, §9 item 8 dates present.
+  - Helpers (ignored): `.local/wt-check.sh` (worktree checks with its own DB), `.local/gate-run.sh` (fresh DB + dev servers), `.local/stop-dev.sh`.
 - [ ] Wave 2: Figma frame export; U0 shell/tokens; U1–U7 pages
 - [ ] Final: full checks, walkthrough, merge to main, worktrees removed
 
