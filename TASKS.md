@@ -1,3 +1,9 @@
+## Next — implementation start (handoff 17 October 2026)
+
+Design, positioning (PRD v3.2) and logo are done; none is in the app yet. Start a new session from `docs/handovers/2026-10-17-implementation-start.md`: proposed slices 1–8+ (logo in app first, then the A3/A8 fixes, A1, A2, A4, A5, A6, then the UI redesign page by page). Ask the owner which implementer lane to use.
+
+---
+
 ## Current — Caravan logo concepts (17 October 2026)
 
 Goal: 3–5 logo concepts plus a recommendation. Done: five concepts generated, small-size test, brand board for the recommended one. Stop: concepts only; no app, Figma or repo asset changes yet.
