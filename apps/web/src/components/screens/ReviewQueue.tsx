@@ -73,7 +73,7 @@ export function ReviewQueue() {
               .company ?? "Prospect"
           }
           prospect={data.prospects.find((p) => p.id === d.prospectId)}
-          // The brand-level capability profile (no account) can go on any draft.
+          /* The brand-level capability profile (no account) can go on any draft. */
           assets={data.assets.filter(
             (a) =>
               a.approvedAt &&
