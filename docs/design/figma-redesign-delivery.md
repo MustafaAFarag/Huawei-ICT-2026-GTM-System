@@ -58,3 +58,25 @@ IBM Plex Sans Arabic is not available in the connected Figma font catalog. Noto 
 Figma disallows prototype navigation between different design pages, so the connected copies share one walkthrough page. That constraint was checked directly; the API returned `destinations must be a different top-level frame on the same page`. All delivered navigation targets now satisfy that constraint. Tool response-size and script-length limits encountered during construction were resolved by smaller batches; no unfinished construction placeholders remain.
 
 Implementation should follow the selected design after owner review. No push, deployment, production change or edit to application source is included in this delivery.
+
+## v3.2 update: account follow-up flow (17 October 2026)
+
+Adds the positioning and flow agreed in [research 16](../research/16-positioning-debate-and-prd-amendments.md) and [PRD v3.2](../prd/REVENUE_WORKSPACE_PRD_v3.md) (D22). Design only; application source is unchanged.
+
+- [Design page "12 v3.2 Account follow-up"](https://www.figma.com/design/XQYMm6aLF8AVUAFje7CpuK?node-id=32-11)
+- [Walkthrough start "Account follow-up (v3.2)"](https://www.figma.com/proto/XQYMm6aLF8AVUAFje7CpuK?node-id=40-9917&starting-point-node-id=40-9917&scaling=contain)
+
+**Purpose on the cover and Home.** The cover headline is now the category statement ("Caravan is an AI GTM workspace where small B2B services teams research, qualify, follow up and record named accounts in English and Arabic, with a person approving every send"). The deck is the first-cohort line for founder-led HR-services firms selling into the Gulf. A fourth chapter, "Every send approved. Every hold recorded.", opens the new walkthrough. Chapter 03 now says "Rank an account. Prepare a follow-up." The footer counts 109 layouts.
+
+**The flow** (12 connected screens): Home with the HR-services pack starters (Draft follow-ups, Company profile, Rank my accounts, More formats) → workspace setup with pack choice, approved offer and proof, and a "Ready for first batch" checklist → qualification rubric with live re-ranking and equal scoring for English and Arabic titles → import with triage and a Ready / Held / Dropped split, held rows showing their rule and an explicit country column → basis-evidence dialog → account preparation (cited brief, angle and register, EN/AR drafts, credit run log) → capability profile (account cover, English and Arabic RTL pages, holdout badge) → review and approval for sending, with the approval digest → export of the approved batch to the customer's own sender → outcome import → batch scorecard (distinct prospects, provenance toggles, confirm-positive-reply queue, activation and repeat-batch measures). A generic-pack contrast screen shows a non-HR workspace with no payroll questions.
+
+**Extra layouts on the design page only:** all-held empty state, import row errors, export blocked, phone Review (390×844) and an Arabic RTL held list. Total: 17 new frames, plus 12 walkthrough copies.
+
+**What is illustrative.** All data is synthetic. None of the v3.2 features exist in the app yet: rubric editor, workflow packs, basis evidence, export and outcome import, batch scorecard, capability profile. The screens state that Caravan does not discover companies, enrich contacts or send, and that no lift is claimed below the minimum sample.
+
+**Verification.**
+- Built by Claude Opus 5.5 High on the Claude Personal account through the Figma connector; this Skylink session had no Figma connector.
+- Reviewed by the main agent from exported screenshots. Two fix rounds followed: one for stale creative-only cover copy, a duplicate "More formats" label and accounts that were inconsistent between Review, Export and Scorecard; one for a clipped Arabic profile footer.
+- Delegate's checks: 0 nodes outside their frame across the 17 design frames and 12 walkthrough copies. Design page 115 links with 0 invalid; walkthrough 104 links with 0 invalid, all same-page.
+- Local evidence: `.local/figma-v32/` (screenshots and `state.json` with node IDs).
+- One recorded workaround: the first walkthrough copy failed with `Error: in set_flowStartingPoints: Found duplicate input nodeIds`; the retry succeeded after removing an automatic duplicate start point.

@@ -1,3 +1,14 @@
+## Current — Figma v3.2 account follow-up flow (17 October 2026)
+
+Goal: add the agreed v3.2 purpose, pages and flow (PRD D22, PK-01, SCR-01, CMP-01/02, GAP-07, EXP-01, STU-09) to Figma file `XQYMm6aLF8AVUAFje7CpuK`.
+Done: new design page with 12 screens plus states, phone and Arabic views; connected walkthrough start "Account follow-up (v3.2)"; cover purpose updated; bounds/link checks and screenshots reviewed.
+Stop: design only. No app code, push or deploy; synthetic data; existing frames kept.
+
+- [x] Claude Personal Opus 5.5 High builds in Figma (this Skylink session has no Figma connector; owner chose Personal). 17 design frames plus 12 walkthrough copies; 115 and 104 links, 0 invalid.
+- [x] Main agent reviews screenshots and links, then updates `docs/design/figma-redesign-delivery.md` and commits locally. Fix round 1: stale cover copy, duplicate label, account consistency. Fix round 2: clipped Arabic profile footer.
+
+---
+
 ## Current — Lara Opus positioning and PRD debate (17 October 2026)
 
 Goal: debate Caravan’s positioning, initial ICP and PRD/feature gaps with the explicitly requested Lara Claude Opus 5.5 at High effort.
