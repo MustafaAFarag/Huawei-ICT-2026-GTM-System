@@ -10,6 +10,8 @@ Goal: 3–5 logo concepts plus a recommendation. Done: five concepts generated, 
 
 Blocker (17 Oct): Lara headless run (Opus 5.5 High, connectors enabled, no relay because the relay disables connectors) stopped before any Figma call. Its claude.ai Figma connector reports "require authentication", and OAuth cannot run non-interactively. Fix: open `claude-lara` interactively and authorise Figma (`/mcp`), then rerun `.local/logo-gen/lara/brief.txt`. No Figma or repo changes were made; cost USD 0.65.
 
+Rerun after the owner re-authorised Figma: built page "13 Logo · Route C" with 7 frames (wordmark, construction, lockups, colour/mono, app icon and favicons, animation storyboard, usage), and PNGs are in `.local/logo-gen/figma/`. The run then hit `You've hit your session limit · resets 3:40pm (Africa/Cairo)` after 93 turns (reported cost USD 5.85). `state.json` was not written. The 17 SVGs went through Figma's upload endpoint with `scaleMode=FILL`, so whether the logo is native vectors or SVG image fills is unverified. Next: after the reset, confirm vector nodes, write state.json, check the geometry numerically.
+
 ---
 
 ## Current — Figma v3.2 account follow-up flow (17 October 2026)
