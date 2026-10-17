@@ -1,6 +1,6 @@
 # Revenue Workspace PRD
 
-The current product specification is [Revenue Workspace — Product Requirements v3.1](REVENUE_WORKSPACE_PRD_v3.md) (13 October 2026, updated 15 October 2026; the [PDF](REVENUE_WORKSPACE_PRD_v3.pdf) is the updated 15 October v3.1 export). It records the product owner's decisions of 13 October 2026 and is based on the Lara meeting and ten research reports in [`docs/research/`](../research/README.md).
+The current product specification is [Revenue Workspace — Product Requirements v3.2](REVENUE_WORKSPACE_PRD_v3.md) (13 October 2026, updated 15 and 17 October 2026; the [PDF](REVENUE_WORKSPACE_PRD_v3.pdf) is still the 15 October v3.1 export). v3.2 adds the positioning and first-cohort decision (D22) and the amendments from [research 16](../research/16-positioning-debate-and-prd-amendments.md). It records the product owner's decisions of 13 October 2026 and is based on the Lara meeting and ten research reports in [`docs/research/`](../research/README.md).
 
 v3 describes one place where non-technical GTM people run outbound: out-of-the-box plays, an AI assistant that runs them, and an OpenDesign Asset Studio, on top of governed connectors and Egypt/Saudi/UAE compliance gates. English is the default; Arabic content is supported. The business model is freemium (Free, Solo, Team, Agency, Enterprise). The December demo runs on Azure as a placeholder; if we pass the December phase, we migrate to Huawei Cloud. The project is open source. Every feature from v1 and v2 stays in the catalogue (v3 §7 and Appendix A).
 

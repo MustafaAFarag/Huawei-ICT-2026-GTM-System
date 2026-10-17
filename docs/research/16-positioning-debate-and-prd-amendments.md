@@ -1,6 +1,6 @@
 # 16. Positioning debate outcome and proposed PRD amendments
 
-17 October 2026. Strategy and documentation only. This report records a two-round adversarial debate on Caravan's positioning, first cohort and PRD gaps, plus the main agent's verification of every disputed claim. **It proposes PRD amendments; it does not edit the PRD, the application or Figma.** No outreach, paid project-model calls, deployment or push.
+17 October 2026. Strategy and documentation only. This report records a two-round adversarial debate on Caravan's positioning, first cohort and PRD gaps, plus the main agent's verification of every disputed claim. **The owner approved all eight amendments on 17 October 2026; they are applied in [PRD v3.2](../prd/REVENUE_WORKSPACE_PRD_v3.md). The application and Figma are unchanged.** No outreach, paid project-model calls, deployment or push.
 
 ## How the debate ran
 
@@ -88,7 +88,7 @@ Neither source addresses B2B contacts. This is not legal advice.
 
 **Demo note.** D12 requires synthetic data. The share of synthetic contacts with a recorded basis (`demo-data.ts`) is a demo setting. A batch where most rows are held, each with its reason, is an honest and readable story.
 
-## Proposed PRD amendments
+## PRD amendments (applied in v3.2)
 
 Change types: **MI** missing implementation · **WAC** weak acceptance criteria · **NPR** new product requirement · **UBA** unvalidated business assumption · **DOC** document fix.
 
@@ -101,7 +101,7 @@ Change types: **MI** missing implementation · **WAC** weak acceptance criteria 
 | A5 | New EXP-01 "approved-batch export and outcome import" (complements GAP-05, SEQ-02) | NPR | An honest D-phase bridge to the customer's existing sender while live submission stays guarded | The export holds only approved drafts for basis-cleared contacts, each with its approval digest. Re-imported outcomes are marked `imported` and appear under that batch. The live guard is unchanged | D |
 | A6 | STU-05, §5.4: capability-profile template | NPR; lift is a UBA | A brand-level company/capability profile (EN/AR) reusing the A4/flipbook renderers, plus an optional account-tailored cover. Grounded by the 22 stored `send_profile` labels; lift unproven | Built only from approved proof. Arabic renders RTL. Attaches to the account and the draft. Ships with an asset-vs-no-asset holdout (SEQ-08) | D+ |
 | A7 | §4.1 segments, §0 summary | UBA | Add the first-cohort row with its trigger-based definition, labelled "desk-research hypothesis", plus the switch rule below | The row exists with the label and the switch rule. Nothing claims measured demand | D |
-| A8 | AI-01, D19, §0 item 2, §4.2 rules, kit HTML (`gtm-service.ts` ~425), §9 item 8 | DOC | Remove "a spending tool produces a quote, never a run", "never execute without a `SpendApproval`" and "approves every message and every cost". State instead: spending runs within reserved caps; sending waits for human approval. Add the Egypt and Saudi dates to §9 item 8 | Searches for "never a run" and "every cost before it runs" find nothing. Send-approval wording remains. §9 item 8 cites 31 October 2026 and 6 October–5 November 2026 | D |
+| A8 | AI-01, D19, §0 item 2, §4.2 rules, kit HTML (`gtm-service.ts` ~425; code, so left for implementation), §9 item 8 | DOC | Remove "a spending tool produces a quote, never a run", "never execute without a `SpendApproval`" and "approves every message and every cost". State instead: spending runs within reserved caps; sending waits for human approval. Add the Egypt and Saudi dates to §9 item 8 | Searches for "never a run" and "every cost before it runs" find nothing. Send-approval wording remains. §9 item 8 cites 31 October 2026 and 6 October–5 November 2026 | D |
 
 **Lower-cost UI changes inside the settled decisions** (no catalogue removal):
 - Rename the "Find accounts" starter to "Rank my accounts" until a discovery provider exists.

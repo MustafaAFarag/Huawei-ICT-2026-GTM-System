@@ -1,6 +1,6 @@
-# Revenue Workspace — Product Requirements v3.1
+# Revenue Workspace — Product Requirements v3.2
 
-**Status:** current. **Date:** 13 October 2026; **v3.1 update:** 15 October 2026 (see [Changelog](#changelog)). **Supersedes:** [PRD v2](archive/REVENUE_WORKSPACE_PRD_v2.md) (12 October 2026) and [PRD v1](archive/REVENUE_WORKSPACE_PRD_v1.md) (6 October 2026). **Inputs:** the product owner's answers of 13 October 2026, the Lara meeting transcript, and twelve research reports in [`docs/research/`](../research/README.md) (report 11 is an anonymised real-workflow teardown; report 12 records output-quality research and synthetic evaluations). **Current authorization:** local implementation, focused commits and project-only Azure deployment and inference (owner, 15 October); no repository push or live outreach.
+**Status:** current. **Date:** 13 October 2026; **v3.1 update:** 15 October 2026; **v3.2 update:** 17 October 2026 (see [Changelog](#changelog)). **Supersedes:** [PRD v2](archive/REVENUE_WORKSPACE_PRD_v2.md) (12 October 2026) and [PRD v1](archive/REVENUE_WORKSPACE_PRD_v1.md) (6 October 2026). **Inputs:** the product owner's answers of 13 October 2026, the Lara meeting transcript, and twelve research reports in [`docs/research/`](../research/README.md) (report 11 is an anonymised real-workflow teardown; report 12 records output-quality research and synthetic evaluations). **Current authorization:** local implementation, focused commits and project-only Azure deployment and inference (owner, 15 October); no repository push or live outreach.
 
 v3 records the product owner's decisions on the v2 proposals and adds the business model, the "one place" component plan, the out-of-the-box plays and the Asset Studio. This document is about the product; competition rules live in [research 06](../research/06-huawei-ict-2026-27-rules.md). Every feature from v1 and v2 stays in the catalogue (§7 and Appendix A) so the team can pull work forward if it finishes early.
 
@@ -9,10 +9,12 @@ v3 records the product owner's decisions on the v2 proposals and adds the busine
 Revenue Workspace is **one place where non-technical go-to-market (GTM) people run outbound end to end**: find the right accounts, research them, write the first messages, make the assets that open conversations, run the sequence and keep every result in a CRM. Today a skilled "GTM engineer" builds this alone from 6–8 paid tools wired to Claude, Clay or n8n with personal connectors. Most founders, sales people and small agencies cannot do that: they do not clone GitHub repos or wire APIs. Many of the parts already exist, but they are scattered. We **gather them, tune them and deliver them in one product**, with three things on top:
 
 1. **Plays out of the box.** Ready-made, versioned workflows ("first campaign in one chat", "funding-signal outreach", "mini-audit outreach", "weekly client report"). A user starts from a play, not from a blank canvas.
-2. **An AI assistant that runs the plays.** The user describes the goal in chat; the assistant sets up the play, shows the cost before spending, drafts, and asks for approval before anything is sent.
+2. **An AI assistant that runs the plays.** The user describes the goal in chat; the assistant sets up the play and starts the work immediately within the plan, workspace and member credit caps, drafts, and asks for approval before anything is sent.
 3. **An Asset Studio built on OpenDesign.** Branded one-pagers, mini-audits, case studies, lead magnets, carousels, proposals and client reports, in English and Arabic, generated from CRM data and attached to the prospect record.
 
 Underneath sit the parts that personal automations lack: team connectors and vault, spend caps, approvals, suppression, audit, and Egypt/Saudi/UAE compliance gates.
+
+**Positioning (v3.2, D22):** the product category is small B2B services firms selling across borders, Egypt to the Gulf first. The first distribution cohort is founder-led, Egypt-based HR-services firms (HCM/payroll, EOR, offshoring) selling into the GCC. Public line for that cohort: *"For founder-led HR-services firms selling into the Gulf: turn the accounts you already work into reviewed Arabic/English follow-ups and company profiles, with every outcome and every hold recorded in your CRM."* This is a desk-research hypothesis, not measured demand; the switch rule in §4.1 says when to drop it. Source: [research 16](../research/16-positioning-debate-and-prd-amendments.md).
 
 **Language:** English is the default for the interface and content. Arabic content (Egyptian first, Gulf as beta, business Arabic) is a first-class option and the main advantage when we pitch in MENA later. **Business model:** freemium, like Supabase: a useful free tier with hard limits, then Solo, Team, Agency and Enterprise plans with pooled credits and spend caps. **Cloud:** Azure is a placeholder because it is the only cloud where we have credits. We use it to test the demo with real services. Huawei Cloud comes only if we pass the December phase; then we migrate. Every provider-specific service sits behind an adapter so the move is configuration, not code. **Source:** the code will be open source.
 
@@ -40,9 +42,10 @@ All decisions below are settled by the product owner. Do not reopen a settled de
 | D16 | Team eligibility | Confirmed by the owner. Not an open question | Owner |
 | D17 | Open source | The project is open source: the code is public on GitHub; revenue comes from the hosted service, credits and agency features (open core, like Supabase and Twenty). Our licence (Apache-2.0 or AGPL) is chosen before the repository goes public. Keep secrets and customer data out of the repository from day one | Owner, 13 Oct |
 | D18 *(v3.1)* | Design system | The product UI uses a Raycast-derived design system (copied from Refero Styles into `design-systems/raycast/`, adapted in `design-systems/revenue/DESIGN.md`): dark default plus light theme, one coral accent reserved for AI, Arabic UI strings and RTL | Owner, 15 Oct |
-| D19 *(v3.1)* | AI harness | Our own agent harness on Vercel AI SDK Core with Azure OpenAI: we own the loop, step cap, prompts (versioned files) and approval interrupts; spending tools never execute without a `SpendApproval`. The provider is swappable to Huawei ModelArts MaaS (OpenAI-compatible) | Owner request for full control, 15 Oct |
+| D19 *(v3.1)* | AI harness | Our own agent harness on Vercel AI SDK Core with Azure OpenAI: we own the loop, step cap, prompts (versioned files) and approval interrupts. *(Amended v3.2.)* Spending tools run immediately once the credits are reserved within the plan, workspace and member caps; sending tools always pause for human approval. No per-action cost confirmation (owner instruction, 16 Oct). The provider is swappable to Huawei ModelArts MaaS (OpenAI-compatible) | Owner request for full control, 15 Oct |
 | D20 *(v3.1)* | Azure models and voice | Azure credits confirmed by Amr; provisioning and real inference approved for one project-only Azure OpenAI resource (chat model + Whisper). Voice dictation uses Whisper in English and Arabic | Owner, 15 Oct |
 | D21 *(v3.1)* | Real data | Real customer exports are read for structure only, are git-ignored, and never appear in the repository; demo data is generated synthetically with a leak test | Owner, 15 Oct; extends D12 |
+| D22 *(v3.2)* | Positioning and first cohort | Category: AI GTM workspace for small B2B services firms selling across borders (Egypt to the Gulf first). First cohort: founder-led Egypt HR-services firms selling into the GCC, defined by trigger (§4.1). Public verb is "follow up", not "outreach". HR-specific logic lives in a workflow pack (PK-01), not in the core. Reversible through the §4.1 switch rule | Owner approved research 16 amendments, 17 Oct |
 
 ## 2. Delivery context
 
@@ -79,11 +82,14 @@ Use these numbers in competition material only as written here, with the caution
 
 | Segment | Plan | Why |
 | --- | --- | --- |
+| **First cohort *(v3.2, desk-research hypothesis)*:** founder-led Egypt-based HR-services firms (HCM/payroll, EOR, offshoring) selling into the GCC | Solo or Team | Trigger, not headcount: the founder still sells and the firm has made or is making its first BD/SDR hires; at most 5 people doing BD. Needs a sellable offer and at least one approved proof item (PB-03). Total headcount is not a filter, because it includes deployed staff. Evidence: one real engagement plus public pages; demand unmeasured (research 15, 16) |
 | Solopreneurs and first-time founders | Free, then Solo | Strong pain, lowest budget, high churn; free tier is the acquisition funnel |
 | Founder-led B2B teams, 1–10 people, Egypt/KSA/UAE | Solo or Team | Founder still sells; no playbook; cannot afford a $260–400/month tool stack |
 | Small B2B agencies and lead-gen freelancers, 2–20 people | Agency | Multi-client work, reporting and handover are documented pains (research 10 §5) |
 | Accelerators and VCs | Channel (startup discount code) | Access to founder cohorts |
 | SMEs with 10–50 people | Team / Enterprise later | Bigger budgets, longer cycles |
+
+**Switch rule for the first-cohort message *(v3.2)*.** Decision rules set in advance, not forecasts. Switch the public message to the generic B2B-services category line if any of these holds: (a) of the first 10 HR-services firms that reach a demo or trial, fewer than 3 supply an approved offer, one proof item and a 50–200-row account list within 7 days; (b) sign-ups or replies from services firms outside HR outnumber HR firms by 2:1; (c) before December, the de-identified acceptance scenario produces identical questions, angles and ranks under the HR pack and the generic pack. For (c), fix the pack or broaden the message.
 
 ### 4.2 Tiers (in use now; hardened later with the business model and a real cost log)
 
@@ -103,7 +109,7 @@ Modelled on Supabase (hard-limited free tier, base fee plus usage, spend cap on 
 | Arabic and English | Yes | Yes | Yes | Yes | Yes |
 | Controls | Hard stop at quota; archive after 60 days idle | Spend cap on by default; prepaid packs | Roles, per-member caps, approvals, audit | Per-client caps, client rebilling, white-label reports | SSO, SLA, residency, invoicing |
 
-Rules: do not gate Arabic; gate volume. Show the credit cost of each action before it runs. Credits reset monthly; prepaid packs cost more and do not expire. No cliff between tiers (each step under 2.5×). Startup code: 50% off Solo or Team for 6 months for partner accelerators.
+Rules: do not gate Arabic; gate volume. Publish the credit cost of each action in the app's cost table and show estimate vs actual in the run log; actions run within caps without a per-action confirmation *(v3.2)*. Credits reset monthly; prepaid packs cost more and do not expire. No cliff between tiers (each step under 2.5×). Startup code: 50% off Solo or Team for 6 months for partner accelerators.
 
 **Payments:** Stripe lists the UAE but not Egypt or Saudi Arabia (research 07, verified). For the competition: no real billing, plans and a mock checkout only. First paying users: a merchant of record (Paddle first; confirm in writing that an Egypt- or KSA-based seller is accepted) or a UAE entity with Stripe. Later: Paymob (EGP) and Moyasar or HyperPay (SAR, mada recurring). VAT (KSA 15%, UAE 5%, Egypt 14%) needs a tax adviser before launch.
 
@@ -123,7 +129,7 @@ Rules: do not gate Arabic; gate volume. Show the credit cost of each action befo
 
 ### 5.2 Out-of-the-box plays
 
-Every play: human approval before sending, cost shown before spending, English and Arabic from the same play, a plain-language run log, results measured as replies per delivered message, holdout option on every asset play. Source: research 10 §7(b).
+Every play: human approval before sending, spending within reserved credit caps with the cost in the run log, English and Arabic from the same play, a plain-language run log, results measured as replies per delivered message, holdout option on every asset play. Source: research 10 §7(b).
 
 | # | Play | Trigger | Output | Phase |
 | --- | --- | --- | --- | --- |
@@ -149,13 +155,13 @@ Plays from the meeting's process (§6) are the engine underneath: segment, signa
 
 ### 5.3 Assistant behaviour
 
-The assistant follows the v1 action contract (v1 §4: context, action levels, typed tools, durable jobs). It calls only product tools (`find_signals`, `score_accounts`, `enrich_contacts`, `draft_messages`, `make_asset`, `queue_sequence`), never raw provider tools. It explains every score and fact with its source, shows the cost estimate before any spend, and stops for approval at the defined action levels. Retrieved web text is untrusted and cannot trigger tools.
+The assistant follows the v1 action contract (v1 §4: context, action levels, typed tools, durable jobs). It calls only product tools (`find_signals`, `score_accounts`, `enrich_contacts`, `draft_messages`, `make_asset`, `queue_sequence`), never raw provider tools. It explains every score and fact with its source, starts spending actions immediately within the reserved credit caps, and stops for human approval before anything is sent *(v3.2)*. Retrieved web text is untrusted and cannot trigger tools.
 
 ### 5.4 Asset Studio (OpenDesign)
 
 OpenDesign 0.24.1 (Apache-2.0) is a single-user local daemon with an HTTP API, a stdio MCP server, 116 templates, 151 design systems and brand-from-URL. Exports: HTML, PDF, PPTX, ZIP, Markdown, MP4 (no PNG). It has no multi-tenant mode (research 09 §B10). We run it as an internal service behind our own auth, one workspace volume per tenant, through its BYOK model path so no coding-agent CLI is spawned. Our templates are added as OpenDesign skills, not as a fork. PNG and A4 PDF are rendered by headless browser.
 
-Templates to ship, in order (research 10 §7(c)): offer one-pager; mini-audit report; case study (page + carousel); checklist lead magnet with gated page; LinkedIn carousel (1080×1350); per-prospect landing page with view tracking; short proposal; WhatsApp card; weekly client report; email header image. Rules: one brand kit per workspace or client, pulled from the website; English and Arabic are two real layouts (RTL tested), not a mirrored copy; every figure on an asset links to a source; the asset is stored on the prospect or account record; the user can change one element without regenerating the whole asset.
+Templates to ship, in order (research 10 §7(c)); *v3.2:* the capability profile (STU-09) comes right after the first two for the first cohort: offer one-pager; mini-audit report; case study (page + carousel); checklist lead magnet with gated page; LinkedIn carousel (1080×1350); per-prospect landing page with view tracking; short proposal; WhatsApp card; weekly client report; email header image. Rules: one brand kit per workspace or client, pulled from the website; English and Arabic are two real layouts (RTL tested), not a mirrored copy; every figure on an asset links to a source; the asset is stored on the prospect or account record; the user can change one element without regenerating the whole asset.
 
 ## 6. The process we productize (from the meeting)
 
@@ -185,7 +191,8 @@ Phase codes: **D** = December demo website (Azure). **D+** = stretch before Dece
 | ONB-01 *(new)* | Website-URL onboarding: AI drafts company context, ICP, offers and brand kit with cited sources | D | Draft separates facts (cited) from hypotheses; user edits before saving; brand kit applies to the first asset |
 | ONB-02 *(new)* | Guided connections in plain language (mailbox OAuth, BYOK provider keys, sender platform) with a health check | D | A non-technical tester connects a mailbox and one provider in under 10 minutes without documentation |
 | PLAY-01 *(new)* | Play library with the plays in §5.2; start from a play | D (P1–P4), D+ (P5, P6, P9, P14), N (rest) | A new workspace reaches an approved draft from a play in ≤ 30 minutes |
-| PB-01 | ICP builder: segments with firmographic filters stored as Twenty records | D | Segment saves, versions and shows which plays use it |
+| PB-01 | ICP builder: segments with firmographic filters stored as Twenty records | D | Segment saves, versions and shows which plays use it. *(v3.2)* Scoring (SCR-01) uses the workspace's saved rubric, not fixed weights |
+| PK-01 *(v3.2)* | Workflow packs as data: a pack supplies discovery questions, the maturity dimension and its bands, angle-matrix keys and rubric defaults. Ship one HR-services pack and one generic B2B-services fallback; no plugin system or marketplace. The HR pack's Home starters put follow-up, company profile and ranking first; "Find accounts" reads "Rank my accounts" until a discovery provider exists. Carousels stay in the catalogue | D | A generic-services workspace is never asked about payroll and never needs an HR set-up answer. The HR pack passes the existing tests unchanged. Inferred maturity stays labelled "inferred" until confirmed |
 | PB-03 | Offer variants per persona with approved claims and proof | D | A draft cannot use a claim outside the approved list (server-side check) |
 | PB-04 | Play builder with versioning; running work keeps its version | D | A new version does not silently change approved drafts |
 | PB-06 | Playbook export (PDF) — the sales playbook most firms lack | D+ | Export contains ICP, personas, offers, rubric and sequence |
@@ -206,7 +213,7 @@ Phase codes: **D** = December demo website (Azure). **D+** = stretch before Dece
 
 | ID | Requirement | Phase | Acceptance |
 | --- | --- | --- | --- |
-| SCR-01 | Deterministic rubric scoring (0–100) with per-rule explanation | D | Same input, same score; missing field shows "unknown" |
+| SCR-01 | Deterministic rubric scoring (0–100) with per-rule explanation. *(v3.2)* Rules and weights come from the workspace rubric (pack default); role rules match English and Arabic titles; size bands are part of the rubric, not fixed at 1–200 | D | Same input, same score; missing field shows "unknown". The same prospect ranks differently under two rubrics. "CEO" and "الرئيس التنفيذي" get equal points. A 5,000-employee account scores by the workspace rubric |
 | SCR-02 | Tier cut-offs; disqualification before enrichment spend | D | Disqualified accounts never reach enrichment |
 | SCR-03 | AI-suggested rule changes from won/lost outcomes | L | Shows the data; activation needs approval |
 | ENR-01 | Waterfall: cache/CRM → provider 1 → 2 → 3; stop on verified result, provider limit or cost cap | D | Order, stop reason and cost per field logged |
@@ -245,7 +252,8 @@ Phase codes: **D** = December demo website (Azure). **D+** = stretch before Dece
 | SEQ-05 | Call steps as tasks with script and allowed hours per country | D | Out-of-hours tasks flagged |
 | SEQ-06 | Reply inbox and classification (play P9) with human confirmation | D+ | Opt-out applies immediately |
 | SEQ-07 | WhatsApp only to opted-in contacts via the official Cloud API (play P8) | N | Send blocked without opt-in and approved template |
-| SEQ-08 | Holdout groups per play and per asset (asset vs no asset) | D+ | Reply-per-delivered with sample size; no lift claim below minimum sample |
+| SEQ-08 | Holdout groups per play and per asset (asset vs no asset) | D+ | Reply-per-delivered with sample size; no lift claim below minimum sample. *(v3.2)* Holdouts are reported per batch (GAP-07) |
+| EXP-01 *(v3.2)* | Approved-batch export and outcome import: an honest bridge to the customer's own sender while live submission stays guarded. Complements GAP-05; does not replace it | D | The export holds only approved drafts for basis-cleared contacts, each with its approval digest. Re-imported outcomes are marked `imported` and appear under that batch. The live-sending guard is unchanged |
 
 ### 7.6 Asset Studio
 
@@ -259,6 +267,7 @@ Phase codes: **D** = December demo website (Azure). **D+** = stretch before Dece
 | STU-06 *(new)* | Edit in chat: change one element without regenerating the rest; versions and lineage; changed facts reopen review | D+ | Revision creates a new version; approved original identifiable |
 | STU-07 *(new)* | Export A4/Letter PDF, PNG (headless render), PPTX where OpenDesign supports it | D (PDF), D+ (PNG), N (PPTX) | Export matches preview |
 | STU-08 *(new)* | Asset stored on the prospect/account record and linked to the play and message | D | Asset opens from the record |
+| STU-09 *(v3.2)* | Capability profile (EN/AR): a brand-level company profile built only from approved proof, reusing the A4/flipbook renderers, with an optional account-tailored cover. Grounded by 22 stored `send_profile` outcomes in the real engagement; lift is unproven | D+ | No claim outside approved proof. Arabic renders RTL. Attaches to the account and the draft. Ships with an asset-vs-no-asset holdout (SEQ-08) |
 | DES-02 | Account research brief export | D | Matches the approved research record |
 
 ### 7.7 LinkedIn access
@@ -278,7 +287,7 @@ Phase codes: **D** = December demo website (Azure). **D+** = stretch before Dece
 | --- | --- | --- | --- |
 | AST-01 | Spike: Twenty native AI chat + skills + MCP with our Azure model endpoint vs a custom persistent popup | D (first week) | Written decision covering context, navigation, typed actions, custom LLM endpoint |
 | AST-02 | Assistant runs plays step by step, explains scores and sources, asks for approval | D | Full play run from chat; no send without approval |
-| AST-03 | Cost shown before every spending action | D | Estimate appears before confirmation |
+| AST-03 | Cost of every spending action is visible and capped *(amended v3.2)* | D | A run starts only when its credit reservation fits the plan, workspace and member caps; estimate and actual appear in the run log. No per-action confirmation |
 | AST-04 *(new)* | "Make me an asset" in chat calls the Asset Studio and returns a preview | D | Preview and record link appear in the chat |
 
 ### 7.9 Governance and team
@@ -301,11 +310,11 @@ Not legal advice; a local lawyer reviews before any live outbound.
 
 | ID | Requirement | Phase | Acceptance |
 | --- | --- | --- | --- |
-| CMP-01 | Per-contact lawful basis, data source, consent timestamp | D | Contact without a basis is held for gated channels |
-| CMP-02 | Country channel rules as data: KSA and Egypt consent or documented relationship for marketing; Egypt marketing-licence field; UAE consent-first; EU blocked by default | D | Blocked send shows the rule |
+| CMP-01 | Per-contact lawful basis, data source, consent timestamp. *(v3.2)* Basis evidence: type, source, date and recorder | D | Contact without a basis is held for gated channels. A `relationship` basis without evidence is held |
+| CMP-02 | Country channel rules as data: KSA and Egypt consent or documented relationship for marketing; Egypt marketing-licence field; UAE consent-first; EU blocked by default. *(v3.2)* Country is set explicitly (no silent Egypt default); all six GCC countries are representable, and any without a reviewed rule stays blocked | D | Blocked send shows the rule. Re-reviewing a KSA prospect without a country never changes it to Egypt. A Kuwait prospect is held as "country blocked" |
 | CMP-03 | Opt-out in every message; global suppression that survives re-import | D | Suppressed contact stays suppressed |
 | CMP-04 | Data-residency flag per workspace | D+ | Storage region recorded |
-| CMP-05 | Data-subject export and delete across records, assets, caches | N | Deletion test removes linked data and blocks re-import |
+| CMP-05 | Data-subject export and delete across records, assets, caches | N | Deletion test removes linked data and blocks re-import. *(v3.2)* Review after the Saudi consultation closes (5 November 2026): its draft Art. 29 would require destroying data derived from marketing processing when consent is withdrawn |
 
 ### 7.11 Billing and metering
 
@@ -350,15 +359,15 @@ Source: [research 11](../research/11-real-workflow-teardown.md). Each row replac
 | GAP-01 | Single source of truth with versions: imports diff against the previous version instead of re-exported copies | D+ | Re-importing an edited file shows added, changed and unchanged rows; no duplicate records |
 | GAP-02 | CRM duplicate check before import (domain, email, name, alias) with a merge preview | D | Near-duplicates in the demo data are flagged before import |
 | GAP-03 | Triage buckets beyond score tiers: client, partner, drop, existing client, with rationale and owner; Keep/Drop review queue | D | Existing clients never enter cold sequences; partner accounts route to P17 |
-| GAP-04 | Angle engine: segment × persona × HR-maturity (P1a/P1b/P2) → offer angle; register (founder or leader voice) from the recipient's title | D | Draft shows which angle and register it used; changing the title changes the register |
+| GAP-04 | Angle engine: segment × persona × the pack's maturity dimension (HR pack: P1a/P1b/P2; PK-01) → offer angle; register (founder or leader voice) from the recipient's title | D | Draft shows which angle and register it used; changing the title changes the register |
 | GAP-05 | Native sender push replaces Make.com glue: approved copy and lead list go to the sender platform in one step | D (sandbox) | No external automation tool needed for the demo flow |
 | GAP-06 | Launch gate per campaign: a checklist of blockers (missing research, missing basis, unverified emails, sender pre-flight) blocks queueing | D | Queueing is refused until every item is cleared or overridden with a note |
-| GAP-07 | Funnel scorecard from sequence events: connect → accepted → reply → meeting → agreed, written back to the CRM | D+ | Scorecard numbers match the event log |
+| GAP-07 | Funnel scorecard from sequence events: connect → accepted → reply → meeting → agreed, written back to the CRM. *(v3.2)* Each sequence carries its import batch and play version (no Campaign model); each provider event carries provenance (`live`, `simulated`, `imported`); every stage counts distinct prospects; "positive reply" is a label a person confirms | D *(was D+)* | Scorecard numbers match the event log. Simulated events stay excluded by default, even after a prospect review cancels their sequences. The scorecard filters by batch and date |
 | GAP-08 | Call outcome logging by voice: the SDR dictates, Whisper transcribes, the assistant proposes a structured outcome for confirmation | D | Arabic and English notes produce a confirmed outcome on the record |
 | GAP-09 | Reference library: social-proof references with a consent flag, rotated automatically per contact | D+ | A reference without consent is never inserted |
 | GAP-10 | Message confidence score from evidence count, freshness, register fit and missing fields | D+ | Low-confidence drafts are labelled before review |
 | GAP-11 | SDR onboarding kit generated from ICP, offers, plays and rubric (extends PB-06) | D+ | A new member receives a PDF kit on joining a workspace |
-| GAP-12 | Discovery-pilot capture (play P15): interview answers, pain scores, maturity score, stored per account | D+ | Scores aggregate per segment |
+| GAP-12 | Discovery-pilot capture (play P15): interview answers, pain scores, maturity score, stored per account. *(v3.2)* Questions and required fields come from the workspace's pack (PK-01) | D+ | Scores aggregate per segment |
 | GAP-13 | Owner assignment per contact with round-robin and per-member caps (extends GOV-05) | D | Seeded Team workspace shows three SDR owners |
 | GAP-14 | Event-claim rule: event references stay at company level ("your company was at…"), never personal | D | ARB-03 style check flags personal event claims |
 
@@ -366,11 +375,11 @@ Source: [research 11](../research/11-real-workflow-teardown.md). Each row replac
 
 | ID | Requirement | Phase | Acceptance |
 | --- | --- | --- | --- |
-| AI-01 | Own agent loop with streaming, typed tools from `packages/contracts`, step cap 8; spending or sending tools pause for approval | D | Live run streams tokens; a spending tool produces a quote, never a run |
+| AI-01 | Own agent loop with streaming, typed tools from `packages/contracts`, step cap 8; spending tools run within reserved credit caps; sending tools pause for human approval *(amended v3.2)* | D | Live run streams tokens; a spending tool starts its run only when the reservation fits the caps; no message is sent without approval |
 | AI-02 | Prompts as versioned files; prompt version recorded on every run and chat message | D | Changing a prompt changes the recorded version |
 | AI-03 | Provider adapter: Azure OpenAI now, OpenAI-compatible MaaS later, fixture for tests | D | Switching provider is configuration only |
 | AI-04 | Voice dictation in the assistant and call outcome forms (≤ 60 s), Whisper transcription with an en/ar hint, credits quoted | D | Arabic and English clips transcribe; audio is not stored by default |
-| AI-05 | Agent evaluation set: tool choice, refusal to spend without approval, Arabic quality rubric; transcription WER on a small clip set | D+ | Results recorded with date and model |
+| AI-05 | Agent evaluation set: tool choice, refusal to send without approval, refusal to exceed caps, Arabic quality rubric; transcription WER on a small clip set | D+ | Results recorded with date and model |
 | AI-06 | Twenty-side chat can call our product MCP so plays run from inside the CRM | D+ | A play started in Twenty appears in the review queue |
 
 ## 8. Architecture
@@ -430,7 +439,7 @@ The product owner asked for pushback. Points where the evidence disagrees, and w
 5. **Payments are hard from Egypt and KSA.** Stripe does not list either country. Billing is mocked in the demo; seller eligibility must be confirmed before launch.
 6. **Licences can bite.** Twenty is AGPL: build on its API/SDK, never fork it. n8n cannot be embedded in a multi-tenant SaaS.
 7. **English default lowers the Arabic advantage in the competition.** Show Arabic as a toggle in the demo (one Egyptian draft and one Arabic asset), and keep the Arabic evaluation for phase N and the MENA pitch.
-8. **Cold outbound is legally constrained.** Egypt enforces its PDPL from 31 October 2026, with a licence and consent for electronic direct marketing; Saudi Article 28 already requires consent for marketing to people with no prior interaction. Plays lead with warm paths, lead magnets and consent; cold email is one play type behind country gates.
+8. **Cold outbound is legally constrained.** Egypt's PDPL reaches full enforcement on 31 October 2026, with a licence and consent for electronic direct marketing. Saudi Article 28 already requires consent for marketing to people with no prior interaction; draft amendments in consultation from 6 October to 5 November 2026 would also require verifying valid consent where a prior relationship is relied on, keeping evidence of consent, and destroying derived data on withdrawal (Clyde & Co, 21 January and 8 October 2026). Neither source addresses B2B contacts. Plays lead with warm paths, lead magnets and consent; cold email is one play type behind country gates. That is why the public verb is "follow up", not "outreach" (D22).
 9. **Full catalogue vs focus.** Keeping every feature in the catalogue is fine; building them in parallel is not. Phase D stays the outbound loop with four plays and two templates; pull from D+ only when D passes its acceptance tests.
 
 ## 10. Success measures
@@ -443,6 +452,8 @@ The product owner asked for pushback. Points where the evidence disagrees, and w
 | Unapproved sends, duplicate contacts, runs over cap | 0 (blocking) |
 | Arabic draft acceptance by native reviewers | Reported per dialect in phase N |
 | Reply per delivered (real, consented pilots only) | Reported with sample size; no lift claim from fixtures |
+| Activation *(v3.2)*: a first-cohort workspace reaches its first approved batch (offer, proof, 50–200 accounts) | Measured per pilot; feeds switch rule (a) in §4.1 |
+| Repeat batch *(v3.2)*: the same workspace runs a second batch within 30 days | Measured per pilot; no target until real usage exists |
 
 ## 11. Plan
 
@@ -586,6 +597,8 @@ Research reports: [01 GTM process and AI](../research/01-gtm-process-and-ai.md),
 | EVAL-05 | Commercial experiments | L (needs real outcomes) |
 
 ## Changelog
+
+**v3.2 — 17 October 2026.** Owner approved the research 16 amendments. Added D22 (positioning and first cohort), the first-cohort row and switch rule in §4.1, PK-01 (workflow packs), EXP-01 (approved-batch export and outcome import), STU-09 (capability profile) and two §10 measures. Amended SCR-01, PB-01, GAP-04, GAP-07 (now D), GAP-12, CMP-01/02/05 and SEQ-08. Rewrote the stale cost-approval wording in §0, D19, §4.2, §5.2, §5.3, AST-03, AI-01 and AI-05 to match the owner's immediate-action instruction; human approval before sending is unchanged. Updated §9 item 8 with the Egypt and Saudi dates. Specification only: no application code changed. The generated SDR kit still says "A person approves every message and every cost before it runs" (`packages/backend/src/gtm-service.ts`); fixing it is implementation work.
 
 **Local checkpoint — 16 October 2026.** Added import revision history, durable scheduled step reviews, approved PNG export, EN/AR interview and research PDFs, editable/date-aware call outcomes, durable opt-out cancellation and measured prompt/copy checks. All new work is local; the public build is unchanged. Remaining acceptance work is listed below.
 
