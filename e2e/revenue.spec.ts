@@ -86,8 +86,15 @@ test("four plays, bilingual asset, approval invalidation, suppression and worksp
   await page
     .getByLabel("I reviewed this factual claim and its dated source")
     .check();
+  // Imports carry no country (PRD v3.2 A3); the reviewer sets it explicitly.
+  await page.locator('select[name="country"]').selectOption("EG");
   await page.getByLabel("Communication basis").selectOption("consent");
   await page.getByLabel("Consent time").fill("2026-10-13T12:00");
+  // A consent basis needs recorded evidence before any contact (CMP-02).
+  await page
+    .getByLabel("Evidence source", { exact: true })
+    .fill("Synthetic signed opt-in form, demo record 001");
+  await page.getByLabel("Evidence date", { exact: true }).fill("2026-10-13");
   await page.getByRole("button", { name: "Save evidence and policy" }).click();
   await expect(page.getByRole("status")).toContainText("Evidence saved");
   await page.getByRole("button", { name: "Plays", exact: true }).click();

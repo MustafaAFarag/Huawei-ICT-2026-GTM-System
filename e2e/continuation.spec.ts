@@ -1,6 +1,29 @@
 import { test, expect } from "@playwright/test";
 import { randomUUID } from "node:crypto";
 
+// Workspace state with at least one account. A freshly seeded database has none in
+// Revenue Demo B, so import one synthetic account and the specs no longer depend on run order.
+async function accountState(context: import("@playwright/test").BrowserContext, ws: string) {
+  const read = async () => (await context.request.get(`/api/workspaces/${ws}`)).json();
+  const state = await read();
+  if (state.prospects.some((p: any) => !p.excluded)) return state;
+  const suffix = randomUUID().replace(/[^a-z]/g, "").slice(0, 12);
+  const imported = await context.request.post(`/api/workspaces/${ws}/imports`, {
+    multipart: {
+      requestKey: randomUUID(),
+      file: {
+        name: `seed-${suffix}.csv`,
+        mimeType: "text/csv",
+        buffer: Buffer.from(
+          `firstName,lastName,email,company,website,title\nSeed,${suffix},seed${suffix}@synthetic-demo.example,Seed ${suffix},https://example.com,Founder\n`,
+        ),
+      },
+    },
+  });
+  expect(imported.ok()).toBe(true);
+  return read();
+}
+
 test("research brief exports the saved source record and holds unsaved edits", async ({
   page,
   context,
@@ -9,9 +32,7 @@ test("research brief exports the saved source record and holds unsaved edits", a
   const me = await (await context.request.get("/api/me")).json();
   const ws = me.workspaces.find((m: any) => m.workspace.name === "Qimam People")
     .workspace.id;
-  const state = await (
-    await context.request.get(`/api/workspaces/${ws}`)
-  ).json();
+  const state = await accountState(context, ws);
   const prospect = state.prospects.find((p: any) => !p.excluded);
   const path = `/api/workspaces/${ws}/prospects/${prospect.id}/research-brief`;
   const brief = await (await context.request.get(path)).json();
@@ -87,9 +108,7 @@ test("call logging supports manual review and discards stale AI suggestions", as
   const ws = me.workspaces.find(
     (m: any) => m.workspace.name === "Revenue Demo B",
   ).workspace.id;
-  const state = await (
-    await context.request.get(`/api/workspaces/${ws}`)
-  ).json();
+  const state = await accountState(context, ws);
   const prospect = state.prospects.find((p: any) => !p.excluded);
   await page.getByLabel("Workspace", { exact: true }).selectOption(ws);
   const hide = page.getByRole("button", {
@@ -187,9 +206,7 @@ test("interview guides show bilingual questions and export PDFs without inventin
   const me = await (await context.request.get("/api/me")).json();
   const ws = me.workspaces.find((m: any) => m.workspace.name === "Qimam People")
     .workspace.id;
-  const state = await (
-    await context.request.get(`/api/workspaces/${ws}`)
-  ).json();
+  const state = await accountState(context, ws);
   const prospect = state.prospects.find((p: any) => !p.excluded);
   const base = `/api/workspaces/${ws}/prospects/${prospect.id}/discovery-guide`;
   for (const language of ["en", "ar"]) {
@@ -416,9 +433,10 @@ test("recurring plays persist a due review and require cost approval before exec
     await context.request.get(`/api/workspaces/${ws}`)
   ).json();
   expect(after.runs.length).toBe(before.runs.length);
-  expect(after.budgets.find((b: any) => !b.userId).used).toBe(
-    before.budgets.find((b: any) => !b.userId).used,
-  );
+  // The workspace budget row exists only after spending or a cap change; absent means 0 used.
+  const used = (state: any) =>
+    state.budgets.find((b: any) => !b.userId)?.used ?? 0;
+  expect(used(after)).toBe(used(before));
   await page.reload();
   await page.getByRole("button", { name: "Review queue", exact: true }).click();
   const persisted = page.locator(".selection-bar").filter({ hasText: name });

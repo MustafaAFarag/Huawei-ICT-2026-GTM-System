@@ -44,8 +44,9 @@ export function ProspectReview({ prospect }: { prospect: Prospect }) {
       ? `${t("Company size in band")} (${num(r.params.min)}–${num(r.params.max)} ${t("staff")})`
       : t(r.rule);
   const [evidence, setEvidence] = useState(prospect.evidence);
+  // The evidence type follows the communication basis unless the reviewer changes it.
   const [basisType, setBasisType] = useState<"consent" | "relationship">(
-    "relationship",
+    prospect.lawfulBasis === "consent" ? "consent" : "relationship",
   );
   const [basisSource, setBasisSource] = useState("");
   const [basisDate, setBasisDate] = useState(() =>
@@ -297,6 +298,11 @@ export function ProspectReview({ prospect }: { prospect: Prospect }) {
               <Select
                 name="lawfulBasis"
                 defaultValue={prospect.lawfulBasis ?? ""}
+                onChange={(e) => {
+                  const basis = e.target.value;
+                  if (basis === "consent" || basis === "relationship")
+                    setBasisType(basis);
+                }}
               >
                 <option value="">{t("Not recorded · blocked")}</option>
                 <option value="consent">{t("Recorded consent")}</option>
