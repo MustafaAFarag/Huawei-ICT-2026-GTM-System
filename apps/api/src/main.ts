@@ -60,6 +60,7 @@ import {
   suggestCallOutcome,
   saveCallOutcome,
   GtmService,
+  ExportBatchService,
   ImportHistoryService,
   ScheduleService,
   ThreadService,
@@ -77,6 +78,7 @@ import {
 import type { Actor } from "@revenue/contracts";
 
 const gtm = new GtmService();
+const exportBatches = new ExportBatchService();
 const importHistory = new ImportHistoryService();
 const schedules = new ScheduleService();
 const threads = new ThreadService();
@@ -649,6 +651,36 @@ class ApiController {
     const input = z.object({ draftIds: z.array(z.uuid()).max(100) }).parse(body);
     return gtm.launchGate(await actorFor(req.headers, ws), input.draftIds);
   }
+  @ApiOperation({
+    summary: "Export approved, basis-cleared drafts for the customer's own sender",
+  })
+  @Post("workspaces/:workspaceId/exports") async createExport(
+    @Req() req: Request,
+    @Param("workspaceId") ws: string,
+    @Body() body: unknown,
+  ) {
+    return exportBatches.create(await actorFor(req.headers, ws), body);
+  }
+  @Get("workspaces/:workspaceId/exports") async listExports(
+    @Req() req: Request,
+    @Param("workspaceId") ws: string,
+  ) {
+    return exportBatches.list(await actorFor(req.headers, ws));
+  }
+  @Get("workspaces/:workspaceId/exports/:exportId/file.csv") async exportFile(
+    @Req() req: Request,
+    @Res() res: Response,
+    @Param("workspaceId") ws: string,
+    @Param("exportId") exportId: string,
+  ) {
+    const file = await exportBatches.csv(await actorFor(req.headers, ws), exportId);
+    res.set({
+      "Content-Type": "text/csv; charset=utf-8",
+      "Content-Disposition": `attachment; filename="${file.filename}"`,
+      "Cache-Control": "private, no-store",
+    });
+    res.send(file.content);
+  }
   @ApiOperation({ summary: "Funnel of distinct prospects; simulated events are excluded unless requested" })
   @Get("workspaces/:workspaceId/scorecard") async scorecard(
     @Req() req: Request,
@@ -869,6 +901,34 @@ app
             req.file.originalname,
             req.body.requestKey,
             mapping,
+          ),
+        );
+      } catch (error) {
+        res
+          .status(error instanceof HttpException ? error.getStatus() : 400)
+          .json({ message: safeError(error) });
+      }
+    },
+  );
+// EXP-01: outcomes the customer's own sender reported for an exported batch.
+app
+  .getHttpAdapter()
+  .getInstance()
+  .post(
+    "/api/workspaces/:workspaceId/exports/:exportId/outcomes",
+    upload.single("file"),
+    async (req: Request, res: Response) => {
+      try {
+        const actor = await actorFor(
+          req.headers,
+          String(req.params.workspaceId),
+        );
+        if (!req.file) throw new HttpException("Choose a CSV file.", 400);
+        res.json(
+          await exportBatches.importOutcomes(
+            actor,
+            String(req.params.exportId),
+            req.file.buffer,
           ),
         );
       } catch (error) {

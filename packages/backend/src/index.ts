@@ -26,3 +26,4 @@ export * from "./formats/index.js";
 export * from "./agent/index.js";
 
 export * from "./asset-bidi.js";
+export * from "./export-batch.js";
