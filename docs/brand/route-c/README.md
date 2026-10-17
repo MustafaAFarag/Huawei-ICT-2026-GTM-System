@@ -44,4 +44,7 @@ Future ideas: a dot travelling the route as a loading state, and a single termin
 
 - Native Arabic review of the lockup.
 - A trademark clearance search (Egypt, GCC, and the US/EU if relevant).
-- Import into Figma as native vectors. This was not done because of the Figma connector rate limit.
+
+## Figma
+
+[Page "13 Logo · Route C"](https://www.figma.com/design/XQYMm6aLF8AVUAFje7CpuK/?node-id=52-14) holds native vector components (mark, wordmark, lockups, Arabic, app icon, favicons) and frames for construction, lockups, colour and mono, icons, the animation storyboard and usage rules. Geometry was checked against `spec.json` on `logo/mark` Colour (`63:744`): stroke 14, waypoint and terminal centres and diameters all match.
