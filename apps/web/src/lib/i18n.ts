@@ -64,6 +64,9 @@ export const AR: Record<string, string> = {
   "Capability profile": "ملف القدرات",
   "Create a capability profile for ": "أنشئ ملف قدرات لـ ",
   "Holdout test": "اختبار المقارنة",
+  "Holdout available": "مجموعة المقارنة متاحة",
+  "With profile": "مع ملف القدرات",
+  "Without profile": "بدون ملف القدرات",
   "Ships with an asset-vs-no-asset holdout: a share of sequences go out without this profile.":
     "يأتي مع اختبار مقارنة بمادة وبدون مادة: جزء من التسلسلات يُرسل بدون هذا الملف.",
   "Gmail clips above 102 KB": "Gmail يقص الرسائل الأكبر من 102 كيلوبايت",

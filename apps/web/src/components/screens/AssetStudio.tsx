@@ -14,6 +14,7 @@ import {
 import { useWorkspace } from "../workspace-context";
 import { usePrefs } from "../../lib/prefs";
 import { assetLabel } from "../../lib/asset-label";
+import { profileAssignmentCounts } from "../../lib/profile-assignments";
 import type { Asset } from "../../lib/types";
 import "../../styles/pages/deliverables.css";
 import { FORMAT_ICONS } from "../chat/Conversation";
@@ -327,6 +328,10 @@ export function AssetStudio({ onPreview }: { onPreview: (a: Asset) => void }) {
             {rows.slice(currentPage * 6, currentPage * 6 + 6).map((a) => {
               const format = ASSET_FORMATS[a.template as AssetTemplate];
               const Icon = FORMAT_ICONS[a.template] ?? IconFileText;
+              const assignments =
+                a.template === "capability-profile"
+                  ? profileAssignmentCounts(a.id, data)
+                  : null;
               const company = data.prospects.find((p) => p.id === a.prospectId)
                 ?.snapshot.company;
               return (
@@ -357,17 +362,23 @@ export function AssetStudio({ onPreview }: { onPreview: (a: Asset) => void }) {
                         </span>
                       </span>
                     </span>
-                    {a.template === "capability-profile" && (
-                      <span
-                        title={t(
-                          "Ships with an asset-vs-no-asset holdout: a share of sequences go out without this profile.",
-                        )}
-                      >
-                        <Badge tone="info" dot={false}>
-                          {t("Holdout test")}
+                    {assignments &&
+                      (assignments.total === 0 ? (
+                        <Badge tone="neutral" dot={false}>
+                          {t("Holdout available")}
                         </Badge>
-                      </span>
-                    )}
+                      ) : (
+                        <>
+                          <Badge tone="info" dot={false}>
+                            {t("With profile")} {" "}
+                            <bdi dir="ltr">{assignments.withProfile}</bdi>
+                          </Badge>
+                          <Badge tone="warn" dot={false}>
+                            {t("Without profile")} {" "}
+                            <bdi dir="ltr">{assignments.withoutProfile}</bdi>
+                          </Badge>
+                        </>
+                      ))}
                     <span className="deliverable-status">
                       <Badge tone={a.approvedAt ? "ok" : "warn"} dot={false}>
                         {a.approvedAt ? t("Approved") : t("Needs review")}

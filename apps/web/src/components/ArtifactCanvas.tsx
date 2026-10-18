@@ -26,6 +26,7 @@ import {
 import { client } from "../lib/client";
 import { usePrefs } from "../lib/prefs";
 import { assetLabel } from "../lib/asset-label";
+import { profileAssignmentCounts } from "../lib/profile-assignments";
 import type { Asset } from "../lib/types";
 import "../styles/pages/deliverables.css";
 import {
@@ -308,6 +309,10 @@ export function ArtifactCanvas({
     );
 
   const errors = meta?.lint.filter((l) => l.level === "error").length ?? 0;
+  const profileAssignments =
+    asset.template === "capability-profile"
+      ? profileAssignmentCounts(asset.id, data)
+      : null;
   return (
     <section
       className={`artifact-canvas deliverable-canvas mode-${previewMode}`}
@@ -345,15 +350,23 @@ export function ArtifactCanvas({
         {versions.length <= 1 && versionIndex >= 0 && (
           <span className="mono muted small">v1</span>
         )}
-        {asset.template === "capability-profile" && (
-          <span
-            title={t(
-              "Ships with an asset-vs-no-asset holdout: a share of sequences go out without this profile.",
-            )}
-          >
-            <Badge tone="info">{t("Holdout test")}</Badge>
-          </span>
-        )}
+        {profileAssignments &&
+          (profileAssignments.total === 0 ? (
+            <Badge tone="neutral" dot={false}>
+              {t("Holdout available")}
+            </Badge>
+          ) : (
+            <>
+              <Badge tone="info" dot={false}>
+                {t("With profile")} {" "}
+                <bdi dir="ltr">{profileAssignments.withProfile}</bdi>
+              </Badge>
+              <Badge tone="warn" dot={false}>
+                {t("Without profile")} {" "}
+                <bdi dir="ltr">{profileAssignments.withoutProfile}</bdi>
+              </Badge>
+            </>
+          ))}
         <Badge tone={asset.approvedAt ? "ok" : "warn"}>
           {asset.approvedAt ? t("Approved") : t("Needs review")}
         </Badge>
