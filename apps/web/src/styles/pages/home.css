@@ -1,0 +1,415 @@
+/* Scoped Home and Nabil refinements; shared shell and appearance tokens stay intact. */
+.home-v32.home-landing {
+  justify-content: flex-start;
+  gap: var(--space-4);
+  padding: var(--space-6) var(--space-6) var(--space-9);
+}
+.home-v32.home-landing > * {
+  inline-size: min(100%, 720px);
+}
+.home-v32 .home-hero {
+  gap: var(--space-5);
+}
+.home-v32 .home-hero h1 {
+  font-size: 32px;
+  line-height: 1.4;
+  font-weight: 500;
+}
+.home-v32 .home-sub {
+  margin: 0;
+  max-inline-size: 700px;
+  line-height: 1.5;
+  text-wrap: pretty;
+}
+.home-v32 .home-starters {
+  display: grid;
+  gap: var(--space-4);
+}
+.home-v32 .starter-row {
+  gap: var(--space-2);
+}
+.home-v32 .starter {
+  padding: var(--space-2) var(--space-20);
+  min-block-size: 40px;
+  block-size: auto;
+}
+.home-v32 .home-formats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+  padding: var(--space-2);
+  border-radius: var(--radius-control);
+  background: var(--surface);
+}
+.home-v32 .home-formats button {
+  min-block-size: 36px;
+  padding: var(--space-2) var(--space-3);
+  border: 0;
+  border-radius: var(--radius-control);
+  background: transparent;
+  color: var(--text-3);
+  font-size: var(--text-sm);
+  cursor: pointer;
+}
+.home-v32 .home-formats button:hover {
+  background: var(--surface-2);
+  color: var(--text);
+}
+.home-v32 .home-ranking-note {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  margin: 0;
+  padding: var(--space-3);
+  border-radius: var(--radius-control);
+  background: var(--info-tint);
+  color: var(--text-2);
+  font-size: var(--text-sm);
+  line-height: 1.5;
+}
+.home-ranking-note svg {
+  flex-shrink: 0;
+  color: var(--info);
+}
+.home-v32 .home-resume {
+  display: grid;
+  gap: var(--space-2);
+}
+.home-v32 .home-resume h2 {
+  font-size: var(--text-md);
+  font-weight: 500;
+  margin: 0 0 var(--space-2);
+}
+.home-review-row {
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr) auto 18px;
+  gap: var(--space-3);
+  align-items: center;
+  padding: var(--space-4) var(--space-3);
+  color: var(--text);
+  border: 0;
+  border-radius: var(--radius-control);
+  background: transparent;
+  text-align: start;
+  cursor: pointer;
+}
+.home-review-row > span:nth-child(2) {
+  display: grid;
+  gap: var(--space-1);
+  min-inline-size: 0;
+}
+.home-review-row strong {
+  font-size: var(--text-md);
+  font-weight: 500;
+}
+.home-review-row svg {
+  color: var(--text-3);
+}
+.home-review-row:hover {
+  background: var(--surface);
+}
+.home-v32 .home-resume .empty {
+  padding: var(--space-4);
+  text-align: start;
+  background: var(--surface);
+  border-radius: var(--radius-control);
+}
+.home-v32 .home-resume .empty-icon {
+  display: none;
+}
+.home-v32 .home-purpose {
+  margin: 0;
+  font-size: var(--text-sm);
+  line-height: 1.5;
+  color: var(--text-3);
+  text-align: center;
+}
+.nabil-composer.composer {
+  min-inline-size: 0;
+}
+.nabil-composer.composer:not(.composer-compact) {
+  padding: var(--space-20);
+  gap: var(--space-3);
+}
+.nabil-composer textarea {
+  min-inline-size: 0;
+  inline-size: 100%;
+  padding: 0;
+  caret-color: var(--ai);
+}
+.nabil-composer.composer:not(.composer-compact) textarea {
+  font-size: 16px;
+  min-block-size: 25px;
+}
+.nabil-composer.composer:not(.composer-compact) .send-button {
+  min-inline-size: 74px;
+  inline-size: auto;
+  block-size: 40px;
+  padding-inline: var(--space-5);
+  border-radius: var(--radius-control);
+  font-size: var(--text-md);
+}
+.nabil-composer .composer-tools > .icon-button {
+  min-inline-size: 36px;
+  min-block-size: 36px;
+}
+.nabil-composer .composer-meta {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-family: var(--font-sans);
+  font-size: var(--text-xs);
+}
+.nabil-composer .composer-note {
+  padding: 0;
+  color: var(--text-3);
+  font-size: var(--text-xs);
+  line-height: 1.5;
+}
+.nabil-composer .composer-menu {
+  max-inline-size: min(280px, calc(100vw - 80px));
+  max-block-size: 45dvh;
+  overflow-y: auto;
+}
+.nabil-composer .composer-menu button {
+  block-size: auto;
+  min-block-size: 36px;
+  padding-block: var(--space-2);
+}
+.nabil-composer .context-chip {
+  block-size: auto;
+  min-block-size: 32px;
+}
+.nabil-composer .context-chip button {
+  min-inline-size: 32px;
+  min-block-size: 32px;
+}
+.home-chat-v32 .conversation-log {
+  inline-size: min(100%, 808px);
+  padding: var(--space-5) var(--space-5) var(--space-4);
+}
+.home-chat-v32 .conversation-dock {
+  inline-size: min(100%, 808px);
+  padding: 0 var(--space-5) var(--space-5);
+}
+.home-chat-v32 .home-refine-label {
+  margin: 0 0 var(--space-3);
+  color: var(--text-3);
+  font-size: var(--text-sm);
+}
+.home-chat-v32 .msg-user {
+  display: block;
+}
+.home-chat-v32 .msg-bubble {
+  max-inline-size: 100%;
+  padding: var(--space-20);
+  border-radius: var(--radius-card);
+  background: var(--surface);
+  font-size: 16px;
+}
+.home-chat-v32 .msg-assistant {
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-4);
+}
+.nabil-message-head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-block-size: 32px;
+  font-size: var(--text-md);
+}
+.nabil-message-head .badge {
+  margin-inline-start: var(--space-5);
+}
+.home-chat-v32 .msg-body {
+  gap: var(--space-4);
+}
+.home-chat-v32 .msg-body .chat-markdown {
+  font-size: 16px;
+  line-height: 1.55;
+}
+.home-chat-v32 .quote-card {
+  margin-inline-start: 0;
+  max-inline-size: none;
+  padding: var(--space-20);
+  background: var(--surface);
+  box-shadow: none;
+  border: 1px solid var(--line);
+}
+.home-chat-v32 .chat-run-progress {
+  margin: 0;
+  padding: var(--space-4) var(--space-20);
+  border-radius: var(--radius-card);
+  background: var(--surface);
+}
+.home-chat-v32 .step-row > button {
+  min-block-size: 36px;
+}
+.home-chat-v32 .tool-step-list {
+  background: var(--surface);
+  padding: var(--space-4);
+  border: 0;
+  border-radius: var(--radius-control);
+  gap: var(--space-4);
+}
+.home-chat-v32 .step-detail {
+  color: var(--text-3);
+}
+.home-chat-v32 .message-actions .icon-button,
+.nabil-launcher .message-actions .icon-button {
+  min-inline-size: 36px;
+  min-block-size: 36px;
+}
+.home-v32 .deliverable-card,
+.home-chat-v32 .deliverable-card {
+  max-inline-size: none;
+  inline-size: 100%;
+  background: transparent;
+  border: 0;
+  padding: var(--space-4) var(--space-3);
+}
+.home-v32 .deliverable-card:hover,
+.home-chat-v32 .deliverable-card:hover {
+  background: var(--surface);
+}
+.home-v32 .deliverable-icon,
+.home-chat-v32 .deliverable-icon {
+  background: transparent;
+}
+.home-v32 .deliverable-meta,
+.home-chat-v32 .deliverable-meta {
+  gap: var(--space-2);
+}
+.home-v32 .deliverable-meta strong,
+.home-chat-v32 .deliverable-meta strong {
+  white-space: normal;
+  overflow-wrap: anywhere;
+  font-size: var(--text-md);
+}
+.home-chat-v32.with-canvas {
+  grid-template-columns: minmax(320px, 400px) minmax(0, 1fr);
+}
+.home-chat-v32.with-canvas .conversation-log,
+.home-chat-v32.with-canvas .conversation-dock {
+  padding-inline: var(--space-5);
+}
+.nabil-launcher .launcher-title strong {
+  font-weight: 500;
+}
+.nabil-launcher .launcher-head .icon-button {
+  min-inline-size: 36px;
+  min-block-size: 36px;
+}
+.nabil-launcher .nabil-message-head {
+  gap: var(--space-2);
+}
+.nabil-launcher .nabil-message-head .badge {
+  margin-inline-start: auto;
+  font-size: var(--text-xs);
+}
+.nabil-launcher .msg-assistant {
+  display: block;
+}
+.nabil-launcher .msg-body {
+  margin-block-start: var(--space-3);
+}
+[dir="rtl"] .home-directional {
+  transform: scaleX(-1);
+}
+.home-v32 :is(button, textarea):focus-visible,
+.home-chat-v32 :is(button, textarea):focus-visible,
+.nabil-composer button:focus-visible {
+  outline: 2px solid var(--ai);
+  outline-offset: 3px;
+}
+@media (max-width: 1100px) {
+  .home-chat-v32.with-canvas {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+@media (max-width: 640px) {
+  .home-v32.home-landing {
+    padding: var(--space-9) var(--space-20) var(--space-8);
+    gap: var(--space-4);
+  }
+  .home-v32 .home-hero {
+    justify-items: start;
+    text-align: start;
+    gap: var(--space-5);
+  }
+  .home-v32 .home-hero h1 {
+    font-size: 28px;
+    line-height: 1.4;
+    max-inline-size: 330px;
+  }
+  .home-v32 .home-sub {
+    font-size: var(--text-md);
+    line-height: 1.6;
+  }
+  .home-v32 .starter {
+    padding-inline: var(--space-3);
+    min-block-size: 44px;
+    font-size: var(--text-sm);
+  }
+  .home-v32 .home-ranking-note {
+    font-size: var(--text-xs);
+  }
+  .home-v32 .home-purpose {
+    text-align: start;
+    font-size: var(--text-xs);
+  }
+  .home-review-row {
+    grid-template-columns: 20px minmax(0, 1fr) 18px;
+    padding-inline: 0;
+    gap: var(--space-2);
+  }
+  .home-review-row .badge {
+    grid-column: 2;
+    justify-self: start;
+  }
+  .home-review-row > svg:last-child {
+    grid-column: 3;
+    grid-row: 1;
+  }
+  .nabil-composer .composer-meta {
+    display: block;
+    max-inline-size: 110px;
+  }
+  .nabil-composer .composer-pack {
+    display: none;
+  }
+  .nabil-composer.composer:not(.composer-compact) {
+    padding: var(--space-4);
+  }
+  .home-chat-v32 .conversation-log {
+    padding: var(--space-5) var(--space-20);
+  }
+  .home-chat-v32 .conversation-dock,
+  .home-chat-v32.with-canvas .conversation-dock {
+    padding-inline: var(--space-20);
+    padding-block-end: var(--space-20);
+  }
+  .home-chat-v32 .msg-bubble {
+    font-size: var(--text-md);
+    padding: var(--space-4);
+  }
+  .home-chat-v32 .msg-body .chat-markdown {
+    font-size: var(--text-lg);
+  }
+  .home-chat-v32 .deliverable-card {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-3);
+    background: var(--surface);
+    padding: var(--space-4);
+  }
+  .home-chat-v32 .deliverable-icon {
+    display: none;
+  }
+  .home-chat-v32 .deliverable-open {
+    justify-self: start;
+    padding: var(--space-3) var(--space-4);
+    border-radius: var(--radius-control);
+    background: var(--action);
+    color: var(--action-text);
+    font-size: var(--text-sm);
+  }
+}
