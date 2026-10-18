@@ -15,7 +15,11 @@ Lane: native `hub-worker` (Sonnet 5.5 high), one task per worktree; `hub-tester`
   - E2E needs Twenty (`docker compose up -d twenty twenty-worker`) and the Open Design engines (`docker compose --profile engines up -d open-design-a open-design-b`); `infra:up` starts neither.
   - A1–A6 covered by unit tests; A7 row and switch rule present in the PRD; A8 phrases gone from code and PRD, §9 item 8 dates present.
   - Helpers (ignored): `.local/wt-check.sh` (worktree checks with its own DB), `.local/gate-run.sh` (fresh DB + dev servers), `.local/stop-dev.sh`.
-- [ ] Wave 2: Figma frame export; U0 shell/tokens; U1–U7 pages
+- [ ] Wave 2: UI redesign per Figma
+  - [x] Frames: 109 PNGs in ignored `.local/figma-frames/` with `index.json` (page groups). Figma Education plan MCP call limit hit after 107 calls; the last 2 v3.2 frames came from `.local/figma-v32/`; Foundations page not exported (tokens taken from v3.2 variables).
+  - [x] U0 shell/tokens/primitives merged (`8b11c85`). First worker stopped on the session limit; main session finished it: restored the mobile drawer CSS and a broken media query, added Arabic for renamed nav (Campaigns, Review, Brand & company). E2E updated for the renamed navigation; 16/16 on U0.
+  - [ ] Batch A running (own stacks on ports 3122–3125): U2 Accounts (+rubric, triage, basis evidence), U3 Review, U4 Campaigns (+export, outcomes, scorecard), U5 Brand & company (+pack setup, capability profile). Common brief: `.local/ui-brief-common.md`.
+  - [ ] Batch B next: U1 Home/chat, U6 Deliverables, U7 Settings.
 - [ ] Final: full checks, walkthrough, merge to main, worktrees removed
 
 ---
