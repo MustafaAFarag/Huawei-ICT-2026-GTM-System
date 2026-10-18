@@ -36,7 +36,7 @@ export function TriagePanel({ prospect }: { prospect: Prospect }) {
   const [note, setNote] = useState(s.triageNote ?? "");
   const segments = Object.keys(company.segments ?? {});
   return (
-    <Panel eyebrow={t("Triage")} title={t("Bucket, owner and angle")}>
+    <Panel className="acct-pane" eyebrow={t("Triage")} title={t("Bucket, owner and angle")}>
       <div className="stack">
         <div className="outcome-row" role="group" aria-label={t("Bucket")}>
           {BUCKETS.map((b) => (
@@ -168,7 +168,7 @@ export function DiscoveryPanel({ prospect }: { prospect: Prospect }) {
   const [maturity, setMaturity] = useState(existing?.maturity ?? 1);
   const [notes, setNotes] = useState(existing?.notes ?? "");
   return (
-    <Panel eyebrow="P15" title={t("Discovery interview")}>
+    <Panel className="acct-pane" eyebrow="P15" title={t("Discovery interview")}>
       <InterviewGuide key={`${ws}:${prospect.id}`} prospectId={prospect.id} />
       <details className="disclosure" open={Boolean(existing)}>
         <summary>

@@ -96,6 +96,7 @@ export default function Page() {
     [paletteOpen, setPaletteOpen] = useState(false),
     [collapsed, setCollapsed] = useState(false),
     [navOpen, setNavOpen] = useState(false);
+  const [exportFocusKey, setExportFocusKey] = useState(0);
   const [aiCursor, setAiCursor] = useState<{
     x: number;
     y: number;
@@ -129,12 +130,17 @@ export default function Page() {
   }, [ws]);
 
   const setView = useCallback((next: View) => {
+    if (next !== "Sequences") setExportFocusKey(0);
     setViewState(next);
     setProspect(null);
     setPreview(null);
     setNavOpen(false);
   }, []);
   const setTab = useCallback((next: Tab) => setView(next), [setView]);
+  const openSequencesExport = useCallback(() => {
+    setView("Sequences");
+    setExportFocusKey((key) => key + 1);
+  }, [setView]);
 
   const openAsset = useCallback((asset: Asset) => {
     if (viewRef.current !== "Home") setViewState("Asset Studio");
@@ -496,6 +502,8 @@ export default function Page() {
             selected,
             setSelected: (update) => setSelected(update),
             setTab,
+            openSequencesExport,
+            exportFocusKey,
             openAsset,
             askNabil: (text) => {
               setView("Home");
@@ -522,6 +530,8 @@ export default function Page() {
       chatLanguage,
       selected,
       setTab,
+      openSequencesExport,
+      exportFocusKey,
       openAsset,
       setView,
       chat.newChat,

@@ -1,0 +1,970 @@
+/* Accounts page (v3.2 Figma: Accounts, Import, Duplicates, account detail tabs, Qualification
+   rubric, Ready and held). Logical properties only, so the page mirrors in Arabic. Colours and
+   spacing come from tokens.css. */
+
+/* ---------- Page grid: tabs, import action, body ---------- */
+.acct-page {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas:
+    "tabs action"
+    "body body";
+  align-items: start;
+  column-gap: var(--space-4);
+}
+.acct-page > * + * {
+  margin-block-start: 0;
+}
+.acct-tabs {
+  grid-area: tabs;
+  min-inline-size: 0;
+}
+.acct-action {
+  grid-area: action;
+  /* Sits in the page header's action slot: header block is 40px title + 24px subtitle + 4px gap
+     + 24px margin = 92px, minus the 12px the button is centred below the title top. */
+  margin-block-start: -80px;
+  position: relative;
+  z-index: 1;
+}
+.acct-body {
+  grid-area: body;
+  min-inline-size: 0;
+}
+.acct-import {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas: none;
+  row-gap: var(--space-4);
+}
+.acct-back {
+  justify-self: start;
+}
+
+/* ---------- Toolbar, filters, bulk bar ---------- */
+.acct-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+  margin-block-end: var(--space-5);
+}
+.acct-toolbar .acct-search {
+  flex: 1 1 280px;
+  min-inline-size: 0;
+  block-size: 44px;
+}
+.acct-toolbar .btn,
+.acct-toolbar .acct-tier {
+  block-size: 40px;
+}
+.acct-toolbar .acct-tier {
+  inline-size: auto;
+  min-inline-size: 110px;
+  min-block-size: 40px;
+}
+.acct-toolbar-end {
+  display: inline-flex;
+  gap: var(--space-2);
+  margin-inline-start: auto;
+}
+.acct-filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+  margin-block-end: var(--space-4);
+}
+.acct-filters .control {
+  inline-size: auto;
+  min-inline-size: 140px;
+  min-block-size: 40px;
+}
+.acct-bulk {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  margin-block-end: var(--space-4);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-control);
+  background: var(--surface);
+}
+
+/* ---------- Tables (list-style rows, no zebra) ---------- */
+.acct-table-wrap {
+  overflow-x: auto;
+}
+.acct-table {
+  inline-size: 100%;
+  border-collapse: collapse;
+  font-size: var(--text-md);
+}
+.acct-table thead th {
+  position: static;
+  padding: var(--space-3) var(--space-4);
+  background: var(--surface);
+  color: var(--text-3);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  letter-spacing: 0;
+  text-transform: none;
+}
+.acct-table thead th:first-child {
+  border-start-start-radius: var(--radius-control);
+  border-end-start-radius: var(--radius-control);
+}
+.acct-table thead th:last-child {
+  border-start-end-radius: var(--radius-control);
+  border-end-end-radius: var(--radius-control);
+}
+.acct-table tbody th,
+.acct-table td {
+  padding: var(--space-3) var(--space-4);
+  border-block-start: 1px solid var(--line);
+  vertical-align: middle;
+  text-align: start;
+}
+.acct-table tbody th {
+  position: static;
+  background: transparent;
+  color: var(--text);
+  font-size: var(--text-md);
+  font-weight: 500;
+  letter-spacing: 0;
+  text-transform: none;
+  white-space: normal;
+}
+.acct-table tbody tr:first-child td,
+.acct-table tbody tr:first-child th {
+  border-block-start: 0;
+}
+.acct-table td strong {
+  display: block;
+  font-weight: 500;
+}
+.acct-table td p {
+  color: var(--text-3);
+  font-size: var(--text-sm);
+}
+.acct-accounts tbody tr {
+  cursor: pointer;
+}
+.acct-accounts tbody tr.selected {
+  box-shadow: none;
+  background: var(--surface);
+}
+.acct-col-select {
+  inline-size: 48px;
+}
+.acct-col-open {
+  inline-size: 40px;
+  text-align: end;
+}
+.acct-role-inline {
+  display: none;
+}
+.acct-fit {
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+.acct-status {
+  color: var(--text-3);
+}
+.acct-status.is-ok {
+  color: var(--ok);
+}
+.acct-status.is-warn {
+  color: var(--warn);
+}
+.acct-status.is-muted {
+  color: var(--text-4);
+}
+.acct-open {
+  display: inline-grid;
+  place-items: center;
+  inline-size: 32px;
+  block-size: 32px;
+  border: 0;
+  border-radius: var(--radius-control);
+  background: transparent;
+  color: var(--text-3);
+  cursor: pointer;
+}
+.acct-open:hover {
+  background: var(--surface-2);
+  color: var(--text);
+}
+
+/* Select mark: a person icon that becomes a check; the real checkbox sits on top, invisible. */
+.acct-select {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  inline-size: 28px;
+  block-size: 28px;
+  cursor: pointer;
+}
+.acct-select input {
+  position: absolute;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+.acct-select-mark {
+  display: inline-grid;
+  place-items: center;
+  inline-size: 28px;
+  block-size: 28px;
+  border-radius: var(--radius-control);
+  color: var(--text-3);
+  pointer-events: none;
+}
+.acct-select input:checked + .acct-select-mark {
+  color: var(--ok);
+}
+.acct-select input:focus-visible + .acct-select-mark {
+  outline: 2px solid var(--ai);
+  outline-offset: 2px;
+}
+
+.acct-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-block-start: var(--space-4);
+}
+.acct-foot p {
+  max-inline-size: 70ch;
+}
+
+.acct-chip {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: var(--radius-badge);
+  background: var(--surface-2);
+  color: var(--text-2);
+  font-size: var(--text-sm);
+  font-weight: 500;
+}
+.acct-chip.is-warn {
+  background: var(--warn-tint);
+  color: var(--warn);
+}
+.acct-hold {
+  display: inline-flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  color: var(--warn);
+}
+.acct-hold svg {
+  flex: none;
+  margin-block-start: 2px;
+}
+.acct-next {
+  text-align: end;
+}
+
+/* ---------- Section heads, cards, notes ---------- */
+.acct-section-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-block-end: var(--space-4);
+}
+.acct-section-head h2,
+.acct-task-head h2,
+.acct-pane h2 {
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 1.3;
+}
+.acct-section-head p {
+  margin-block-start: var(--space-1);
+  max-inline-size: 75ch;
+}
+.acct-card {
+  padding: var(--space-5);
+  border-radius: var(--radius-card);
+  background: var(--surface);
+}
+.acct-card + .acct-card {
+  margin-block-start: var(--space-4);
+}
+.acct-card-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-block-end: var(--space-3);
+}
+.acct-card-head h3,
+.acct-confirm h3 {
+  font-size: var(--text-xl);
+  font-weight: 500;
+}
+.acct-note {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-control);
+  background: var(--surface);
+  color: var(--text-2);
+  font-size: var(--text-sm);
+}
+.acct-note svg {
+  flex: none;
+  margin-block-start: 1px;
+}
+.acct-note.is-ok {
+  background: var(--ok-tint);
+  color: var(--ok);
+}
+.acct-note.is-warn {
+  background: var(--warn-tint);
+  color: var(--warn);
+}
+.acct-note.is-info {
+  background: var(--info-tint);
+  color: var(--info);
+}
+.acct-warn {
+  color: var(--warn);
+  font-size: var(--text-sm);
+}
+.acct-two {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-4);
+}
+
+/* ---------- Triage view ---------- */
+.acct-triage > * + * {
+  margin-block-start: var(--space-4);
+}
+.acct-triage .page-tabs {
+  margin-block-end: var(--space-4);
+}
+.acct-allheld {
+  display: grid;
+  gap: var(--space-5);
+}
+.acct-allheld .empty {
+  background: transparent;
+}
+
+/* ---------- Task views: import steps, history ---------- */
+.acct-task {
+  display: grid;
+  gap: var(--space-4);
+  max-inline-size: 840px;
+  justify-items: start;
+}
+.acct-task > * {
+  max-inline-size: 100%;
+}
+.acct-task-head {
+  display: grid;
+  gap: var(--space-1);
+}
+.acct-steps {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  color: var(--text-3);
+  font-size: var(--text-md);
+}
+.acct-steps li[aria-current="step"] {
+  color: var(--text);
+  font-weight: 500;
+}
+.acct-steps li > span {
+  margin-inline: var(--space-1);
+}
+[dir="rtl"] .acct-steps li > span {
+  display: inline-block;
+  transform: scaleX(-1);
+}
+.acct-dropzone {
+  display: grid;
+  justify-items: start;
+  gap: var(--space-3);
+  inline-size: 100%;
+  padding: var(--space-7) var(--space-6);
+  border: 1px dashed transparent;
+  border-radius: var(--radius-card);
+  background: var(--surface);
+}
+.acct-dropzone.is-dragging {
+  border-color: var(--text-3);
+}
+.acct-dropzone h3 {
+  font-size: var(--text-2xl);
+  font-weight: 500;
+}
+.acct-dropzone svg {
+  color: var(--text-3);
+}
+.acct-file {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-xl);
+}
+.acct-mapping {
+  display: grid;
+  gap: var(--space-3);
+  inline-size: 100%;
+}
+.acct-map-row {
+  grid-template-columns: minmax(120px, 1fr) minmax(0, 2fr);
+  align-items: center;
+}
+.acct-lead {
+  font-size: var(--text-2xl);
+  font-weight: 500;
+}
+.acct-counts {
+  font-size: var(--text-xl);
+}
+.acct-outcomes {
+  display: grid;
+  gap: var(--space-2);
+  inline-size: 100%;
+}
+.acct-outcomes:empty {
+  display: none;
+}
+
+/* List rows (import history, recent activity) */
+.acct-list {
+  display: grid;
+  inline-size: 100%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.acct-list-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  inline-size: 100%;
+  padding: var(--space-4) var(--space-2);
+  border: 0;
+  border-block-end: 1px solid var(--line);
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  text-align: start;
+  cursor: pointer;
+}
+.acct-list-item:hover:not(:disabled) {
+  background: var(--surface);
+}
+.acct-list-item > svg:first-child {
+  flex: none;
+  color: var(--text-3);
+}
+.acct-list-text {
+  display: grid;
+  flex: 1;
+  min-inline-size: 0;
+  gap: 2px;
+}
+.acct-list-text strong {
+  font-weight: 500;
+  overflow-wrap: anywhere;
+}
+.acct-list-item > .badge {
+  flex: none;
+}
+
+/* ---------- Duplicates ---------- */
+.acct-dups {
+  display: grid;
+  gap: var(--space-6);
+  inline-size: 100%;
+}
+.acct-dup-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: var(--space-4);
+  margin-block-start: var(--space-3);
+}
+.acct-dup-card {
+  display: grid;
+  align-content: start;
+  gap: var(--space-2);
+  padding: var(--space-5);
+  border-radius: var(--radius-card);
+  background: var(--surface);
+  overflow-wrap: anywhere;
+}
+.acct-dup-card header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+.acct-dup-card h3 {
+  font-size: var(--text-xl);
+  font-weight: 500;
+}
+.acct-dup-card .btn {
+  justify-self: start;
+  margin-block-start: var(--space-3);
+}
+
+/* ---------- Rubric ---------- */
+.acct-rubric {
+  display: grid;
+  gap: var(--space-4);
+  max-inline-size: 960px;
+}
+.acct-rules th[scope="row"] {
+  inline-size: 28%;
+}
+.acct-rules td:last-child {
+  inline-size: 110px;
+}
+.acct-weight {
+  inline-size: 84px;
+  text-align: end;
+}
+.acct-band {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+.acct-band .field {
+  inline-size: 130px;
+}
+.acct-thresholds {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-4);
+  margin-block-start: var(--space-5);
+}
+.acct-problems {
+  margin: var(--space-4) 0 0;
+  padding-inline-start: var(--space-5);
+  color: var(--danger);
+  font-size: var(--text-sm);
+}
+.acct-keywords {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-4);
+  margin-block-start: var(--space-3);
+}
+.acct-keyword-group h4 {
+  margin-block-end: var(--space-2);
+  color: var(--text-3);
+  font-size: var(--text-sm);
+  font-weight: 500;
+}
+.acct-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.acct-keyword {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: 4px 10px;
+  border-radius: var(--radius-badge);
+  background: var(--ok-tint);
+  color: var(--ok);
+  font-size: var(--text-sm);
+}
+.acct-keyword button {
+  display: inline-grid;
+  place-items: center;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+.acct-keyword-add {
+  display: flex;
+  gap: var(--space-2);
+  margin-block-start: var(--space-4);
+  max-inline-size: 420px;
+}
+
+/* ---------- Account detail ---------- */
+/* The page header (title only) is drawn by page.tsx; this row pulls up under it so the person
+   line reads as its subtitle and "Prepare outreach" sits in the header's action slot. */
+.acct-detail-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-block: -20px var(--space-4);
+}
+.acct-detail-head > .btn {
+  margin-block-start: -36px;
+}
+.acct-person {
+  margin-block-start: var(--space-1);
+  color: var(--text-3);
+  font-size: var(--text-md);
+}
+.acct-pane {
+  display: grid;
+  gap: var(--space-4);
+  max-inline-size: 800px;
+  align-content: start;
+}
+.screen .acct-pane.panel,
+.screen .panel + .acct-pane.panel {
+  margin-block-start: 0;
+  padding-block-start: 0;
+  border-block-start: 0;
+}
+.acct-pane .call-log {
+  justify-items: start;
+}
+.acct-pane .call-log > .field,
+.acct-pane .call-log > .acct-card {
+  justify-self: stretch;
+}
+.acct-pane .toolbar {
+  align-items: flex-end;
+}
+.acct-pane .panel-head h2 {
+  font-size: 20px;
+}
+.acct-next-step {
+  margin-block: var(--space-3);
+  font-size: var(--text-xl);
+}
+.acct-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  margin-block-end: var(--space-3);
+  font-size: var(--text-md);
+}
+.acct-holds {
+  margin: 0 0 var(--space-3);
+  padding-inline-start: var(--space-5);
+  color: var(--warn);
+  font-size: var(--text-sm);
+}
+.acct-evidence-list {
+  display: grid;
+  gap: var(--space-4);
+}
+.acct-evidence {
+  display: grid;
+  gap: var(--space-3);
+}
+.acct-evidence > header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+}
+.acct-evidence.is-approved {
+  box-shadow: inset 3px 0 0 var(--ok);
+}
+[dir="rtl"] .acct-evidence.is-approved {
+  box-shadow: inset -3px 0 0 var(--ok);
+}
+.acct-evidence-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+.acct-policy {
+  grid-template-columns: minmax(0, 280px) minmax(0, 1fr);
+  max-inline-size: 960px;
+  align-items: start;
+  column-gap: var(--space-5);
+}
+.acct-fit-score {
+  margin-block-end: var(--space-4);
+  font-size: var(--text-2xl);
+  font-weight: 500;
+}
+.acct-breakdown {
+  display: grid;
+  gap: var(--space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: var(--text-sm);
+}
+.acct-breakdown li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: var(--space-2);
+}
+.acct-policy-form {
+  display: grid;
+  gap: var(--space-4);
+}
+.acct-basis-list {
+  display: grid;
+  gap: var(--space-2);
+  justify-items: start;
+}
+.acct-basis-list .acct-breakdown {
+  inline-size: 100%;
+}
+.acct-confirm {
+  display: grid;
+  gap: var(--space-3);
+}
+.acct-pane .outcome-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+/* ---------- Modal (native dialog) ---------- */
+.acct-modal {
+  inline-size: min(600px, calc(100vw - 2 * var(--space-4)));
+  max-block-size: calc(100dvh - 2 * var(--space-4));
+  margin: auto;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-modal);
+  background: var(--bg);
+  color: var(--text);
+  box-shadow: var(--shadow-pop);
+  overflow: auto;
+}
+.acct-modal::backdrop {
+  background: var(--backdrop);
+}
+.acct-modal-body {
+  display: grid;
+  gap: var(--space-4);
+  padding: var(--space-5) var(--space-6);
+}
+.acct-modal-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+.acct-modal-head h2 {
+  font-size: 22px;
+  font-weight: 500;
+}
+.acct-modal-head p {
+  margin-block-start: var(--space-1);
+  color: var(--text-3);
+  font-size: var(--text-md);
+}
+.acct-modal-form {
+  display: grid;
+  gap: var(--space-4);
+}
+.acct-modal-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--space-2);
+}
+.acct-fieldset {
+  display: grid;
+  gap: var(--space-2);
+  min-inline-size: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.acct-fieldset legend {
+  margin-block-end: var(--space-2);
+  padding: 0;
+  color: var(--text-3);
+  font-size: 12.5px;
+  font-weight: 500;
+}
+.acct-choice-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-3);
+}
+.acct-choice-row button {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-block-size: 44px;
+  padding: 0 var(--space-4);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-control);
+  background: var(--bg);
+  color: var(--text);
+  font: inherit;
+  cursor: pointer;
+}
+.acct-choice-row button[aria-pressed="true"] {
+  border-color: var(--text);
+  background: var(--surface);
+  font-weight: 500;
+}
+.acct-choice-row button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ---------- Phone: account rows become cards, forms stack ---------- */
+@media (max-width: 720px) {
+  .acct-page {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      "tabs"
+      "body"
+      "action";
+  }
+  .acct-action {
+    margin-block-start: var(--space-5);
+  }
+  .acct-detail-head {
+    flex-wrap: wrap;
+    margin-block-start: -12px;
+  }
+  .acct-detail-head > .btn {
+    margin-block-start: 0;
+  }
+  .acct-toolbar .acct-search {
+    flex-basis: 100%;
+  }
+  .acct-toolbar-end {
+    margin-inline-start: 0;
+  }
+  .acct-accounts thead,
+  .acct-accounts .acct-col-role,
+  .acct-accounts .acct-col-owner {
+    display: none;
+  }
+  .acct-accounts,
+  .acct-accounts tbody {
+    display: grid;
+    gap: var(--space-3);
+  }
+  .acct-accounts tbody tr {
+    display: grid;
+    grid-template-columns: 36px minmax(0, 1fr) auto;
+    grid-template-areas:
+      "select person open"
+      "select fit status";
+    align-items: center;
+    column-gap: var(--space-2);
+    padding: var(--space-3) var(--space-4);
+    border-radius: var(--radius-card);
+    background: var(--surface);
+  }
+  .acct-accounts tbody td {
+    padding: 0;
+    border: 0;
+  }
+  .acct-accounts .acct-col-select {
+    grid-area: select;
+    inline-size: auto;
+  }
+  .acct-accounts .acct-col-person {
+    grid-area: person;
+  }
+  .acct-accounts .acct-col-open {
+    grid-area: open;
+  }
+  .acct-accounts .acct-col-fit {
+    grid-area: fit;
+    font-size: var(--text-sm);
+  }
+  .acct-accounts .acct-col-status {
+    grid-area: status;
+    font-size: var(--text-sm);
+    text-align: end;
+  }
+  .acct-accounts .acct-role-inline {
+    display: block;
+  }
+  .acct-triage-table thead,
+  .acct-rules thead {
+    display: none;
+  }
+  .acct-triage-table,
+  .acct-triage-table tbody,
+  .acct-triage-table tr,
+  .acct-triage-table td,
+  .acct-rules,
+  .acct-rules tbody,
+  .acct-rules tr,
+  .acct-rules td,
+  .acct-rules th {
+    display: block;
+  }
+  .acct-triage-table tr,
+  .acct-rules tr {
+    margin-block-end: var(--space-3);
+    padding: var(--space-3) var(--space-4);
+    border-radius: var(--radius-card);
+    background: var(--surface);
+  }
+  .acct-triage-table td,
+  .acct-rules td,
+  .acct-rules tbody th {
+    padding: var(--space-1) 0;
+    border: 0;
+  }
+  .acct-triage-table td[data-label]:not(:first-child)::before,
+  .acct-rules td:last-child::before {
+    content: attr(data-label) ": ";
+    color: var(--text-4);
+    font-size: var(--text-xs);
+  }
+  .acct-rules th[scope="row"] {
+    inline-size: auto;
+  }
+  .acct-rules td:last-child {
+    inline-size: auto;
+  }
+  .acct-next {
+    text-align: start;
+  }
+  .acct-two,
+  .acct-keywords,
+  .acct-thresholds,
+  .acct-choice-row {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .acct-map-row {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .acct-policy {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .acct-dropzone {
+    padding: var(--space-5);
+  }
+  .acct-modal-body {
+    padding: var(--space-4);
+  }
+  .acct-card {
+    padding: var(--space-4);
+  }
+}

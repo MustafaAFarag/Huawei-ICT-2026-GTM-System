@@ -64,6 +64,9 @@ export const AR: Record<string, string> = {
   "Capability profile": "ملف القدرات",
   "Create a capability profile for ": "أنشئ ملف قدرات لـ ",
   "Holdout test": "اختبار المقارنة",
+  "Holdout available": "مجموعة المقارنة متاحة",
+  "With profile": "مع ملف القدرات",
+  "Without profile": "بدون ملف القدرات",
   "Ships with an asset-vs-no-asset holdout: a share of sequences go out without this profile.":
     "يأتي مع اختبار مقارنة بمادة وبدون مادة: جزء من التسلسلات يُرسل بدون هذا الملف.",
   "Gmail clips above 102 KB": "Gmail يقص الرسائل الأكبر من 102 كيلوبايت",
@@ -101,6 +104,39 @@ export const AR: Record<string, string> = {
   Slides: "الشرائح",
   "Start from": "ابدأ من",
   Version: "النسخة",
+  Nabil: "نبيل",
+  "What would you like to prepare?": "ماذا تود أن تجهّز؟",
+  "Turn the accounts you already work into reviewed Arabic/English follow-ups and company profiles, with every outcome and every hold recorded in your CRM.":
+    "حوّل الحسابات التي تعمل عليها إلى رسائل متابعة وملفات شركة مراجَعة بالعربية والإنجليزية، مع تسجيل كل نتيجة وكل تعليق في نظام إدارة العملاء.",
+  "Draft follow-ups": "كتابة رسائل متابعة",
+  "Draft a three-step follow-up sequence for ":
+    "اكتب تسلسل متابعة من ثلاث خطوات لـ ",
+  "Company profile": "ملف الشركة",
+  "More formats": "تنسيقات أخرى",
+  "Draft follow-ups, prepare a company profile, or start with an idea…":
+    "اكتب رسائل متابعة أو جهّز ملف شركة أو ابدأ بفكرة…",
+  "Rank my accounts orders accounts you already saved, using your rubric. Ranking does not search for new companies, enrich contacts or send email.":
+    "يرتّب «رتّب حساباتي» الحسابات المحفوظة بالفعل باستخدام معاييرك. لا تبحث عملية الترتيب عن شركات جديدة ولا تُثري بيانات جهات الاتصال ولا ترسل البريد.",
+  "Pick up where you left off": "أكمل من حيث توقفت",
+  "Review your follow-ups": "راجع رسائل المتابعة",
+  "drafts to review": "مسودات للمراجعة",
+  "Your next piece of work starts here": "عملك القادم يبدأ هنا",
+  "Ask Nabil to prepare a follow-up or company profile. Saved work will appear here.":
+    "اطلب من نبيل تجهيز رسالة متابعة أو ملف شركة. سيظهر عملك المحفوظ هنا.",
+  "Caravan is an AI GTM workspace where small B2B services teams research, qualify, follow up and record named accounts in English and Arabic, with a person approving every send.":
+    "كارافان مساحة عمل ذكية تتيح لفرق خدمات الشركات الصغيرة البحث والتأهيل والمتابعة وتسجيل الحسابات بالعربية والإنجليزية، مع موافقة شخص على كل إرسال.",
+  "Refine with Nabil": "عدّل مع نبيل",
+  "Ask Nabil to prepare a follow-up or deliverable…":
+    "اطلب من نبيل تجهيز رسالة متابعة أو مخرج…",
+  "We couldn’t load this conversation.": "تعذّر تحميل هذه المحادثة.",
+  "Your saved work is safe. Try loading the conversation again.":
+    "عملك المحفوظ آمن. حاول تحميل المحادثة مرة أخرى.",
+  "Start a conversation with Nabil": "ابدأ محادثة مع نبيل",
+  "Ask Nabil to prepare a follow-up or company profile.":
+    "اطلب من نبيل تجهيز رسالة متابعة أو ملف شركة.",
+  "Nabil couldn’t finish this reply.": "لم يتمكن نبيل من إكمال هذا الرد.",
+  "Ready to review": "جاهز للمراجعة",
+  "Open preview": "افتح المعاينة",
   "What should Nabil prepare for you today?": "ماذا يجهّز لك نبيل اليوم؟",
   "Ask Nabil to find, draft or create…":
     "اطلب من نبيل أن يبحث أو يكتب أو يصمّم…",
@@ -110,6 +146,54 @@ export const AR: Record<string, string> = {
   account: "حساب",
   accounts: "حسابات",
   Deliverables: "المخرجات",
+  "You have read-only access to deliverables. Ask a workspace owner or editor to create or revise one.":
+    "صلاحيتك للمخرجات هي العرض فقط. اطلب من مالك مساحة العمل أو أحد المحررين إنشاء مخرج أو تعديله.",
+  Create: "إنشاء",
+  "Clear filters": "مسح عوامل التصفية",
+  Previous: "السابق",
+  Next: "التالي",
+  Title: "العنوان",
+  of: "من",
+  Edit: "تعديل",
+  "Try again": "أعد المحاولة",
+  "Create a deliverable": "إنشاء مخرج",
+  "Choose the format. Nabil will use your current brand.":
+    "اختر الصيغة. سيستخدم نبيل علامتك الحالية.",
+  "What should this achieve?": "ما الهدف من هذا المخرج؟",
+  "Audience or account": "الجمهور أو الحساب",
+  "Uses your reviewed company facts and approved offer.":
+    "يستخدم معلومات شركتك التي راجعتها وعرضك المعتمد.",
+  "Create with Nabil": "إنشاء مع نبيل",
+  "Search deliverables": "البحث في المخرجات",
+  "Search deliverables…": "ابحث في المخرجات…",
+  "Sort deliverables": "ترتيب المخرجات",
+  "Recently updated": "الأحدث أولًا",
+  "No matching deliverables": "لا توجد مخرجات مطابقة",
+  "Your first deliverable starts with an idea.": "أول مخرج لك يبدأ بفكرة.",
+  "Try another search or format.": "جرّب بحثًا أو صيغة أخرى.",
+  "Choose an email, carousel, flipbook or document. Nabil uses your brand and saves the result here.":
+    "اختر بريدًا أو شرائح أو كتابًا أو مستندًا. يستخدم نبيل علامتك ويحفظ النتيجة هنا.",
+  Showing: "عرض",
+  deliverables: "مخرجات",
+  Document: "مستند",
+  Carousel: "شرائح",
+  "Document preview": "معاينة المستند",
+  "Loading preview…": "جارٍ تحميل المعاينة…",
+  "Preview details could not load": "تعذّر تحميل تفاصيل المعاينة",
+  "You can still view the deliverable. Retry to load page counts and compatibility checks.":
+    "يمكنك عرض المخرج. أعد المحاولة لتحميل عدد الصفحات وفحوص التوافق.",
+  "Deliverable view": "عرض المخرج",
+  "Spread view": "عرض الصفحتين",
+  "Fit to page": "ملاءمة الصفحة",
+  "Describe the change. Each revision is saved as a new draft.":
+    "صف التغيير. يُحفظ كل تعديل كمسودة جديدة.",
+  "Your change": "التغيير المطلوب",
+  "Apply change": "تطبيق التغيير",
+  "Revise this deliverable": "عدّل هذا المخرج",
+  "Preview uses your saved brand version.":
+    "تستخدم المعاينة نسخة علامتك المحفوظة.",
+  "View brand book": "عرض دليل العلامة",
+  "Version history": "سجل النسخ",
   "Every document, email and carousel Nabil prepared, filed by account.":
     "كل مستند وبريد وشرائح جهّزها نبيل، مرتبة حسب الحساب.",
   "Arabic (Egypt)": "العربية (مصر)",
@@ -377,8 +461,58 @@ export const AR: Record<string, string> = {
   From: "من",
   To: "إلى",
   "Include simulated": "تضمين التجريبي",
+  "Simulated activity included": "النشاط التجريبي مُضمّن",
+  "Simulated activity excluded": "النشاط التجريبي مُستبعد",
   "Could not load results. Try again.": "تعذّر تحميل النتائج أعد المحاولة",
   "Funnel and discovery": "مسار النتائج والاستكشاف",
+  "A batch counts once it holds a non-simulated sequence.":
+    "تُحتسب الدفعة عندما تحتوي على تسلسل غير تجريبي.",
+  "A first batch has run": "تم تشغيل أول دفعة",
+  "A reply counts as positive only after a person confirms it.":
+    "لا يُحتسب الرد إيجابيًا إلا بعد أن يؤكده شخص.",
+  "Activation": "التفعيل",
+  "Below the minimum sample. No lift is shown.":
+    "أقل من الحد الأدنى للعينة. لا يُعرض أي تحسّن.",
+  "Caravan measures": "مقاييس كارافان",
+  "Confirm positive replies": "تأكيد الردود الإيجابية",
+  "Continue campaign preparation": "متابعة تجهيز الحملة",
+  "Discovery by segment": "الاستكشاف حسب الشريحة",
+  "Each stage counts distinct prospects from the event log.":
+    "تحسب كل مرحلة العملاء المحتملين المختلفين من سجل الأحداث.",
+  "Enough sample": "عينة كافية",
+  "Event sources": "مصادر الأحداث",
+  "Holdout · asset vs no asset": "المجموعة المحجوبة · مع الأصل مقابل بدونه",
+  "Keep the same layout while content loads.":
+    "يبقى التخطيط كما هو أثناء تحميل المحتوى.",
+  "Loading results…": "جارٍ تحميل النتائج…",
+  "Neutral": "محايد",
+  "No batch has run yet": "لم تعمل أي دفعة بعد",
+  "Not positive": "غير إيجابي",
+  "Only reviewers and owners can confirm a reply.":
+    "المراجعون والمالكون فقط يمكنهم تأكيد الرد.",
+  "Positive": "إيجابي",
+  "Prepared → Reviewed → Sent → Replied → Meeting":
+    "مجهّز ← تمت مراجعته ← أُرسل ← تم الرد ← اجتماع",
+  "Reached": "تحقق",
+  "Repeat batch": "دفعة متكررة",
+  "Reply label": "تصنيف الرد",
+  "Reply label saved. The scorecard counts only labels a person confirmed.":
+    "تم حفظ تصنيف الرد. تحتسب بطاقة النتائج التصنيفات التي أكدها شخص فقط.",
+  "Results": "النتائج",
+  "Results will appear after a campaign runs.":
+    "ستظهر النتائج بعد تشغيل حملة.",
+  "Running": "قيد التشغيل",
+  "This workspace has no completed campaign yet. Start with reviewed messages and a ready sender.":
+    "لا توجد حملة مكتملة في مساحة العمل بعد. ابدأ برسائل تمت مراجعتها ومرسل جاهز.",
+  "We couldn’t load the results.": "تعذّر تحميل النتائج.",
+  "We couldn’t load the checklist.": "تعذّر تحميل قائمة التحقق.",
+  "batches with live or imported activity": "دفعات بنشاط فعلي أو مستورد",
+  "hidden by default": "مخفية افتراضيًا",
+  "shown": "معروضة",
+  "simulated sequences": "تسلسلات تجريبية",
+  "to confirm": "بانتظار التأكيد",
+  "vs": "مقابل",
+  "Live": "فعلي",
   "At least one draft is selected": "تم اختيار مسودة واحدة على الأقل",
   "Sender pre-flight passes (P2)": "اجتياز فحص المرسل (P2)",
   "An approved offer exists": "يوجد عرض معتمد",
@@ -528,6 +662,14 @@ export const AR: Record<string, string> = {
   "Run sheet": "ورقة التشغيل",
   "Content language": "لغة المحتوى",
   selected: "محدد",
+  "Change selection": "تغيير الاختيار",
+  "Choose a play": "اختر خطة",
+  "Each action shows its cost before it runs. Nothing is sent from here.":
+    "يعرض كل إجراء تكلفته قبل تشغيله. لا يُرسل شيء من هنا.",
+  "No accounts selected": "لم يتم تحديد حسابات",
+  "Start": "ابدأ",
+  "and": "و",
+  "more": "أخرى",
   "Choose prospects in Accounts to start this play.":
     "اختر عملاء محتملين من «الحسابات» لبدء هذه الخطة.",
   "Open accounts": "فتح الحسابات",
@@ -585,6 +727,235 @@ export const AR: Record<string, string> = {
   reviewed: "تمت مراجعته",
   Open: "فتح",
   "No accounts match this filter.": "لا توجد حسابات مطابقة لهذا الفلتر.",
+  // Accounts page (v3.2): tabs, list, selection
+  "All accounts": "كل الحسابات",
+  "Assigned to me": "المسندة إليّ",
+  "Ready and held": "الجاهزة والمعلّقة",
+  Rubric: "معيار التأهيل",
+  "Account sections": "أقسام الحسابات",
+  "Import accounts": "استيراد حسابات",
+  "Search name, company or email…": "ابحث بالاسم أو الشركة أو البريد…",
+  "Tier: All": "الفئة: الكل",
+  Filters: "الفلاتر",
+  "Triage: All": "التصنيف: الكل",
+  "Country: All": "الدولة: الكل",
+  "Clear selection": "إلغاء التحديد",
+  "Select accounts": "تحديد حسابات",
+  "Prepare outreach": "تجهيز التواصل",
+  "Triage selected": "تصنيف المحدد",
+  "Accounts assigned to you appear here.": "الحسابات المسندة إليك تظهر هنا.",
+  Status: "الحالة",
+  Select: "تحديد",
+  "across all pages": "عبر كل الصفحات",
+  Dropped: "مستبعد",
+  Excluded: "مستثنى",
+  Held: "معلّق",
+  Client: "عميل",
+  "Not set": "غير محددة",
+  Close: "إغلاق",
+  Import: "استيراد",
+  Saved: "تم الحفظ",
+  Notes: "ملاحظات",
+  Today: "اليوم",
+  // Import task view and history
+  "Import steps": "خطوات الاستيراد",
+  "Choose a CSV or XLSX file.": "اختر ملف CSV أو XLSX.",
+  "This file is over 5 MB. Split it and import the parts.":
+    "حجم الملف أكبر من 5 ميغابايت. قسّمه واستورد الأجزاء.",
+  "Import your accounts": "استورد حساباتك",
+  "Bring your lead list": "أحضر قائمة العملاء المحتملين",
+  "Upload CSV or XLSX. Existing source reviews and exclusions stay attached to the record.":
+    "ارفع ملف CSV أو XLSX. تبقى مراجعات المصادر والاستثناءات الحالية مرتبطة بالسجل.",
+  "Lead file": "ملف العملاء المحتملين",
+  "Choose a file": "اختر ملفًا",
+  "Up to 1,000 rows · 5 MB. Columns: firstName, lastName, email, company, website, title, employees.":
+    "حتى 1,000 صف · 5 ميغابايت. الأعمدة: firstName, lastName, email, company, website, title, employees.",
+  "Your role cannot import accounts.": "صلاحيتك لا تسمح باستيراد الحسابات.",
+  "View import history": "عرض سجل الاستيراد",
+  "Match your columns": "طابق أعمدتك",
+  "Import 1 row": "استيراد صف واحد",
+  rows: "صفوف",
+  Back: "رجوع",
+  "Review the import": "راجع الاستيراد",
+  "Import completed": "اكتمل الاستيراد",
+  "Import completed with rows to review": "اكتمل الاستيراد مع صفوف تحتاج مراجعة",
+  "Your accounts are ready to review.": "حساباتك جاهزة للمراجعة.",
+  updated: "محدّثة",
+  "need attention": "تحتاج انتباهًا",
+  "rows need attention": "صفوف تحتاج انتباهًا",
+  "Missing email or possible duplicate. Review before continuing.":
+    "بريد مفقود أو تكرار محتمل. راجعها قبل المتابعة.",
+  "Row outcomes": "نتائج الصفوف",
+  "Import another file": "استيراد ملف آخر",
+  "Import history could not load": "تعذّر تحميل سجل الاستيراد",
+  "Your saved work is still there. Check your connection and try again.":
+    "عملك المحفوظ ما زال موجودًا. تحقّق من الاتصال وحاول مرة أخرى.",
+  "Loading import history…": "جارٍ تحميل سجل الاستيراد…",
+  "Import a lead file to track added, changed and unchanged rows.":
+    "استورد ملفًا لتتبّع الصفوف المضافة والمتغيّرة وغير المتغيّرة.",
+  // Duplicates
+  "Duplicates could not load": "تعذّر تحميل السجلات المكرّرة",
+  "Loading duplicates…": "جارٍ تحميل السجلات المكرّرة…",
+  "Review possible duplicates": "راجع التكرارات المحتملة",
+  "Compare the records before deciding what to keep.":
+    "قارن السجلات قبل أن تقرر أيها تُبقي.",
+  // Ready and held (v3.2 triage)
+  "Nothing to triage yet": "لا شيء للتصنيف بعد",
+  "Import accounts to see which are ready and which are held.":
+    "استورد حسابات لترى أيها جاهز وأيها معلّق.",
+  "Country is set on every row. A row without one stays held; Caravan never assumes Egypt.":
+    "الدولة مطلوبة في كل صف. الصف بلا دولة يبقى معلّقًا، ولا يفترض Caravan مصر أبدًا.",
+  "Prepare ready accounts": "جهّز الحسابات الجاهزة",
+  "Triage lists": "قوائم التصنيف",
+  "Ready (basis evidenced)": "جاهز (أساس موثّق)",
+  "Dropped/Existing": "مستبعد/موجود",
+  "No rows are ready to prepare": "لا توجد صفوف جاهزة للتجهيز",
+  "accounts are held, each with its rule:": "حسابات معلّقة، وكل منها بقاعدته:",
+  "Basis or evidence missing": "الأساس أو الدليل مفقود",
+  "Country not set": "الدولة غير محددة",
+  "Country blocked": "الدولة محظورة",
+  "Licence missing": "الترخيص مفقود",
+  Other: "أخرى",
+  "Add basis evidence": "أضف دليل الأساس",
+  "Open held list": "افتح القائمة المعلّقة",
+  "Nothing is drafted for sending until a row has an evidenced basis and an allowed country.":
+    "لا يُصاغ شيء للإرسال حتى يكون للصف أساس موثّق ودولة مسموحة.",
+  Reason: "السبب",
+  "Reason: All": "السبب: الكل",
+  "Download held list": "تنزيل القائمة المعلّقة",
+  "A row becomes Ready once its basis is evidenced and its country has a reviewed rule.":
+    "يصبح الصف جاهزًا عندما يُوثَّق أساسه وتكون لدولته قاعدة مراجَعة.",
+  "Company / contact": "الشركة / جهة الاتصال",
+  Company: "الشركة",
+  Contact: "جهة الاتصال",
+  Basis: "الأساس",
+  None: "لا يوجد",
+  "Held by rule": "معلّق بحسب القاعدة",
+  "held rows": "صفوف معلّقة",
+  "Held rows are never drafted for sending or exported. Countries: EG, SA, AE, KW, QA, BH, OM; only EG, SA and AE have reviewed rules.":
+    "لا تُصاغ الصفوف المعلّقة للإرسال ولا تُصدَّر أبدًا. الدول المدعومة: EG وSA وAE وKW وQA وBH وOM، والقواعد المراجَعة موجودة لـ EG وSA وAE فقط.",
+  "Stays held": "يبقى معلّقًا",
+  "Choose country": "اختر الدولة",
+  "Add basis": "أضف أساسًا",
+  "Add evidence": "أضف دليلًا",
+  "Add licence": "أضف الترخيص",
+  "Open account": "افتح الحساب",
+  "Country not set: choose one (no default)":
+    "الدولة غير محددة: اختر دولة (لا توجد دولة افتراضية)",
+  "no reviewed rule": "لا توجد قاعدة مراجَعة",
+  "No lawful basis": "لا يوجد أساس قانوني",
+  "Basis without evidence": "أساس بلا دليل",
+  "Consent timestamp missing": "وقت الموافقة مفقود",
+  "Egypt marketing licence missing": "ترخيص التسويق في مصر غير موجود",
+  "Email address is missing": "عنوان البريد مفقود",
+  "Excluded from outreach": "مستثنى من التواصل",
+  "Dropped in triage": "مستبعد في التصنيف",
+  "On hold until contact research is complete":
+    "معلّق حتى يكتمل البحث عن جهة الاتصال",
+  // Basis evidence and country dialogs (v3.2)
+  "Record basis evidence": "سجّل دليل الأساس",
+  "Basis evidence recorded.": "تم تسجيل دليل الأساس.",
+  "Basis type": "نوع الأساس",
+  Consent: "موافقة",
+  Relationship: "علاقة",
+  "This country accepts recorded consent only.":
+    "تقبل هذه الدولة الموافقة المسجّلة فقط.",
+  "Source (URL or note)": "المصدر (رابط أو ملاحظة)",
+  Date: "التاريخ",
+  "Recorded by": "سُجّل بواسطة",
+  automatic: "تلقائي",
+  "Consent timestamp": "وقت الموافقة",
+  "Required for consent basis only · not needed here":
+    "مطلوب لأساس الموافقة فقط · غير لازم هنا",
+  "This row stays held:": "يبقى هذا الصف معلّقًا:",
+  "Saving moves this row to Ready (basis evidenced). Sending still waits for a person’s approval.":
+    "الحفظ ينقل هذا الصف إلى «جاهز» (أساس موثّق). الإرسال ما زال ينتظر موافقة شخص.",
+  "Only owners and reviewers can record basis evidence.":
+    "المالكون والمراجعون فقط يسجّلون دليل الأساس.",
+  "Save evidence": "احفظ الدليل",
+  "Country saved.": "تم حفظ الدولة.",
+  "Only Egypt, Saudi Arabia and the UAE have a reviewed channel rule; other countries stay held.":
+    "لمصر والسعودية والإمارات فقط قاعدة قناة مراجَعة؛ تبقى الدول الأخرى معلّقة.",
+  "Only owners and reviewers can change the country.":
+    "المالكون والمراجعون فقط يغيّرون الدولة.",
+  "Save country": "احفظ الدولة",
+  // Qualification rubric (v3.2)
+  "Qualification rubric": "معيار التأهيل",
+  "The rubric could not load": "تعذّر تحميل المعيار",
+  "Loading rubric…": "جارٍ تحميل المعيار…",
+  "Rule weights must add up to 100.": "يجب أن يكون مجموع أوزان القواعد 100.",
+  "The size band minimum cannot be above its maximum.":
+    "لا يمكن أن يتجاوز الحد الأدنى لفئة الحجم حدها الأقصى.",
+  "The Tier A threshold must be at least the Tier B threshold.":
+    "يجب ألا تقل عتبة الفئة A عن عتبة الفئة B.",
+  "Add at least one title keyword.": "أضف كلمة مفتاحية واحدة على الأقل للمنصب.",
+  "Rubric reset to the pack default.": "أُعيد المعيار إلى افتراضي الحزمة.",
+  "Rubric saved. Existing accounts keep their score until they are scored again.":
+    "تم حفظ المعيار. تحتفظ الحسابات الحالية بدرجتها حتى يُعاد تقييمها.",
+  Remove: "إزالة",
+  "None yet": "لا يوجد بعد",
+  "Pack default": "افتراضي الحزمة",
+  "Edited for this workspace": "معدّل لمساحة العمل هذه",
+  "Scores run 0–100 and every rule explains its points.":
+    "الدرجات من 0 إلى 100 وكل قاعدة تشرح نقاطها.",
+  "Reset to pack default": "إعادة إلى افتراضي الحزمة",
+  "Save rubric": "احفظ المعيار",
+  "Only the workspace owner can change the rubric. You are viewing it read-only.":
+    "مالك مساحة العمل فقط يغيّر المعيار. أنت تعرضه للقراءة فقط.",
+  "Rules and weights": "القواعد والأوزان",
+  Total: "المجموع",
+  Rule: "القاعدة",
+  "Matches and size bands": "المطابقات وفئات الحجم",
+  Weight: "الوزن",
+  "Decision-maker title": "منصب صاحب القرار",
+  English: "الإنجليزية",
+  Arabic: "العربية",
+  "title keywords. See below.": "كلمات مفتاحية للمنصب. التفاصيل أدناه.",
+  "Company size band": "فئة حجم الشركة",
+  "Minimum staff": "الحد الأدنى للموظفين",
+  "Maximum staff": "الحد الأقصى للموظفين",
+  "A website is on record for the company.": "للشركة موقع إلكتروني مسجّل.",
+  "The account is hiring or has recent funding.":
+    "الحساب يوظّف أو حصل على تمويل حديث.",
+  "Tier A from": "الفئة A من",
+  "Tier B from": "الفئة B من",
+  "score or higher": "درجة فأعلى",
+  "Minimum score": "الحد الأدنى للدرجة",
+  "Below this an account is disqualified": "دون هذه الدرجة يُستبعد الحساب",
+  "Title matching: equal points in English and Arabic":
+    "مطابقة المنصب: نقاط متساوية بالإنجليزية والعربية",
+  "A title that contains any keyword earns the full title weight, in either language. Arabic spelling variants are matched.":
+    "المنصب الذي يحتوي أي كلمة مفتاحية ينال وزن المنصب كاملًا بأي من اللغتين. تُطابَق صيغ الإملاء العربية.",
+  "New title keyword": "كلمة مفتاحية جديدة للمنصب",
+  "Add keyword": "أضف كلمة",
+  // Account detail tabs
+  Overview: "نظرة عامة",
+  Sources: "المصادر",
+  "Fit & policy": "الملاءمة والسياسة",
+  Discovery: "الاستكشاف",
+  employees: "موظفًا",
+  "Review a dated source before you draft anything for this account.":
+    "راجع مصدرًا مؤرّخًا قبل أن تصوغ أي شيء لهذا الحساب.",
+  "Resolve before outreach": "عالج قبل التواصل",
+  "Ready to prepare outreach.": "جاهز لتجهيز التواصل.",
+  "Policy saved. Previous copy approvals were invalidated.":
+    "تم حفظ السياسة. أُلغيت موافقات النصوص السابقة.",
+  "What matters before you reach out": "ما يهمّ قبل أن تتواصل",
+  "reviewed sources": "مصادر تمت مراجعتها",
+  "Review source": "راجع المصدر",
+  "Recent activity": "النشاط الأخير",
+  "Reviewed source": "مصدر تمت مراجعته",
+  Reviewed: "تمت المراجعة",
+  "Research brief available": "الملخّص البحثي متاح",
+  "Facts, hypotheses and unknowns remain separate":
+    "تبقى الوقائع والفرضيات والمجهولات منفصلة",
+  "Messages may only cite reviewed claims.":
+    "لا تستشهد الرسائل إلا بادعاءات تمت مراجعتها.",
+  "Save reviewed source": "احفظ المصدر المراجَع",
+  "This contact is held:": "جهة الاتصال هذه معلّقة:",
+  "Save policy": "احفظ السياسة",
+  "Enter outcome manually": "أدخل النتيجة يدويًا",
+  "Confirm call outcome": "أكّد نتيجة المكالمة",
   // Prospect review
   "Evidence saved. Previous copy approvals were invalidated.":
     "تم حفظ الأدلة. أُلغيت موافقات النصوص السابقة.",
@@ -630,6 +1001,43 @@ export const AR: Record<string, string> = {
   "Current draft approved.": "تم اعتماد المسودة الحالية.",
   "sources cited": "مصادر مستشهد بها",
   "Offer-only manual task": "مهمة يدوية مبنية على العرض فقط",
+  // Review queue (U3): queue beside one selected version
+  "Review sections": "أقسام المراجعة",
+  Messages: "الرسائل",
+  Scheduled: "المجدول",
+  "Review queue filters": "تصفية قائمة المراجعة",
+  "Search review items…": "ابحث في عناصر المراجعة…",
+  "To review": "للمراجعة",
+  "Review queue list": "قائمة المراجعة",
+  "No items match your search.": "لا توجد عناصر مطابقة لبحثك.",
+  "Back to queue": "العودة إلى القائمة",
+  "Touch sequence": "تسلسل الرسائل",
+  Day: "اليوم",
+  Call: "مكالمة",
+  "Cited evidence": "الأدلة المستشهد بها",
+  Fact: "حقيقة",
+  Hypothesis: "فرضية",
+  Unknown: "غير معروف",
+  "Source not yet approved": "المصدر لم يُعتمد بعد",
+  "Draft checks": "فحوص المسودة",
+  "No draft check issues": "لا توجد ملاحظات في فحوص المسودة",
+  "checks need attention": "فحوص تحتاج انتباهًا",
+  "Approval does not send. Approved drafts are exported to your own sender.":
+    "الاعتماد لا يرسل. تُصدَّر المسودات المعتمدة إلى المرسِل الخاص بك.",
+  "Editing creates a new version that needs approval again.":
+    "التعديل ينشئ نسخة جديدة تحتاج اعتمادًا من جديد.",
+  "Review next draft": "راجع المسودة التالية",
+  "Campaign readiness": "جاهزية الحملة",
+  "Revise the draft message for ": "راجع صياغة رسالة المسودة لـ ",
+  "Reviewer access": "صلاحية المراجعة",
+  "You can review this work. Editing requires a workspace role with write access.":
+    "يمكنك مراجعة هذا العمل. التعديل يحتاج دورًا في مساحة العمل بصلاحية الكتابة.",
+  "Viewer access": "صلاحية العرض",
+  "You can read this work. Approving requires a workspace role with review access.":
+    "يمكنك قراءة هذا العمل. الاعتماد يحتاج دورًا في مساحة العمل بصلاحية المراجعة.",
+  "Nothing to review in this list.": "لا شيء للمراجعة في هذه القائمة.",
+  "Choose a message from the queue to review it.":
+    "اختر رسالة من القائمة لمراجعتها.",
   Subject: "الموضوع",
   Message: "الرسالة",
   "Approved asset": "المادة المعتمدة",
@@ -652,6 +1060,15 @@ export const AR: Record<string, string> = {
   "Download PDF": "تنزيل PDF",
   "Close preview": "إغلاق المعاينة",
   // Sequences
+  "All sequences": "كل التسلسلات",
+  "Export and outcomes": "التصدير والنتائج",
+  "Open review queue": "فتح قائمة المراجعة",
+  "Prepared sequences stay paused until their sending requirements are satisfied.":
+    "تبقى التسلسلات المجهّزة متوقفة حتى تُستوفى متطلبات إرسالها.",
+  "Sequence detail": "تفاصيل التسلسل",
+  "Sequence sections": "أقسام التسلسلات",
+  "Touch": "اللمسة",
+  "touches": "لمسات",
   "No sequences prepared yet": "لم تُجهّز أي تسلسلات بعد",
   "Approve every touch, run sender pre-flight, and resolve country and consent holds before preparing a sequence.":
     "اعتمد كل رسالة، وشغّل فحص المرسل، وعالج قيود الدولة والموافقة قبل تجهيز التسلسل.",
@@ -666,6 +1083,36 @@ export const AR: Record<string, string> = {
     "تم حظر جهة الاتصال. أُلغيت الرسائل القادمة في كل الخطط.",
   "Record opt-out": "تسجيل إلغاء الاشتراك",
   // Approved-batch export (EXP-01)
+  "An exported batch appears here with its outcomes.":
+    "تظهر الدفعة المصدَّرة هنا مع نتائجها.",
+  "Caravan does not send. Upload this file to your sender.":
+    "كارافان لا يرسل. ارفع هذا الملف إلى مرسلك.",
+  "Contacts in the holdout get the sequence without the asset.":
+    "جهات الاتصال في المجموعة المحجوبة تتلقى التسلسل بدون الأصل.",
+  "Download row report": "تنزيل تقرير الصفوف",
+  "Every row carries its approval digest. On re-import, rows whose digest does not match are not attached.":
+    "يحمل كل صف بصمة اعتماده. عند إعادة الاستيراد لا تُرفق الصفوف التي لا تطابق بصمتها.",
+  "Excluded automatically": "مستبعد تلقائيًا",
+  "Export unlocks when at least one draft is approved for sending. Caravan does not send; the file goes to your own sender.":
+    "يُفتح التصدير عند اعتماد مسودة واحدة على الأقل للإرسال. كارافان لا يرسل؛ الملف يذهب إلى مرسلك.",
+  "Exported batches": "الدفعات المصدَّرة",
+  "Holdout group (%)": "المجموعة المحجوبة (%)",
+  "Import results": "نتائج الاستيراد",
+  "Nothing to export yet": "لا شيء للتصدير بعد",
+  "Open batch scorecard": "فتح بطاقة نتائج الدفعة",
+  "Rows are matched by approval digest or email. A row that does not match the export is never attached.":
+    "تُطابق الصفوف ببصمة الاعتماد أو البريد. لا يُرفق أي صف لا يطابق التصدير.",
+  "Select all approved drafts": "تحديد كل المسودات المعتمدة",
+  "Sending, unsubscribes and bounces happen in your sender. Bring results back with the outcomes upload so they attach to the batch.":
+    "الإرسال وإلغاء الاشتراك والارتداد تحدث في مرسلك. أعد النتائج برفع ملف النتائج لتُرفق بالدفعة.",
+  "We couldn’t load the exports.": "تعذّر تحميل التصديرات.",
+  "approved, basis-cleared": "معتمدة وأساسها القانوني مكتمل",
+  "awaiting review · not included": "بانتظار المراجعة · غير مضمّنة",
+  "held · excluded": "محجوزة · مستبعدة",
+  "ready and waiting for review": "جاهزة وبانتظار المراجعة",
+  "approved drafts": "مسودات معتمدة",
+  "Not attached": "غير مرفق",
+  "Needs a fix": "يحتاج إلى تصحيح",
   "Approved-batch export": "تصدير الدفعة المعتمدة",
   "For your own sender · nothing is sent from here":
     "للمرسل الخاص بك · لا يُرسل شيء من هنا",
@@ -731,6 +1178,175 @@ export const AR: Record<string, string> = {
   "Review this text before saving it as company context.":
     "راجع هذا النص قبل حفظه كسياق للشركة.",
   "Use proposal for review": "استخدام المقترح للمراجعة",
+  // Brand & company (v3.2)
+  "Brand and company sections":
+    "أقسام الهوية والشركة",
+  "Brand book":
+    "دليل الهوية",
+  "Messaging":
+    "الرسائل",
+  "References":
+    "المراجع",
+  "SDR kit":
+    "حقيبة مندوب المبيعات",
+  "Workspace setup":
+    "إعداد مساحة العمل",
+  "Your identity, together in one place.":
+    "هويتك مجمّعة في مكان واحد",
+  "Update brand":
+    "تحديث الهوية",
+  "Color palette":
+    "الألوان",
+  "Primary":
+    "الأساسي",
+  "Accent":
+    "المساند",
+  "Primary and supporting colors":
+    "الألوان الأساسية والمساندة",
+  "Typography":
+    "الخطوط",
+  "Heading and body":
+    "العناوين والنص",
+  "Arabic type":
+    "الخط العربي",
+  "In an email":
+    "في البريد الإلكتروني",
+  "Learn more":
+    "اعرف المزيد",
+  "Preview built from your brand and approved offer":
+    "معاينة مبنية على هويتك والعرض المعتمد",
+  "Bring your brand into Caravan":
+    "أحضر هويتك إلى كاراڤان",
+  "You review the proposed brand before it is used in new deliverables.":
+    "تراجع الهوية المقترحة قبل استخدامها في المواد الجديدة",
+  "Use your website":
+    "استخدم موقعك",
+  "Find your logo, colors and company messaging from your website.":
+    "نستخرج الشعار والألوان ورسائل الشركة من موقعك",
+  "Save brand":
+    "حفظ الهوية",
+  "This takes a moment. Progress is saved if you leave this page.":
+    "يستغرق هذا لحظات. يُحفظ التقدم إن غادرت الصفحة.",
+  "We couldn’t read that website":
+    "تعذّرت قراءة هذا الموقع",
+  "Check the address and try again. Nothing was changed.":
+    "تحقق من العنوان وحاول مرة أخرى. لم يتغير شيء.",
+  "Logo":
+    "الشعار",
+  "No logo found on the page":
+    "لم نجد شعارًا في الصفحة",
+  "Primary color":
+    "اللون الأساسي",
+  "Not found, pick one by hand":
+    "لم نجده، اختره يدويًا",
+  "Accent color":
+    "اللون المساند",
+  "Not found, the current one stays":
+    "لم نجده، يبقى اللون الحالي",
+  "Extracted":
+    "مستخرج",
+  "The context Nabil uses to prepare grounded work.":
+    "السياق الذي يعتمد عليه نبيل في إعداد عمل موثّق",
+  "Only the workspace owner can save company context.":
+    "مالك مساحة العمل وحده يستطيع حفظ سياق الشركة",
+  "A4 profile built only from your approved offer and references with recorded permission.":
+    "ملف بحجم A4 مبني فقط على عرضك المعتمد والمراجع المسجّل إذنها",
+  "Arabic (RTL)":
+    "العربية (من اليمين لليسار)",
+  "Use a holdout group when you want to compare sequences with this profile to sequences without it. The comparison is optional; a single run does not establish a lift.":
+    "استخدم مجموعة مقارنة عندما تريد مقارنة تسلسلات تستخدم هذا الملف بأخرى لا تستخدمه. المقارنة اختيارية؛ ولا تكفي تجربة واحدة لإثبات التحسّن.",
+  "No capability profile yet":
+    "لا يوجد ملف قدرات بعد",
+  "Create one in English or Arabic. You review it before anything is attached to a draft.":
+    "أنشئ واحدًا بالإنجليزية أو العربية. تراجعه قبل إرفاقه بأي مسودة.",
+  "Approve an offer in Messaging first. The profile is built from approved claims only.":
+    "اعتمد عرضًا في الرسائل أولًا. يُبنى الملف من ادعاءات معتمدة فقط.",
+  "Create English profile":
+    "إنشاء ملف بالإنجليزية",
+  "Create Arabic profile":
+    "إنشاء ملف بالعربية",
+  "Your role can view this but not create deliverables.":
+    "دورك يسمح بالعرض فقط ولا يسمح بإنشاء المواد",
+  "Discovery asks about payroll set-up, HR maturity (P1a / P1b / P2) and headcount across Egypt and the GCC.":
+    "تسأل الاستكشافات عن إعداد الرواتب ونضج الموارد البشرية (P1a / P1b / P2) وعدد الموظفين في مصر والخليج",
+  "Neutral discovery questions and rubric for any B2B services provider.":
+    "أسئلة استكشاف ومعايير محايدة لأي مزوّد خدمات B2B",
+  "Same accounts, two packs. Each pack asks its own discovery questions.":
+    "الحسابات نفسها وحزمتان. لكل حزمة أسئلة استكشاف خاصة بها",
+  "This workspace":
+    "مساحة العمل هذه",
+  "Discovery questions":
+    "أسئلة الاستكشاف",
+  "Maturity dimension":
+    "بُعد النضج",
+  "Rubric defaults":
+    "الإعدادات الافتراضية للمعايير",
+  "size":
+    "الحجم",
+  "website":
+    "الموقع",
+  "signal":
+    "الإشارة",
+  "No set-up question. No sector-specific answer is required.":
+    "لا يوجد سؤال إعداد. لا حاجة لإجابة خاصة بقطاع بعينه.",
+  "Approved offer":
+    "العرض المعتمد",
+  "One approved proof item":
+    "دليل واحد معتمد",
+  "Account list of 50–200 rows":
+    "قائمة حسابات من 50 إلى 200 صف",
+  "Approve an offer in Messaging":
+    "اعتمد عرضًا في الرسائل",
+  "Record permission for a reference":
+    "سجّل إذن مرجع",
+  "accounts imported":
+    "حسابًا مستوردًا",
+  "Workflow pack changed. Your accounts are kept.":
+    "تم تغيير حزمة العمل. حساباتك كما هي.",
+  "Choose a workflow pack, then confirm what Nabil may say.":
+    "اختر حزمة العمل ثم أكّد ما يجوز لنبيل قوله",
+  "Workflow pack":
+    "حزمة العمل",
+  "Choose the questions and guidance that fit your business. Switching packs keeps your accounts.":
+    "اختر الأسئلة والإرشادات التي تناسب نشاطك التجاري. تغيير الحزمة يُبقي حساباتك",
+  "Only the workspace owner can change the workflow pack.":
+    "مالك مساحة العمل وحده يستطيع تغيير حزمة العمل",
+  "Hide the comparison":
+    "إخفاء المقارنة",
+  "Compare discovery questions":
+    "مقارنة أسئلة الاستكشاف",
+  "No approved offer yet":
+    "لا يوجد عرض معتمد بعد",
+  "Drafts and profiles can only claim an approved offer.":
+    "لا تدّعي المسودات والملفات إلا عرضًا معتمدًا",
+  "Open messaging":
+    "فتح الرسائل",
+  "Approved proof":
+    "الدليل المعتمد",
+  "No approved proof yet":
+    "لا يوجد دليل معتمد بعد",
+  "Open references":
+    "فتح المراجع",
+  "Drafts and profiles cannot claim anything outside approved proof.":
+    "لا تستطيع المسودات والملفات ادعاء أي شيء خارج الدليل المعتمد",
+  "Ready for first batch":
+    "جاهز للدفعة الأولى",
+  "Not ready":
+    "غير جاهز",
+  "Your first approved batch needs an offer, one proof item and a list of 50 to 200 accounts you already work.":
+    "تحتاج أول دفعة معتمدة إلى عرض ودليل واحد وقائمة من 50 إلى 200 حساب تعمل معها بالفعل",
+  "Import another list":
+    "استيراد قائمة أخرى",
+  "Needs permission":
+    "تحتاج إذنًا",
+  "Company and ideal customer":
+    "الشركة والعميل المثالي",
+  "Approved offers and messaging angles":
+    "العروض المعتمدة وزوايا الرسائل",
+  "Scoring rubric and review rules":
+    "معايير التقييم وقواعد المراجعة",
+  "Outreach rules":
+    "قواعد التواصل",
   // Settings
   fixture: "بيانات تجريبية",
   simulated: "محاكاة",

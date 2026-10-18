@@ -21,6 +21,13 @@ export type ScorecardFilters = {
 };
 
 type Step = { state?: string };
+type ReplyCandidate = {
+  prospectId: string;
+  sequenceId: string;
+  provenance: "live" | "simulated" | "imported";
+  occurredAt: string;
+  label: (typeof REPLY_LABELS)[number] | null;
+};
 
 // A bare date means the whole day: `to` is exclusive of the next midnight.
 function bound(value: string | undefined, end: boolean) {
@@ -126,6 +133,7 @@ export async function scorecard(actor: Actor, filters: ScorecardFilters = {}) {
           sequenceId: { in: [...inScope.keys()] },
           ...(includeSimulated ? {} : { provenance: { not: "simulated" } }),
         },
+        orderBy: [{ occurredAt: "desc" }, { id: "desc" }],
         select: { kind: true, sequenceId: true, provenance: true, occurredAt: true },
       })
     : [];
@@ -167,6 +175,27 @@ export async function scorecard(actor: Actor, filters: ScorecardFilters = {}) {
   for (const l of labels)
     if (l.targetId)
       latest.set(l.targetId, (l.details as { label?: string }).label ?? "");
+  // Reply events survive cancellation of the remaining sequence touches. Use the same
+  // scoped events as the funnel, keeping the latest eligible reply for each prospect.
+  const candidates = new Map<string, ReplyCandidate>();
+  for (const event of events) {
+    if (event.kind !== "replied" || !inRange(event.occurredAt)) continue;
+    const prospectId = inScope.get(event.sequenceId)?.prospectId;
+    if (!prospectId || candidates.has(prospectId)) continue;
+    const provenance = event.provenance;
+    if (
+      provenance !== "live" && provenance !== "simulated" && provenance !== "imported"
+    ) continue;
+    const saved = latest.get(prospectId);
+    candidates.set(prospectId, {
+      prospectId,
+      sequenceId: event.sequenceId,
+      provenance,
+      occurredAt: event.occurredAt.toISOString(),
+      label: saved === "positive" || saved === "neutral" || saved === "negative"
+        ? saved : null,
+    });
+  }
   const labelled = (label: string) =>
     [...latest].filter(([id, value]) => value === label && replied.has(id)).length;
 
@@ -189,6 +218,7 @@ export async function scorecard(actor: Actor, filters: ScorecardFilters = {}) {
     stages: FUNNEL.map((stage) => ({ stage, count: counts[stage] })),
     // Confirmed by a person via reply labels; always a subset of "replied".
     positive: labelled("positive"),
+    replyCandidates: [...candidates.values()],
     replyLabels: {
       positive: labelled("positive"),
       neutral: labelled("neutral"),

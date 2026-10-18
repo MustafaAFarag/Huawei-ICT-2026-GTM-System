@@ -1,0 +1,432 @@
+/* Deliverables only: the shell and other screens retain their shared styles. */
+.deliverables {
+  min-inline-size: 0;
+}
+.deliverable-topline {
+  display: flex;
+  align-items: start;
+  gap: var(--space-5);
+  justify-content: space-between;
+}
+.deliverable-topline .page-tabs {
+  flex: 1;
+}
+.deliverable-toolbar {
+  display: flex;
+  gap: var(--space-3);
+  justify-content: space-between;
+  margin-block: var(--space-5) var(--space-20);
+}
+.deliverable-toolbar input {
+  max-inline-size: 440px;
+  inline-size: 100%;
+}
+.deliverable-toolbar select {
+  inline-size: auto;
+  min-inline-size: 150px;
+}
+.deliverable-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.deliverable-list li {
+  border-block-end: 1px solid var(--line);
+}
+.deliverable-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-20);
+  padding: var(--space-4) var(--space-3);
+  inline-size: 100%;
+  min-block-size: 69px;
+  background: transparent;
+  border: 0;
+  text-align: start;
+  color: var(--text);
+  cursor: pointer;
+}
+.deliverable-row:hover {
+  background: var(--surface);
+}
+.deliverable-row:focus-visible,
+.deliverable-format-picker button:focus-visible,
+.deliverable-phone-tabs button:focus-visible {
+  outline: 2px solid var(--ai);
+  outline-offset: 2px;
+}
+.deliverable-row-main {
+  flex: 1;
+  min-inline-size: 0;
+  display: grid;
+  gap: var(--space-1);
+}
+.deliverable-row-title {
+  font-size: var(--text-md);
+  overflow-wrap: anywhere;
+}
+.deliverable-row-sub {
+  color: var(--text-3);
+  font-size: var(--text-sm);
+  overflow-wrap: anywhere;
+}
+.deliverable-row-icon,
+.deliverable-chevron {
+  color: var(--text-3);
+  flex-shrink: 0;
+}
+.deliverable-pagination {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  padding-block: var(--space-5);
+  font-size: var(--text-sm);
+}
+.deliverables .empty {
+  min-block-size: 330px;
+  justify-content: center;
+}
+.deliverable-create-phone,
+.deliverable-phone-status {
+  display: none;
+}
+.deliverable-create {
+  max-inline-size: 800px;
+}
+.deliverable-create h2 {
+  font-size: var(--text-2xl);
+  margin-block: 0 var(--space-2);
+}
+.deliverable-create form {
+  display: grid;
+  gap: var(--space-5);
+  margin-block-start: var(--space-6);
+}
+.deliverable-format-picker {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--space-3);
+}
+.deliverable-format-picker button {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid transparent;
+  border-radius: var(--radius-control);
+  min-block-size: 52px;
+  padding: var(--space-3);
+  cursor: pointer;
+}
+.deliverable-format-picker button[aria-pressed="true"] {
+  background: var(--surface-2);
+  border-color: var(--line-strong);
+}
+.deliverable-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-20);
+}
+.deliverable-canvas.artifact-canvas,
+.content .deliverable-canvas.artifact-canvas {
+  border: 0;
+  border-radius: 0;
+  background: var(--bg);
+  overflow: visible;
+  block-size: auto;
+  min-block-size: 640px;
+}
+.deliverable-canvas .artifact-bar {
+  padding: 0 0 var(--space-5);
+  border: 0;
+  gap: var(--space-3);
+}
+.deliverable-canvas .artifact-title {
+  gap: var(--space-2);
+}
+.deliverable-canvas .artifact-title h2 {
+  font-size: var(--text-2xl);
+  font-weight: 600;
+  line-height: 1.35;
+}
+.deliverable-canvas .artifact-title .small {
+  font-size: var(--text-sm);
+}
+.deliverable-canvas .artifact-actions {
+  gap: var(--space-2);
+}
+.deliverable-canvas .artifact-actions .btn {
+  min-block-size: 40px;
+}
+.deliverable-canvas .artifact-actions .icon-button {
+  min-inline-size: 36px;
+  min-block-size: 36px;
+}
+.deliverable-workbench {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 278px;
+  gap: var(--space-5);
+  flex: 1;
+  min-block-size: 568px;
+}
+.deliverable-canvas .artifact-body {
+  min-inline-size: 0;
+}
+.deliverable-canvas .artifact-stage {
+  background: var(--surface);
+  padding: var(--space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  min-block-size: 568px;
+}
+.deliverable-stage-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  color: var(--text-3);
+  font-size: var(--text-sm);
+}
+.deliverable-canvas .slides-view {
+  flex: 1;
+  min-block-size: 470px;
+  block-size: 470px;
+}
+.deliverable-canvas .document-view {
+  flex: 1;
+  min-block-size: 470px;
+  block-size: 470px;
+}
+.deliverable-canvas .document-view .fit-contain {
+  block-size: 470px;
+}
+.deliverable-canvas .scaled-frame-inner {
+  box-shadow: none;
+  border-radius: var(--radius-control);
+}
+.deliverable-canvas .email-view {
+  min-block-size: 470px;
+}
+.deliverable-canvas .email-frame {
+  box-shadow: none;
+  border-radius: 0;
+  min-block-size: 470px;
+}
+.deliverable-canvas .flipbook-view {
+  min-block-size: 470px;
+}
+.deliverable-canvas .slide-controls .icon-button {
+  min-inline-size: 36px;
+  min-block-size: 36px;
+}
+.deliverable-canvas .slide-dots {
+  display: none;
+}
+.deliverable-refine {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+  padding: var(--space-20);
+  align-self: start;
+  font-size: var(--text-md);
+  min-inline-size: 0;
+}
+.deliverable-refine h3 {
+  font-size: var(--text-xl);
+  margin: 0 0 var(--space-4);
+}
+.deliverable-refine p {
+  line-height: 1.5;
+  margin-block: var(--space-4);
+}
+.deliverable-refine form {
+  display: grid;
+  gap: var(--space-3);
+}
+.deliverable-refine textarea {
+  resize: vertical;
+  min-block-size: 94px;
+}
+.deliverable-refine form .btn {
+  justify-self: start;
+}
+.deliverable-brand-info {
+  border-block-start: 1px solid var(--line);
+  margin-block-start: var(--space-4);
+  padding-block-start: var(--space-20);
+}
+.deliverable-brand-info strong {
+  font-weight: 500;
+}
+.deliverable-brand-info p {
+  font-size: var(--text-sm);
+}
+.deliverable-history {
+  display: grid;
+  gap: var(--space-3);
+  margin-block-start: var(--space-20);
+  color: var(--text-3);
+  font-size: var(--text-sm);
+}
+.deliverable-history select {
+  max-inline-size: 100%;
+  min-block-size: 40px;
+  padding: var(--space-2);
+  background: var(--bg);
+  border: 1px solid var(--line);
+  color: var(--text);
+  border-radius: var(--radius-control);
+}
+.deliverable-phone-tabs {
+  display: none;
+}
+.deliverable-meta-loading .state {
+  padding: var(--space-3);
+  min-block-size: 0;
+}
+.deliverable-canvas .artifact-foot {
+  line-height: 1.5;
+  font-family: var(--font-sans);
+}
+/* Embedded alongside chat, the canvas shares the single-column adaptation. */
+.home-conversation .deliverable-workbench {
+  grid-template-columns: minmax(0, 1fr);
+}
+.home-conversation .deliverable-refine {
+  display: none;
+}
+.home-conversation .deliverable-canvas .artifact-title h2 {
+  font-size: var(--text-xl);
+}
+@media (max-width: 1100px) {
+  .deliverable-workbench {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .deliverable-refine {
+    display: grid;
+    gap: var(--space-2);
+  }
+}
+@media (max-width: 640px) {
+  .deliverable-topline,
+  .deliverable-toolbar select,
+  .deliverable-status,
+  .deliverable-chevron,
+  .deliverable-row-icon {
+    display: none;
+  }
+  .deliverable-toolbar {
+    margin-block: 0 var(--space-4);
+  }
+  .deliverable-toolbar input {
+    max-inline-size: none;
+    min-block-size: 44px;
+  }
+  .deliverable-list {
+    display: grid;
+    gap: var(--space-4);
+  }
+  .deliverable-list li {
+    border: 0;
+    border-radius: var(--radius-control);
+    background: var(--surface);
+  }
+  .deliverable-row {
+    padding: var(--space-3);
+    gap: var(--space-2);
+    min-block-size: 68px;
+  }
+  .deliverable-phone-status {
+    display: inline;
+  }
+  .deliverable-row-title {
+    font-size: var(--text-lg);
+  }
+  .deliverable-create-phone {
+    display: block;
+    margin-block-start: var(--space-4);
+  }
+  .deliverable-pagination {
+    padding-block-end: 0;
+  }
+  .deliverable-pagination .btn {
+    min-block-size: 40px;
+  }
+  .deliverable-form-grid {
+    grid-template-columns: 1fr;
+  }
+  .deliverable-format-picker {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .deliverable-canvas .artifact-title {
+    flex-basis: 100%;
+  }
+  .deliverable-canvas .artifact-title h2 {
+    font-size: var(--text-2xl);
+  }
+  .deliverable-canvas .artifact-actions {
+    flex: 1 1 100%;
+  }
+  .deliverable-canvas .artifact-bar {
+    padding-block-end: var(--space-4);
+  }
+  .deliverable-canvas .version-picker,
+  .deliverable-canvas .artifact-bar > .mono {
+    display: none;
+  }
+  .deliverable-phone-tabs {
+    display: flex;
+    gap: var(--space-2);
+    margin-block-end: var(--space-4);
+  }
+  .deliverable-phone-tabs button {
+    min-block-size: 36px;
+    background: transparent;
+    border: 0;
+    border-block-end: 2px solid transparent;
+    color: var(--text-3);
+    padding: var(--space-1) var(--space-2);
+  }
+  .deliverable-phone-tabs button[aria-pressed="true"] {
+    color: var(--text);
+    border-color: var(--text);
+  }
+  .deliverable-canvas .artifact-stage {
+    padding: 0;
+    background: var(--bg);
+    min-block-size: 470px;
+    gap: var(--space-3);
+  }
+  .deliverable-canvas .slides-view {
+    block-size: 470px;
+  }
+  .deliverable-stage-label {
+    font-size: var(--text-xs);
+  }
+  .deliverable-workbench {
+    min-block-size: 0;
+  }
+  .deliverable-canvas.mode-preview .deliverable-refine {
+    display: none;
+  }
+  .deliverable-canvas.mode-edit .artifact-body {
+    display: none;
+  }
+  .deliverable-canvas .email-frame {
+    min-block-size: 600px;
+  }
+  .deliverable-canvas .artifact-actions .segmented button {
+    min-inline-size: 36px;
+    min-block-size: 36px;
+  }
+}
+/* The adjacent conversation remains the edit surface when embedded on Home. */
+.home-conversation .deliverable-phone-tabs {
+  display: none;
+}
+.home-conversation .deliverable-canvas.mode-edit .artifact-body {
+  display: flex;
+}

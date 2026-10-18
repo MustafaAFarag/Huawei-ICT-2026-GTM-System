@@ -352,7 +352,7 @@ class ApiController {
     const actor = await actorFor(req.headers, ws);
     assertRole(actor, "write");
     const input = z
-      .object({ assetId: z.uuid(), version: z.number().int().positive() })
+      .object({ assetId: z.uuid().nullable(), version: z.number().int().positive() })
       .parse(body);
     return attachAssetToDraft(ws, id, input);
   }
