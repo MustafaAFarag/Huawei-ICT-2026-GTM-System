@@ -101,6 +101,39 @@ export const AR: Record<string, string> = {
   Slides: "الشرائح",
   "Start from": "ابدأ من",
   Version: "النسخة",
+  Nabil: "نبيل",
+  "What would you like to prepare?": "ماذا تود أن تجهّز؟",
+  "Turn the accounts you already work into reviewed Arabic/English follow-ups and company profiles, with every outcome and every hold recorded in your CRM.":
+    "حوّل الحسابات التي تعمل عليها إلى رسائل متابعة وملفات شركة مراجَعة بالعربية والإنجليزية، مع تسجيل كل نتيجة وكل تعليق في نظام إدارة العملاء.",
+  "Draft follow-ups": "كتابة رسائل متابعة",
+  "Draft a three-step follow-up sequence for ":
+    "اكتب تسلسل متابعة من ثلاث خطوات لـ ",
+  "Company profile": "ملف الشركة",
+  "More formats": "تنسيقات أخرى",
+  "Draft follow-ups, prepare a company profile, or start with an idea…":
+    "اكتب رسائل متابعة أو جهّز ملف شركة أو ابدأ بفكرة…",
+  "Rank my accounts orders accounts you already saved, using your rubric. Ranking does not search for new companies, enrich contacts or send email.":
+    "يرتّب «رتّب حساباتي» الحسابات المحفوظة بالفعل باستخدام معاييرك. لا تبحث عملية الترتيب عن شركات جديدة ولا تُثري بيانات جهات الاتصال ولا ترسل البريد.",
+  "Pick up where you left off": "أكمل من حيث توقفت",
+  "Review your follow-ups": "راجع رسائل المتابعة",
+  "drafts to review": "مسودات للمراجعة",
+  "Your next piece of work starts here": "عملك القادم يبدأ هنا",
+  "Ask Nabil to prepare a follow-up or company profile. Saved work will appear here.":
+    "اطلب من نبيل تجهيز رسالة متابعة أو ملف شركة. سيظهر عملك المحفوظ هنا.",
+  "Caravan is an AI GTM workspace where small B2B services teams research, qualify, follow up and record named accounts in English and Arabic, with a person approving every send.":
+    "كارافان مساحة عمل ذكية تتيح لفرق خدمات الشركات الصغيرة البحث والتأهيل والمتابعة وتسجيل الحسابات بالعربية والإنجليزية، مع موافقة شخص على كل إرسال.",
+  "Refine with Nabil": "عدّل مع نبيل",
+  "Ask Nabil to prepare a follow-up or deliverable…":
+    "اطلب من نبيل تجهيز رسالة متابعة أو مخرج…",
+  "We couldn’t load this conversation.": "تعذّر تحميل هذه المحادثة.",
+  "Your saved work is safe. Try loading the conversation again.":
+    "عملك المحفوظ آمن. حاول تحميل المحادثة مرة أخرى.",
+  "Start a conversation with Nabil": "ابدأ محادثة مع نبيل",
+  "Ask Nabil to prepare a follow-up or company profile.":
+    "اطلب من نبيل تجهيز رسالة متابعة أو ملف شركة.",
+  "Nabil couldn’t finish this reply.": "لم يتمكن نبيل من إكمال هذا الرد.",
+  "Ready to review": "جاهز للمراجعة",
+  "Open preview": "افتح المعاينة",
   "What should Nabil prepare for you today?": "ماذا يجهّز لك نبيل اليوم؟",
   "Ask Nabil to find, draft or create…":
     "اطلب من نبيل أن يبحث أو يكتب أو يصمّم…",
