@@ -76,7 +76,7 @@ export function ReviewQueue() {
     if (visible.length === 0) setPhoneView("list");
   }, [visible.length]);
   const nextPending = selected
-    ? (items.find((i) => !i.approved && i.id !== selected.id) ?? null)
+    ? (visible.find((i) => !i.approved && i.id !== selected.id) ?? null)
     : null;
 
   const tabs = (

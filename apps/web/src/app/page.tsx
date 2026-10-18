@@ -130,6 +130,7 @@ export default function Page() {
   }, [ws]);
 
   const setView = useCallback((next: View) => {
+    if (next !== "Sequences") setExportFocusKey(0);
     setViewState(next);
     setProspect(null);
     setPreview(null);
