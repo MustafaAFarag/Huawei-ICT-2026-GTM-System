@@ -22,7 +22,13 @@ import { assetLabel } from "../../lib/asset-label";
 import type { Asset, Chat, Run } from "../../lib/types";
 import { ChatMarkdown } from "../Markdown";
 import { Nabil, useNabilMood } from "../nabil/Nabil";
-import { Button } from "../primitives";
+import {
+  Badge,
+  Button,
+  EmptyState,
+  ErrorState,
+  LoadingState,
+} from "../primitives";
 import { useWorkspace } from "../workspace-context";
 import { useChat, type ToolStep } from "./controller";
 import type { Proposal } from "../Modals";
@@ -142,7 +148,12 @@ export function DeliverableCard({
   const { t } = usePrefs();
   const Icon = FORMAT_ICONS[template] ?? IconFileText;
   return (
-    <button type="button" className="deliverable-card" onClick={onOpen}>
+    <button
+      type="button"
+      className="deliverable-card"
+      onClick={onOpen}
+      disabled={!asset}
+    >
       <span className="deliverable-icon" aria-hidden>
         <Icon size={18} />
       </span>
@@ -156,7 +167,7 @@ export function DeliverableCard({
           {asset?.approvedAt ? t("Approved") : t("Draft · needs review")}
         </span>
       </span>
-      <span className="deliverable-open">{t("Open")}</span>
+      <span className="deliverable-open">{t("Open preview")}</span>
     </button>
   );
 }
@@ -354,8 +365,26 @@ export function Conversation({
     >
       <div className="conversation-log" aria-live="polite">
         {chat.loadingMessages && !chat.messages.length && (
-          <p className="shimmer muted">{t("Loading conversation…")}</p>
+          <LoadingState title={t("Loading conversation…")} rows={2} />
         )}
+        {chat.messagesError && (
+          <ErrorState
+            title={t("We couldn’t load this conversation.")}
+            message={t(
+              "Your saved work is safe. Try loading the conversation again.",
+            )}
+            onRetry={() => void chat.reload()}
+          />
+        )}
+        {!chat.loadingMessages &&
+          !chat.messagesError &&
+          !chat.messages.length &&
+          !chat.live && (
+            <EmptyState
+              title={t("Start a conversation with Nabil")}
+              text={t("Ask Nabil to prepare a follow-up or company profile.")}
+            />
+          )}
         {chat.messages.map((message) =>
           message.role === "user" ? (
             <div className="msg msg-user" key={message.id}>
@@ -365,7 +394,15 @@ export function Conversation({
             </div>
           ) : (
             <div className="msg msg-assistant" key={message.id}>
-              <span className="nabil-mark" aria-hidden />
+              <div className="nabil-message-head">
+                <Nabil mood="idle" size={24} />
+                <strong>{t("Nabil")}</strong>
+                {message.context?.deliverable && (
+                  <Badge tone="ok" dot={false}>
+                    {t("Ready to review")}
+                  </Badge>
+                )}
+              </div>
               <div className="msg-body">
                 <StepRow names={message.context?.tools ?? []} />
                 <ChatMarkdown text={message.content} />
@@ -405,7 +442,15 @@ export function Conversation({
         )}
         {chat.live && (
           <div className="msg msg-assistant live">
-            <Nabil mood={mood} size={24} className="msg-avatar" />
+            <div className="nabil-message-head">
+              <Nabil mood={mood} size={24} />
+              <strong>{t("Nabil")}</strong>
+              {chat.streaming && (
+                <Badge tone="warn" dot={false}>
+                  {t("Working…")}
+                </Badge>
+              )}
+            </div>
             <div className="msg-body">
               <StepRow
                 names={chat.live.tools.map((tool) => tool.name)}
@@ -429,7 +474,11 @@ export function Conversation({
                 )
               )}
               {chat.live.error && (
-                <p className="error-text">{chat.live.error}</p>
+                <ErrorState
+                  title={t("Nabil couldn’t finish this reply.")}
+                  message={chat.live.error}
+                  onRetry={chat.retry}
+                />
               )}
             </div>
           </div>

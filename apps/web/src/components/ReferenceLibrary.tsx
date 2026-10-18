@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
-import { Button, Check, Field, Input, Panel, Empty } from "./primitives";
+import { Badge, Button, Check, Field, Input, Panel, Empty } from "./primitives";
+import "../styles/pages/brand.css";
 import { useWorkspace } from "./workspace-context";
 import { usePrefs } from "../lib/prefs";
 import { client } from "../lib/client";
@@ -13,14 +14,14 @@ export function ReferenceLibrary() {
   );
   const owner = data.role === "owner";
   return (
-    <Panel title={t("Reference library")}>
-      <p className="muted small">
+    <Panel title={t("Reference library")} className="bc-panel">
+      <p className="bc-lead">
         {t(
           "Only references with recorded consent can appear in generated messages.",
         )}
       </p>
       <form
-        className="stack"
+        className="bc-form"
         onSubmit={(event) => {
           event.preventDefault();
           void action(
@@ -41,7 +42,7 @@ export function ReferenceLibrary() {
           </Empty>
         )}
         {references.map((reference, index) => (
-          <div className="reference-row" key={index}>
+          <div className="bc-ref-row" key={index}>
             <Field label={`${t("Reference name")} ${index + 1}`}>
               <Input
                 dir="auto"
@@ -70,6 +71,9 @@ export function ReferenceLibrary() {
                 )
               }
             />
+            <Badge tone={reference.consent ? "ok" : "warn"} dot={false}>
+              {reference.consent ? t("Approved") : t("Needs permission")}
+            </Badge>
             <Button
               variant="danger"
               size="sm"
@@ -106,12 +110,23 @@ export function SdrKit() {
   const [working, setWorking] = useState(false);
   const [error, setError] = useState(false);
   return (
-    <Panel title={t("SDR onboarding kit")}>
-      <p className="muted small">
+    <Panel title={t("SDR onboarding kit")} className="bc-panel">
+      <p className="bc-lead">
         {t(
           "Download the current ICP, approved offers, angles, scoring rubric and outreach rules for a new teammate.",
         )}
       </p>
+      <ul className="bc-kit-list">
+        {[
+          "Company and ideal customer",
+          "Approved offers and messaging angles",
+          "Scoring rubric and review rules",
+          "Outreach rules",
+        ].map((item) => (
+          <li key={item}>{t(item)}</li>
+        ))}
+      </ul>
+      <div>
       <Button
         disabled={working}
         onClick={async () => {
@@ -135,6 +150,7 @@ export function SdrKit() {
       >
         {t(working ? "Preparing PDF…" : "Download SDR kit")}
       </Button>
+      </div>
       {error && (
         <p className="error-text" role="alert">
           {t("Could not prepare the PDF. Try downloading again.")}

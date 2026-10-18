@@ -30,13 +30,13 @@ test("triage, discovery, consent references and SDR PDF in both interface direct
     .getByRole("button", { name: "Open", exact: true })
     .first()
     .click();
-  await page.getByRole("tab", { name: "Triage", exact: true }).click();
+  await page.getByRole("button", { name: "Triage", exact: true }).click();
   await page
     .getByRole("textbox", { name: "Rationale", exact: true })
     .fill("Synthetic workflow verification");
   await page.getByRole("button", { name: "Save triage", exact: true }).click();
   await expect(page.getByRole("status")).toContainText("Triage saved");
-  await page.getByRole("tab", { name: "Discovery", exact: true }).click();
+  await page.getByRole("button", { name: "Discovery", exact: true }).click();
   const discovery = page.locator("section").filter({
     has: page.getByRole("heading", {
       name: "Discovery interview",
@@ -57,6 +57,7 @@ test("triage, discovery, consent references and SDR PDF in both interface direct
   await expect(discovery.getByText("Saved", { exact: true })).toBeVisible();
   await page.locator(".sidebar").getByRole("button", { name: "Campaigns", exact: true }).click();
   await page.getByRole("button", { name: "Sequences", exact: true }).click();
+  await page.getByRole("button", { name: "Results", exact: true }).click();
   await expect(
     page.getByRole("heading", { name: "Funnel and discovery", exact: true }),
   ).toBeVisible();
@@ -66,6 +67,10 @@ test("triage, discovery, consent references and SDR PDF in both interface direct
   await page
     .getByRole("button", { name: "Brand & company", exact: true })
     .click();
+  const brandTabs = page.getByRole("navigation", {
+    name: "Brand and company sections",
+  });
+  await brandTabs.getByRole("button", { name: "References", exact: true }).click();
   await expect(
     page.getByRole("heading", { name: "Reference library", exact: true }),
   ).toBeVisible();
@@ -114,6 +119,7 @@ test("triage, discovery, consent references and SDR PDF in both interface direct
     await context.request.get(`/api/workspaces/${workspace}`)
   ).json();
   expect(savedContext.workspace.company.references.at(-1).consent).toBe(false);
+  await brandTabs.getByRole("button", { name: "SDR kit", exact: true }).click();
   const downloadPromise = page.waitForEvent("download");
   await page
     .getByRole("button", { name: "Download SDR kit", exact: true })

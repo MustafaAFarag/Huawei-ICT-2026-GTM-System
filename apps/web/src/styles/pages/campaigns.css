@@ -1,0 +1,604 @@
+/* Campaigns page (Plays, Sequences, Results, Export). Figma frames: Campaigns, Plays, Play detail,
+   Sequences, Sequence detail, Results, Schedules, v3.2 Export, Import outcomes, Scorecard.
+   Tokens only; logical properties so Arabic mirrors. */
+.cmp-page {
+  display: grid;
+  gap: var(--space-6);
+  min-inline-size: 0;
+}
+.screen > .cmp-page {
+  margin-block-start: 0;
+}
+.cmp-section {
+  display: grid;
+  gap: var(--space-4);
+  min-inline-size: 0;
+}
+.cmp-section-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+.cmp-heading {
+  margin: 0;
+  color: var(--text);
+  font-size: var(--text-xl);
+  font-weight: 600;
+  line-height: 1.3;
+}
+.cmp-page h3 {
+  margin: 0;
+  color: var(--text);
+  font-size: var(--text-lg);
+  font-weight: 600;
+}
+.cmp-spacer {
+  flex: 1;
+}
+.cmp-chips {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+}
+.cmp-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 12px;
+  border-radius: var(--radius-control);
+  background: var(--surface-2);
+  color: var(--text-3);
+  font-size: var(--text-sm);
+  font-weight: 500;
+}
+.cmp-note {
+  color: var(--text-3);
+}
+
+/* Metrics under the page tabs (Plays). */
+.cmp-metrics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-6);
+  margin: 0;
+}
+.cmp-metrics div {
+  display: grid;
+  gap: 2px;
+}
+.cmp-metrics dt {
+  color: var(--text-4);
+  font-size: var(--text-xs);
+}
+.cmp-metrics dd {
+  margin: 0;
+  color: var(--text);
+  font-size: var(--text-lg);
+  font-weight: 600;
+}
+.cmp-metrics dd span {
+  color: var(--text-3);
+  font-size: var(--text-sm);
+  font-weight: 400;
+}
+
+/* Sub navigation inside Sequences. */
+.cmp-subtabs {
+  display: inline-flex;
+  max-inline-size: 100%;
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding: 2px;
+  border-radius: var(--radius-control);
+  background: var(--surface-2);
+  justify-self: start;
+}
+.cmp-subtabs button {
+  flex: none;
+  block-size: 30px;
+  padding: 0 var(--space-3);
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-3);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.cmp-subtabs button:hover {
+  color: var(--text);
+}
+.cmp-subtabs button[aria-current="page"] {
+  background: var(--bg);
+  color: var(--text);
+  box-shadow: var(--key);
+}
+
+/* List rows (plays, sequences, schedules). */
+.cmp-list {
+  display: grid;
+  border-block-end: 1px solid var(--line);
+}
+.cmp-row {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: var(--space-3);
+  inline-size: 100%;
+  padding: var(--space-4) var(--space-2);
+  border: 0;
+  border-block-start: 1px solid var(--line);
+  background: transparent;
+  color: var(--text);
+  text-align: start;
+  font: inherit;
+}
+button.cmp-row {
+  cursor: pointer;
+}
+button.cmp-row:hover,
+.cmp-row.is-selected {
+  background: var(--surface);
+}
+.cmp-row-icon {
+  display: inline-grid;
+  place-items: center;
+  color: var(--text-3);
+  font-size: var(--text-xs);
+}
+.cmp-row-text {
+  display: grid;
+  gap: 2px;
+  min-inline-size: 0;
+}
+.cmp-row-text strong {
+  font-size: var(--text-md);
+  font-weight: 500;
+}
+.cmp-row-sub {
+  color: var(--text-3);
+  font-size: var(--text-sm);
+  line-height: 1.45;
+}
+.cmp-row-trail {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--space-2);
+}
+.cmp-row-chevron {
+  color: var(--text-3);
+}
+.cmp-row:not(button) .cmp-row-chevron,
+.cmp-row > .cmp-row-trail:last-child {
+  grid-column: auto;
+}
+.cmp-back {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  justify-self: start;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--text-3);
+  font-size: var(--text-sm);
+  cursor: pointer;
+}
+.cmp-back:hover {
+  color: var(--text);
+}
+
+/* Cards. */
+.cmp-card {
+  display: grid;
+  gap: var(--space-4);
+  align-content: start;
+  min-inline-size: 0;
+  padding: var(--space-5);
+  border-radius: var(--radius-card);
+  background: var(--surface);
+}
+.cmp-card h2 {
+  margin: 0;
+  color: var(--text);
+  font-size: var(--text-xl);
+  font-weight: 600;
+}
+.cmp-card-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+.cmp-card .table-wrap {
+  border-radius: var(--radius-control);
+  background: var(--bg);
+}
+
+/* Play run sheet. */
+.cmp-run {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(240px, 320px);
+  gap: var(--space-5);
+  align-items: start;
+}
+.cmp-steps {
+  display: grid;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.cmp-steps .cmp-step {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border: 0;
+  border-radius: var(--radius-card);
+  background: var(--surface);
+}
+.cmp-step-index {
+  display: grid;
+  place-items: center;
+  inline-size: 26px;
+  block-size: 26px;
+  border-radius: 50%;
+  background: var(--surface-3);
+  color: var(--text-2);
+  font-size: var(--text-xs);
+}
+.cmp-step-body {
+  display: grid;
+  gap: 2px;
+  min-inline-size: 0;
+}
+.cmp-step-body p {
+  margin: 0;
+  color: var(--text-3);
+  font-size: var(--text-sm);
+}
+.cmp-step-cost {
+  color: var(--text-4);
+  font-size: var(--text-xs);
+}
+.cmp-run-side {
+  position: sticky;
+  inset-block-start: var(--space-4);
+}
+.cmp-run-side .btn {
+  justify-self: start;
+}
+
+/* Sequence detail. */
+.cmp-touches {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-block-end: 1px solid var(--line);
+}
+.cmp-touch {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr) auto;
+  align-items: start;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-2);
+  border-block-start: 1px solid var(--line);
+}
+.cmp-touch-body {
+  display: grid;
+  gap: var(--space-1);
+  min-inline-size: 0;
+}
+.cmp-touch-body p {
+  margin: 0;
+  color: var(--text-3);
+  font-size: var(--text-sm);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+/* Scorecard. */
+.cmp-filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--space-3);
+}
+.cmp-score {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(260px, 340px);
+  gap: var(--space-5);
+  align-items: start;
+}
+.cmp-score-main {
+  display: grid;
+  gap: var(--space-5);
+  min-inline-size: 0;
+}
+.cmp-stages {
+  display: grid;
+  gap: var(--space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.cmp-stages li {
+  display: grid;
+  grid-template-columns: minmax(90px, 140px) minmax(60px, 1fr) 36px minmax(70px, 150px);
+  align-items: center;
+  gap: var(--space-3);
+  font-size: var(--text-sm);
+}
+.cmp-bar {
+  display: block;
+  block-size: 14px;
+  border-radius: var(--radius-badge);
+  background: var(--surface-3);
+  overflow: hidden;
+}
+.cmp-bar > span {
+  display: block;
+  block-size: 100%;
+  min-inline-size: 2px;
+  border-radius: var(--radius-badge);
+  background: var(--info);
+}
+.cmp-stage-count {
+  text-align: end;
+  color: var(--text);
+  font-weight: 600;
+}
+.cmp-stage-note {
+  font-size: var(--text-xs);
+}
+.cmp-empty-flow {
+  display: grid;
+  gap: var(--space-3);
+  justify-items: start;
+}
+.cmp-empty-flow h3 {
+  font-size: var(--text-xl);
+}
+.cmp-flow {
+  margin: 0;
+  padding: var(--space-4);
+  border-radius: var(--radius-control);
+  background: var(--bg);
+  color: var(--text-2);
+}
+.cmp-confirm {
+  display: grid;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.cmp-confirm li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-control);
+  background: var(--bg);
+}
+.cmp-confirm-who {
+  display: grid;
+  gap: 2px;
+  min-inline-size: 0;
+}
+.cmp-confirm-actions {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+.cmp-measures dl {
+  display: grid;
+  gap: var(--space-4);
+  margin: 0;
+}
+.cmp-measures dl > div {
+  display: grid;
+  gap: var(--space-1);
+  padding-block-end: var(--space-4);
+  border-block-end: 1px solid var(--line);
+}
+.cmp-measures dl > div:last-child {
+  padding-block-end: 0;
+  border-block-end: 0;
+}
+.cmp-measures dt {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  color: var(--text-3);
+  font-size: var(--text-sm);
+}
+.cmp-measures dd {
+  display: grid;
+  gap: 2px;
+  margin: 0;
+}
+.cmp-measures dd strong {
+  color: var(--text);
+  font-size: var(--text-lg);
+  font-weight: 600;
+}
+.cmp-unit {
+  color: var(--text-3);
+  font-size: var(--text-sm);
+  font-weight: 400;
+}
+
+/* Export and outcomes. */
+.cmp-blocked {
+  display: grid;
+  justify-items: center;
+  gap: var(--space-3);
+  padding: var(--space-7) var(--space-5);
+  border-radius: var(--radius-card);
+  background: var(--bg);
+  text-align: center;
+}
+.cmp-blocked-icon {
+  display: grid;
+  place-items: center;
+  color: var(--text-3);
+}
+.cmp-blocked p {
+  margin: 0;
+}
+.cmp-notice {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border-radius: var(--radius-control);
+  background: var(--info-tint);
+  color: var(--text-2);
+  font-size: var(--text-sm);
+}
+.cmp-notice.warn {
+  background: var(--warn-tint);
+  color: var(--warn);
+}
+.cmp-notice p {
+  margin: 0;
+}
+.cmp-notice strong {
+  display: block;
+  margin-block-end: 2px;
+}
+.cmp-export-form {
+  display: grid;
+  gap: var(--space-4);
+}
+.cmp-export-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+.cmp-picklist {
+  display: grid;
+  gap: var(--space-2);
+  max-block-size: 220px;
+  margin: 0;
+  padding: var(--space-3);
+  overflow: auto;
+  list-style: none;
+  border-radius: var(--radius-control);
+  background: var(--bg);
+}
+.cmp-export-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+.cmp-holdout {
+  max-inline-size: 260px;
+}
+.cmp-excluded {
+  display: grid;
+  gap: var(--space-2);
+}
+.cmp-batches {
+  display: grid;
+  gap: var(--space-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.cmp-batch {
+  display: grid;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border-radius: var(--radius-control);
+  background: var(--bg);
+}
+.cmp-batch-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+}
+.cmp-import {
+  display: grid;
+  gap: var(--space-3);
+}
+.cmp-rows {
+  max-block-size: 320px;
+  overflow: auto;
+}
+
+/* Disclosures under the play run sheet. */
+.cmp-disclosure {
+  margin-block-start: 0;
+}
+
+@media (max-width: 960px) {
+  .cmp-run,
+  .cmp-score {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .cmp-run-side {
+    position: static;
+  }
+}
+@media (max-width: 640px) {
+  .cmp-page {
+    gap: var(--space-5);
+  }
+  .cmp-row {
+    grid-template-columns: 28px minmax(0, 1fr) auto;
+  }
+  .cmp-row > .cmp-row-trail {
+    grid-column: 2 / -1;
+    grid-row: 2;
+    justify-content: flex-start;
+  }
+  .cmp-steps .cmp-step {
+    grid-template-columns: 28px minmax(0, 1fr);
+  }
+  .cmp-steps .cmp-step > .btn {
+    grid-column: 2;
+    justify-self: start;
+  }
+  .cmp-stages li {
+    grid-template-columns: minmax(0, 1fr) 36px;
+    row-gap: var(--space-1);
+  }
+  .cmp-stages .cmp-bar {
+    grid-column: 1 / -1;
+    grid-row: 2;
+  }
+  .cmp-stages .cmp-stage-note {
+    grid-column: 1 / -1;
+    grid-row: 3;
+  }
+  .cmp-touch {
+    grid-template-columns: 28px minmax(0, 1fr);
+  }
+  .cmp-touch > .badge {
+    grid-column: 2;
+    justify-self: start;
+  }
+  .cmp-card {
+    padding: var(--space-4);
+  }
+  .cmp-filters > * {
+    flex: 1 1 140px;
+  }
+}
