@@ -32,7 +32,10 @@ export function Launcher({
   const wasOpen = useRef(open);
 
   useEffect(() => {
-    if (open) requestAnimationFrame(() => panel.current?.querySelector("textarea")?.focus());
+    if (open)
+      requestAnimationFrame(() =>
+        panel.current?.querySelector("textarea")?.focus(),
+      );
     else if (wasOpen.current) bubble.current?.focus();
     wasOpen.current = open;
   }, [open]);
@@ -40,7 +43,10 @@ export function Launcher({
   useEffect(() => {
     if (!open) return;
     const onKey = (event: KeyboardEvent) => {
-      if (event.key === "Escape" && !document.querySelector('[role="dialog"]')) {
+      if (
+        event.key === "Escape" &&
+        !document.querySelector('[role="dialog"]')
+      ) {
         event.preventDefault();
         onOpenChange(false);
       }
@@ -50,7 +56,7 @@ export function Launcher({
   }, [open, onOpenChange]);
 
   return (
-    <div className="launcher">
+    <div className="launcher nabil-launcher">
       {open && (
         <div
           className="launcher-panel"
@@ -61,7 +67,7 @@ export function Launcher({
           <header className="launcher-head">
             <Nabil mood={mood} size={26} />
             <div className="launcher-title">
-              <strong>Nabil</strong>
+              <strong>{t("Nabil")}</strong>
               <span className="muted small truncate" dir="auto">
                 {chat.thread?.title ?? t("New chat")}
               </span>
@@ -119,7 +125,9 @@ export function Launcher({
         <span className="launcher-label">
           {open ? t("Close Nabil") : t("Ask Nabil")}
         </span>
-        {chat.streaming && !open && <span className="launcher-pulse" aria-hidden />}
+        {chat.streaming && !open && (
+          <span className="launcher-pulse" aria-hidden />
+        )}
       </button>
     </div>
   );

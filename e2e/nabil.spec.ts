@@ -35,11 +35,11 @@ test("home composer starts a thread that persists, with safe streamed Markdown",
 }) => {
   const { ws } = await workspace(page, context);
   await expect(page.getByRole("heading", { level: 1 })).toContainText(
-    /Good (morning|afternoon|evening)/,
+    "What would you like to prepare?",
   );
+  await page.getByRole("button", { name: "More formats", exact: true }).click();
   await page
-    .getByRole("listitem")
-    .filter({ hasText: "Instagram carousel" })
+    .getByRole("button", { name: "Instagram carousel", exact: true })
     .click();
   await expect(page.locator("#assistant-input")).toHaveValue(
     /Instagram carousel about/,

@@ -61,7 +61,7 @@ export function CallLog({ prospect }: { prospect: Prospect }) {
     setSyncWarning("");
   };
   return (
-    <Panel eyebrow={t("Calls")} title={t("Log a call outcome")}>
+    <Panel className="acct-pane" eyebrow={t("Calls")} title={t("Log a call outcome")}>
       <div className="call-log">
         <Field
           label={t("Call note")}
@@ -137,7 +137,7 @@ export function CallLog({ prospect }: { prospect: Prospect }) {
             });
           }}
         >
-          {t("Log manually")}
+          {t("Enter outcome manually")}
         </Button>
         <p className="muted small">
           {data.modelFixture
@@ -146,7 +146,8 @@ export function CallLog({ prospect }: { prospect: Prospect }) {
           · {t("Nothing is saved until you confirm.")}
         </p>
         {suggestion && (
-          <>
+          <div className="acct-card acct-confirm">
+            <h3>{t("Confirm call outcome")}</h3>
             <div className="outcome-row" role="group" aria-label={t("Outcome")}>
               {OUTCOMES.map((o) => (
                 <button
@@ -258,7 +259,7 @@ export function CallLog({ prospect }: { prospect: Prospect }) {
             >
               {t("Confirm and save")}
             </Button>
-          </>
+          </div>
         )}
         {error && <p className="error-text small">{error}</p>}
         {syncWarning && (

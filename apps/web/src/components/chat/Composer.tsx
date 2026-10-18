@@ -3,9 +3,10 @@ import { useEffect, useRef, useState, type KeyboardEvent } from "react";
 import {
   IconArrowUp,
   IconPlayerStopFilled,
-  IconPlus,
+  IconPaperclip,
   IconX,
 } from "@revenue/ui";
+import "../../styles/pages/home.css";
 import { PLAYS } from "@revenue/contracts";
 import { usePrefs } from "../../lib/prefs";
 import { assetLabel } from "../../lib/asset-label";
@@ -48,6 +49,7 @@ export function Composer({
     setChatLanguage,
     activeAssetId,
   } = useWorkspace();
+  const menuId = `${id}-context`;
   const [text, setText] = useState("");
   const [voiceError, setVoiceError] = useState("");
   const [menuOpen, setMenuOpen] = useState(false);
@@ -85,6 +87,7 @@ export function Composer({
 
   const submit = () => {
     if (!text.trim() || chat.streaming || !canWrite) return;
+    if (chat.loadingMessages) return;
     const value = text;
     setText("");
     void chat.send(value);
@@ -103,7 +106,7 @@ export function Composer({
 
   return (
     <form
-      className={`composer composer-${variant}`}
+      className={`composer nabil-composer composer-${variant}`}
       onSubmit={(event) => {
         event.preventDefault();
         submit();
@@ -152,7 +155,7 @@ export function Composer({
           t(
             activeAssetId
               ? "Change the heading, layout or wording…"
-              : "Ask Nabil to find, draft or create…",
+              : "Ask Nabil to prepare a follow-up or deliverable…",
           )
         }
         onChange={(event) => {
@@ -161,7 +164,11 @@ export function Composer({
         }}
         onKeyDown={onKeyDown}
       />
-      {voiceError && <p className="error-text small">{voiceError}</p>}
+      {voiceError && (
+        <p role="alert" className="error-text small">
+          {voiceError}
+        </p>
+      )}
       <div className="composer-bar">
         <div className="composer-tools" ref={menu}>
           <button
@@ -169,14 +176,21 @@ export function Composer({
             className="icon-button"
             aria-label={t("Add context")}
             aria-expanded={menuOpen}
-            aria-haspopup="true"
+            aria-controls={menuId}
             onClick={() => setMenuOpen((open) => !open)}
           >
-            <IconPlus size={16} />
+            <IconPaperclip size={18} />
           </button>
           {menuOpen && (
             <div
+              id={menuId}
               className="composer-menu"
+              onKeyDown={(event) => {
+                if (event.key === "Escape") {
+                  setMenuOpen(false);
+                  menu.current?.querySelector("button")?.focus();
+                }
+              }}
               role="group"
               aria-label={t("Add context")}
             >
@@ -205,9 +219,15 @@ export function Composer({
               ))}
             </div>
           )}
-          <span className="composer-meta mono">
-            {play} ·{" "}
-            {chatLanguage === "auto" ? t("Auto language") : chatLanguage}
+          <span
+            className="composer-meta"
+            title={`${data.workspace.name} · ${data.pack.label[uiLanguage]}`}
+          >
+            <bdi>{data.workspace.name}</bdi>
+            <span className="composer-pack">
+              {" "}
+              · {data.pack.label[uiLanguage]}
+            </span>
           </span>
         </div>
         <div className="composer-actions">
@@ -236,9 +256,9 @@ export function Composer({
               type="submit"
               className="send-button"
               aria-label={t("Send")}
-              disabled={!canWrite || !text.trim()}
+              disabled={!canWrite || !text.trim() || chat.loadingMessages}
             >
-              {variant === "hero" ? t("Send") : <IconArrowUp size={16} />}
+              {variant !== "compact" ? t("Send") : <IconArrowUp size={16} />}
             </button>
           )}
         </div>
