@@ -377,6 +377,8 @@ export const AR: Record<string, string> = {
   From: "من",
   To: "إلى",
   "Include simulated": "تضمين التجريبي",
+  "Simulated activity included": "النشاط التجريبي مُضمّن",
+  "Simulated activity excluded": "النشاط التجريبي مُستبعد",
   "Could not load results. Try again.": "تعذّر تحميل النتائج أعد المحاولة",
   "Funnel and discovery": "مسار النتائج والاستكشاف",
   "A batch counts once it holds a non-simulated sequence.":
@@ -763,7 +765,7 @@ export const AR: Record<string, string> = {
   "held · excluded": "محجوزة · مستبعدة",
   "ready and waiting for review": "جاهزة وبانتظار المراجعة",
   "rows": "صفوف",
-  "rows in file": "صفوف في الملف",
+  "approved drafts": "مسودات معتمدة",
   "rows need attention": "صفوف تحتاج إلى انتباه",
   "Not attached": "غير مرفق",
   "Needs a fix": "يحتاج إلى تصحيح",

@@ -354,7 +354,7 @@ export function ExportBatches({
               </div>
               <div className="cmp-chips">
                 <Badge tone="ok" dot={false}>
-                  {latest.count} {t("rows in file")}
+                  {latest.count} {t("approved drafts")}
                 </Badge>
                 {excluded.length > 0 && (
                   <Badge tone="warn" dot={false}>

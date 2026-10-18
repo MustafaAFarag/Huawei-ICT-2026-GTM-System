@@ -163,13 +163,15 @@ export function Scorecard({ initialBatch = "" }: { initialBatch?: string }) {
         : "Live";
   const label = (row: SequenceRow, value: Label) =>
     void action(
-      () =>
-        client.workspace(ws, `/prospects/${row.prospectId}/reply-label`, {
+      async () => {
+        await client.workspace(ws, `/prospects/${row.prospectId}/reply-label`, {
           method: "POST",
           body: JSON.stringify({ label: value, sequenceId: row.id }),
-        }),
+        });
+        setLabelled((labels) => ({ ...labels, [row.prospectId]: value }));
+      },
       t("Reply label saved. The scorecard counts only labels a person confirmed."),
-    ).then(() => setLabelled((l) => ({ ...l, [row.prospectId]: value })));
+    );
 
   return (
     <div className="cmp-page">
@@ -217,9 +219,13 @@ export function Scorecard({ initialBatch = "" }: { initialBatch?: string }) {
                   {t("Each stage counts distinct prospects from the event log.")}
                 </p>
               </div>
-              {(data.fixture || includeSimulated) && (
-                <Badge tone="info">{t("Simulated")}</Badge>
-              )}
+              <Badge tone={includeSimulated ? "info" : "neutral"}>
+                {t(
+                  includeSimulated
+                    ? "Simulated activity included"
+                    : "Simulated activity excluded",
+                )}
+              </Badge>
             </div>
             {noRun ? (
               <div className="cmp-empty-flow">
