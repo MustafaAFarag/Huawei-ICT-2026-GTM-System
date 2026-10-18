@@ -3,7 +3,7 @@
 Goal: implement the logo, A1–A8 and the Figma redesign. Plan: `/home/mustafa/.claude-skylink/plans/next-open-a-new-polymorphic-eclipse.md`.
 Done: A1–A8 acceptance tests pass; pages match Figma (desktop, phone, Arabic; 4 states); typecheck, test and e2e green; `feat/v32` merged to local `main`; no worktrees left.
 Stop: no push, deploy, prospect contact or paid model calls. Synthetic data only.
-Lane: native `hub-worker` (Sonnet 5.5 high), one task per worktree; `hub-tester` black-box tests; main session reviews and merges.
+Lane: existing Claude Skylink page workers finish without interruption; remaining implementation uses native Codex Skylink workers (GPT-6.1-Sol, medium), one task per worktree. Read-only inventory uses Luna 6 xhigh. Main session reviews and verifies each result. User authorized this account switch on 18 October.
 
 - [x] Wave 0: `feat/v32` branch; migration `20261018000100_v32_foundation` (pack, rubric, nullable country, basisEvidence, Sequence batchId/playVersionId, ProviderEvent provenance, ExportBatch); `contracts/src/packs.ts`; A8 wording; "Rank my accounts" starter.
 - [x] Fixed tests calling paid models: `.env` has `MODEL_MODE=live`, so `pnpm test` used Azure. `apps/api/vitest.config.ts` now forces fixture mode. The 4 baseline failures were caused by this.
@@ -19,7 +19,7 @@ Lane: native `hub-worker` (Sonnet 5.5 high), one task per worktree; `hub-tester`
   - [x] Frames: 109 PNGs in ignored `.local/figma-frames/` with `index.json` (page groups). Figma Education plan MCP call limit hit after 107 calls; the last 2 v3.2 frames came from `.local/figma-v32/`; Foundations page not exported (tokens taken from v3.2 variables).
   - [x] U0 shell/tokens/primitives merged (`8b11c85`). First worker stopped on the session limit; main session finished it: restored the mobile drawer CSS and a broken media query, added Arabic for renamed nav (Campaigns, Review, Brand & company). E2E updated for the renamed navigation; 16/16 on U0.
   - [ ] Batch A running (own stacks on ports 3122–3125): U2 Accounts (+rubric, triage, basis evidence), U3 Review, U4 Campaigns (+export, outcomes, scorecard), U5 Brand & company (+pack setup, capability profile). Common brief: `.local/ui-brief-common.md`.
-  - [ ] Batch B next: U1 Home/chat, U6 Deliverables, U7 Settings.
+  - [ ] Batch B next: U1 Home/chat, U6 Deliverables, U7 Settings (Codex Skylink; recovery inventory underway).
 - [ ] Final: full checks, walkthrough, merge to main, worktrees removed
 
 ---
