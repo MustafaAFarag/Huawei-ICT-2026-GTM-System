@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import type { ProspectSnapshot } from "@revenue/contracts";
-import { Badge, Button, Empty, Skeleton } from "./primitives";
+import { Badge, Button, EmptyState, ErrorState, LoadingState } from "./primitives";
 import { useWorkspace } from "./workspace-context";
 import { usePrefs } from "../lib/prefs";
 import { client } from "../lib/client";
@@ -12,10 +12,13 @@ type Row = {
   crmPersonId: string | null;
 };
 
-// GAP-02: review near-duplicate groups and keep one record per person.
-export function Duplicates() {
+// GAP-02: review near-duplicate groups side by side and keep one record per person.
+// Keeping one excludes the others; nothing is deleted.
+export function Duplicates({ onBack }: { onBack?: () => void }) {
   const { ws, canWrite, busy, action } = useWorkspace();
-  const { t } = usePrefs();
+  const { t, language } = usePrefs();
+  const num = (value: number) =>
+    value.toLocaleString(language === "ar" ? "ar-EG" : "en");
   const [groups, setGroups] = useState<Row[][] | null>(null);
   const [error, setError] = useState(false);
   const [retry, setRetry] = useState(0);
@@ -41,61 +44,84 @@ export function Duplicates() {
   }, [ws, retry]);
   if (error)
     return (
-      <div role="alert">
-        <p>{t("Could not load duplicates. Try again.")}</p>
-        <Button onClick={() => setRetry((v) => v + 1)}>{t("Retry")}</Button>
-      </div>
+      <ErrorState
+        title={t("Duplicates could not load")}
+        message={t("Could not load duplicates. Try again.")}
+        onRetry={() => setRetry((v) => v + 1)}
+        retryLabel={t("Retry")}
+      />
     );
-  if (!groups) return <Skeleton rows={4} />;
+  if (!groups) return <LoadingState title={t("Loading duplicates…")} rows={3} />;
   if (!groups.length)
     return (
-      <Empty title={t("No duplicates found")}>
-        {t("Every person appears once in this workspace.")}
-      </Empty>
+      <EmptyState
+        title={t("No duplicates found")}
+        text={t("Every person appears once in this workspace.")}
+        action={
+          onBack && <Button onClick={onBack}>{t("Back to accounts")}</Button>
+        }
+      />
     );
   return (
-    <div className="dup-list">
-      {groups.map((group) => (
-        <div className="dup-group" key={group.map((r) => r.id).join()}>
-          <p className="eyebrow">
-            {group.length} {t("records look like the same person")}
+    <section className="acct-task" aria-label={t("Review possible duplicates")}>
+      <div className="acct-section-head">
+        <div>
+          <h2>{t("Review possible duplicates")}</h2>
+          <p className="muted">
+            {t("Compare the records before deciding what to keep.")}
           </p>
-          {group.map((row) => (
-            <div className="dup-row" key={row.id}>
-              <div>
-                <strong dir="auto">
-                  {row.snapshot.firstName} {row.snapshot.lastName}
-                </strong>
-                <p className="muted small">
-                  <span dir="auto">{row.snapshot.company}</span> ·{" "}
-                  <bdi>{row.snapshot.email || t("no email")}</bdi>
-                </p>
-              </div>
-              {row.crmPersonId && <Badge tone="info">CRM</Badge>}
-              <Button
-                size="sm"
-                disabled={!canWrite || busy}
-                onClick={() =>
-                  void action(async () => {
-                    await client.workspace(ws, "/duplicates/resolve", {
-                      method: "POST",
-                      body: JSON.stringify({
-                        keepId: row.id,
-                        dropIds: group
-                          .filter((r) => r.id !== row.id)
-                          .map((r) => r.id),
-                      }),
-                    });
-                    await load();
-                  }, t("Duplicate resolved. The other records were excluded."))
-                }
-              >
-                {t("Keep this one")}
-              </Button>
-            </div>
-          ))}
         </div>
-      ))}
-    </div>
+      </div>
+      <div className="acct-dups">
+        {groups.map((group) => (
+          <div className="acct-dup-group" key={group.map((r) => r.id).join()}>
+            <p className="eyebrow">
+              {num(group.length)} {t("records look like the same person")}
+            </p>
+            <div className="acct-dup-cards">
+              {group.map((row) => (
+                <article className="acct-dup-card" key={row.id}>
+                  <header>
+                    <h3 dir="auto">
+                      {row.snapshot.firstName} {row.snapshot.lastName}
+                    </h3>
+                    {row.crmPersonId && <Badge tone="info">CRM</Badge>}
+                  </header>
+                  <p dir="auto">{row.snapshot.company}</p>
+                  <p className="muted">
+                    <bdi>{row.snapshot.email || t("no email")}</bdi>
+                  </p>
+                  <Button
+                    variant="primary"
+                    disabled={!canWrite || busy}
+                    onClick={() =>
+                      void action(async () => {
+                        await client.workspace(ws, "/duplicates/resolve", {
+                          method: "POST",
+                          body: JSON.stringify({
+                            keepId: row.id,
+                            dropIds: group
+                              .filter((r) => r.id !== row.id)
+                              .map((r) => r.id),
+                          }),
+                        });
+                        await load();
+                      }, t("Duplicate resolved. The other records were excluded."))
+                    }
+                  >
+                    {t("Keep this one")}
+                  </Button>
+                </article>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+      {onBack && (
+        <div className="button-row">
+          <Button onClick={onBack}>{t("Back to accounts")}</Button>
+        </div>
+      )}
+    </section>
   );
 }
