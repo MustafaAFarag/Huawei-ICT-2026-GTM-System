@@ -15,14 +15,17 @@ export const TABS = [
 ] as const;
 export type Tab = (typeof TABS)[number];
 export type View = "Home" | Tab;
+// Sequences is not in the sidebar: it is a tab of the Campaigns page, next to Plays.
+// The sidebar highlights Campaigns for both ids.
+export const CAMPAIGN_VIEWS: readonly Tab[] = ["Plays", "Sequences"];
 // Display names. Internal ids stay stable because assistant tools and prompts use them.
 export const TAB_LABELS: Record<Tab, string> = {
-  Plays: "Plays",
+  Plays: "Campaigns",
   Accounts: "Accounts",
-  "Review queue": "Review queue",
+  "Review queue": "Review",
   "Asset Studio": "Deliverables",
   Sequences: "Sequences",
-  "Company context": "Company context",
+  "Company context": "Brand & company",
   Settings: "Settings",
 };
 

@@ -73,4 +73,5 @@ export {
   IconArrowLeft,
   IconChevronLeft,
   IconFileZip,
+  IconPalette,
 } from "@tabler/icons-react";
