@@ -66,6 +66,10 @@ test("triage, discovery, consent references and SDR PDF in both interface direct
   await page
     .getByRole("button", { name: "Brand & company", exact: true })
     .click();
+  const brandTabs = page.getByRole("navigation", {
+    name: "Brand and company sections",
+  });
+  await brandTabs.getByRole("button", { name: "References", exact: true }).click();
   await expect(
     page.getByRole("heading", { name: "Reference library", exact: true }),
   ).toBeVisible();
@@ -114,6 +118,7 @@ test("triage, discovery, consent references and SDR PDF in both interface direct
     await context.request.get(`/api/workspaces/${workspace}`)
   ).json();
   expect(savedContext.workspace.company.references.at(-1).consent).toBe(false);
+  await brandTabs.getByRole("button", { name: "SDR kit", exact: true }).click();
   const downloadPromise = page.waitForEvent("download");
   await page
     .getByRole("button", { name: "Download SDR kit", exact: true })

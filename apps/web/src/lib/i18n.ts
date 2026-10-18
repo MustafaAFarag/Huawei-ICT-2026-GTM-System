@@ -731,6 +731,185 @@ export const AR: Record<string, string> = {
   "Review this text before saving it as company context.":
     "راجع هذا النص قبل حفظه كسياق للشركة.",
   "Use proposal for review": "استخدام المقترح للمراجعة",
+  // Brand & company (v3.2)
+  "Brand and company sections":
+    "أقسام الهوية والشركة",
+  "Brand book":
+    "دليل الهوية",
+  "Messaging":
+    "الرسائل",
+  "References":
+    "المراجع",
+  "SDR kit":
+    "حقيبة مندوب المبيعات",
+  "Workspace setup":
+    "إعداد مساحة العمل",
+  "Your identity, together in one place.":
+    "هويتك مجمّعة في مكان واحد",
+  "Close":
+    "إغلاق",
+  "Update brand":
+    "تحديث الهوية",
+  "Color palette":
+    "الألوان",
+  "Primary":
+    "الأساسي",
+  "Accent":
+    "المساند",
+  "Primary and supporting colors":
+    "الألوان الأساسية والمساندة",
+  "Typography":
+    "الخطوط",
+  "Heading and body":
+    "العناوين والنص",
+  "Arabic type":
+    "الخط العربي",
+  "In an email":
+    "في البريد الإلكتروني",
+  "Learn more":
+    "اعرف المزيد",
+  "Preview built from your brand and approved offer":
+    "معاينة مبنية على هويتك والعرض المعتمد",
+  "Bring your brand into Caravan":
+    "أحضر هويتك إلى كاراڤان",
+  "You review the proposed brand before it is used in new deliverables.":
+    "تراجع الهوية المقترحة قبل استخدامها في المواد الجديدة",
+  "Use your website":
+    "استخدم موقعك",
+  "Find your logo, colors and company messaging from your website.":
+    "نستخرج الشعار والألوان ورسائل الشركة من موقعك",
+  "Save brand":
+    "حفظ الهوية",
+  "This takes a moment. Progress is saved if you leave this page.":
+    "يستغرق هذا لحظات. يُحفظ التقدم إن غادرت الصفحة.",
+  "We couldn’t read that website":
+    "تعذّرت قراءة هذا الموقع",
+  "Check the address and try again. Nothing was changed.":
+    "تحقق من العنوان وحاول مرة أخرى. لم يتغير شيء.",
+  "Logo":
+    "الشعار",
+  "No logo found on the page":
+    "لم نجد شعارًا في الصفحة",
+  "Primary color":
+    "اللون الأساسي",
+  "Not found, pick one by hand":
+    "لم نجده، اختره يدويًا",
+  "Accent color":
+    "اللون المساند",
+  "Not found, the current one stays":
+    "لم نجده، يبقى اللون الحالي",
+  "Extracted":
+    "مستخرج",
+  "The context Nabil uses to prepare grounded work.":
+    "السياق الذي يعتمد عليه نبيل في إعداد عمل موثّق",
+  "Only the workspace owner can save company context.":
+    "مالك مساحة العمل وحده يستطيع حفظ سياق الشركة",
+  "A4 profile built only from your approved offer and references with recorded permission.":
+    "ملف بحجم A4 مبني فقط على عرضك المعتمد والمراجع المسجّل إذنها",
+  "In holdout test: asset vs no asset":
+    "ضمن اختبار المقارنة: بالملف أو بدونه",
+  "English":
+    "English",
+  "Arabic (RTL)":
+    "العربية (من اليمين لليسار)",
+  "About one in five sequences goes out without the profile so the effect can be measured. No lift is claimed from a single run.":
+    "يخرج نحو تسلسل من كل خمسة بدون الملف لقياس أثره. لا نزعم تحسنًا من تشغيل واحد.",
+  "No capability profile yet":
+    "لا يوجد ملف قدرات بعد",
+  "Create one in English or Arabic. You review it before anything is attached to a draft.":
+    "أنشئ واحدًا بالإنجليزية أو العربية. تراجعه قبل إرفاقه بأي مسودة.",
+  "Approve an offer in Messaging first. The profile is built from approved claims only.":
+    "اعتمد عرضًا في الرسائل أولًا. يُبنى الملف من ادعاءات معتمدة فقط.",
+  "Create English profile":
+    "إنشاء ملف بالإنجليزية",
+  "Create Arabic profile":
+    "إنشاء ملف بالعربية",
+  "Your role can view this but not create deliverables.":
+    "دورك يسمح بالعرض فقط ولا يسمح بإنشاء المواد",
+  "Discovery asks about payroll set-up, HR maturity (P1a / P1b / P2) and headcount across Egypt and the GCC.":
+    "تسأل الاستكشافات عن إعداد الرواتب ونضج الموارد البشرية (P1a / P1b / P2) وعدد الموظفين في مصر والخليج",
+  "Neutral discovery questions and rubric for any B2B services provider.":
+    "أسئلة استكشاف ومعايير محايدة لأي مزوّد خدمات B2B",
+  "Same accounts, two packs. Each pack asks its own discovery questions.":
+    "الحسابات نفسها وحزمتان. لكل حزمة أسئلة استكشاف خاصة بها",
+  "This workspace":
+    "مساحة العمل هذه",
+  "Discovery questions":
+    "أسئلة الاستكشاف",
+  "Maturity dimension":
+    "بُعد النضج",
+  "Rubric defaults":
+    "الإعدادات الافتراضية للمعايير",
+  "Title":
+    "المسمى",
+  "size":
+    "الحجم",
+  "website":
+    "الموقع",
+  "signal":
+    "الإشارة",
+  "No set-up question. No sector-specific answer is required.":
+    "لا يوجد سؤال إعداد. لا حاجة لإجابة خاصة بقطاع بعينه.",
+  "Approved offer":
+    "العرض المعتمد",
+  "One approved proof item":
+    "دليل واحد معتمد",
+  "Account list of 50–200 rows":
+    "قائمة حسابات من 50 إلى 200 صف",
+  "Approve an offer in Messaging":
+    "اعتمد عرضًا في الرسائل",
+  "Record permission for a reference":
+    "سجّل إذن مرجع",
+  "accounts imported":
+    "حسابًا مستوردًا",
+  "Workflow pack changed. Your accounts are kept.":
+    "تم تغيير حزمة العمل. حساباتك كما هي.",
+  "Choose a workflow pack, then confirm what Nabil may say.":
+    "اختر حزمة العمل ثم أكّد ما يجوز لنبيل قوله",
+  "Workflow pack":
+    "حزمة العمل",
+  "Packs are data: questions, maturity bands, angle keys and rubric defaults. Switching packs keeps your accounts.":
+    "الحزم بيانات: أسئلة وفئات نضج ومفاتيح زوايا وإعدادات معايير. تغيير الحزمة يُبقي حساباتك",
+  "Only the workspace owner can change the workflow pack.":
+    "مالك مساحة العمل وحده يستطيع تغيير حزمة العمل",
+  "Hide the comparison":
+    "إخفاء المقارنة",
+  "Compare discovery questions":
+    "مقارنة أسئلة الاستكشاف",
+  "No approved offer yet":
+    "لا يوجد عرض معتمد بعد",
+  "Drafts and profiles can only claim an approved offer.":
+    "لا تدّعي المسودات والملفات إلا عرضًا معتمدًا",
+  "Open messaging":
+    "فتح الرسائل",
+  "Approved proof":
+    "الدليل المعتمد",
+  "No approved proof yet":
+    "لا يوجد دليل معتمد بعد",
+  "Open references":
+    "فتح المراجع",
+  "Drafts and profiles cannot claim anything outside approved proof.":
+    "لا تستطيع المسودات والملفات ادعاء أي شيء خارج الدليل المعتمد",
+  "Ready for first batch":
+    "جاهز للدفعة الأولى",
+  "Not ready":
+    "غير جاهز",
+  "Your first approved batch needs an offer, one proof item and a list of 50 to 200 accounts you already work.":
+    "تحتاج أول دفعة معتمدة إلى عرض ودليل واحد وقائمة من 50 إلى 200 حساب تعمل معها بالفعل",
+  "Import another list":
+    "استيراد قائمة أخرى",
+  "Needs permission":
+    "تحتاج إذنًا",
+  "Remove":
+    "إزالة",
+  "Company and ideal customer":
+    "الشركة والعميل المثالي",
+  "Approved offers and messaging angles":
+    "العروض المعتمدة وزوايا الرسائل",
+  "Scoring rubric and review rules":
+    "معايير التقييم وقواعد المراجعة",
+  "Outreach rules":
+    "قواعد التواصل",
   // Settings
   Billing: "الفوترة",
   "Spending and plan": "الإنفاق والخطة",
