@@ -27,7 +27,14 @@ import { client } from "../lib/client";
 import { usePrefs } from "../lib/prefs";
 import { assetLabel } from "../lib/asset-label";
 import type { Asset } from "../lib/types";
-import { Badge, Button } from "./primitives";
+import "../styles/pages/deliverables.css";
+import {
+  Badge,
+  Button,
+  ErrorPanel,
+  LoadingState,
+  Textarea,
+} from "./primitives";
 import { useWorkspace } from "./workspace-context";
 
 type Meta = {
@@ -130,9 +137,14 @@ export function ArtifactCanvas({
   onSelectVersion: (asset: Asset) => void;
 }) {
   const { t } = usePrefs();
-  const { canApprove, busy, action, data } = useWorkspace();
+  const { canApprove, canWrite, busy, action, data, askNabil, setTab } =
+    useWorkspace();
   const format = formatOf(asset);
   const base = `/api/workspaces/${ws}/assets/${asset.id}`;
+  const [change, setChange] = useState("");
+  const [metaError, setMetaError] = useState(false);
+  const [metaRetry, setMetaRetry] = useState(0);
+  const [previewMode, setPreviewMode] = useState<"preview" | "edit">("preview");
   const [meta, setMeta] = useState<Meta | null>(null);
   const [slide, setSlide] = useState(1);
   const [emailWidth, setEmailWidth] = useState<600 | 375>(600);
@@ -153,16 +165,18 @@ export function ArtifactCanvas({
   useEffect(() => {
     setSlide(1);
     setMeta(null);
+    setMetaError(false);
+    setChange("");
     setExportError("");
     let cancelled = false;
     void client
       .workspace<Meta>(ws, `/assets/${asset.id}/meta`)
       .then((m) => !cancelled && setMeta(m))
-      .catch(() => {});
+      .catch(() => !cancelled && setMetaError(true));
     return () => {
       cancelled = true;
     };
-  }, [ws, asset.id]);
+  }, [ws, asset.id, metaRetry]);
 
   const pages = meta?.pages ?? 1;
   useEffect(() => {
@@ -287,7 +301,8 @@ export function ArtifactCanvas({
           width={format.size.width}
           height={format.size.height * Math.max(1, pages)}
           src={`${base}/html`}
-          title="Sandboxed asset preview"
+          title={t("Document preview")}
+          fit={pages > 1 ? "width" : "contain"}
         />
       </div>
     );
@@ -295,7 +310,7 @@ export function ArtifactCanvas({
   const errors = meta?.lint.filter((l) => l.level === "error").length ?? 0;
   return (
     <section
-      className="artifact-canvas"
+      className={`artifact-canvas deliverable-canvas mode-${previewMode}`}
       aria-labelledby="artifact-title"
       data-ai-target="asset-preview"
     >
@@ -331,7 +346,11 @@ export function ArtifactCanvas({
           <span className="mono muted small">v1</span>
         )}
         {asset.template === "capability-profile" && (
-          <span title={t("Ships with an asset-vs-no-asset holdout: a share of sequences go out without this profile.")}>
+          <span
+            title={t(
+              "Ships with an asset-vs-no-asset holdout: a share of sequences go out without this profile.",
+            )}
+          >
             <Badge tone="info">{t("Holdout test")}</Badge>
           </span>
         )}
@@ -367,7 +386,13 @@ export function ArtifactCanvas({
             size="sm"
             variant="ai"
             startIcon={<IconWand size={14} />}
-            onClick={onEdit}
+            onClick={() => {
+              if (canWrite && !busy) onEdit();
+            }}
+            disabled={!canWrite || busy}
+            aria-describedby={
+              !canWrite ? "deliverable-refine-permission" : undefined
+            }
           >
             {t("Edit with Nabil")}
           </Button>
@@ -436,41 +461,171 @@ export function ArtifactCanvas({
           </button>
         </div>
       </header>
+      {!canWrite && (
+        <p id="deliverable-refine-permission" className="muted">
+          {t(
+            "You have read-only access to deliverables. Ask a workspace owner or editor to create or revise one.",
+          )}
+        </p>
+      )}
       {exportError && (
         <p role="alert" className="inline-error small artifact-error">
           {exportError}
         </p>
       )}
-      <div className="artifact-body">
-        <div className="artifact-stage" ref={stage}>
-          {view}
-        </div>
-        {meta && meta.lint.length > 0 && (
-          <aside className="lint-panel" aria-label={t("Compatibility checks")}>
-            <p className="eyebrow">
-              {t("Compatibility checks")} ·{" "}
-              {errors ? `${errors} ${t("to fix")}` : t("no blockers")}
+      <div
+        className="deliverable-phone-tabs"
+        role="group"
+        aria-label={t("Deliverable view")}
+      >
+        <button
+          type="button"
+          aria-pressed={previewMode === "preview"}
+          onClick={() => setPreviewMode("preview")}
+        >
+          {t("Preview")}
+        </button>
+        <button
+          type="button"
+          aria-pressed={previewMode === "edit"}
+          onClick={() => setPreviewMode("edit")}
+        >
+          {t("Edit")}
+        </button>
+      </div>
+      <div className="deliverable-workbench">
+        <div className="artifact-body">
+          {!meta && !metaError && (
+            <div className="deliverable-meta-loading">
+              <LoadingState title={t("Loading preview…")} />
+            </div>
+          )}
+          {metaError && (
+            <ErrorPanel
+              title={t("Preview details could not load")}
+              actions={
+                <Button onClick={() => setMetaRetry((n) => n + 1)}>
+                  {t("Try again")}
+                </Button>
+              }
+            >
+              {t(
+                "You can still view the deliverable. Retry to load page counts and compatibility checks.",
+              )}
+            </ErrorPanel>
+          )}
+          <div className="artifact-stage" ref={stage}>
+            <div className="deliverable-stage-label">
+              <span>
+                {t(
+                  format.viewer === "flipbook"
+                    ? "Spread view"
+                    : format.viewer === "email"
+                      ? "Email preview"
+                      : "Fit to page",
+                )}
+              </span>
+              <bdi dir="ltr">
+                {asset.language} · v
+                {asset.version ?? Math.max(1, versionIndex + 1)}
+              </bdi>
+            </div>
+            {view}
+          </div>
+          {meta && meta.lint.length > 0 && (
+            <aside
+              className="lint-panel"
+              aria-label={t("Compatibility checks")}
+            >
+              <p className="eyebrow">
+                {t("Compatibility checks")} ·{" "}
+                {errors ? `${errors} ${t("to fix")}` : t("no blockers")}
+              </p>
+              <ul>
+                {meta.lint.map((item, i) => (
+                  <li key={i} className={`lint-${item.level}`}>
+                    <span className="dot" aria-hidden />
+                    <span>
+                      <strong className="mono">{item.rule}</strong>{" "}
+                      {t(item.message)}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </aside>
+          )}
+          {format.viewer === "email" && meta && (
+            <p className="artifact-foot muted small mono">
+              <bdi dir="ltr">{(meta.bytes / 1024).toFixed(1)} KB</bdi>
+              {asset.template === "email-gmail" &&
+                ` · ${t("Gmail clips above 102 KB")}`}
             </p>
-            <ul>
-              {meta.lint.map((item, i) => (
-                <li key={i} className={`lint-${item.level}`}>
-                  <span className="dot" aria-hidden />
-                  <span>
-                    <strong className="mono">{item.rule}</strong>{" "}
-                    {t(item.message)}
-                  </span>
-                </li>
-              ))}
-            </ul>
-          </aside>
-        )}
-        {format.viewer === "email" && meta && (
-          <p className="artifact-foot muted small mono">
-            <bdi dir="ltr">{(meta.bytes / 1024).toFixed(1)} KB</bdi>
-            {asset.template === "email-gmail" &&
-              ` · ${t("Gmail clips above 102 KB")}`}
+          )}
+        </div>
+        <aside
+          className="deliverable-refine"
+          aria-labelledby="deliverable-refine-title"
+        >
+          <h3 id="deliverable-refine-title">{t("Refine with Nabil")}</h3>
+          <p className="muted">
+            {t("Describe the change. Each revision is saved as a new draft.")}
           </p>
-        )}
+          <form
+            onSubmit={(event) => {
+              event.preventDefault();
+              if (canWrite && !busy && change.trim())
+                askNabil(
+                  `${t("Revise this deliverable")}: ${assetLabel(asset, t)} (${asset.id}). ${change.trim()}`,
+                );
+            }}
+          >
+            <label htmlFor="deliverable-change">{t("Your change")}</label>
+            <Textarea
+              id="deliverable-change"
+              disabled={!canWrite || busy}
+              aria-describedby={
+                !canWrite ? "deliverable-refine-permission" : undefined
+              }
+              rows={4}
+              value={change}
+              maxLength={1500}
+              onChange={(event) => setChange(event.target.value)}
+            />
+            <Button
+              type="submit"
+              variant="primary"
+              disabled={!canWrite || !change.trim() || busy}
+            >
+              {t("Apply change")}
+            </Button>
+          </form>
+          <div className="deliverable-brand-info">
+            <strong>{t("Brand & company")}</strong>
+            <p className="muted">
+              {t("Preview uses your saved brand version.")}
+            </p>
+            <Button onClick={() => setTab("Company context")}>
+              {t("View brand book")}
+            </Button>
+          </div>
+          <label className="deliverable-history">
+            <span>{t("Version history")}</span>
+            <select
+              value={asset.id}
+              onChange={(event) => {
+                const next = versions.find((a) => a.id === event.target.value);
+                if (next) onSelectVersion(next);
+              }}
+            >
+              {versions.map((v, i) => (
+                <option key={v.id} value={v.id}>
+                  v{v.version ?? i + 1} ·{" "}
+                  {v.approvedAt ? t("Approved") : t("Needs review")}
+                </option>
+              ))}
+            </select>
+          </label>
+        </aside>
       </div>
     </section>
   );
