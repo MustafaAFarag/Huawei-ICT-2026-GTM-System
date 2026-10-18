@@ -10,7 +10,7 @@ async function login(page: Page) {
   // The session comes from e2e/global-setup.ts (sign-in is rate-limited).
   await page.goto("/?s=Plays");
   await expect(
-    page.getByRole("heading", { name: "Plays", exact: true }),
+    page.getByRole("heading", { name: "Campaigns", exact: true }),
   ).toBeVisible();
 }
 test("four plays, bilingual asset, approval invalidation, suppression and workspace isolation", async ({
@@ -46,7 +46,7 @@ test("four plays, bilingual asset, approval invalidation, suppression and worksp
     ).ok(),
   ).toBe(true);
   await page
-    .getByRole("button", { name: "Company context", exact: true })
+    .getByRole("button", { name: "Brand & company", exact: true })
     .click();
   await page
     .getByLabel("I reviewed this offer; it does not claim an unverified result")
@@ -97,7 +97,7 @@ test("four plays, bilingual asset, approval invalidation, suppression and worksp
   await page.getByLabel("Evidence date", { exact: true }).fill("2026-10-13");
   await page.getByRole("button", { name: "Save evidence and policy" }).click();
   await expect(page.getByRole("status")).toContainText("Evidence saved");
-  await page.getByRole("button", { name: "Plays", exact: true }).click();
+  await page.locator(".sidebar").getByRole("button", { name: "Campaigns", exact: true }).click();
   async function runUi(tool: ToolName, play: string) {
     await page.getByRole("button", { name: new RegExp(`^${play} `) }).click();
     const step = page.locator(".step").filter({
@@ -129,7 +129,7 @@ test("four plays, bilingual asset, approval invalidation, suppression and worksp
       .last()
       .getByRole("checkbox")
       .check();
-    await page.getByRole("button", { name: "Plays", exact: true }).click();
+    await page.locator(".sidebar").getByRole("button", { name: "Campaigns", exact: true }).click();
   }
   await runUi("preflight", "P2");
   await runUi("score_accounts", "P1");
@@ -137,7 +137,7 @@ test("four plays, bilingual asset, approval invalidation, suppression and worksp
   await runUi("draft_messages", "P1");
   let state = await (await context.request.get(base)).json();
   const draft = state.drafts.find((d: any) => d.prospectId === prospect.id);
-  await page.getByRole("button", { name: "Review queue", exact: true }).click();
+  await page.locator(".sidebar").getByRole("button", { name: "Review", exact: true }).click();
   const review = page
     .locator("section.panel")
     .filter({ hasText: companyName })
@@ -147,7 +147,7 @@ test("four plays, bilingual asset, approval invalidation, suppression and worksp
     .check();
   await review.getByRole("button", { name: "Approve current version" }).click();
   await expect(review).toContainText("Approved");
-  await page.getByRole("button", { name: "Plays", exact: true }).click();
+  await page.locator(".sidebar").getByRole("button", { name: "Campaigns", exact: true }).click();
   await page.getByLabel("Content language").selectOption("ar-EG");
   await runUi("make_asset", "P1");
   state = await (await context.request.get(base)).json();

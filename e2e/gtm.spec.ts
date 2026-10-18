@@ -9,7 +9,7 @@ test("triage, discovery, consent references and SDR PDF in both interface direct
   await page.goto("/?s=Plays");
   expect(await page.evaluate(() => isSecureContext)).toBe(true);
   await expect(
-    page.getByRole("heading", { name: "Plays", exact: true }),
+    page.getByRole("heading", { name: "Campaigns", exact: true }),
   ).toBeVisible();
   const me = await (await context.request.get("/api/me")).json();
   const workspace = me.workspaces.find(
@@ -55,6 +55,7 @@ test("triage, discovery, consent references and SDR PDF in both interface direct
     "Discovery answers saved",
   );
   await expect(discovery.getByText("Saved", { exact: true })).toBeVisible();
+  await page.locator(".sidebar").getByRole("button", { name: "Campaigns", exact: true }).click();
   await page.getByRole("button", { name: "Sequences", exact: true }).click();
   await expect(
     page.getByRole("heading", { name: "Funnel and discovery", exact: true }),
@@ -63,7 +64,7 @@ test("triage, discovery, consent references and SDR PDF in both interface direct
     page.getByRole("columnheader", { name: "Pain scores", exact: true }),
   ).toBeVisible();
   await page
-    .getByRole("button", { name: "Company context", exact: true })
+    .getByRole("button", { name: "Brand & company", exact: true })
     .click();
   await expect(
     page.getByRole("heading", { name: "Reference library", exact: true }),
@@ -120,7 +121,7 @@ test("triage, discovery, consent references and SDR PDF in both interface direct
   const download = await downloadPromise;
   expect(download.suggestedFilename()).toBe("sdr-onboarding-kit.pdf");
   expect(await download.failure()).toBeNull();
-  await page.getByRole("button", { name: "Plays", exact: true }).click();
+  await page.locator(".sidebar").getByRole("button", { name: "Campaigns", exact: true }).click();
   await page.locator("summary").filter({ hasText: "Launch checklist" }).click();
   await expect(
     page.getByRole("heading", { name: "Launch checklist", exact: true }),
