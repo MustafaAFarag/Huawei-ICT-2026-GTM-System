@@ -1,0 +1,344 @@
+import { test, expect, type BrowserContext, type Page } from "@playwright/test";
+import { randomUUID } from "node:crypto";
+
+// Black-box acceptance: only documented endpoints and rendered accessible UI.
+// Run against the isolated fixture database, never a live provider environment.
+async function workspace(page: Page, context: BrowserContext) {
+  await page.goto("/");
+  const response = await context.request.get("/api/me");
+  expect(response.ok()).toBe(true);
+  const me = await response.json();
+  const membership = me.workspaces.find(
+    (item: any) => item.workspace.name === "Qimam People",
+  );
+  expect(membership, "The synthetic Qimam People workspace must be seeded").toBeTruthy();
+  const ws = membership.workspace.id as string;
+  const workspacePicker = page.getByLabel("Workspace", { exact: true });
+  await workspacePicker.selectOption(ws);
+  await expect(workspacePicker).toHaveValue(ws);
+  const hide = page.getByRole("button", { name: "Hide assistant", exact: true });
+  if (await hide.isVisible()) await hide.click();
+  return { ws, base: `/api/workspaces/${ws}`, me };
+}
+
+async function importAccounts(context: BrowserContext, base: string, count = 2) {
+  const suffix = randomUUID().replace(/[^a-z]/g, "").slice(0, 10);
+  const accounts = Array.from({ length: count }, (_, index) => ({
+    email: `v32${suffix}${index}@synthetic-demo.example`,
+    company: `Synthetic V32 ${suffix} ${index}`,
+  }));
+  const imported = await context.request.post(`${base}/imports`, {
+    multipart: {
+      requestKey: randomUUID(),
+      file: {
+        name: `v32-${suffix}.csv`,
+        mimeType: "text/csv",
+        buffer: Buffer.from(
+          "firstName,lastName,email,company,website,title,employees\n" +
+            accounts.map((account, index) =>
+              `Synthetic,Tester${index},${account.email},${account.company},https://example.com,Founder,15\n`,
+            ).join(""),
+        ),
+      },
+    },
+  });
+  const importBody = await imported.text();
+  let importOutcome: unknown = importBody;
+  try {
+    importOutcome = JSON.parse(importBody);
+  } catch {}
+  console.log("Import response row outcomes:", JSON.stringify(importOutcome));
+  expect(imported.status(), importBody).toBe(200);
+  const state = await (await context.request.get(base)).json();
+  const persisted = accounts.map((account) => {
+    const prospect = state.prospects.find((item: any) => item.snapshot.email === account.email);
+    expect(prospect, `Import must persist ${account.email}`).toBeTruthy();
+    return prospect;
+  });
+  console.log("Persisted import CRM links:", JSON.stringify(persisted.map((item: any) => ({
+    email: item.snapshot.email,
+    crmPersonId: item.crmPersonId,
+  }))));
+  return persisted;
+}
+
+async function openAccount(page: Page, prospect: any) {
+  await page.getByRole("button", { name: "Accounts", exact: true }).click();
+  await page.getByRole("searchbox", { name: "Search accounts", exact: true }).fill(prospect.snapshot.email);
+  // Email is searchable but the rendered row identifies the account by its displayed company.
+  const row = page.getByRole("row").filter({ hasText: prospect.snapshot.company });
+  await expect(row).toHaveCount(1);
+  await row.getByRole("button", { name: "Open", exact: true }).click();
+}
+
+async function savePolicy(page: Page, id: string) {
+  const saved = page.waitForResponse((response) =>
+    response.url().endsWith(`/prospects/${id}`) && response.request().method() === "PATCH",
+  );
+  await page.getByRole("button", { name: "Save evidence and policy", exact: true }).click();
+  const response = await saved;
+  expect(response.ok(), await response.text()).toBe(true);
+  await expect(page.getByRole("status")).toContainText("Evidence saved");
+}
+
+test("A3: country and basis holds stay visible until an explicit evidence save, preserving another country", async ({ page, context }) => {
+  const { base, ws } = await workspace(page, context);
+  const [missing, saudi] = await importAccounts(context, base);
+  await page.reload();
+  await expect(page.getByLabel("Workspace", { exact: true })).toHaveValue(ws);
+  await openAccount(page, missing);
+  await page.getByRole("button", { name: "Fit & policy", exact: true }).click();
+  await expect(page.getByLabel("Country", { exact: true })).toHaveValue("");
+  await expect(page.getByText(/held/i).first()).toBeVisible();
+  await expect(page.getByText(/country.*(missing|required)|set.*country/i).first()).toBeVisible();
+
+  await page.getByLabel("Country", { exact: true }).selectOption("KW");
+  await page.getByLabel("Communication basis", { exact: true }).selectOption("relationship");
+  await savePolicy(page, missing.id);
+  await expect(page.getByText(/country blocked/i).first()).toBeVisible();
+  await page.reload();
+  await openAccount(page, missing);
+  await page.getByRole("button", { name: "Fit & policy", exact: true }).click();
+  await expect(page.getByLabel("Country", { exact: true })).toHaveValue("KW");
+  await expect(page.getByText(/country blocked/i).first()).toBeVisible();
+
+  await openAccount(page, saudi);
+  await page.getByRole("button", { name: "Fit & policy", exact: true }).click();
+  await page.getByLabel("Country", { exact: true }).selectOption("SA");
+  await page.getByLabel("Communication basis", { exact: true }).selectOption("relationship");
+  await savePolicy(page, saudi.id);
+  await expect(page.getByText(/held/i).first()).toBeVisible();
+  await expect(page.getByText(/basis evidence|evidence.*(missing|required)|record.*evidence/i).first()).toBeVisible();
+  const before = await (await context.request.get(base)).json();
+  const savedSaudi = before.prospects.find((item: any) => item.id === saudi.id);
+  await page.getByLabel("Evidence source", { exact: true }).fill("Synthetic existing-client contract reference SA-001");
+  await page.getByLabel("Evidence date", { exact: true }).fill("2026-10-17");
+  // Editing the source alone must not claim the hold is resolved in persisted state.
+  const unsaved = await (await context.request.get(base)).json();
+  expect(unsaved.prospects.find((item: any) => item.id === saudi.id)).toEqual(savedSaudi);
+  await savePolicy(page, saudi.id);
+  await page.reload();
+  await openAccount(page, saudi);
+  await page.getByRole("button", { name: "Fit & policy", exact: true }).click();
+  await expect(page.getByLabel("Country", { exact: true })).toHaveValue("SA");
+  await expect(page.getByLabel("Evidence source", { exact: true })).toHaveValue("Synthetic existing-client contract reference SA-001");
+  await openAccount(page, missing);
+  await expect(page.getByLabel("Country", { exact: true })).toHaveValue("KW");
+  await expect(page.getByText(/country blocked/i).first()).toBeVisible();
+});
+
+test("A2: generic discovery saves without HR setup and stays usable on an Arabic phone", async ({ page, context }) => {
+  const errors: string[] = [];
+  page.on("pageerror", (error) => errors.push(error.message));
+  const { base, ws } = await workspace(page, context);
+  const originalPack = (await (await context.request.get(`${base}/rubric`)).json()).pack;
+  const changed = await context.request.patch(`${base}/pack`, { data: { pack: "generic" } });
+  expect(changed.ok(), await changed.text()).toBe(true);
+  try {
+    const [account] = await importAccounts(context, base, 1);
+    await page.reload();
+    await expect(page.getByLabel("Workspace", { exact: true })).toHaveValue(ws);
+    await openAccount(page, account);
+    await page.getByRole("button", { name: "Discovery", exact: true }).click();
+    await expect(page.getByLabel(/HR setup|payroll/i)).toHaveCount(0);
+    await expect(page.getByText(/payroll|HR setup/i)).toHaveCount(0);
+    const notes = page.getByRole("textbox", { name: "Notes", exact: true });
+    if (!(await notes.isVisible())) {
+      await page.getByText("Discovery interview", { exact: true }).click();
+    }
+    await notes.fill("Synthetic generic consultancy; no HR setup answer was supplied.");
+    const saved = page.waitForResponse((response) =>
+      response.url().includes(`/prospects/${account.id}/`) && response.request().method() === "POST",
+    );
+    await page.getByRole("button", { name: "Save interview", exact: true }).click();
+    expect((await saved).ok()).toBe(true);
+    await expect(page.getByRole("status")).toContainText("Discovery answers saved");
+    await page.reload();
+    await openAccount(page, account);
+    await page.getByRole("button", { name: "Discovery", exact: true }).click();
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.getByRole("button", { name: "واجهة عربية", exact: true }).click();
+    await expect(page.locator("html")).toHaveAttribute("dir", "rtl");
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(true);
+    await expect(page.getByLabel(/HR setup|payroll/i)).toHaveCount(0);
+    expect(errors).toEqual([]);
+  } finally {
+    const restored = await context.request.patch(`${base}/pack`, {
+      data: { pack: originalPack ?? "hr-services" },
+    });
+    expect(restored.ok()).toBe(true);
+  }
+});
+
+test("A1: owner rubric changes persist, reset returns to the pack default, and logged-out updates are refused", async ({ page, context, playwright }) => {
+  const { base } = await workspace(page, context);
+  const originalResponse = await context.request.get(`${base}/rubric`);
+  expect(originalResponse.ok()).toBe(true);
+  const original = await originalResponse.json();
+  const anonymous = await playwright.request.newContext({
+    baseURL: new URL(page.url()).origin,
+    storageState: { cookies: [], origins: [] },
+  });
+  try {
+    const anonymousRead = await anonymous.get(`${base}/rubric`);
+    const anonymousState = await anonymous.storageState();
+    expect(anonymousState.cookies).toHaveLength(0);
+    expect(anonymousState.origins).toHaveLength(0);
+    expect((await anonymous.get("/api/me")).status()).toBe(401);
+    expect(anonymousRead.status()).toBe(401);
+    const anonymousUpdate = await anonymous.patch(`${base}/rubric`, { data: { rubric: null } });
+    expect(anonymousUpdate.status()).toBe(401);
+    await page.getByRole("button", { name: "Accounts", exact: true }).click();
+    await page.getByRole("button", { name: "Rubric", exact: true }).click();
+    await expect(page.getByRole("heading", { name: "Qualification rubric", exact: true })).toBeVisible();
+    const role = page.getByLabel("Decision-maker title", { exact: true });
+    const website = page.getByLabel("Company website available", { exact: true });
+    const transfer = original.rubric.role.points > 0 ? 1 : -1;
+    const rolePoints = original.rubric.role.points - transfer;
+    const websitePoints = original.rubric.website.points + transfer;
+    await role.fill(String(rolePoints));
+    await website.fill(String(websitePoints));
+    const keyword = `synthetic-${randomUUID().slice(0, 8)}`;
+    await page.getByLabel("New title keyword", { exact: true }).fill(keyword);
+    await page.getByRole("button", { name: "Add keyword", exact: true }).click();
+    const save = page.waitForResponse((response) => response.url().endsWith(`${base}/rubric`) && response.request().method() === "PATCH");
+    await page.getByRole("button", { name: "Save rubric", exact: true }).click();
+    expect((await save).ok()).toBe(true);
+    await page.reload();
+    await page.getByRole("button", { name: "Accounts", exact: true }).click();
+    await page.getByRole("button", { name: "Rubric", exact: true }).click();
+    await expect(role).toHaveValue(String(rolePoints));
+    await expect(website).toHaveValue(String(websitePoints));
+    await expect(page.getByText(keyword, { exact: true })).toBeVisible();
+    const saved = await (await context.request.get(`${base}/rubric`)).json();
+    expect(saved.isPackDefault).toBe(false);
+    expect(saved.rubric.role.points).toBe(rolePoints);
+    expect(saved.rubric.role.keywords).toContain(keyword);
+    const reset = page.waitForResponse((response) => response.url().endsWith(`${base}/rubric`) && response.request().method() === "PATCH");
+    await page.getByRole("button", { name: "Reset to pack default", exact: true }).click();
+    expect((await reset).ok()).toBe(true);
+    await page.reload();
+    await page.getByRole("button", { name: "Accounts", exact: true }).click();
+    await page.getByRole("button", { name: "Rubric", exact: true }).click();
+    const defaults = await (await context.request.get(`${base}/rubric`)).json();
+    expect(defaults.isPackDefault).toBe(true);
+    expect(defaults.rubric.role.keywords).not.toContain(keyword);
+    await expect(role).toHaveValue(String(defaults.rubric.role.points));
+    await expect(website).toHaveValue(String(defaults.rubric.website.points));
+  } finally {
+    await anonymous.dispose();
+    const restored = await context.request.patch(`${base}/rubric`, {
+      data: { rubric: original.isPackDefault ? null : original.rubric },
+    });
+    expect(restored.ok()).toBe(true);
+  }
+});
+
+async function fixtureAction(context: BrowserContext, base: string, tool: string, prospectIds: string[]) {
+  const input = { tool, prospectIds, requestKey: randomUUID(), play: "P1", language: "en" };
+  const quoted = await context.request.post(`${base}/quotes`, { data: input });
+  expect(quoted.ok(), await quoted.text()).toBe(true);
+  const quote = await quoted.json();
+  expect((await context.request.post(`${base}/quotes/${quote.id}/approve`)).ok()).toBe(true);
+  const submitted = await context.request.post(`${base}/runs`, { data: { ...input, spendApprovalId: quote.id } });
+  expect(submitted.status(), await submitted.text()).toBe(201);
+  const run = await submitted.json();
+  await expect.poll(async () => {
+    const state = await (await context.request.get(base)).json();
+    const current = state.runs.find((item: any) => item.id === run.id);
+    expect(current?.state === "failed", current?.error ?? "Fixture action failed").toBe(false);
+    return current?.state;
+  }).toBe("succeeded");
+}
+
+test("A5/A4: approved batch CSV and imported outcomes reconcile to its scorecard", async ({ page, context }) => {
+  test.setTimeout(240000);
+  const { base, me } = await workspace(page, context);
+  const before = await (await context.request.get(base)).json();
+  // Fixture-only credit caps; the caller must source the gate fixture environment.
+  const limits = await context.request.patch(base, { data: {
+    plan: "Team", cap: 10000,
+    planLimits: { aiCredits: 10000, enrichmentCredits: 1000, sends: 1000, exports: 100 },
+    memberCaps: [{ userId: me.user.id, cap: 10000 }],
+  } });
+  expect(limits.ok()).toBe(true);
+  await page.getByRole("button", { name: "Brand & company", exact: true }).click();
+  await page.getByLabel("I reviewed this offer; it does not claim an unverified result").check();
+  await page.getByLabel("Egypt electronic marketing licence recorded").check();
+  await page.getByRole("button", { name: "Save company context", exact: true }).click();
+  await expect(page.getByRole("status")).toContainText("Company context saved");
+  const [eligible, unapproved] = await importAccounts(context, base);
+  for (const account of [eligible, unapproved]) {
+    await openAccount(page, account);
+    await page.getByRole("button", { name: "Add source", exact: true }).click();
+    await page.getByLabel("Claim", { exact: true }).last().fill("Synthetic company is hiring a growth manager.");
+    await page.getByLabel("I reviewed this factual claim and its dated source").last().check();
+    await page.getByLabel("Country", { exact: true }).selectOption("EG");
+    await page.getByLabel("Communication basis", { exact: true }).selectOption("consent");
+    await page.getByLabel("Consent time", { exact: true }).fill("2026-10-17T12:00");
+    await page.getByLabel("Evidence source", { exact: true }).fill("Synthetic signed opt-in reference V32");
+    await page.getByLabel("Evidence date", { exact: true }).fill("2026-10-17");
+    await savePolicy(page, account.id);
+  }
+  await fixtureAction(context, base, "enrich_contacts", [eligible.id, unapproved.id]);
+  await page.reload();
+  await page.getByRole("button", { name: "Accounts", exact: true }).click();
+  await page.getByRole("searchbox", { name: "Search accounts", exact: true }).fill(eligible.snapshot.email);
+  await expect(page.getByRole("row").filter({ hasText: eligible.snapshot.email })).toContainText("Ready");
+  await fixtureAction(context, base, "draft_messages", [eligible.id, unapproved.id]);
+  const state = await (await context.request.get(base)).json();
+  const approvedDraft = state.drafts.find((item: any) => item.prospectId === eligible.id);
+  const otherDraft = state.drafts.find((item: any) => item.prospectId === unapproved.id);
+  expect(approvedDraft).toBeTruthy();
+  expect(otherDraft).toBeTruthy();
+  const approved = await context.request.post(`${base}/drafts/${approvedDraft.id}/approve`, { data: { version: approvedDraft.version } });
+  expect(approved.status(), await approved.text()).toBe(201);
+  expect(otherDraft.approvedVersion).toBeNull();
+
+  await page.reload();
+  await page.getByRole("button", { name: "Campaigns", exact: true }).click();
+  await page.getByRole("button", { name: "Sequences", exact: true }).click();
+  await page.getByRole("tab", { name: "Export and outcomes", exact: true }).click();
+  await expect(page.getByText(eligible.snapshot.company, { exact: true })).toBeVisible();
+  await expect(page.getByRole("checkbox", { name: new RegExp(unapproved.snapshot.company) })).toHaveCount(0);
+  await page.getByRole("button", { name: "Select all approved drafts", exact: true }).click();
+  const exported = page.waitForResponse((response) => response.url().endsWith(`${base}/exports`) && response.request().method() === "POST");
+  await page.getByRole("button", { name: "Export approved batch", exact: true }).click();
+  const exportResponse = await exported;
+  expect(exportResponse.status(), await exportResponse.text()).toBe(201);
+  const batch = await exportResponse.json();
+  const csvResponse = await context.request.get(`${base}/exports/${batch.id}/file.csv`);
+  expect(csvResponse.ok()).toBe(true);
+  const csv = await csvResponse.text();
+  expect(csv).toContain(eligible.snapshot.email);
+  expect(csv).not.toContain(unapproved.snapshot.email);
+  expect(csv).toMatch(/approval.*digest|digest.*approval/i);
+  const download = page.waitForEvent("download");
+  await page.getByRole("link", { name: "Download CSV", exact: true }).last().click();
+  expect(await (await download).failure()).toBeNull();
+
+  // Match a documented exported sequence identifier rather than invent an account identifier.
+  const afterExport = await (await context.request.get(base)).json();
+  const sequence = afterExport.sequences.find((item: any) => item.draftId === approvedDraft.id && item.batchId === batch.id);
+  expect(sequence, "Export must tag its sequence with the exported batch").toBeTruthy();
+  const outcomes = `sequence_id,outcome,occurred_at\n${sequence.id},replied,2026-10-18T10:00:00.000Z\nnot-a-sequence,replied,not-a-date\n`;
+  await page.getByLabel("Outcomes CSV", { exact: true }).setInputFiles({ name: "v32-outcomes.csv", mimeType: "text/csv", buffer: Buffer.from(outcomes) });
+  const imported = page.waitForResponse((response) => response.url().endsWith(`/exports/${batch.id}/outcomes`) && response.request().method() === "POST");
+  await page.getByRole("button", { name: "Import outcomes", exact: true }).click();
+  expect((await imported).ok()).toBe(true);
+  await expect(page.getByText(/row 3/i)).toBeVisible();
+  await expect(page.getByText(/invalid|rejected|unknown/i).first()).toBeVisible();
+  await page.getByRole("tab", { name: "Results", exact: true }).click();
+  await page.getByLabel("Batch", { exact: true }).selectOption(batch.id);
+  await expect(page.getByLabel("Include simulated", { exact: true })).not.toBeChecked();
+  const scorecardResponse = await context.request.get(`${base}/scorecard?batch=${encodeURIComponent(batch.id)}`);
+  expect(scorecardResponse.ok()).toBe(true);
+  const scorecard = await scorecardResponse.json();
+  expect(scorecard.stages.find((item: any) => item.stage.toLowerCase().includes("repl"))?.count).toBe(1);
+  expect(scorecard.positive).toBe(0);
+  expect(scorecard.replyLabels.positive).toBe(0);
+  expect(scorecard.batches.find((item: any) => item.batchId === batch.id)?.sequences).toBe(1);
+  // The UI must expose the actual filtered batch, not silently fall back to all batches.
+  await expect(page.getByLabel("Batch", { exact: true })).toHaveValue(batch.id);
+  expect(before.sequences.some((item: any) => item.batchId === batch.id)).toBe(false);
+});
