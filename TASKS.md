@@ -1,22 +1,27 @@
-## Current — v3.2 build, all slices in parallel waves (18 October 2026)
+## Current — v3.2 integration resume (19 October 2026)
 
-Goal: implement the logo, A1–A8 and the Figma redesign. Plan: `/home/mustafa/.claude-skylink/plans/next-open-a-new-polymorphic-eclipse.md`.
-Done: A1–A8 acceptance tests pass; pages match Figma (desktop, phone, Arabic; 4 states); typecheck, test and e2e green; `feat/v32` merged to local `main`; no worktrees left.
-Stop: no push, deploy, prospect contact or paid model calls. Synthetic data only.
-Lane: native `hub-worker` (Sonnet 5.5 high), one task per worktree; `hub-tester` black-box tests; main session reviews and merges.
+Goal: finish the logo, A1–A8 and exported Figma UI redesign.
+Done: acceptance checks, typecheck, build, unit/integration tests and E2E pass; EN/AR responsive walkthrough passes; merge `feat/v32` into local `main`; clean merged inactive worktrees.
+Stop: no push, deployment, prospect contact or paid project-model/provider calls. Synthetic fixtures only. Preserve original Claude processes/worktrees and unrelated sample CSV/ZIP/MP4 files.
+Resume: `docs/handovers/2026-10-19-codex-ui-integration.md`.
 
-- [x] Wave 0: `feat/v32` branch; migration `20261018000100_v32_foundation` (pack, rubric, nullable country, basisEvidence, Sequence batchId/playVersionId, ProviderEvent provenance, ExportBatch); `contracts/src/packs.ts`; A8 wording; "Rank my accounts" starter.
-- [x] Fixed tests calling paid models: `.env` has `MODEL_MODE=live`, so `pnpm test` used Azure. `apps/api/vitest.config.ts` now forces fixture mode. The 4 baseline failures were caused by this.
-- [x] Wave 1: T1 logo · T2 A3 country/basis · T3 A1 rubric · T4 A2 packs · T5 A4 batches/scorecard · T6 A5 export/import · T7 A6 capability profile. All merged into `feat/v32`.
-  - T4, T6, T7 first workers stopped on the session limit; their work was rebased and finished by fresh workers. Main session review fixed T6 to qualify exports against the workspace rubric (not the default).
-  - Black-box tests (hub-tester): `v32-t2-country` (26), `v32-t3-rubric` (52), `v32-t5-scorecard` (31); T7 worker added `capability-profile.test.ts` (16), T6 a scorecard-by-batch check.
-- [x] Wave 1 gate (18 Oct): fresh DB, migrate, seed; `pnpm test` 28 files / 256 tests; `pnpm test:e2e` 16/16; typecheck clean. Opus audit recorded.
-  - Gate fixes: `contracts/gtm.ts` imported `./packs.js` (Next could not resolve it; web 500). Review form recorded consent evidence as "relationship" (consent prospects stayed held); evidence type now follows the basis. E2E specs set country and consent evidence (A3) and no longer depend on leftovers from earlier runs.
-  - E2E needs Twenty (`docker compose up -d twenty twenty-worker`) and the Open Design engines (`docker compose --profile engines up -d open-design-a open-design-b`); `infra:up` starts neither.
-  - A1–A6 covered by unit tests; A7 row and switch rule present in the PRD; A8 phrases gone from code and PRD, §9 item 8 dates present.
-  - Helpers (ignored): `.local/wt-check.sh` (worktree checks with its own DB), `.local/gate-run.sh` (fresh DB + dev servers), `.local/stop-dev.sh`.
-- [ ] Wave 2: Figma frame export; U0 shell/tokens; U1–U7 pages
-- [ ] Final: full checks, walkthrough, merge to main, worktrees removed
+Lane: frontier plans/audits only; native Codex Skylink Luna 6 xhigh implements/tests/researches, at most 2 workers per account. No debates/second-opinion rounds. At most 3 screenshots per worker, at the end. After the next merged slice, save a short handover and continue in a new thread per the updated user rules.
+
+- [x] Wave 0 + Wave 1 (logo, A1–A8): integrated; original fresh-DB gate 256 tests / 16 E2E, typecheck clean. Fixture test configuration prevents paid calls.
+- [x] U0 shell/tokens/primitives: `8b11c85`; 109 exported Figma references in ignored `.local/figma-frames/`, common instructions `.local/ui-brief-common.md`.
+- [x] U4 Campaigns: merged locally as `efafafd`; corrected false save feedback/count/provenance and added event-derived reply candidates. Main independently verified 37/37 focused tests in `/tmp/codex-u4-candidates-verified.log`. Codex correction checkout removed; original Claude checkout/process preserved.
+- [x] U1 Home merged as `5cff268` from `c62456c`; Codex checkout removed with unrelated sample copies archived.
+- [ ] Saved U6 Deliverables `fec47d6` (`v32/u6-deliverables`), U7 Settings `ee9dfcd` (`v32/u7-settings`). Main independently reran serialized workspace typecheck on all three successfully on19Oct; browser checks pending combined integration. Remaining checkouts under `.codex/worktrees/{u6-deliverables,u7-settings}`. U6 library/canvas active holdout badges still need truthful wording/assignment data after integration.
+- [ ] U2 Accounts takeover: `v32/u2-takeover`, `.codex/worktrees/u2-accounts-takeover`, saved source from `b5133e4`. Backend feature tests already pass; final UI/browser gate pending. Do not invent mandatory bucket triage: missing bucket versus Ready is an unresolved acceptance ambiguity, not a confirmed policy gate.
+- [ ] U3 Review takeover: Ready checkpoint `5814561` (42/42 focused regressions passed), `v32/u3-takeover`, `.codex/worktrees/u3-review-takeover`. Has visible-only selection, direct export navigation, nullable asset detach, current Campaigns integration and independent detach tests. Unrelated API formatting removed; typecheck passed. Needs merge to integration branch and browser gate. No current native worker owns it.
+- [ ] U5 Brand takeover: `v32/u5-takeover`, `.codex/worktrees/u5-brand-takeover`, from `8960539` plus stable BrandBook snapshot. Ready correction `3d95ab5` reviewed and typechecked by main: truthful assignment counts/pack copy. Needs integration and browser gate. Original worktrees never changed.
+- [x] Read-only inventory: no original Claude worktree processes active; U3/U5 manifest hashes still match, no late source edits. No native workers active at handoff.
+- [ ] Black-box tests: six reply-candidate tests passed and are tracked on `feat/v32`. Four prepared UI tests remain unrun at `.codex/worktrees/v32-ui-tests/e2e/v32-ui.spec.ts`; fresh blind tester must adapt selectors through the runtime, never source. Five independent detach regressions passed on U3; Review search/failed label browser checks still needed.
+- [ ] Verification infrastructure: isolated DB and queue per stack, fixture modes, `WORKER_PORT=0` (or unique port). Worker default4101 can collide; earlier worker reported EADDRINUSE, but old trace is absent. Queued-run/scheduled-review failures need isolated rerun, not assumed product defects. Recorded in root `AGENTS.md`. Keep API/web/worker as foreground exec sessions; old nohup helper children were reaped on exec completion. Old `/tmp/codex-u7-e2e.log` is absent and was never a passing gate; its import revision changed0 failure still needs isolated rerun/investigation.
+- [x]19Oct fresh owned DB `revenue_resume_20261019`: migrations and262/262 backend tests passed (`/tmp/resume-backend-tests.log`). U3 focused regressions42/42 passed.
+- [ ] Final: integrate pages, full clean fixture checks, bilingual responsive walkthrough, local merge to main, remove merged inactive worktrees. Original active Claude processes/worktrees must remain untouched.
+
+Decisions/evidence: `.local/codex-review-notes.md`; safe snapshots/manifests `.local/takeover/{u3,u5}/`; original four Claude worktrees remain in `.claude/worktrees/`. pnpm12.10.1 warning was already given once before local integration; no deployment host configuration was claimed fixed.
 
 ---
 

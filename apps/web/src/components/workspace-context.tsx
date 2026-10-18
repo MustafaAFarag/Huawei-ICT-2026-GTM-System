@@ -49,6 +49,9 @@ export type WorkspaceValue = {
   selected: string[];
   setSelected: (update: (previous: string[]) => string[]) => void;
   setTab: (tab: Tab) => void;
+  // Review can take a reviewer straight to the export controls after approval.
+  openSequencesExport: () => void;
+  exportFocusKey: number;
   // Opens a deliverable in the canvas (beside the chat on home, full width elsewhere).
   openAsset: (asset: import("../lib/types").Asset) => void;
   // Starts a new conversation on the home page with the composer prefilled.

@@ -82,6 +82,7 @@ test("research brief exports the saved source record and holds unsaved edits", a
     .first()
     .getByRole("button", { name: "Open", exact: true })
     .click();
+  await page.getByRole("button", { name: "Sources", exact: true }).click();
   await page.getByLabel("Brief language", { exact: true }).selectOption("ar");
   const download = page.waitForEvent("download");
   await page
@@ -126,7 +127,7 @@ test("call logging supports manual review and discards stale AI suggestions", as
     .first()
     .getByRole("button", { name: "Open", exact: true })
     .click();
-  await page.getByRole("tab", { name: "Calls", exact: true }).click();
+  await page.getByRole("button", { name: "Calls", exact: true }).click();
   const panel = page.locator("section").filter({
     has: page.getByRole("heading", {
       name: "Log a call outcome",
@@ -138,7 +139,7 @@ test("call logging supports manual review and discards stale AI suggestions", as
     "Called the synthetic contact. Asked to call back in two days.",
   );
   await panel
-    .getByRole("button", { name: "Log manually", exact: true })
+    .getByRole("button", { name: "Enter outcome manually", exact: true })
     .click();
   await expect(panel.getByLabel("Call summary", { exact: true })).toContainText(
     "Called the synthetic",
@@ -174,7 +175,7 @@ test("call logging supports manual review and discards stale AI suggestions", as
     panel.getByRole("button", { name: "Confirm and save", exact: true }),
   ).toHaveCount(0);
   await panel
-    .getByRole("button", { name: "Log manually", exact: true })
+    .getByRole("button", { name: "Enter outcome manually", exact: true })
     .click();
   await panel.getByRole("button", { name: "call back", exact: true }).click();
   await panel
@@ -253,7 +254,7 @@ test("interview guides show bilingual questions and export PDFs without inventin
     })
     .first();
   await row.getByRole("button", { name: "Open", exact: true }).click();
-  await page.getByRole("tab", { name: "Discovery", exact: true }).click();
+  await page.getByRole("button", { name: "Discovery", exact: true }).click();
   await page
     .getByRole("button", { name: "Prepare interview guide", exact: true })
     .click();
@@ -335,10 +336,10 @@ test("import history groups filename revisions and shows changed fields after re
   });
   if (await hide.isVisible()) await hide.click();
   await page.getByRole("button", { name: "Accounts", exact: true }).click();
-  await page.getByText("Import a lead list", { exact: true }).first().click();
-  await page.getByText("Show import history", { exact: true }).click();
-  const row = page.getByRole("row").filter({ hasText: filename }).first();
-  await row.getByRole("button", { name: "View import", exact: true }).click();
+  await page.getByRole("button", { name: "Import history", exact: true }).click();
+  await page
+    .getByRole("button", { name: new RegExp(`^View import: ${filename}`) })
+    .click();
   const details = page.getByLabel("Import details", { exact: true });
   await expect(details).toContainText("Founder");
   await expect(details).toContainText("Finance Director");
@@ -346,10 +347,9 @@ test("import history groups filename revisions and shows changed fields after re
   await expect(details.getByText("changed", { exact: true })).toBeVisible();
   await page.reload();
   await page.getByRole("button", { name: "Accounts", exact: true }).click();
-  await page.getByText("Import a lead list", { exact: true }).first().click();
-  await page.getByText("Show import history", { exact: true }).click();
+  await page.getByRole("button", { name: "Import history", exact: true }).click();
   await expect(
-    page.getByRole("row").filter({ hasText: filename }).first(),
+    page.getByRole("button", { name: new RegExp(`^View import: ${filename}`) }),
   ).toBeVisible();
 });
 
@@ -423,6 +423,7 @@ test("recurring plays persist a due review and require cost approval before exec
     { data: { enabled: false } },
   );
   await page.locator(".sidebar").getByRole("button", { name: "Review", exact: true }).click();
+  await page.getByRole("button", { name: "Scheduled", exact: true }).click();
   const item = page.locator(".selection-bar").filter({ hasText: name });
   await item
     .getByRole("button", { name: "Review scheduled action", exact: true })
@@ -439,6 +440,7 @@ test("recurring plays persist a due review and require cost approval before exec
   expect(used(after)).toBe(used(before));
   await page.reload();
   await page.locator(".sidebar").getByRole("button", { name: "Review", exact: true }).click();
+  await page.getByRole("button", { name: "Scheduled", exact: true }).click();
   const persisted = page.locator(".selection-bar").filter({ hasText: name });
   await expect(persisted).toBeVisible();
   await persisted

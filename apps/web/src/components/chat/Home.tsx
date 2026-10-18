@@ -1,45 +1,43 @@
 "use client";
 import { useEffect, useState, type ReactNode } from "react";
-import {
-  IconBook,
-  IconBrandInstagram,
-  IconBrandLinkedin,
-  IconFileText,
-  IconMail,
-  IconSearch,
-  IconSend,
-} from "@revenue/ui";
+import { IconChevronRight, IconFileText, IconShieldCheck } from "@revenue/ui";
 import { usePrefs } from "../../lib/prefs";
 import type { Asset } from "../../lib/types";
 import { Nabil, useNabilMood } from "../nabil/Nabil";
 import type { Proposal } from "../Modals";
+import { Badge, Button, EmptyState } from "../primitives";
+import { useWorkspace } from "../workspace-context";
 import { useChat } from "./controller";
 import { Composer } from "./Composer";
-import { Conversation } from "./Conversation";
+import { Conversation, DeliverableCard } from "./Conversation";
+import "../../styles/pages/home.css";
 
 const STARTERS = [
-  { label: "Rank my accounts", icon: IconSearch, text: "Rank my accounts by fit and explain each score." },
-  { label: "Draft outreach", icon: IconSend, text: "Draft a three-step outreach sequence for " },
-  { label: "One-pager", icon: IconFileText, text: "Create an offer one-pager for " },
-  { label: "HTML email", icon: IconMail, text: "Create an HTML email (Gmail-safe) announcing " },
-  { label: "Instagram carousel", icon: IconBrandInstagram, text: "Create an Instagram carousel about " },
-  { label: "LinkedIn carousel", icon: IconBrandLinkedin, text: "Create a LinkedIn carousel about " },
-  { label: "Flipbook", icon: IconBook, text: "Create a flipbook that walks a prospect through " },
-  { label: "Capability profile", icon: IconFileText, text: "Create a capability profile for " },
+  {
+    label: "Draft follow-ups",
+    text: "Draft a three-step follow-up sequence for ",
+  },
+  { label: "Company profile", text: "Create a capability profile for " },
+  {
+    label: "Rank my accounts",
+    text: "Rank my accounts by fit and explain each score.",
+  },
+] as const;
+const FORMATS = [
+  {
+    label: "HTML email",
+    text: "Create an HTML email (Gmail-safe) announcing ",
+  },
+  { label: "LinkedIn carousel", text: "Create a LinkedIn carousel about " },
+  { label: "Instagram carousel", text: "Create an Instagram carousel about " },
+  {
+    label: "Flipbook",
+    text: "Create a flipbook that walks a prospect through ",
+  },
+  { label: "One-pager", text: "Create an offer one-pager for " },
 ] as const;
 
-function greeting(name: string, t: (text: string) => string, arabic: boolean) {
-  const hour = new Date().getHours();
-  const first = name.split(/\s+/)[0] ?? "";
-  const part = hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening";
-  return first ? `${t(part)}${arabic ? "، " : ", "}${first}` : t(part);
-}
-
-// Chat-first home (Jakob's Law: the same pattern as Claude and ChatGPT). With no thread open
-// it is a centred composer; once a thread exists it becomes the conversation, optionally
-// split with a deliverable canvas.
 export function Home({
-  userName,
   onQuote,
   onOpenAsset,
   canvas,
@@ -51,48 +49,157 @@ export function Home({
   onOpenAsset: (asset: Asset) => void;
   canvas?: ReactNode;
 }) {
-  const { t, language } = usePrefs();
+  const { t } = usePrefs();
+  const { data, setTab } = useWorkspace();
   const chat = useChat();
   const mood = useNabilMood(chat.activity);
-  const [prefill, setPrefill] = useState<{ text: string; key: number } | null>(null);
+  const [prefill, setPrefill] = useState<{ text: string; key: number } | null>(
+    null,
+  );
+  const [formatsOpen, setFormatsOpen] = useState(false);
   useEffect(() => {
     if (initialPrefill) setPrefill(initialPrefill);
   }, [initialPrefill]);
   const empty = !chat.threadId && !chat.live && !chat.messages.length;
+  const recentAssets = [...data.assets]
+    .sort((a, b) => (b.createdAt ?? "").localeCompare(a.createdAt ?? ""))
+    .slice(0, 2);
+  const pending = data.drafts.filter(
+    (draft) => draft.approvedVersion !== draft.version,
+  ).length;
+  const start = (text: string) =>
+    setPrefill({ text: t(text), key: Date.now() });
 
   if (empty)
     return (
-      <section className="home-landing" aria-labelledby="home-title">
+      <section className="home-landing home-v32" aria-labelledby="home-title">
         <div className="home-hero">
-          <Nabil mood={mood} size={64} className="home-avatar" />
-          <h1 id="home-title" dir="auto">
-            {greeting(userName, t, language === "ar")}
-          </h1>
-          <p className="home-sub">{t("What should Nabil prepare for you today?")}</p>
+          <Nabil mood={mood} size={48} className="home-avatar" />
+          <h1 id="home-title">{t("What would you like to prepare?")}</h1>
+          <p className="home-sub">
+            {t(
+              "Turn the accounts you already work into reviewed Arabic/English follow-ups and company profiles, with every outcome and every hold recorded in your CRM.",
+            )}
+          </p>
         </div>
-        <Composer variant="hero" autoFocus prefill={prefill} />
-        <div className="starter-row" role="list" aria-label={t("Start from")}>
-          {STARTERS.map(({ label, icon: Icon, text }) => (
+        <Composer
+          variant="hero"
+          prefill={prefill}
+          placeholder={t(
+            "Draft follow-ups, prepare a company profile, or start with an idea…",
+          )}
+        />
+        <div className="home-starters">
+          <div className="starter-row" aria-label={t("Start from")}>
+            {STARTERS.map(({ label, text }) => (
+              <button
+                key={label}
+                type="button"
+                className="starter"
+                onClick={() => start(text)}
+              >
+                {t(label)}
+              </button>
+            ))}
             <button
-              key={label}
               type="button"
-              role="listitem"
               className="starter"
-              onClick={() => setPrefill({ text: t(text), key: Date.now() })}
+              aria-expanded={formatsOpen}
+              aria-controls="home-formats"
+              onClick={() => setFormatsOpen((open) => !open)}
             >
-              <Icon size={15} aria-hidden />
-              <span>{t(label)}</span>
+              {t("More formats")}
             </button>
-          ))}
+          </div>
+          {formatsOpen && (
+            <div
+              id="home-formats"
+              className="home-formats"
+              aria-label={t("More formats")}
+            >
+              {FORMATS.map(({ label, text }) => (
+                <button key={label} type="button" onClick={() => start(text)}>
+                  {t(label)}
+                </button>
+              ))}
+            </div>
+          )}
         </div>
+        <p className="home-ranking-note">
+          <IconShieldCheck size={18} aria-hidden />
+          <span>
+            {t(
+              "Rank my accounts orders accounts you already saved, using your rubric. Ranking does not search for new companies, enrich contacts or send email.",
+            )}
+          </span>
+        </p>
+        <section className="home-resume" aria-labelledby="home-resume-title">
+          <h2 id="home-resume-title">{t("Pick up where you left off")}</h2>
+          {pending > 0 && (
+            <button
+              type="button"
+              className="home-review-row"
+              onClick={() => setTab("Review queue")}
+            >
+              <IconFileText size={20} aria-hidden />
+              <span>
+                <strong>{t("Review your follow-ups")}</strong>
+                <span className="muted small">
+                  <bdi>{pending}</bdi> {t("drafts to review")}
+                </span>
+              </span>
+              <Badge tone="warn" dot={false}>
+                {t("Needs review")}
+              </Badge>
+              <IconChevronRight
+                className="home-directional"
+                size={18}
+                aria-hidden
+              />
+            </button>
+          )}
+          {recentAssets.map((asset) => (
+            <DeliverableCard
+              key={asset.id}
+              asset={asset}
+              fallbackTitle={asset.title}
+              template={asset.template}
+              onOpen={() => onOpenAsset(asset)}
+            />
+          ))}
+          {!pending && !recentAssets.length && (
+            <EmptyState
+              title={t("Your next piece of work starts here")}
+              text={t(
+                "Ask Nabil to prepare a follow-up or company profile. Saved work will appear here.",
+              )}
+              action={
+                <Button size="sm" onClick={() => start(STARTERS[0].text)}>
+                  {t("Draft follow-ups")}
+                </Button>
+              }
+            />
+          )}
+        </section>
+        <p className="home-purpose">
+          {t(
+            "Caravan is an AI GTM workspace where small B2B services teams research, qualify, follow up and record named accounts in English and Arabic, with a person approving every send.",
+          )}
+        </p>
       </section>
     );
 
   return (
-    <div className={`home-conversation ${canvas ? "with-canvas" : ""}`}>
-      <section className="conversation-column" aria-label={t("Conversation with Nabil")}>
+    <div
+      className={`home-conversation home-chat-v32 ${canvas ? "with-canvas" : ""}`}
+    >
+      <section
+        className="conversation-column"
+        aria-label={t("Conversation with Nabil")}
+      >
         <Conversation onQuote={onQuote} onOpenAsset={onOpenAsset} />
         <div className="conversation-dock">
+          <p className="home-refine-label">{t("Refine with Nabil")}</p>
           <Composer variant="dock" />
         </div>
       </section>

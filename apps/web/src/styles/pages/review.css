@@ -1,0 +1,308 @@
+/* Review: a queue beside one selected version (Figma Review, Phone Review, Arabic Review).
+   Logical properties only, so RTL mirrors without overrides. Tokens only, no raw colours. */
+.review {
+  display: grid;
+  gap: var(--space-4);
+}
+.screen > .review {
+  margin-top: 0;
+}
+.review-toolbar {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+.review-toolbar .page-tabs {
+  margin-block-end: 0;
+}
+.review-lede {
+  margin: 0;
+}
+.review-access {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-3);
+  margin: 0;
+  color: var(--text-2);
+  font-size: var(--text-md);
+}
+
+/* Queue beside detail */
+.review-split {
+  display: grid;
+  grid-template-columns: minmax(260px, 300px) minmax(0, 1fr);
+  gap: var(--space-5);
+  align-items: start;
+}
+.review-queue {
+  display: grid;
+  align-content: start;
+  gap: var(--space-3);
+  padding: var(--space-3);
+  border-radius: var(--radius-card);
+  background: var(--surface);
+  min-inline-size: 0;
+}
+.review-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+.review-chip {
+  padding: 4px 10px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-badge);
+  font: inherit;
+  font-size: var(--text-sm);
+  cursor: pointer;
+}
+.review-chip.tone-warn {
+  background: var(--warn-tint);
+  color: var(--warn);
+}
+.review-chip.tone-ok {
+  background: var(--ok-tint);
+  color: var(--ok);
+}
+.review-chip[aria-pressed="true"] {
+  border-color: currentColor;
+}
+.review-items {
+  display: grid;
+  gap: var(--space-1);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.review-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  inline-size: 100%;
+  padding: var(--space-3);
+  border: 0;
+  border-radius: var(--radius-control);
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  text-align: start;
+  cursor: pointer;
+}
+.review-item:hover {
+  background: var(--surface-2);
+}
+.review-item-text {
+  display: grid;
+  gap: 2px;
+  min-inline-size: 0;
+}
+.review-item-name {
+  font-size: var(--text-md);
+  line-height: 20px;
+}
+.review-item-sub {
+  color: var(--text-3);
+  font-size: var(--text-sm);
+  line-height: 18px;
+  overflow-wrap: anywhere;
+}
+.review-queue-empty {
+  margin: 0;
+  padding: var(--space-3);
+}
+
+/* Selected version */
+.screen .review-detail.panel {
+  margin: 0;
+  padding: var(--space-5);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+  background: var(--bg);
+}
+.screen .review-detail.is-approved {
+  border-color: var(--ok);
+}
+.review-detail > :not(.panel-head) {
+  margin-block-start: var(--space-4);
+}
+.review-detail .panel-head {
+  margin-bottom: 0;
+}
+.review-detail .panel-head h2 {
+  font-size: var(--text-xl);
+  font-weight: 500;
+}
+.review-detail .draft-insights {
+  margin-block-end: 0;
+}
+.review-angle {
+  min-inline-size: 0;
+  overflow-wrap: anywhere;
+}
+.review-detail .page-tabs {
+  gap: var(--space-5);
+  margin-block-end: 0;
+  border-block-end: 1px solid var(--line);
+}
+.review-touch {
+  display: grid;
+  gap: var(--space-3);
+}
+.review-touch-label {
+  margin: 0;
+  font-weight: 500;
+}
+.review-touch textarea {
+  min-block-size: 180px;
+  field-sizing: content;
+  background: var(--surface);
+  line-height: 22px;
+  resize: vertical;
+}
+.review-evidence h3 {
+  margin: 0 0 var(--space-2);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--text-3);
+}
+.review-evidence ul {
+  display: grid;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.review-evidence li {
+  display: grid;
+  gap: 2px;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-control);
+  background: var(--surface);
+  font-size: var(--text-sm);
+  overflow-wrap: anywhere;
+}
+.review-summary {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--text-3);
+  font-size: var(--text-sm);
+}
+.review-summary svg {
+  flex: none;
+  color: var(--ok);
+}
+.review-detail .review-checks {
+  margin-block-end: 0;
+}
+.review-asset {
+  display: flex;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+.review-asset .field {
+  flex: 1 1 220px;
+}
+.review-decision {
+  display: grid;
+  gap: var(--space-3);
+  padding-block-start: var(--space-4);
+  border-block-start: 1px solid var(--line);
+}
+.review-approved {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin: 0;
+  padding: var(--space-3);
+  border-radius: var(--radius-control);
+  background: var(--ok-tint);
+  color: var(--ok);
+  font-weight: 500;
+}
+.review-decision .button-row {
+  align-items: center;
+}
+.review-next {
+  margin-inline-start: auto;
+}
+.review-note {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  margin: 0;
+  padding: var(--space-3);
+  border-radius: var(--radius-control);
+  background: var(--info-tint);
+  color: var(--text-2);
+  font-size: var(--text-sm);
+}
+.review-note svg {
+  flex: none;
+  margin-block-start: 2px;
+  color: var(--info);
+}
+.review-back {
+  display: none;
+}
+@media (min-width: 641px) {
+  .review-item[aria-current="true"] {
+    background: var(--bg);
+    box-shadow: var(--key);
+  }
+}
+
+@media (max-width: 960px) {
+  .review-split {
+    grid-template-columns: minmax(200px, 240px) minmax(0, 1fr);
+    gap: var(--space-4);
+  }
+}
+
+/* Phone: the list first, then one item with a way back. */
+@media (max-width: 640px) {
+  .review-split {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .review-split[data-view="list"] .review-detail-wrap,
+  .review-split[data-view="detail"] .review-queue {
+    display: none;
+  }
+  .review-queue {
+    padding: 0;
+    background: transparent;
+  }
+  .review-items {
+    gap: var(--space-2);
+  }
+  .review-item {
+    background: var(--surface);
+  }
+  .review-back {
+    display: inline-flex;
+    margin-block-end: var(--space-4);
+  }
+  .review[data-phone="detail"] .review-toolbar,
+  .review[data-phone="detail"] .review-lede {
+    display: none;
+  }
+  .screen .review-detail.panel {
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+  }
+  .review-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .review-detail .button-row .btn-primary {
+    flex: 1 1 auto;
+  }
+  .review-next {
+    margin-inline-start: 0;
+  }
+}

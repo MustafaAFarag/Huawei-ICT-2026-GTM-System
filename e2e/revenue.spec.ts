@@ -59,28 +59,33 @@ test("four plays, bilingual asset, approval invalidation, suppression and worksp
   await page.getByRole("button", { name: "Save company context" }).click();
   await expect(page.getByRole("status")).toContainText("Company context saved");
   await page.getByRole("button", { name: "Accounts", exact: true }).click();
-  const importSection = page.locator("details.disclosure").first();
-  if ((await importSection.getAttribute("open")) === null)
-    await importSection.locator("> summary").click();
+  // Import is a task view: Import accounts, choose a file, match columns, review outcomes.
+  await page.getByRole("button", { name: "Import accounts", exact: true }).click();
   const csv = `firstName,lastName,email,company,website,title,employees\nNoura,Demo,${email},${companyName},https://example.com,Founder,15\n`;
   await page.getByLabel("Lead file").setInputFiles({
     name: "synthetic.csv",
     mimeType: "text/csv",
     buffer: Buffer.from(csv),
   });
-  await page.getByRole("button", { name: "Import list", exact: true }).click();
+  await page
+    .getByRole("button", { name: /^Import (list|\d+ rows?)$/ })
+    .click();
   await expect(page.getByText("Row 2:")).toContainText("imported");
   const dashboard = await (await context.request.get(base)).json();
   const prospect = dashboard.prospects.find(
     (p: any) => p.snapshot.email === email,
   );
   expect(prospect.crmPersonId).toBeTruthy();
+  await page.getByRole("button", { name: "Open accounts", exact: true }).click();
+  // The list is paginated, so find the imported record by search.
+  await page.getByLabel("Search accounts").fill(companyName);
   const accountRow = page
     .getByRole("row")
     .filter({ hasText: companyName })
     .last();
   await accountRow.getByRole("checkbox").check();
   await accountRow.getByRole("button", { name: "Open", exact: true }).click();
+  await page.getByRole("button", { name: "Sources", exact: true }).click();
   await page.getByRole("button", { name: "Add source", exact: true }).click();
   await page
     .getByLabel("Claim", { exact: true })
@@ -90,17 +95,24 @@ test("four plays, bilingual asset, approval invalidation, suppression and worksp
   await page
     .getByLabel("I reviewed this factual claim and its dated source")
     .check();
+  await page.getByRole("button", { name: "Save reviewed source" }).click();
+  await expect(page.getByRole("status")).toContainText("Evidence saved");
+  await page.getByRole("button", { name: "Fit & policy", exact: true }).click();
   // Imports carry no country (PRD v3.2 A3); the reviewer sets it explicitly.
   await page.locator('select[name="country"]').selectOption("EG");
   await page.getByLabel("Communication basis").selectOption("consent");
   await page.getByLabel("Consent time").fill("2026-10-13T12:00");
-  // A consent basis needs recorded evidence before any contact (CMP-02).
-  await page
-    .getByLabel("Evidence source", { exact: true })
+  await page.getByRole("button", { name: "Save policy" }).click();
+  await expect(page.getByRole("status")).toContainText("Policy saved");
+  // A consent basis needs recorded evidence before any contact (CMP-02); the dialog records it.
+  await page.getByRole("button", { name: "Record basis evidence" }).click();
+  const dialog = page.getByRole("dialog");
+  await dialog
+    .getByLabel("Source (URL or note)")
     .fill("Synthetic signed opt-in form, demo record 001");
-  await page.getByLabel("Evidence date", { exact: true }).fill("2026-10-13");
-  await page.getByRole("button", { name: "Save evidence and policy" }).click();
-  await expect(page.getByRole("status")).toContainText("Evidence saved");
+  await dialog.getByLabel("Date", { exact: true }).fill("2026-10-13");
+  await dialog.getByRole("button", { name: "Save evidence" }).click();
+  await expect(page.getByRole("status")).toContainText("Basis evidence recorded");
   await page.locator(".sidebar").getByRole("button", { name: "Campaigns", exact: true }).click();
   async function runUi(tool: ToolName, play: string) {
     await page.getByRole("button", { name: new RegExp(`^${play} `) }).click();
@@ -127,6 +139,7 @@ test("four plays, bilingual asset, approval invalidation, suppression and worksp
     await page.reload();
     // Page refresh resets selection; reselect the same imported record.
     await page.getByRole("button", { name: "Accounts", exact: true }).click();
+    await page.getByLabel("Search accounts").fill(companyName);
     await page
       .getByRole("row")
       .filter({ hasText: companyName })
@@ -142,6 +155,11 @@ test("four plays, bilingual asset, approval invalidation, suppression and worksp
   let state = await (await context.request.get(base)).json();
   const draft = state.drafts.find((d: any) => d.prospectId === prospect.id);
   await page.locator(".sidebar").getByRole("button", { name: "Review", exact: true }).click();
+  // Review is a queue beside one selected version: open this company's item first.
+  await page
+    .locator(".review-queue")
+    .getByRole("button", { name: companyName })
+    .click();
   const review = page
     .locator("section.panel")
     .filter({ hasText: companyName })
