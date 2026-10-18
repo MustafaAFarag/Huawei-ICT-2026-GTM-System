@@ -1460,6 +1460,67 @@
     border-block-start: 1px solid var(--line);
   }
 }
+@media (max-width: 960px) {
+  .shell,
+  .shell.sidebar-collapsed {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .sidebar {
+    position: fixed;
+    inset-block: 0;
+    inset-inline-start: 0;
+    z-index: 60;
+    inline-size: min(300px, 86vw);
+    transform: translateX(-100%);
+    transition: transform var(--medium) var(--ease);
+    box-shadow: var(--shadow-pop);
+  }
+  [dir="rtl"] .sidebar {
+    transform: translateX(100%);
+  }
+  .nav-open .sidebar {
+    transform: none;
+  }
+  .sidebar-collapse {
+    display: none;
+  }
+  .sidebar-collapsed
+    .sidebar
+    :is(
+      .logo-letters,
+      .nav-label,
+      .recents,
+      .usage,
+      .workspace-picker,
+      .user-meta
+    ) {
+    display: revert;
+  }
+  .nav-scrim {
+    position: fixed;
+    inset: 0;
+    z-index: 55;
+    border: 0;
+    background: var(--backdrop);
+  }
+  .topbar-menu {
+    display: grid;
+  }
+  .topbar {
+    padding: 0 var(--space-3);
+  }
+  .content {
+    padding: var(--space-4) var(--space-3) 96px;
+  }
+  .home-hero h1 {
+    font-size: 26px;
+  }
+  .home-landing {
+    justify-content: flex-start;
+    padding-block-start: 10vh;
+  }
+}
+@media (max-width: 640px) {
   .conversation-log {
     padding: var(--space-4) var(--space-3);
   }
