@@ -1,54 +1,63 @@
-# Caravan v3.2 — continue UI integration (19 October 2026)
+# v3.2 UI integration — continuation after the merged page slice
 
-Read `TASKS.md` first. Continue the full authorized task; do not stop at this handover.
+## Goal and authorization
 
-## Goal and execution rules
+Finish the complete authorized task: verify v3.2 A1–A8 and exported Figma UI integration, fix confirmed defects, then merge `feat/v32` into **local main**. No push/deploy, paid project-model/provider calls, outreach, destructive data operations or loss of root sample CSV/ZIP/MP4. User confirmed: “continue, i will leave you unattended to finish all.” Ordinary local fixes/tests/commits/merges are authorized. This is a continuation, not a new review round.
 
-Finish all seven exported-Figma pages and the account-follow-up flow, run typecheck/build/backend/E2E + EN/AR responsive walkthrough, then merge `feat/v32` into local `main` and clean merged inactive worktrees. No push, deployment, prospect contact, paid project-model/provider calls, or loss of unrelated sample CSV/ZIP/MP4 files.
+User explicitly requires a short handover and a fresh thread after a merged slice. The combined U2/U3/U5/U6/U7 integration slice is finished; the prior controller has stopped checkout work and all native workers are completed. Continue the remaining verification through local-main merge unattended.
 
-User's latest rules: frontier Sol/Opus only plans/audits; native same-account Codex Skylink Luna6 `gpt-6-luna` at `xhigh` implements/researches/tests, at most2 workers/account. No debate/second-opinion rounds. Tests for new behavior use an implementation-blind `blackbox-tests` worker. Workers take at most3 screenshots at the end; use text state checks otherwise. Save a short handover and continue in a new thread after each merged slice. User authorized continuing with Codex instead of Claude and explicitly required preserving Claude processes.
+## Current root and saved work
 
-Settled designs: `.local/figma-frames/index.json` (109 exported PNGs), `.local/ui-brief-common.md`. Figma limits were hit; no new Figma work or fresh design generation needed. Backend-supported UI only; report unsupported frame controls honestly. Read `apps/web/AGENTS.md` and bundled framework docs before UI changes. `.env` has live model settings: always source the fixture gate environment.
+Root checkout: `/mnt/ssd/Personal Projects/Huawei ICT 2026/gtm-command-center`, branch `feat/v32`, latest implementation/test commit **1b7f2f3** (plus this documentation checkpoint). All pages are integrated:
 
-## Saved implementation
+| Area | Root merge / evidence |
+|---|---|
+| U0 shell |8b11c85|
+| U1 Home/chat |5cff268|
+| U2 Accounts |8048a95; worker integrationc2c08c1|
+| U3 Review |3a3fe24; worker integrationb2b9009; nullable detach + direct export navigation|
+| U4 Campaigns |efafafd; event-derived reply candidates + truthful save/count/provenance|
+| U5 Brand/company |42f8fcb; worker integration20b2958; truthful assignment counts/pack copy|
+| U6 Deliverables |ac40dd9; worker integration72e9d35; correction3fd16ac uses actual profile assignments, otherwise “Holdout available”|
+| U7 Settings |84c1db3; worker integration56ab583|
 
-Integration branch at this handover: `feat/v32`, Home merge `5cff268` (plus the handover commit). Campaigns merge `efafafd` includes event-based replyCandidates and truthful save/count/provenance fixes. Wave1 A1–A8 already integrated.
+Original saved worker diffs were already frontier-audited. Current controller audited the holdout correction and integration deltas. Shared Arabic duplicate keys found by TypeScript were removed; corrected page components were preserved. No debates or extra second-opinion rounds. Do not invent a mandatory missing-bucket policy gate: backend Ready policy does not require a set bucket.
 
-| Page | Branch / commit | Checkout under `.codex/worktrees/` | State |
-|---|---|---|---|
-| U1 Home/chat | merged `5cff268` from `c62456c` | removed, sample copies archived | typecheck green; combined browser gate pending |
-| U2 Accounts | `v32/u2-takeover` / `b5133e4` | `u2-accounts-takeover` | saved Claude source, needs integration/browser gate |
-| U3 Review | `v32/u3-takeover` / `5814561` | `u3-review-takeover` | ready; merges current Campaigns, visible selection, direct export navigation, nullable asset detach;42 focused tests green |
-| U4 Campaigns | merged `efafafd` | Codex correction checkout removed |37 focused tests green; in current backend262 gate |
-| U5 Brand/company | `v32/u5-takeover` / `3d95ab5` | `u5-brand-takeover` | ready; accurate assignment badges, user-facing pack copy, inherited BrandBook placement preserved |
-| U6 Deliverables | `v32/u6-deliverables` / `fec47d6` | `u6-deliverables` | ready, but unconditional profile Holdout test badges in library/canvas still need accurate state after integration |
-| U7 Settings | `v32/u7-settings` / `ee9dfcd` | `u7-settings` | ready;7 historical runtime controls passed, combined browser gate pending |
+Figma source:109 exported PNGs in ignored `.local/figma-frames/index.json`; `.local/ui-brief-common.md` is historical and its reset/stop helpers/screenshots instructions are overridden below. No new design/Figma work needed. Read `apps/web/AGENTS.md` and bundled framework docs before UI changes.
 
-Main independently reran serialized workspace typecheck on U1/U5/U6/U7 successfully on19Oct. U3 worker typecheck passed; main reviewed its diff and ran independent tests. No native worker remains active at handoff.
+## Verified gates and known failures
 
-Original `.claude/worktrees/` remain untouched: U2 `agent-abf5ffed2c5d6ac6d` / b5133e4; U3 `agent-a42eca2b0b0df5e96` /8b11c85 (stale lock); U4 `agent-a166656e6368fd502` /01165c9; U5 `agent-a3b03f5aa5e0aba8e` /8960539. Inventory found no live process referencing these checkouts and no late source changes: U3 and U5 manifest hashes still match `.local/takeover/{u3,u5}/manifest.json`. Never kill an original Claude process. Preserve uncommitted copies before removing any inactive merged checkout. Sample archives from removed Codex U1/U4 checkouts are under `.local/takeover/preserved-*`.
+- Combined serialized workspace typecheck passed after all U7/page integrations. Worker command: source fixture gate, Prisma generate if needed, `pnpm -r --workspace-concurrency=1 --if-present typecheck`.
+- Fresh full backend **267/267 tests in30files**, exit0; `/tmp/resume-final-backend.log` (82.48s). Use a DIFFERENT test `QUEUE_NAME` from any running app worker. First shared-queue attempt266/267 hit `Job ... could not be removed because it is locked by another worker`; `/tmp/resume-final-backend-attempt1.log`. Isolated test queue `revenue-final-backend-20261019` passed without source/test changes. Requirement added to root `AGENTS.md`.
+- Browser gate is **not passing yet**. Latest blind test checkpointf878c00 was cherry-picked into root as **1b7f2f3**, adding `e2e/v32-ui.spec.ts`. No test worker remains active. Last focused A1–A3 run: **0pass/3timeouts** on stale navigation/role locators (120s), with cleanup PATCH timeouts after test timeout. Latest selector adaptations are unrun. Do not count them as a product pass or proven product defect.
+- All newly imported rows in that run logged `state=imported`, `change=added`, and persisted non-null CRM person IDs. Fixture health200. Historical **import revision changed0** remains unresolved until the full original suite is rerun; if reproduced inspect full row outcomes and Twenty health before source changes. A dead queue worker cannot explain synchronous import.
 
-## Verification evidence and known limits
+## Blind tester continuation details
 
-19Oct main fresh owned DB `revenue_resume_20261019`: migrate passed, full current backend suite262/262 in29files passed (`/tmp/resume-backend-tests.log`). U3 focused scorecard/candidate/detach suite42/42 passed (`/tmp/resume-review-regressions.log`). The five new detach tests ran red against the old implementation (3pass/2fail) and green against U3. When U3 is integrated the full count should include those five additional tests.
+Use a FRESH native Luna tester, `fork_turns:none`, with `blackbox-tests`; give public acceptance/docs/runtime/tests only. Never implementation/diffs/src/app/lib/components. It may read existing tests and use real browser/API. Do not weaken assertions or change expected values merely to pass.
 
-Main post-Home-merge serialized workspace typecheck passed (`/tmp/resume-integrated-typecheck.log`). Temporary logs from18Oct are absent; do not cite them as newly verified evidence. Historical U7 runtime artifact recorded7 successful Settings checks; its E2E run was incomplete/failing.
+Current tests still need adaptation through runtime:
 
-Four provisional E2E tests are uncommitted in `.codex/worktrees/v32-ui-tests/e2e/v32-ui.spec.ts`. They were authored blind but never run against the combined UI. A fresh blind Luna tester must adapt selectors/response assumptions using browser/API and existing tests, never implementation. Add Review no-match/filter and failed-reply-label persistence checks if missing. Candidate test duplicate in that checkout is already tracked on main; detach test duplicate is tracked on U3. Do not overwrite the corrected tests with stale copies.
+1. Workspace seed now has **Qimam People**, **Basma Advisory**, etc., not old Revenue Demo B. Inspect `/api/me`. Email is searchable but Accounts rows render company rather than email; checkpoint helper searches email and locates the unique API-verified company row. Reload/wait for selected workspace hydration after external API import.
+2. Account detail uses **buttons**, including `Fit & policy` and `Discovery`; Accounts `Rubric` is also a button. Latest checkpoint fixes some role paths, unrun.
+3. `Fit & policy` exposes `Save policy` and `Record basis evidence`. Evidence dialog labels: `Source (URL or note)`, `Date`, `Recorded by`, `Consent timestamp`; buttons `Save evidence`, `Cancel`. **savePolicy helper still uses stale `Save evidence and policy` and old success status.** Adapt without weakening persisted policy/evidence assertions.
+4. Discovery opens via button `Discovery`, then `Capture answers from a discovery call` reveals Notes and `Save interview`.
+5. Anonymous APIRequest contexts need **explicit empty storageState** because configured auth can otherwise be inherited. Preserve `/api/me`401 and rubric401 checks. No passing anonymous check was reached yet.
 
-Old browser findings to rerun, not assume fixed: import revision expected changed1 but got0; recurring review timed out; deliverable remained queued; canvas missing before browser closed. Dead/misconfigured queue worker can explain queued/schedule failures but not synchronous import revisions. For import failures inspect row outcomes and Twenty health first; upstream CRM timeout is a hypothesis, not a confirmed code defect. Do not weaken assertions.
+Still required: finish/run all four prepared acceptance cases (rubric persistence/reset/auth; generic discovery/Arabic phone; country/basis persistence; approved export/outcomes/scorecard), run all original16 E2E and adapt labels via runtime where necessary. Add/run Review search/filter no-match (no hidden selected draft/approval action), failed reply-label persistence (failure visible, unchanged API state), and truthful profile badges for none/recorded assignments. Then12-step account follow-up walkthrough in EN/AR, desktop/phone, light/dark. Use DOM/text geometry/state checks during work; maximum3 screenshots **at the end** per worker (zero captured so far).
 
-## Local services and safe next steps
+## Runtime and safe execution
 
-Main restarted only this project's existing local PostgreSQL/Redis/mailpit/Twenty/Twenty-worker/OpenDesign-a/b containers. PostgreSQL, Redis, mailpit and Twenty were healthy. No app API/web/queue worker session is intentionally left running. Port3100 belongs to CTCHealth: do not touch it. Prefer new app ports3140/4140.
+No app API/web/worker remains running from the prior controller: only its owned PIDs258475/258564/236858 were stopped after the tester drained. Ports3140/4140 confirmed free. Foreground session IDs from the old thread are no longer needed. Local Postgres/Redis/mailpit/Twenty/Twenty-worker/OpenDesign dependencies were running; check health read-only if needed.
 
-Source `.local/gate-env.sh revenue_resume_20261019` in every app/test session; it sets fixture model/provider modes and DB-derived queue. Set API_PORT4140, API_URL=http://127.0.0.1:4140, WEB_ORIGIN/BETTER_AUTH_URL=http://localhost:3140, WORKER_PORT=0. Root `AGENTS.md` records worker health-port isolation. Keep API/web/worker in separate foreground exec sessions and retain their session IDs. Avoid old gate/stack helpers: they reset databases/stop ports or background children that may be reaped. Do not drop existing data. Fresh owned test database creation/migrations are permitted.
+Owned migrated/seeded fixture DB: **revenue_resume_20261019**. No reset/drop/seed required. Source `.local/gate-env.sh revenue_resume_20261019` in **every** API/web/worker/test/build session; it overrides live `.env` model/provider settings with fixture modes. Use API_PORT4140, API_URL=http://127.0.0.1:4140, WEB_ORIGIN/BETTER_AUTH_URL=http://localhost:3140, WORKER_PORT=0. API/web/worker must share the DB-derived app queue. Full backend tests need their own queue (above).
 
-Next: integrate U2,U3,U5,U6,U7 one bounded slice at a time; retain all Campaigns/Home features and all Arabic keys when resolving conflicts. Main has completed the frontier diff audit; fix any concrete new defects only. Seed the owned fixture DB after services are ready; run full typecheck/build/test/E2E and the12-step account follow-up flow in EN/AR, light/dark, desktop/phone using text checks and at most3 final screenshots per worker. Then local-main merge and cleanup. pnpm12.10.1 warning was already given once before local merges; no host Corepack config was claimed fixed. No push/deploy.
+Use separate retained **foreground exec sessions** for API/web/worker. Old nohup helper children were reaped; old helpers may reset DBs/stop ports—avoid. **Port3100 belongs to CTCHealth; do not touch.** Build is still pending, so start with the fixture production build while web is stopped, then start the built web on3140 for browser verification. Run final typecheck if build generates changed route types. Fix real defects with Luna and recheck the affected gates. No unrelated test broadening.
 
+## Workers and preservation
 
-## Continuation checkpoint — Accounts and Review integrated
+Frontier Sol/Opus only plan/audit. SAME ACCOUNT Codex Skylink native workers must use **gpt-6-luna xhigh**, maximum2 active; use native collaboration, never CLI/Hub substitution. Discover live T3 catalog before selecting models. One bounded task/checkout at a time. Tests for new behavior come from the blind tester. Preserve original Claude processes/checkouts; project inventory found none active, but unrelated projects may be active—never broad-kill.
 
-Root `feat/v32` now includes Accounts merge8048a95 and Review merge (worker integrationb2b9009). Both sequential fixture typechecks passed. Accounts sample copies were hash-verified into `.local/takeover/preserved-u2-accounts-takeover/`; merged inactive Codex Accounts and Review checkouts were removed. Original Claude checkouts remain untouched.
+All merged inactive Codex page checkouts and the saved test checkout have been removed; branches preserved. Modified sample copies and untracked old test duplicates were hash-verified into `.local/takeover/preserved-*` before removal. `git worktree list` now has root plus the original four `.claude/worktrees/`; keep those original source checkouts intact (including the locked U3 one). Root unrelated edits remain: `samples/email-ar.csv`, `samples/email-en.csv`, untracked `strobi-avatar.zip`, untracked `Really Good Product Launch , we do something like it.mp4`. Do not stage/delete them.
 
-U6 correction3fd16ac is ready: badges use actual recorded profile assignments, otherwise “Holdout available.” Native Luna is integrating Brand in its existing checkout; fresh blind Luna is adapting prepared UI tests using only runtime/API on3140. API session22103, worker13695, web36281 use owned DB/queue `revenue_resume_20261019`, fixture modes, WORKER_PORT=0. Seed succeeded; current synthetic workspace names include Basma Advisory and Qimam People. Root samples/ZIP/MP4 remain untouched. User confirmed unattended completion through local main merge; no push/deploy.
+Before finishing: review own diff, verify actual production artifact and flows, update TASKS, merge to local main, preserve branches, remove any newly merged inactive Codex worktrees after archiving unrelated copies and run `git worktree list`/prune. pnpm12.10.1 deployment warning already given once; no host configuration claimed fixed. No push/deploy.
