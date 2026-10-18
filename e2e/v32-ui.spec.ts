@@ -1,6 +1,9 @@
 import { test, expect, type BrowserContext, type Page } from "@playwright/test";
 import { randomUUID } from "node:crypto";
 
+// Keep the working browser runs text-only. Final review captures are taken separately.
+test.use({ screenshot: "off", trace: "off" });
+
 // Black-box acceptance: only documented endpoints and rendered accessible UI.
 // Run against the isolated fixture database, never a live provider environment.
 async function workspace(page: Page, context: BrowserContext) {
@@ -8,6 +11,7 @@ async function workspace(page: Page, context: BrowserContext) {
   const response = await context.request.get("/api/me");
   expect(response.ok()).toBe(true);
   const me = await response.json();
+  console.log("Seeded workspaces:", JSON.stringify(me.workspaces.map((item: any) => item.workspace.name)));
   const membership = me.workspaces.find(
     (item: any) => item.workspace.name === "Qimam People",
   );
@@ -71,14 +75,50 @@ async function openAccount(page: Page, prospect: any) {
   await row.getByRole("button", { name: "Open", exact: true }).click();
 }
 
+async function accountTab(page: Page, name: string) {
+  await page.getByRole("navigation", { name: "Account detail" })
+    .getByRole("button", { name, exact: true }).click();
+}
+
 async function savePolicy(page: Page, id: string) {
   const saved = page.waitForResponse((response) =>
     response.url().endsWith(`/prospects/${id}`) && response.request().method() === "PATCH",
   );
-  await page.getByRole("button", { name: "Save evidence and policy", exact: true }).click();
+  await page.getByRole("button", { name: "Save policy", exact: true }).click();
   const response = await saved;
   expect(response.ok(), await response.text()).toBe(true);
-  await expect(page.getByRole("status")).toContainText("Evidence saved");
+  await expect(page.getByRole("status")).toContainText(/policy saved/i);
+}
+
+async function saveBasisEvidenceDialog(page: Page, id: string) {
+  const dialog = page.getByRole("dialog");
+  const saved = page.waitForResponse((response) =>
+    response.url().includes(`/prospects/${id}`) &&
+    ["POST", "PATCH"].includes(response.request().method()),
+  );
+  await dialog.getByRole("button", { name: "Save evidence", exact: true }).click();
+  const response = await saved;
+  expect(response.ok(), await response.text()).toBe(true);
+}
+
+async function recordBasisEvidence(page: Page, id: string, values: {
+  basis: "Consent" | "Relationship";
+  source: string;
+  date: string;
+  recordedBy: string;
+  consentTimestamp?: string;
+}) {
+  await page.getByRole("button", { name: "Record basis evidence", exact: true }).click();
+  const dialog = page.getByRole("dialog");
+  await dialog.getByRole("button", { name: values.basis, exact: true }).click();
+  await dialog.getByLabel("Source (URL or note)", { exact: true }).fill(values.source);
+  await dialog.getByLabel("Date", { exact: true }).fill(values.date);
+  await dialog.getByLabel("Recorded by", { exact: true }).fill(values.recordedBy);
+  if (values.consentTimestamp) {
+    await dialog.getByLabel(/Consent timestamp/).fill(values.consentTimestamp);
+  }
+  await saveBasisEvidenceDialog(page, id);
+  await expect(page.getByRole("status")).toContainText("Basis evidence recorded");
 }
 
 test("A3: country and basis holds stay visible until an explicit evidence save, preserving another country", async ({ page, context }) => {
@@ -87,7 +127,7 @@ test("A3: country and basis holds stay visible until an explicit evidence save, 
   await page.reload();
   await expect(page.getByLabel("Workspace", { exact: true })).toHaveValue(ws);
   await openAccount(page, missing);
-  await page.getByRole("button", { name: "Fit & policy", exact: true }).click();
+  await accountTab(page, "Fit & policy");
   await expect(page.getByLabel("Country", { exact: true })).toHaveValue("");
   await expect(page.getByText(/held/i).first()).toBeVisible();
   await expect(page.getByText(/country.*(missing|required)|set.*country/i).first()).toBeVisible();
@@ -98,12 +138,12 @@ test("A3: country and basis holds stay visible until an explicit evidence save, 
   await expect(page.getByText(/country blocked/i).first()).toBeVisible();
   await page.reload();
   await openAccount(page, missing);
-  await page.getByRole("button", { name: "Fit & policy", exact: true }).click();
+  await accountTab(page, "Fit & policy");
   await expect(page.getByLabel("Country", { exact: true })).toHaveValue("KW");
   await expect(page.getByText(/country blocked/i).first()).toBeVisible();
 
   await openAccount(page, saudi);
-  await page.getByRole("button", { name: "Fit & policy", exact: true }).click();
+  await accountTab(page, "Fit & policy");
   await page.getByLabel("Country", { exact: true }).selectOption("SA");
   await page.getByLabel("Communication basis", { exact: true }).selectOption("relationship");
   await savePolicy(page, saudi.id);
@@ -111,18 +151,31 @@ test("A3: country and basis holds stay visible until an explicit evidence save, 
   await expect(page.getByText(/basis evidence|evidence.*(missing|required)|record.*evidence/i).first()).toBeVisible();
   const before = await (await context.request.get(base)).json();
   const savedSaudi = before.prospects.find((item: any) => item.id === saudi.id);
-  await page.getByLabel("Evidence source", { exact: true }).fill("Synthetic existing-client contract reference SA-001");
-  await page.getByLabel("Evidence date", { exact: true }).fill("2026-10-17");
+  await page.getByRole("button", { name: "Record basis evidence", exact: true }).click();
+  const evidenceDialog = page.getByRole("dialog");
+  await evidenceDialog.getByRole("button", { name: "Relationship", exact: true }).click();
+  await evidenceDialog.getByLabel("Source (URL or note)", { exact: true }).fill("Synthetic existing-client contract reference SA-001");
+  await evidenceDialog.getByLabel("Date", { exact: true }).fill("2026-10-17");
+  await evidenceDialog.getByLabel("Recorded by", { exact: true }).fill("Synthetic reviewer");
   // Editing the source alone must not claim the hold is resolved in persisted state.
   const unsaved = await (await context.request.get(base)).json();
   expect(unsaved.prospects.find((item: any) => item.id === saudi.id)).toEqual(savedSaudi);
-  await savePolicy(page, saudi.id);
+  await saveBasisEvidenceDialog(page, saudi.id);
+  await expect(page.getByRole("status")).toContainText("Basis evidence recorded");
+  const afterEvidence = await (await context.request.get(base)).json();
+  expect(afterEvidence.prospects.find((item: any) => item.id === saudi.id).basisEvidence)
+    .toContainEqual(expect.objectContaining({
+      source: "Synthetic existing-client contract reference SA-001",
+      date: "2026-10-17",
+      recordedBy: "Synthetic reviewer",
+    }));
   await page.reload();
   await openAccount(page, saudi);
-  await page.getByRole("button", { name: "Fit & policy", exact: true }).click();
+  await accountTab(page, "Fit & policy");
   await expect(page.getByLabel("Country", { exact: true })).toHaveValue("SA");
-  await expect(page.getByLabel("Evidence source", { exact: true })).toHaveValue("Synthetic existing-client contract reference SA-001");
+  await expect(page.getByText("Synthetic existing-client contract reference SA-001", { exact: true })).toBeVisible();
   await openAccount(page, missing);
+  await accountTab(page, "Fit & policy");
   await expect(page.getByLabel("Country", { exact: true })).toHaveValue("KW");
   await expect(page.getByText(/country blocked/i).first()).toBeVisible();
 });
@@ -139,14 +192,14 @@ test("A2: generic discovery saves without HR setup and stays usable on an Arabic
     await page.reload();
     await expect(page.getByLabel("Workspace", { exact: true })).toHaveValue(ws);
     await openAccount(page, account);
-    await page.getByRole("button", { name: "Discovery", exact: true }).click();
+    await accountTab(page, "Discovery");
     await expect(page.getByLabel(/HR setup|payroll/i)).toHaveCount(0);
     await expect(page.getByText(/payroll|HR setup/i)).toHaveCount(0);
     const notes = page.getByRole("textbox", { name: "Notes", exact: true });
     if (!(await notes.isVisible())) {
-      await page.getByText("Discovery interview", { exact: true }).click();
+      await page.getByText("Capture answers from a discovery call", { exact: true }).click();
     }
-    await notes.fill("Synthetic generic consultancy; no HR setup answer was supplied.");
+    await notes.fill("Synthetic consultancy confirmed budget and decision timeline.");
     const saved = page.waitForResponse((response) =>
       response.url().includes(`/prospects/${account.id}/`) && response.request().method() === "POST",
     );
@@ -155,7 +208,9 @@ test("A2: generic discovery saves without HR setup and stays usable on an Arabic
     await expect(page.getByRole("status")).toContainText("Discovery answers saved");
     await page.reload();
     await openAccount(page, account);
-    await page.getByRole("button", { name: "Discovery", exact: true }).click();
+    await accountTab(page, "Discovery");
+    await expect(page.getByRole("textbox", { name: "Notes", exact: true }))
+      .toHaveValue("Synthetic consultancy confirmed budget and decision timeline.");
     await page.setViewportSize({ width: 390, height: 844 });
     await page.getByRole("button", { name: "واجهة عربية", exact: true }).click();
     await expect(page.locator("html")).toHaveAttribute("dir", "rtl");
@@ -255,6 +310,8 @@ test("A5/A4: approved batch CSV and imported outcomes reconcile to its scorecard
   test.setTimeout(240000);
   const { base, me } = await workspace(page, context);
   const before = await (await context.request.get(base)).json();
+  expect(before.workspace.company.marketingLicence).toBe(true);
+  expect(before.workspace.company.references.some((item: any) => item.consent)).toBe(true);
   // Fixture-only credit caps; the caller must source the gate fixture environment.
   const limits = await context.request.patch(base, { data: {
     plan: "Team", cap: 10000,
@@ -262,29 +319,33 @@ test("A5/A4: approved batch CSV and imported outcomes reconcile to its scorecard
     memberCaps: [{ userId: me.user.id, cap: 10000 }],
   } });
   expect(limits.ok()).toBe(true);
-  await page.getByRole("button", { name: "Brand & company", exact: true }).click();
-  await page.getByLabel("I reviewed this offer; it does not claim an unverified result").check();
-  await page.getByLabel("Egypt electronic marketing licence recorded").check();
-  await page.getByRole("button", { name: "Save company context", exact: true }).click();
-  await expect(page.getByRole("status")).toContainText("Company context saved");
   const [eligible, unapproved] = await importAccounts(context, base);
   for (const account of [eligible, unapproved]) {
     await openAccount(page, account);
+    await accountTab(page, "Sources");
     await page.getByRole("button", { name: "Add source", exact: true }).click();
     await page.getByLabel("Claim", { exact: true }).last().fill("Synthetic company is hiring a growth manager.");
     await page.getByLabel("I reviewed this factual claim and its dated source").last().check();
+    await page.getByRole("button", { name: "Save reviewed source", exact: true }).click();
+    await expect(page.getByRole("status")).toContainText("Evidence saved");
+    await accountTab(page, "Fit & policy");
     await page.getByLabel("Country", { exact: true }).selectOption("EG");
     await page.getByLabel("Communication basis", { exact: true }).selectOption("consent");
     await page.getByLabel("Consent time", { exact: true }).fill("2026-10-17T12:00");
-    await page.getByLabel("Evidence source", { exact: true }).fill("Synthetic signed opt-in reference V32");
-    await page.getByLabel("Evidence date", { exact: true }).fill("2026-10-17");
     await savePolicy(page, account.id);
+    await recordBasisEvidence(page, account.id, {
+      basis: "Consent",
+      source: "Synthetic signed opt-in reference V32",
+      date: "2026-10-17",
+      recordedBy: "Synthetic reviewer",
+      consentTimestamp: "2026-10-17T12:00",
+    });
   }
   await fixtureAction(context, base, "enrich_contacts", [eligible.id, unapproved.id]);
   await page.reload();
   await page.getByRole("button", { name: "Accounts", exact: true }).click();
   await page.getByRole("searchbox", { name: "Search accounts", exact: true }).fill(eligible.snapshot.email);
-  await expect(page.getByRole("row").filter({ hasText: eligible.snapshot.email })).toContainText("Ready");
+  await expect(page.getByRole("row").filter({ hasText: eligible.snapshot.company })).toContainText("Ready");
   await fixtureAction(context, base, "draft_messages", [eligible.id, unapproved.id]);
   const state = await (await context.request.get(base)).json();
   const approvedDraft = state.drafts.find((item: any) => item.prospectId === eligible.id);
@@ -298,7 +359,7 @@ test("A5/A4: approved batch CSV and imported outcomes reconcile to its scorecard
   await page.reload();
   await page.getByRole("button", { name: "Campaigns", exact: true }).click();
   await page.getByRole("button", { name: "Sequences", exact: true }).click();
-  await page.getByRole("tab", { name: "Export and outcomes", exact: true }).click();
+  await page.getByRole("button", { name: "Export and outcomes", exact: true }).click();
   await expect(page.getByText(eligible.snapshot.company, { exact: true })).toBeVisible();
   await expect(page.getByRole("checkbox", { name: new RegExp(unapproved.snapshot.company) })).toHaveCount(0);
   await page.getByRole("button", { name: "Select all approved drafts", exact: true }).click();
@@ -328,8 +389,8 @@ test("A5/A4: approved batch CSV and imported outcomes reconcile to its scorecard
   expect((await imported).ok()).toBe(true);
   await expect(page.getByText(/row 3/i)).toBeVisible();
   await expect(page.getByText(/invalid|rejected|unknown/i).first()).toBeVisible();
-  await page.getByRole("tab", { name: "Results", exact: true }).click();
-  await page.getByLabel("Batch", { exact: true }).selectOption(batch.id);
+  await page.getByRole("button", { name: "Results", exact: true }).click();
+  await page.getByLabel(/^Batch/).selectOption(batch.id);
   await expect(page.getByLabel("Include simulated", { exact: true })).not.toBeChecked();
   const scorecardResponse = await context.request.get(`${base}/scorecard?batch=${encodeURIComponent(batch.id)}`);
   expect(scorecardResponse.ok()).toBe(true);
@@ -339,6 +400,18 @@ test("A5/A4: approved batch CSV and imported outcomes reconcile to its scorecard
   expect(scorecard.replyLabels.positive).toBe(0);
   expect(scorecard.batches.find((item: any) => item.batchId === batch.id)?.sequences).toBe(1);
   // The UI must expose the actual filtered batch, not silently fall back to all batches.
-  await expect(page.getByLabel("Batch", { exact: true })).toHaveValue(batch.id);
+  await expect(page.getByLabel(/^Batch/)).toHaveValue(batch.id);
   expect(before.sequences.some((item: any) => item.batchId === batch.id)).toBe(false);
+});
+
+test("Review search with no matches clears the selected draft and approval action", async ({ page, context }) => {
+  await workspace(page, context);
+  await page.getByRole("button", { name: "Review", exact: true }).click();
+  await expect(page.getByRole("button", { name: "Approve current version", exact: true })).toBeVisible();
+  await page.getByLabel("Search review items…", { exact: true }).fill(`no-match-${randomUUID()}`);
+  await expect(page.getByText("No items match your search.", { exact: true })).toBeVisible();
+  await expect(page.getByText("Nothing to review in this list.", { exact: true })).toBeVisible();
+  await expect(page.getByText("Choose a message from the queue to review it.", { exact: true })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Approve current version", exact: true })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "Back to queue", exact: true })).toHaveCount(0);
 });
