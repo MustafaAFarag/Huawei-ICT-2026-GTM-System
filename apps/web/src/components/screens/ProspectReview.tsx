@@ -374,8 +374,12 @@ export function ProspectReview({ prospect }: { prospect: Prospect }) {
             </ul>
           </div>
           <div className="acct-policy-form">
-            <Field label={t("Country")}>
+            <div className="field">
+              <label className="field-label" htmlFor="policy-country">
+                {t("Country")}
+              </label>
               <Select
+                id="policy-country"
                 name="country"
                 value={country}
                 disabled={!canApprove}
@@ -388,9 +392,13 @@ export function ProspectReview({ prospect }: { prospect: Prospect }) {
                   </option>
                 ))}
               </Select>
-            </Field>
-            <Field label={t("Communication basis")}>
+            </div>
+            <div className="field">
+              <label className="field-label" htmlFor="policy-communication-basis">
+                {t("Communication basis")}
+              </label>
               <Select
+                id="policy-communication-basis"
                 name="lawfulBasis"
                 value={basis}
                 disabled={!canApprove}
@@ -400,7 +408,7 @@ export function ProspectReview({ prospect }: { prospect: Prospect }) {
                 <option value="consent">{t("Recorded consent")}</option>
                 <option value="relationship">{t("Existing relationship")}</option>
               </Select>
-            </Field>
+            </div>
             <Field label={t("Consent time")}>
               <Input
                 name="consentAt"
