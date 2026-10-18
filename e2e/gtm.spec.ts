@@ -30,13 +30,13 @@ test("triage, discovery, consent references and SDR PDF in both interface direct
     .getByRole("button", { name: "Open", exact: true })
     .first()
     .click();
-  await page.getByRole("tab", { name: "Triage", exact: true }).click();
+  await page.getByRole("button", { name: "Triage", exact: true }).click();
   await page
     .getByRole("textbox", { name: "Rationale", exact: true })
     .fill("Synthetic workflow verification");
   await page.getByRole("button", { name: "Save triage", exact: true }).click();
   await expect(page.getByRole("status")).toContainText("Triage saved");
-  await page.getByRole("tab", { name: "Discovery", exact: true }).click();
+  await page.getByRole("button", { name: "Discovery", exact: true }).click();
   const discovery = page.locator("section").filter({
     has: page.getByRole("heading", {
       name: "Discovery interview",

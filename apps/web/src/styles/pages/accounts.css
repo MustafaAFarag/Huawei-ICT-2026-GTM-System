@@ -21,7 +21,11 @@
 }
 .acct-action {
   grid-area: action;
-  margin-block-start: calc(var(--space-5) * -1);
+  /* Sits in the page header's action slot: header block is 40px title + 24px subtitle + 4px gap
+     + 24px margin = 92px, minus the 12px the button is centred below the title top. */
+  margin-block-start: -80px;
+  position: relative;
+  z-index: 1;
 }
 .acct-body {
   grid-area: body;
@@ -604,13 +608,17 @@
 }
 
 /* ---------- Account detail ---------- */
+/* The page header (title only) is drawn by page.tsx; this row pulls up under it so the person
+   line reads as its subtitle and "Prepare outreach" sits in the header's action slot. */
 .acct-detail-head {
   display: flex;
-  flex-wrap: wrap;
   align-items: flex-start;
   justify-content: space-between;
   gap: var(--space-4);
-  margin-block-end: var(--space-4);
+  margin-block: -20px var(--space-4);
+}
+.acct-detail-head > .btn {
+  margin-block-start: -36px;
 }
 .acct-person {
   margin-block-start: var(--space-1);
@@ -623,8 +631,21 @@
   max-inline-size: 800px;
   align-content: start;
 }
-.acct-pane.panel {
+.screen .acct-pane.panel,
+.screen .panel + .acct-pane.panel {
+  margin-block-start: 0;
   padding-block-start: 0;
+  border-block-start: 0;
+}
+.acct-pane .call-log {
+  justify-items: start;
+}
+.acct-pane .call-log > .field,
+.acct-pane .call-log > .acct-card {
+  justify-self: stretch;
+}
+.acct-pane .toolbar {
+  align-items: flex-end;
 }
 .acct-pane .panel-head h2 {
   font-size: 20px;
@@ -821,6 +842,13 @@
   .acct-action {
     margin-block-start: var(--space-5);
   }
+  .acct-detail-head {
+    flex-wrap: wrap;
+    margin-block-start: -12px;
+  }
+  .acct-detail-head > .btn {
+    margin-block-start: 0;
+  }
   .acct-toolbar .acct-search {
     flex-basis: 100%;
   }
@@ -904,10 +932,13 @@
     border: 0;
   }
   .acct-triage-table td[data-label]:not(:first-child)::before,
-  .acct-rules td[data-label]::before {
+  .acct-rules td:last-child::before {
     content: attr(data-label) ": ";
     color: var(--text-4);
     font-size: var(--text-xs);
+  }
+  .acct-rules th[scope="row"] {
+    inline-size: auto;
   }
   .acct-rules td:last-child {
     inline-size: auto;

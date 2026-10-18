@@ -104,6 +104,10 @@ export function ProspectReview({ prospect }: { prospect: Prospect }) {
     <div className="acct-detail" data-ai-target="account-detail">
       <div className="acct-detail-head">
         <div>
+          <p className="acct-person" dir="auto">
+            {s.firstName} {s.lastName}
+            {s.title ? ` · ${s.title}` : ""} · <bdi>{s.email}</bdi>
+          </p>
           <Button
             variant="ghost"
             size="sm"
@@ -113,10 +117,6 @@ export function ProspectReview({ prospect }: { prospect: Prospect }) {
           >
             {t("Back to accounts")}
           </Button>
-          <p className="acct-person" dir="auto">
-            {s.firstName} {s.lastName}
-            {s.title ? ` · ${s.title}` : ""} · <bdi>{s.email}</bdi>
-          </p>
         </div>
         <Button variant="primary" onClick={prepareOutreach}>
           {t("Prepare outreach")}
