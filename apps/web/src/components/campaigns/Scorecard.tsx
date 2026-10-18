@@ -30,6 +30,7 @@ type Scorecard = {
   calls: number;
   positive: number;
   replyLabels: { positive: number; neutral: number; negative: number };
+  replyCandidates: ReplyCandidate[];
   batches: {
     batchId: string;
     createdAt: string;
@@ -51,14 +52,14 @@ type Discovery = {
   averageMaturity: number;
   pains: Record<string, number>;
 };
-// The dashboard rows carry more than the shared type declares.
-type SequenceRow = {
-  id: string;
-  prospectId: string;
-  state: string;
-  batchId?: string | null;
-};
 type Label = "positive" | "neutral" | "negative";
+type ReplyCandidate = {
+  prospectId: string;
+  sequenceId: string;
+  provenance: "live" | "simulated" | "imported";
+  occurredAt: string;
+  label: Label | null;
+};
 
 const percent = (value: number, base: number) =>
   base > 0 ? `${Math.round((value / base) * 100)}%` : "0%";
@@ -78,12 +79,10 @@ export function Scorecard({ initialBatch = "" }: { initialBatch?: string }) {
   const [from, setFrom] = useState("");
   const [to, setTo] = useState("");
   const [includeSimulated, setIncludeSimulated] = useState(false);
-  const [labelled, setLabelled] = useState<Record<string, Label>>({});
   // Another workspace starts from a clean view; a filter change keeps the controls mounted.
   useEffect(() => {
     setResults(null);
     setBatch(initialBatch);
-    setLabelled({});
   }, [ws, initialBatch]);
   useEffect(() => {
     let active = true;
@@ -147,28 +146,27 @@ export function Scorecard({ initialBatch = "" }: { initialBatch?: string }) {
   const rate = (g: Group) =>
     g.replyRate === null ? "—" : `${(g.replyRate * 100).toFixed(1)}%`;
 
-  // Replied contacts a person can label. Labelling again replaces the earlier label.
-  const repliable = new Map<string, SequenceRow>();
-  for (const s of data.sequences as SequenceRow[]) {
-    if (!s.state.endsWith("replied")) continue;
-    if (!includeSimulated && s.state.startsWith("simulated")) continue;
-    if (batch && s.batchId !== batch) continue;
-    if (!repliable.has(s.prospectId)) repliable.set(s.prospectId, s);
-  }
-  const provenance = (state: string) =>
-    state.startsWith("simulated")
-      ? "Simulated"
-      : state.startsWith("imported")
-        ? "Imported"
-        : "Live";
-  const label = (row: SequenceRow, value: Label) =>
+  // Candidates come from recorded reply events, including stopped sequences.
+  const provenance = (value: ReplyCandidate["provenance"]) =>
+    value === "simulated" ? "Simulated" : value === "imported" ? "Imported" : "Live";
+  const label = (row: ReplyCandidate, value: Label) =>
     void action(
       async () => {
         await client.workspace(ws, `/prospects/${row.prospectId}/reply-label`, {
           method: "POST",
-          body: JSON.stringify({ label: value, sequenceId: row.id }),
+          body: JSON.stringify({ label: value, sequenceId: row.sequenceId }),
         });
-        setLabelled((labels) => ({ ...labels, [row.prospectId]: value }));
+        setResults((current) => current && {
+          ...current,
+          scorecard: {
+            ...current.scorecard,
+            replyCandidates: current.scorecard.replyCandidates.map((candidate) =>
+              candidate.prospectId === row.prospectId
+                ? { ...candidate, label: value }
+                : candidate,
+            ),
+          },
+        });
       },
       t("Reply label saved. The scorecard counts only labels a person confirmed."),
     );
@@ -295,7 +293,7 @@ export function Scorecard({ initialBatch = "" }: { initialBatch?: string }) {
             )}
           </section>
 
-          {repliable.size > 0 && (
+          {scorecard.replyCandidates.length > 0 && (
             <section className="cmp-card" aria-labelledby="cmp-confirm-title">
               <div className="cmp-card-head">
                 <h2 id="cmp-confirm-title">
@@ -306,11 +304,11 @@ export function Scorecard({ initialBatch = "" }: { initialBatch?: string }) {
                 {t("A reply counts as positive only after a person confirms it.")}
               </p>
               <ul className="cmp-confirm">
-                {[...repliable.values()].map((row) => {
+                {scorecard.replyCandidates.map((row) => {
                   const prospect = data.prospects.find(
                     (p) => p.id === row.prospectId,
                   );
-                  const chosen = labelled[row.prospectId];
+                  const chosen = row.label;
                   return (
                     <li key={row.prospectId}>
                       <div className="cmp-confirm-who">
@@ -321,7 +319,7 @@ export function Scorecard({ initialBatch = "" }: { initialBatch?: string }) {
                           {prospect
                             ? `${prospect.snapshot.firstName} ${prospect.snapshot.lastName}`
                             : ""}{" "}
-                          · {t(provenance(row.state))}
+                          · {t(provenance(row.provenance))}
                         </span>
                       </div>
                       <div className="cmp-confirm-actions" role="group" aria-label={t("Reply label")}>
