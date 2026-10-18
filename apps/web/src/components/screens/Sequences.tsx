@@ -15,9 +15,11 @@ type Section = "sequences" | "results" | "export";
 type Step = { channel: string; body: string; state: string; day?: number };
 
 export function Sequences() {
-  const { data, setTab } = useWorkspace();
+  const { data, setTab, exportFocusKey } = useWorkspace();
   const { t } = usePrefs();
-  const [section, setSection] = useState<Section>("sequences");
+  const [section, setSection] = useState<Section>(
+    exportFocusKey > 0 ? "export" : "sequences",
+  );
   const [batch, setBatch] = useState("");
   const [openId, setOpenId] = useState<string | null>(null);
   const openScorecard = (batchId: string) => {

@@ -151,6 +151,11 @@ test("four plays, bilingual asset, approval invalidation, suppression and worksp
   let state = await (await context.request.get(base)).json();
   const draft = state.drafts.find((d: any) => d.prospectId === prospect.id);
   await page.locator(".sidebar").getByRole("button", { name: "Review", exact: true }).click();
+  // Review is a queue beside one selected version: open this company's item first.
+  await page
+    .locator(".review-queue")
+    .getByRole("button", { name: companyName })
+    .click();
   const review = page
     .locator("section.panel")
     .filter({ hasText: companyName })

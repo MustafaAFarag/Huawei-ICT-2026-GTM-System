@@ -7,25 +7,27 @@ import { serializable } from "./database.js";
 export function attachAssetToDraft(
   workspaceId: string,
   draftId: string,
-  input: { assetId: string; version: number },
+  input: { assetId: string | null; version: number },
 ) {
   return serializable(async (tx) => {
     const draft = await tx.draft.findFirstOrThrow({
       where: { id: draftId, workspaceId },
     });
-    const asset = await tx.asset.findFirstOrThrow({
-      where: {
-        id: input.assetId,
-        workspaceId,
-        approvedAt: { not: null },
-        OR: [
-          { prospectId: draft.prospectId },
-          { prospectId: null, template: "capability-profile" },
-        ],
-      },
-    });
     if (draft.version !== input.version)
       throw new ConflictException("This draft changed. Reload it.");
+    const asset = input.assetId
+      ? await tx.asset.findFirstOrThrow({
+          where: {
+            id: input.assetId,
+            workspaceId,
+            approvedAt: { not: null },
+            OR: [
+              { prospectId: draft.prospectId },
+              { prospectId: null, template: "capability-profile" },
+            ],
+          },
+        })
+      : null;
     await tx.sequence.updateMany({
       where: {
         workspaceId,
@@ -37,7 +39,7 @@ export function attachAssetToDraft(
     return tx.draft.update({
       where: { id: draftId },
       data: {
-        assetId: asset.id,
+        assetId: asset?.id ?? null,
         version: { increment: 1 },
         approvedVersion: null,
         approvedAt: null,
