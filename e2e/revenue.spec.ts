@@ -49,6 +49,10 @@ test("four plays, bilingual asset, approval invalidation, suppression and worksp
     .getByRole("button", { name: "Brand & company", exact: true })
     .click();
   await page
+    .getByRole("navigation", { name: "Brand and company sections" })
+    .getByRole("button", { name: "Messaging", exact: true })
+    .click();
+  await page
     .getByLabel("I reviewed this offer; it does not claim an unverified result")
     .check();
   await page.getByLabel("Egypt electronic marketing licence recorded").check();
