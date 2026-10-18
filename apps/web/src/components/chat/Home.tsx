@@ -64,7 +64,7 @@ export function Home({
     return (
       <section className="home-landing" aria-labelledby="home-title">
         <div className="home-hero">
-          <Nabil mood={mood} size={72} className="home-avatar" />
+          <Nabil mood={mood} size={64} className="home-avatar" />
           <h1 id="home-title" dir="auto">
             {greeting(userName, t, language === "ar")}
           </h1>

@@ -382,7 +382,7 @@ test("recurring plays persist a due review and require cost approval before exec
     .first()
     .getByRole("checkbox")
     .check();
-  await page.getByRole("button", { name: "Plays", exact: true }).click();
+  await page.locator(".sidebar").getByRole("button", { name: "Campaigns", exact: true }).click();
   await page.getByText("Scheduled reviews", { exact: true }).click();
   await page.getByText("Schedule this play", { exact: true }).click();
   const name = `Synthetic scheduled review ${randomUUID().slice(0, 8)}`;
@@ -422,7 +422,7 @@ test("recurring plays persist a due review and require cost approval before exec
     `/api/workspaces/${ws}/schedules/${schedule.id}`,
     { data: { enabled: false } },
   );
-  await page.getByRole("button", { name: "Review queue", exact: true }).click();
+  await page.locator(".sidebar").getByRole("button", { name: "Review", exact: true }).click();
   const item = page.locator(".selection-bar").filter({ hasText: name });
   await item
     .getByRole("button", { name: "Review scheduled action", exact: true })
@@ -438,7 +438,7 @@ test("recurring plays persist a due review and require cost approval before exec
     state.budgets.find((b: any) => !b.userId)?.used ?? 0;
   expect(used(after)).toBe(used(before));
   await page.reload();
-  await page.getByRole("button", { name: "Review queue", exact: true }).click();
+  await page.locator(".sidebar").getByRole("button", { name: "Review", exact: true }).click();
   const persisted = page.locator(".selection-bar").filter({ hasText: name });
   await expect(persisted).toBeVisible();
   await persisted

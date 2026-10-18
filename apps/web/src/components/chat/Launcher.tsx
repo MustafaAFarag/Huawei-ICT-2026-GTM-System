@@ -115,7 +115,10 @@ export function Launcher({
         aria-expanded={open}
         onClick={() => onOpenChange(!open)}
       >
-        <Nabil mood={mood} size={40} />
+        <Nabil mood={mood} size={26} />
+        <span className="launcher-label">
+          {open ? t("Close Nabil") : t("Ask Nabil")}
+        </span>
         {chat.streaming && !open && <span className="launcher-pulse" aria-hidden />}
       </button>
     </div>

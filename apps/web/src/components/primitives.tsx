@@ -8,10 +8,11 @@ import {
   type TextareaHTMLAttributes,
 } from "react";
 import { IconAlertTriangle, IconInbox } from "@revenue/ui";
+import { usePrefs } from "../lib/prefs";
 
 type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   variant?: "primary" | "secondary" | "ghost" | "ai" | "danger";
-  size?: "sm" | "md";
+  size?: "sm" | "md" | "lg";
   startIcon?: ReactNode;
   endIcon?: ReactNode;
 };
@@ -171,15 +172,110 @@ export function Check({
   );
 }
 
-export function Empty({
+// ---------- Page primitives (v3.2) ----------
+// Every screen opens with PageHeader, optionally PageTabs, and shows one of LoadingState,
+// EmptyState or ErrorState instead of a blank area. Only text the caller passes is shown, so
+// callers translate it with t().
+
+// Page title, one-line subtitle and the single primary action (Campaigns frame).
+export function PageHeader({
   title,
-  children,
-  icon,
+  subtitle,
   action,
 }: {
-  title: string;
-  children: ReactNode;
+  title: ReactNode;
+  subtitle?: ReactNode;
+  action?: ReactNode;
+}) {
+  return (
+    <header className="page-header">
+      <div className="page-header-text">
+        <h1 dir="auto">{title}</h1>
+        {subtitle && <p>{subtitle}</p>}
+      </div>
+      {action && <div className="page-header-action">{action}</div>}
+    </header>
+  );
+}
+
+export type PageTabItem<T extends string = string> = {
+  id: T;
+  label: ReactNode;
+  count?: ReactNode;
+};
+// Tabs under the page header. They switch between screens or sections, so they are
+// navigation: buttons with aria-current, not an ARIA tablist.
+export function PageTabs<T extends string>({
+  tabs,
+  value,
+  onChange,
+  label,
+}: {
+  tabs: readonly PageTabItem<T>[];
+  value: T;
+  onChange: (id: T) => void;
+  label: string;
+}) {
+  return (
+    <nav className="page-tabs" aria-label={label}>
+      {tabs.map((tab) => (
+        <button
+          key={tab.id}
+          type="button"
+          className="page-tab"
+          aria-current={tab.id === value ? "page" : undefined}
+          onClick={() => tab.id !== value && onChange(tab.id)}
+        >
+          {tab.label}
+          {tab.count != null && <span className="tab-count">{tab.count}</span>}
+        </button>
+      ))}
+    </nav>
+  );
+}
+
+const SKELETON_WIDTHS = [69, 59, 64, 53];
+// Skeleton that keeps the page layout while data loads (Loading frame).
+export function LoadingState({
+  title,
+  caption,
+  rows = 4,
+}: {
+  title?: ReactNode;
+  caption?: ReactNode;
+  rows?: number;
+}) {
+  const { t } = usePrefs();
+  return (
+    <section className="state" aria-busy="true">
+      <div role="status">
+        <h2 className="state-title">{title ?? t("Loading…")}</h2>
+      </div>
+      <div className="state-skeleton" aria-hidden>
+        {Array.from({ length: rows }, (_, i) => (
+          <span
+            key={i}
+            style={{
+              inlineSize: `${SKELETON_WIDTHS[i % SKELETON_WIDTHS.length]}%`,
+            }}
+          />
+        ))}
+      </div>
+      {caption && <p className="state-caption">{caption}</p>}
+    </section>
+  );
+}
+
+// Nothing here yet: say why in one line and offer the next step.
+export function EmptyState({
+  icon,
+  title,
+  text,
+  action,
+}: {
   icon?: ReactNode;
+  title: ReactNode;
+  text?: ReactNode;
   action?: ReactNode;
 }) {
   return (
@@ -188,9 +284,59 @@ export function Empty({
         {icon ?? <IconInbox size={18} />}
       </span>
       <h3>{title}</h3>
-      <p>{children}</p>
+      {text && <p>{text}</p>}
       {action}
     </div>
+  );
+}
+
+// Older call sites: children are the one-line text.
+export function Empty({
+  title,
+  children,
+  icon,
+  action,
+}: {
+  title: string;
+  children?: ReactNode;
+  icon?: ReactNode;
+  action?: ReactNode;
+}) {
+  return <EmptyState icon={icon} title={title} text={children} action={action} />;
+}
+
+// A failed load: what happened in plain words, that saved work is safe, and a retry.
+export function ErrorState({
+  title,
+  message,
+  onRetry,
+  retryLabel,
+  action,
+}: {
+  title?: ReactNode;
+  message?: ReactNode;
+  onRetry?: () => void;
+  retryLabel?: ReactNode;
+  action?: ReactNode;
+}) {
+  const { t } = usePrefs();
+  return (
+    <section className="state" role="alert">
+      <h2 className="state-title state-title-lg">
+        {title ?? t("We couldn’t load this.")}
+      </h2>
+      {message && <p className="state-text">{message}</p>}
+      {(onRetry || action) && (
+        <div className="button-row">
+          {onRetry && (
+            <Button variant="primary" size="lg" onClick={onRetry}>
+              {retryLabel ?? t("Try again")}
+            </Button>
+          )}
+          {action}
+        </div>
+      )}
+    </section>
   );
 }
 

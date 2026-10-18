@@ -9,13 +9,21 @@ import { IconShieldCheck, IconX } from "@revenue/ui";
 import { client } from "../lib/client";
 import { usePrefs } from "../lib/prefs";
 import type { Asset, Dashboard, Membership, Prospect, Run } from "../lib/types";
-import { Button, Empty, ErrorPanel, Skeleton } from "../components/primitives";
+import {
+  Button,
+  ErrorPanel,
+  ErrorState,
+  LoadingState,
+  PageHeader,
+  PageTabs,
+} from "../components/primitives";
 import { Sidebar, Topbar } from "../components/Shell";
 import { CommandPalette } from "../components/CommandPalette";
 import { CostModal, type Proposal } from "../components/Modals";
 import { ArtifactCanvas } from "../components/ArtifactCanvas";
 import { SignIn } from "../components/SignIn";
 import {
+  CAMPAIGN_VIEWS,
   TABS,
   TAB_LABELS,
   WorkspaceProvider,
@@ -36,13 +44,13 @@ import { ContextForm } from "../components/screens/ContextForm";
 import { Settings } from "../components/screens/Settings";
 
 const DESCRIPTIONS: Record<Tab, string> = {
-  Plays: "Start with a goal. Review each step before moving forward.",
+  Plays: "From the right accounts to a reviewed next step.",
   Accounts: "Source facts, score fit, and choose who to approach.",
   "Review queue":
     "Every message is approved by a person before it can be sent.",
   "Asset Studio":
     "Every document, email and carousel Nabil prepared, filed by account.",
-  Sequences: "Prepared touches, holdouts and recorded outcomes.",
+  Sequences: "From the right accounts to a reviewed next step.",
   "Company context": "The brand, offer and customer every play draws on.",
   Settings: "Spending, quotas, connectors and the audit trail.",
 };
@@ -555,7 +563,8 @@ export default function Page() {
       ? (chat.thread?.title ?? t("New chat"))
       : prospect
         ? prospect.snapshot.company
-        : t(TAB_LABELS[view]);
+        : // Sequences is a tab of the Campaigns page, so both show the Campaigns title.
+          t(TAB_LABELS[view === "Sequences" ? "Plays" : view]);
   return (
     <ChatProvider value={chat}>
       <div
@@ -589,14 +598,6 @@ export default function Page() {
               void chat.archive(id).catch((e) => setError(e.message))
             }
             collapsed={collapsed}
-            onToggleCollapsed={() => {
-              const next = !collapsed;
-              setCollapsed(next);
-              localStorage.setItem(
-                "revenue-sidebar",
-                next ? "collapsed" : "open",
-              );
-            }}
             onSignOut={async () => {
               await client.request("/auth/sign-out", { method: "POST" });
               setAuthState("signin");
@@ -617,7 +618,17 @@ export default function Page() {
           <Topbar
             workspaceName={data?.workspace.name}
             section={section}
-            onMenu={() => setNavOpen(true)}
+            collapsed={collapsed}
+            onToggleCollapsed={() => {
+              const next = !collapsed;
+              setCollapsed(next);
+              localStorage.setItem(
+                "revenue-sidebar",
+                next ? "collapsed" : "open",
+              );
+            }}
+            onOpenNav={() => setNavOpen(true)}
+            onHome={() => setView("Home")}
           />
           {data?.fixture && (
             <div className="fixture-banner">
@@ -660,18 +671,22 @@ export default function Page() {
           {!data || !value ? (
             error ? (
               <div className="content">
-                <Empty title={t("Workspace could not load")}>
-                  {t("Use Retry loading above to reconnect.")}
-                </Empty>
+                <ErrorState
+                  title={t("Workspace could not load")}
+                  message={t(
+                    "Your saved work is still there. Check your connection and try again.",
+                  )}
+                  onRetry={() =>
+                    void refresh().catch((e) => setError(e.message))
+                  }
+                />
               </div>
             ) : (
-              <div className="content loading-page" aria-busy="true">
-                <p role="status" className="shimmer">
-                  {t("Loading workspace…")}
-                </p>
-                <div className="panel">
-                  <Skeleton rows={5} />
-                </div>
+              <div className="content">
+                <LoadingState
+                  title={t("Loading workspace…")}
+                  caption={t("Keep the same layout while content loads.")}
+                />
               </div>
             )
           ) : (
@@ -689,15 +704,24 @@ export default function Page() {
               {view !== "Home" ? (
                 <div className="content">
                   {!preview && (
-                    <div className="page-heading">
-                      <div>
-                        <h1 dir="auto">{section}</h1>
-                        {!prospect && (
-                          <p className="muted">{t(DESCRIPTIONS[view])}</p>
-                        )}
-                      </div>
-                    </div>
+                    <PageHeader
+                      title={section}
+                      subtitle={!prospect ? t(DESCRIPTIONS[view]) : undefined}
+                    />
                   )}
+                  {!preview &&
+                    !prospect &&
+                    CAMPAIGN_VIEWS.includes(view as Tab) && (
+                      <PageTabs
+                        label={t("Campaign sections")}
+                        value={view as "Plays" | "Sequences"}
+                        onChange={setTab}
+                        tabs={[
+                          { id: "Plays", label: t("Plays") },
+                          { id: "Sequences", label: t("Sequences") },
+                        ]}
+                      />
+                    )}
                   <div key={ws} className="screen">
                     {canvas ? (
                       canvas
@@ -722,7 +746,7 @@ export default function Page() {
                 </div>
               ) : null}
               {view !== "Home" && (
-                <div inert={modalOpen}>
+                <div className="launcher-slot" inert={modalOpen}>
                   <Launcher
                     open={launcherOpen}
                     onOpenChange={setLauncherOpen}

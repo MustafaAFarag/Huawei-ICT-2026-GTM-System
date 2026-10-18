@@ -142,7 +142,7 @@ export function Composer({
         id={id}
         ref={area}
         dir="auto"
-        rows={variant === "hero" ? 3 : 1}
+        rows={1}
         value={text}
         autoFocus={autoFocus}
         maxLength={3000}
@@ -238,7 +238,7 @@ export function Composer({
               aria-label={t("Send")}
               disabled={!canWrite || !text.trim()}
             >
-              <IconArrowUp size={16} />
+              {variant === "hero" ? t("Send") : <IconArrowUp size={16} />}
             </button>
           )}
         </div>

@@ -6,7 +6,7 @@ async function login(page: Page) {
   // The session comes from e2e/global-setup.ts (sign-in is rate-limited).
   await page.goto("/?s=Plays");
   await expect(
-    page.getByRole("heading", { name: "Plays", exact: true }),
+    page.getByRole("heading", { name: "Campaigns", exact: true }),
   ).toBeVisible();
 }
 
