@@ -423,6 +423,7 @@ test("recurring plays persist a due review and require cost approval before exec
     { data: { enabled: false } },
   );
   await page.locator(".sidebar").getByRole("button", { name: "Review", exact: true }).click();
+  await page.getByRole("button", { name: "Scheduled", exact: true }).click();
   const item = page.locator(".selection-bar").filter({ hasText: name });
   await item
     .getByRole("button", { name: "Review scheduled action", exact: true })
@@ -439,6 +440,7 @@ test("recurring plays persist a due review and require cost approval before exec
   expect(used(after)).toBe(used(before));
   await page.reload();
   await page.locator(".sidebar").getByRole("button", { name: "Review", exact: true }).click();
+  await page.getByRole("button", { name: "Scheduled", exact: true }).click();
   const persisted = page.locator(".selection-bar").filter({ hasText: name });
   await expect(persisted).toBeVisible();
   await persisted

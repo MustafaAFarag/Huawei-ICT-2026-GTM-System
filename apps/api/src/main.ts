@@ -170,25 +170,60 @@ class ApiController {
     @Param("workspaceId") ws: string,
     @Param("id") id: string,
   ) {
-    return importHistory.detail(await actorFor(req.headers, ws), z.uuid().parse(id));
+    return importHistory.detail(
+      await actorFor(req.headers, ws),
+      z.uuid().parse(id),
+    );
   }
-  @Get("workspaces/:workspaceId/schedules") async listSchedules(@Req() req: Request, @Param("workspaceId") ws: string) {
-    return schedules.list(await actorFor(req.headers,ws));
+  @Get("workspaces/:workspaceId/schedules") async listSchedules(
+    @Req() req: Request,
+    @Param("workspaceId") ws: string,
+  ) {
+    return schedules.list(await actorFor(req.headers, ws));
   }
-  @Post("workspaces/:workspaceId/schedules") async createSchedule(@Req() req: Request, @Param("workspaceId") ws: string, @Body() body: unknown) {
-    return schedules.create(await actorFor(req.headers,ws),body);
+  @Post("workspaces/:workspaceId/schedules") async createSchedule(
+    @Req() req: Request,
+    @Param("workspaceId") ws: string,
+    @Body() body: unknown,
+  ) {
+    return schedules.create(await actorFor(req.headers, ws), body);
   }
-  @Patch("workspaces/:workspaceId/schedules/:id") async updateSchedule(@Req() req: Request, @Param("workspaceId") ws: string, @Param("id") id: string, @Body() body: unknown) {
-    return schedules.update(await actorFor(req.headers,ws),z.uuid().parse(id),body);
+  @Patch("workspaces/:workspaceId/schedules/:id") async updateSchedule(
+    @Req() req: Request,
+    @Param("workspaceId") ws: string,
+    @Param("id") id: string,
+    @Body() body: unknown,
+  ) {
+    return schedules.update(
+      await actorFor(req.headers, ws),
+      z.uuid().parse(id),
+      body,
+    );
   }
-  @Get("workspaces/:workspaceId/scheduled-reviews") async scheduledReviews(@Req() req: Request, @Param("workspaceId") ws: string) {
-    return schedules.reviews(await actorFor(req.headers,ws));
+  @Get("workspaces/:workspaceId/scheduled-reviews") async scheduledReviews(
+    @Req() req: Request,
+    @Param("workspaceId") ws: string,
+  ) {
+    return schedules.reviews(await actorFor(req.headers, ws));
   }
-  @Post("workspaces/:workspaceId/scheduled-reviews/:id/quote") async quoteScheduledReview(@Req() req: Request, @Param("workspaceId") ws: string, @Param("id") id: string) {
-    return schedules.quote(await actorFor(req.headers,ws),z.uuid().parse(id));
+  @Post("workspaces/:workspaceId/scheduled-reviews/:id/quote")
+  async quoteScheduledReview(
+    @Req() req: Request,
+    @Param("workspaceId") ws: string,
+    @Param("id") id: string,
+  ) {
+    return schedules.quote(await actorFor(req.headers, ws), z.uuid().parse(id));
   }
-  @Post("workspaces/:workspaceId/scheduled-reviews/:id/dismiss") async dismissScheduledReview(@Req() req: Request, @Param("workspaceId") ws: string, @Param("id") id: string) {
-    return schedules.dismiss(await actorFor(req.headers,ws),z.uuid().parse(id));
+  @Post("workspaces/:workspaceId/scheduled-reviews/:id/dismiss")
+  async dismissScheduledReview(
+    @Req() req: Request,
+    @Param("workspaceId") ws: string,
+    @Param("id") id: string,
+  ) {
+    return schedules.dismiss(
+      await actorFor(req.headers, ws),
+      z.uuid().parse(id),
+    );
   }
   @Patch("workspaces/:workspaceId/prospects/:id") async prospect(
     @Req() req: Request,
@@ -352,7 +387,10 @@ class ApiController {
     const actor = await actorFor(req.headers, ws);
     assertRole(actor, "write");
     const input = z
-      .object({ assetId: z.uuid(), version: z.number().int().positive() })
+      .object({
+        assetId: z.uuid().nullable(),
+        version: z.number().int().positive(),
+      })
       .parse(body);
     return attachAssetToDraft(ws, id, input);
   }
@@ -368,8 +406,11 @@ class ApiController {
       );
     return senderEvent(await actorFor(req.headers, ws), body);
   }
-  @ApiOperation({ summary: "Deliverable page count, size and client compatibility checks" })
-  @Get("workspaces/:workspaceId/assets/:id/meta") async assetMeta(
+  @ApiOperation({
+    summary: "Deliverable page count, size and client compatibility checks",
+  })
+  @Get("workspaces/:workspaceId/assets/:id/meta")
+  async assetMeta(
     @Req() req: Request,
     @Param("workspaceId") ws: string,
     @Param("id") id: string,
@@ -393,14 +434,17 @@ class ApiController {
   ) {
     await actorFor(req.headers, ws);
     const asset = await db.asset.findFirst({ where: { id, workspaceId: ws } });
-    const spec = asset ? ASSET_FORMATS[asset.template as AssetTemplate] : undefined;
+    const spec = asset
+      ? ASSET_FORMATS[asset.template as AssetTemplate]
+      : undefined;
     // html is the sandboxed preview; download, pdf, png and zip are approved exports.
     const allowed =
       format === "html" ||
       (format === "download" && spec?.exports.includes("html")) ||
       (["pdf", "png", "zip"].includes(format) &&
         spec?.exports.includes(format as "pdf"));
-    if (!asset || !spec || !allowed) throw new HttpException("Asset not found.", 404);
+    if (!asset || !spec || !allowed)
+      throw new HttpException("Asset not found.", 404);
     if (format !== "html") {
       const basis = await assetBasis(ws, asset);
       if (basis === null)
@@ -415,19 +459,25 @@ class ApiController {
         );
     }
     const content = isContentFormat(asset.template);
-    const raw = async () => (await storage.get(ws, asset.htmlKey)).toString("utf8");
+    const raw = async () =>
+      (await storage.get(ws, asset.htmlKey)).toString("utf8");
     let bytes: Buffer;
     if (format === "png") bytes = await assetPng(ws, asset);
     else if (format === "zip") bytes = await assetZip(ws, asset);
     else if (format === "pdf") bytes = await assetPdf(ws, asset);
     else {
-      let html = content ? await raw() : normalizeAssetBidi(await raw(), asset.language);
+      let html = content
+        ? await raw()
+        : normalizeAssetBidi(await raw(), asset.language);
       const slide = Number(req.query.slide);
-      if (format === "html" && spec.viewer === "slides" && slide > 0) html = oneSlide(html, slide);
+      if (format === "html" && spec.viewer === "slides" && slide > 0)
+        html = oneSlide(html, slide);
       bytes = Buffer.from(html);
     }
     if (format !== "html") {
-      const current = await db.asset.findFirst({ where: { id, workspaceId: ws } });
+      const current = await db.asset.findFirst({
+        where: { id, workspaceId: ws },
+      });
       assertPngApprovalUnchanged(asset, current, await assetBasis(ws, asset));
     }
     res.set("Cache-Control", "private, no-store");
@@ -469,10 +519,8 @@ class ApiController {
     });
   }
   @ApiOperation({ summary: "List the member's Nabil conversations" })
-  @Get("workspaces/:workspaceId/threads") async threads(
-    @Req() req: Request,
-    @Param("workspaceId") ws: string,
-  ) {
+  @Get("workspaces/:workspaceId/threads")
+  async threads(@Req() req: Request, @Param("workspaceId") ws: string) {
     return threads.list(await actorFor(req.headers, ws));
   }
   @Post("workspaces/:workspaceId/threads") async createThread(
@@ -588,8 +636,11 @@ class ApiController {
     });
     return { content, tool, context: input.context };
   }
-  @ApiOperation({ summary: "Triage a prospect: bucket, rationale, segment, owner" })
-  @Patch("workspaces/:workspaceId/prospects/:id/triage") async triage(
+  @ApiOperation({
+    summary: "Triage a prospect: bucket, rationale, segment, owner",
+  })
+  @Patch("workspaces/:workspaceId/prospects/:id/triage")
+  async triage(
     @Req() req: Request,
     @Param("workspaceId") ws: string,
     @Param("id") id: string,
@@ -611,18 +662,23 @@ class ApiController {
     return gtm.resolveDuplicate(await actorFor(req.headers, ws), body);
   }
   @ApiOperation({ summary: "Launch gate: holds that would block a sequence" })
-  @Post("workspaces/:workspaceId/launch-gate") async launchGate(
+  @Post("workspaces/:workspaceId/launch-gate")
+  async launchGate(
     @Req() req: Request,
     @Param("workspaceId") ws: string,
     @Body() body: unknown,
   ) {
-    const input = z.object({ draftIds: z.array(z.uuid()).max(100) }).parse(body);
+    const input = z
+      .object({ draftIds: z.array(z.uuid()).max(100) })
+      .parse(body);
     return gtm.launchGate(await actorFor(req.headers, ws), input.draftIds);
   }
   @ApiOperation({
-    summary: "Export approved, basis-cleared drafts for the customer's own sender",
+    summary:
+      "Export approved, basis-cleared drafts for the customer's own sender",
   })
-  @Post("workspaces/:workspaceId/exports") async createExport(
+  @Post("workspaces/:workspaceId/exports")
+  async createExport(
     @Req() req: Request,
     @Param("workspaceId") ws: string,
     @Body() body: unknown,
@@ -641,7 +697,10 @@ class ApiController {
     @Param("workspaceId") ws: string,
     @Param("exportId") exportId: string,
   ) {
-    const file = await exportBatches.csv(await actorFor(req.headers, ws), exportId);
+    const file = await exportBatches.csv(
+      await actorFor(req.headers, ws),
+      exportId,
+    );
     res.set({
       "Content-Type": "text/csv; charset=utf-8",
       "Content-Disposition": `attachment; filename="${file.filename}"`,
@@ -649,8 +708,12 @@ class ApiController {
     });
     res.send(file.content);
   }
-  @ApiOperation({ summary: "Funnel of distinct prospects; simulated events are excluded unless requested" })
-  @Get("workspaces/:workspaceId/scorecard") async scorecard(
+  @ApiOperation({
+    summary:
+      "Funnel of distinct prospects; simulated events are excluded unless requested",
+  })
+  @Get("workspaces/:workspaceId/scorecard")
+  async scorecard(
     @Req() req: Request,
     @Param("workspaceId") ws: string,
     @Query() query: unknown,
@@ -671,8 +734,12 @@ class ApiController {
       includeSimulated: input.includeSimulated === "true",
     });
   }
-  @ApiOperation({ summary: "A reviewer confirms whether a prospect's reply was positive, neutral or negative" })
-  @Post("workspaces/:workspaceId/prospects/:prospectId/reply-label") async replyLabel(
+  @ApiOperation({
+    summary:
+      "A reviewer confirms whether a prospect's reply was positive, neutral or negative",
+  })
+  @Post("workspaces/:workspaceId/prospects/:prospectId/reply-label")
+  async replyLabel(
     @Req() req: Request,
     @Param("workspaceId") ws: string,
     @Param("prospectId") prospectId: string,
@@ -706,16 +773,33 @@ class ApiController {
   ) {
     return gtm.discoverySummary(await actorFor(req.headers, ws));
   }
-  @Get("workspaces/:workspaceId/prospects/:id/discovery-guide") async interviewGuide(
+  @Get("workspaces/:workspaceId/prospects/:id/discovery-guide")
+  async interviewGuide(
     @Req() req: Request,
     @Res() res: Response,
     @Param("workspaceId") ws: string,
     @Param("id") id: string,
   ) {
-    const query = z.object({ language: z.enum(["en", "ar"]).default("en"), format: z.enum(["json", "pdf"]).default("json") }).parse(req.query);
-    const result = await gtm.interviewGuide(await actorFor(req.headers, ws), id, query.language, query.format);
+    const query = z
+      .object({
+        language: z.enum(["en", "ar"]).default("en"),
+        format: z.enum(["json", "pdf"]).default("json"),
+      })
+      .parse(req.query);
+    const result = await gtm.interviewGuide(
+      await actorFor(req.headers, ws),
+      id,
+      query.language,
+      query.format,
+    );
     if (query.format === "json") return res.json(result);
-    return res.set({ "Content-Type": "application/pdf", "Content-Disposition": `attachment; filename="discovery-guide-${query.language}.pdf"`, "Cache-Control": "private, no-store" }).send(result);
+    return res
+      .set({
+        "Content-Type": "application/pdf",
+        "Content-Disposition": `attachment; filename="discovery-guide-${query.language}.pdf"`,
+        "Cache-Control": "private, no-store",
+      })
+      .send(result);
   }
   @ApiOperation({
     summary: "Export the saved account research with dated citations",
@@ -749,8 +833,11 @@ class ApiController {
       })
       .send(result);
   }
-  @ApiOperation({ summary: "Propose a structured call outcome from a dictated note" })
-  @Post("workspaces/:workspaceId/call-outcome/suggest") async suggestOutcome(
+  @ApiOperation({
+    summary: "Propose a structured call outcome from a dictated note",
+  })
+  @Post("workspaces/:workspaceId/call-outcome/suggest")
+  async suggestOutcome(
     @Req() req: Request,
     @Param("workspaceId") ws: string,
     @Body() body: unknown,
@@ -940,7 +1027,18 @@ app
               prospectIds: z.array(z.uuid()).max(100),
               language: z.enum(["en", "ar-EG", "ar-Gulf", "ar"]).optional(),
               uiLanguage: z.enum(["en", "ar"]).optional(),
-              screen: z.enum(["Home", "Plays", "Accounts", "Review queue", "Asset Studio", "Sequences", "Company context", "Settings"]).optional(),
+              screen: z
+                .enum([
+                  "Home",
+                  "Plays",
+                  "Accounts",
+                  "Review queue",
+                  "Asset Studio",
+                  "Sequences",
+                  "Company context",
+                  "Settings",
+                ])
+                .optional(),
               activeProspectId: z.uuid().optional(),
               activeAssetId: z.uuid().optional(),
             }),

@@ -9,13 +9,13 @@ import { ResultsPanel } from "../GtmPanels";
 import { ExportBatches } from "../ExportBatches";
 
 export function Sequences() {
-  const { ws, data, canWrite, busy, action } = useWorkspace();
+  const { ws, data, canWrite, busy, action, exportFocusKey } = useWorkspace();
   const { t } = usePrefs();
   if (!data.sequences.length)
     return (
       <div className="stack-lg">
         <ResultsPanel />
-        <ExportBatches />
+        <ExportBatches focusKey={exportFocusKey} />
         <Empty
           title={t("No sequences prepared yet")}
           icon={<IconClock size={18} />}
@@ -29,7 +29,7 @@ export function Sequences() {
   return (
     <div className="stack-lg">
       <ResultsPanel />
-      <ExportBatches />
+      <ExportBatches focusKey={exportFocusKey} />
       {data.sequences.map((s) => {
         const prospect = data.prospects.find((p) => p.id === s.prospectId);
         const draft = data.drafts.find((d) => d.id === s.draftId);
