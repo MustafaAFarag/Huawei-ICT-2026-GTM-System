@@ -20,6 +20,8 @@ import {
   Skeleton,
 } from "./primitives";
 import type { Proposal } from "./Modals";
+import { ListRow } from "./campaigns/parts";
+import "../styles/pages/campaigns.css";
 
 const labels = {
   score_accounts: "Score accounts",
@@ -97,53 +99,59 @@ export function ScheduledPlays() {
           )}
         </Empty>
       ) : (
-        <div className="stack">
+        <div className="cmp-list">
           {entries.map((entry) => (
-            <div key={entry.id} className="selection-bar">
-              <div>
-                <strong dir="auto">{entry.name}</strong>
-                <p className="small muted">
+            <ListRow
+              key={entry.id}
+              title={<span dir="auto">{entry.name}</span>}
+              sub={
+                <>
                   <bdi>{entry.play}</bdi> · {t(labels[entry.input.tool])} ·{" "}
                   {t("Every")} {entry.intervalDays} {t("days")} ·{" "}
                   <bdi>{when(entry.nextAt, uiLanguage)}</bdi>
-                </p>
-                {entry.lastError && (
-                  <p role="alert" className="inline-error">
-                    {entry.lastError}
-                  </p>
-                )}
-              </div>
-              <Badge tone={entry.enabled ? "ok" : "neutral"}>
-                {t(entry.enabled ? "Active" : "Paused")}
-              </Badge>
-              <Button
-                size="sm"
-                disabled={
-                  !canWrite ||
-                  busy ||
-                  (entry.userId !== userId && data.role !== "owner")
-                }
-                onClick={() =>
-                  void action(
-                    () =>
-                      client.workspace(ws, `/schedules/${entry.id}`, {
-                        method: "PATCH",
-                        body: JSON.stringify({ enabled: !entry.enabled }),
-                      }),
-                    t("Schedule updated."),
-                  )
-                }
-              >
-                {t(entry.enabled ? "Pause schedule" : "Resume schedule")}
-              </Button>
-            </div>
+                  {entry.lastError && (
+                    <span role="alert" className="inline-error">
+                      {" "}
+                      {entry.lastError}
+                    </span>
+                  )}
+                </>
+              }
+              trail={
+                <>
+                  <Badge tone={entry.enabled ? "ok" : "neutral"}>
+                    {t(entry.enabled ? "Active" : "Paused")}
+                  </Badge>
+                  <Button
+                    size="sm"
+                    disabled={
+                      !canWrite ||
+                      busy ||
+                      (entry.userId !== userId && data.role !== "owner")
+                    }
+                    onClick={() =>
+                      void action(
+                        () =>
+                          client.workspace(ws, `/schedules/${entry.id}`, {
+                            method: "PATCH",
+                            body: JSON.stringify({ enabled: !entry.enabled }),
+                          }),
+                        t("Schedule updated."),
+                      )
+                    }
+                  >
+                    {t(entry.enabled ? "Pause schedule" : "Resume schedule")}
+                  </Button>
+                </>
+              }
+            />
           ))}
         </div>
       )}
       <details className="disclosure">
         <summary>{t("Schedule this play")}</summary>
         <form
-          className="stack"
+          className="stack cmp-card"
           onSubmit={(event) => {
             event.preventDefault();
             const form = new FormData(event.currentTarget);

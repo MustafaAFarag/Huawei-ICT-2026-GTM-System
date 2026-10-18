@@ -57,6 +57,7 @@ test("triage, discovery, consent references and SDR PDF in both interface direct
   await expect(discovery.getByText("Saved", { exact: true })).toBeVisible();
   await page.locator(".sidebar").getByRole("button", { name: "Campaigns", exact: true }).click();
   await page.getByRole("button", { name: "Sequences", exact: true }).click();
+  await page.getByRole("button", { name: "Results", exact: true }).click();
   await expect(
     page.getByRole("heading", { name: "Funnel and discovery", exact: true }),
   ).toBeVisible();

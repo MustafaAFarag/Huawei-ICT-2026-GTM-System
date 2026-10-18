@@ -51,6 +51,7 @@ export type ChatController = {
   thread: Thread | undefined;
   messages: Chat[];
   loadingMessages: boolean;
+  messagesError: boolean;
   live: LiveTurn | null;
   streaming: boolean;
   quote: Proposal | null;
@@ -97,6 +98,7 @@ export function useChatController({
   const [threadId, setThreadId] = useState<string | null>(null);
   const [messages, setMessages] = useState<Chat[]>([]);
   const [loadingMessages, setLoadingMessages] = useState(false);
+  const [messagesError, setMessagesError] = useState(false);
   const [live, setLive] = useState<LiveTurn | null>(null);
   const [streaming, setStreaming] = useState(false);
   const [quote, setQuote] = useState<Proposal | null>(null);
@@ -163,6 +165,8 @@ export function useChatController({
     setThreadId(null);
     setThreads([]);
     setMessages([]);
+    setMessagesError(false);
+    setLoadingMessages(false);
     setLive(null);
     setQuote(null);
     setStreaming(false);
@@ -179,20 +183,32 @@ export function useChatController({
       setLive(null);
       setQuote(null);
       setMessages([]);
+      setMessagesError(false);
+      setLoadingMessages(false);
       if (!id) return;
       setLoadingMessages(true);
       void loadMessages(id)
-        .catch(() => {})
-        .finally(() => setLoadingMessages(false));
+        .catch(() => {
+          if (threadRef.current === id) setMessagesError(true);
+        })
+        .finally(() => {
+          if (threadRef.current === id) setLoadingMessages(false);
+        });
     },
     [loadMessages],
   );
 
   const reload = useCallback(async () => {
+    const id = threadRef.current;
+    setMessagesError(false);
+    if (id) setLoadingMessages(true);
     await Promise.all([
       loadThreads().catch(() => {}),
-      loadMessages(threadRef.current).catch(() => {}),
+      loadMessages(id).catch(() => {
+        if (threadRef.current === id) setMessagesError(true);
+      }),
     ]);
+    if (threadRef.current === id) setLoadingMessages(false);
   }, [loadThreads, loadMessages]);
 
   const send = useCallback(
@@ -392,6 +408,7 @@ export function useChatController({
     thread: threads.find((r) => r.id === threadId),
     messages,
     loadingMessages,
+    messagesError,
     live,
     streaming,
     quote,

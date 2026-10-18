@@ -101,6 +101,39 @@ export const AR: Record<string, string> = {
   Slides: "الشرائح",
   "Start from": "ابدأ من",
   Version: "النسخة",
+  Nabil: "نبيل",
+  "What would you like to prepare?": "ماذا تود أن تجهّز؟",
+  "Turn the accounts you already work into reviewed Arabic/English follow-ups and company profiles, with every outcome and every hold recorded in your CRM.":
+    "حوّل الحسابات التي تعمل عليها إلى رسائل متابعة وملفات شركة مراجَعة بالعربية والإنجليزية، مع تسجيل كل نتيجة وكل تعليق في نظام إدارة العملاء.",
+  "Draft follow-ups": "كتابة رسائل متابعة",
+  "Draft a three-step follow-up sequence for ":
+    "اكتب تسلسل متابعة من ثلاث خطوات لـ ",
+  "Company profile": "ملف الشركة",
+  "More formats": "تنسيقات أخرى",
+  "Draft follow-ups, prepare a company profile, or start with an idea…":
+    "اكتب رسائل متابعة أو جهّز ملف شركة أو ابدأ بفكرة…",
+  "Rank my accounts orders accounts you already saved, using your rubric. Ranking does not search for new companies, enrich contacts or send email.":
+    "يرتّب «رتّب حساباتي» الحسابات المحفوظة بالفعل باستخدام معاييرك. لا تبحث عملية الترتيب عن شركات جديدة ولا تُثري بيانات جهات الاتصال ولا ترسل البريد.",
+  "Pick up where you left off": "أكمل من حيث توقفت",
+  "Review your follow-ups": "راجع رسائل المتابعة",
+  "drafts to review": "مسودات للمراجعة",
+  "Your next piece of work starts here": "عملك القادم يبدأ هنا",
+  "Ask Nabil to prepare a follow-up or company profile. Saved work will appear here.":
+    "اطلب من نبيل تجهيز رسالة متابعة أو ملف شركة. سيظهر عملك المحفوظ هنا.",
+  "Caravan is an AI GTM workspace where small B2B services teams research, qualify, follow up and record named accounts in English and Arabic, with a person approving every send.":
+    "كارافان مساحة عمل ذكية تتيح لفرق خدمات الشركات الصغيرة البحث والتأهيل والمتابعة وتسجيل الحسابات بالعربية والإنجليزية، مع موافقة شخص على كل إرسال.",
+  "Refine with Nabil": "عدّل مع نبيل",
+  "Ask Nabil to prepare a follow-up or deliverable…":
+    "اطلب من نبيل تجهيز رسالة متابعة أو مخرج…",
+  "We couldn’t load this conversation.": "تعذّر تحميل هذه المحادثة.",
+  "Your saved work is safe. Try loading the conversation again.":
+    "عملك المحفوظ آمن. حاول تحميل المحادثة مرة أخرى.",
+  "Start a conversation with Nabil": "ابدأ محادثة مع نبيل",
+  "Ask Nabil to prepare a follow-up or company profile.":
+    "اطلب من نبيل تجهيز رسالة متابعة أو ملف شركة.",
+  "Nabil couldn’t finish this reply.": "لم يتمكن نبيل من إكمال هذا الرد.",
+  "Ready to review": "جاهز للمراجعة",
+  "Open preview": "افتح المعاينة",
   "What should Nabil prepare for you today?": "ماذا يجهّز لك نبيل اليوم؟",
   "Ask Nabil to find, draft or create…":
     "اطلب من نبيل أن يبحث أو يكتب أو يصمّم…",
@@ -377,8 +410,58 @@ export const AR: Record<string, string> = {
   From: "من",
   To: "إلى",
   "Include simulated": "تضمين التجريبي",
+  "Simulated activity included": "النشاط التجريبي مُضمّن",
+  "Simulated activity excluded": "النشاط التجريبي مُستبعد",
   "Could not load results. Try again.": "تعذّر تحميل النتائج أعد المحاولة",
   "Funnel and discovery": "مسار النتائج والاستكشاف",
+  "A batch counts once it holds a non-simulated sequence.":
+    "تُحتسب الدفعة عندما تحتوي على تسلسل غير تجريبي.",
+  "A first batch has run": "تم تشغيل أول دفعة",
+  "A reply counts as positive only after a person confirms it.":
+    "لا يُحتسب الرد إيجابيًا إلا بعد أن يؤكده شخص.",
+  "Activation": "التفعيل",
+  "Below the minimum sample. No lift is shown.":
+    "أقل من الحد الأدنى للعينة. لا يُعرض أي تحسّن.",
+  "Caravan measures": "مقاييس كارافان",
+  "Confirm positive replies": "تأكيد الردود الإيجابية",
+  "Continue campaign preparation": "متابعة تجهيز الحملة",
+  "Discovery by segment": "الاستكشاف حسب الشريحة",
+  "Each stage counts distinct prospects from the event log.":
+    "تحسب كل مرحلة العملاء المحتملين المختلفين من سجل الأحداث.",
+  "Enough sample": "عينة كافية",
+  "Event sources": "مصادر الأحداث",
+  "Holdout · asset vs no asset": "المجموعة المحجوبة · مع الأصل مقابل بدونه",
+  "Keep the same layout while content loads.":
+    "يبقى التخطيط كما هو أثناء تحميل المحتوى.",
+  "Loading results…": "جارٍ تحميل النتائج…",
+  "Neutral": "محايد",
+  "No batch has run yet": "لم تعمل أي دفعة بعد",
+  "Not positive": "غير إيجابي",
+  "Only reviewers and owners can confirm a reply.":
+    "المراجعون والمالكون فقط يمكنهم تأكيد الرد.",
+  "Positive": "إيجابي",
+  "Prepared → Reviewed → Sent → Replied → Meeting":
+    "مجهّز ← تمت مراجعته ← أُرسل ← تم الرد ← اجتماع",
+  "Reached": "تحقق",
+  "Repeat batch": "دفعة متكررة",
+  "Reply label": "تصنيف الرد",
+  "Reply label saved. The scorecard counts only labels a person confirmed.":
+    "تم حفظ تصنيف الرد. تحتسب بطاقة النتائج التصنيفات التي أكدها شخص فقط.",
+  "Results": "النتائج",
+  "Results will appear after a campaign runs.":
+    "ستظهر النتائج بعد تشغيل حملة.",
+  "Running": "قيد التشغيل",
+  "This workspace has no completed campaign yet. Start with reviewed messages and a ready sender.":
+    "لا توجد حملة مكتملة في مساحة العمل بعد. ابدأ برسائل تمت مراجعتها ومرسل جاهز.",
+  "We couldn’t load the results.": "تعذّر تحميل النتائج.",
+  "We couldn’t load the checklist.": "تعذّر تحميل قائمة التحقق.",
+  "batches with live or imported activity": "دفعات بنشاط فعلي أو مستورد",
+  "hidden by default": "مخفية افتراضيًا",
+  "shown": "معروضة",
+  "simulated sequences": "تسلسلات تجريبية",
+  "to confirm": "بانتظار التأكيد",
+  "vs": "مقابل",
+  "Live": "فعلي",
   "At least one draft is selected": "تم اختيار مسودة واحدة على الأقل",
   "Sender pre-flight passes (P2)": "اجتياز فحص المرسل (P2)",
   "An approved offer exists": "يوجد عرض معتمد",
@@ -528,6 +611,14 @@ export const AR: Record<string, string> = {
   "Run sheet": "ورقة التشغيل",
   "Content language": "لغة المحتوى",
   selected: "محدد",
+  "Change selection": "تغيير الاختيار",
+  "Choose a play": "اختر خطة",
+  "Each action shows its cost before it runs. Nothing is sent from here.":
+    "يعرض كل إجراء تكلفته قبل تشغيله. لا يُرسل شيء من هنا.",
+  "No accounts selected": "لم يتم تحديد حسابات",
+  "Start": "ابدأ",
+  "and": "و",
+  "more": "أخرى",
   "Choose prospects in Accounts to start this play.":
     "اختر عملاء محتملين من «الحسابات» لبدء هذه الخطة.",
   "Open accounts": "فتح الحسابات",
@@ -886,6 +977,16 @@ export const AR: Record<string, string> = {
   "Download PDF": "تنزيل PDF",
   "Close preview": "إغلاق المعاينة",
   // Sequences
+  "All sequences": "كل التسلسلات",
+  "Day": "اليوم",
+  "Export and outcomes": "التصدير والنتائج",
+  "Open review queue": "فتح قائمة المراجعة",
+  "Prepared sequences stay paused until their sending requirements are satisfied.":
+    "تبقى التسلسلات المجهّزة متوقفة حتى تُستوفى متطلبات إرسالها.",
+  "Sequence detail": "تفاصيل التسلسل",
+  "Sequence sections": "أقسام التسلسلات",
+  "Touch": "اللمسة",
+  "touches": "لمسات",
   "No sequences prepared yet": "لم تُجهّز أي تسلسلات بعد",
   "Approve every touch, run sender pre-flight, and resolve country and consent holds before preparing a sequence.":
     "اعتمد كل رسالة، وشغّل فحص المرسل، وعالج قيود الدولة والموافقة قبل تجهيز التسلسل.",
@@ -900,6 +1001,36 @@ export const AR: Record<string, string> = {
     "تم حظر جهة الاتصال. أُلغيت الرسائل القادمة في كل الخطط.",
   "Record opt-out": "تسجيل إلغاء الاشتراك",
   // Approved-batch export (EXP-01)
+  "An exported batch appears here with its outcomes.":
+    "تظهر الدفعة المصدَّرة هنا مع نتائجها.",
+  "Caravan does not send. Upload this file to your sender.":
+    "كارافان لا يرسل. ارفع هذا الملف إلى مرسلك.",
+  "Contacts in the holdout get the sequence without the asset.":
+    "جهات الاتصال في المجموعة المحجوبة تتلقى التسلسل بدون الأصل.",
+  "Download row report": "تنزيل تقرير الصفوف",
+  "Every row carries its approval digest. On re-import, rows whose digest does not match are not attached.":
+    "يحمل كل صف بصمة اعتماده. عند إعادة الاستيراد لا تُرفق الصفوف التي لا تطابق بصمتها.",
+  "Excluded automatically": "مستبعد تلقائيًا",
+  "Export unlocks when at least one draft is approved for sending. Caravan does not send; the file goes to your own sender.":
+    "يُفتح التصدير عند اعتماد مسودة واحدة على الأقل للإرسال. كارافان لا يرسل؛ الملف يذهب إلى مرسلك.",
+  "Exported batches": "الدفعات المصدَّرة",
+  "Holdout group (%)": "المجموعة المحجوبة (%)",
+  "Import results": "نتائج الاستيراد",
+  "Nothing to export yet": "لا شيء للتصدير بعد",
+  "Open batch scorecard": "فتح بطاقة نتائج الدفعة",
+  "Rows are matched by approval digest or email. A row that does not match the export is never attached.":
+    "تُطابق الصفوف ببصمة الاعتماد أو البريد. لا يُرفق أي صف لا يطابق التصدير.",
+  "Select all approved drafts": "تحديد كل المسودات المعتمدة",
+  "Sending, unsubscribes and bounces happen in your sender. Bring results back with the outcomes upload so they attach to the batch.":
+    "الإرسال وإلغاء الاشتراك والارتداد تحدث في مرسلك. أعد النتائج برفع ملف النتائج لتُرفق بالدفعة.",
+  "We couldn’t load the exports.": "تعذّر تحميل التصديرات.",
+  "approved, basis-cleared": "معتمدة وأساسها القانوني مكتمل",
+  "awaiting review · not included": "بانتظار المراجعة · غير مضمّنة",
+  "held · excluded": "محجوزة · مستبعدة",
+  "ready and waiting for review": "جاهزة وبانتظار المراجعة",
+  "approved drafts": "مسودات معتمدة",
+  "Not attached": "غير مرفق",
+  "Needs a fix": "يحتاج إلى تصحيح",
   "Approved-batch export": "تصدير الدفعة المعتمدة",
   "For your own sender · nothing is sent from here":
     "للمرسل الخاص بك · لا يُرسل شيء من هنا",
