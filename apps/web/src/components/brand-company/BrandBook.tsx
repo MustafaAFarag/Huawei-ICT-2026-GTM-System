@@ -73,63 +73,6 @@ export function BrandBook({
         </div>
       </div>
 
-      <div className="bc-board" data-ai-target="brand-board">
-        <article className="bc-card bc-hero" style={brandVars(brand.primary)}>
-          <h2 dir="auto">{brand.name}</h2>
-          <p dir="auto">{tagline}</p>
-        </article>
-        <article className="bc-card">
-          <h3>{t("Color palette")}</h3>
-          <ul className="bc-palette">
-            {[
-              [t("Primary"), brand.primary],
-              [t("Accent"), brand.accent],
-            ]
-              .filter(([, color]) => isHex(color))
-              .map(([label, color]) => (
-                <li key={label}>
-                  <span
-                    className="bc-swatch"
-                    style={{ background: color }}
-                    aria-hidden
-                  />
-                  <span className="bc-swatch-label">{label}</span>
-                  <bdi className="mono bc-swatch-hex">{color}</bdi>
-                </li>
-              ))}
-          </ul>
-          <p className="bc-caption">{t("Primary and supporting colors")}</p>
-        </article>
-        <article className="bc-card">
-          <h3>{t("Typography")}</h3>
-          <p className="bc-type-latin" lang="en" dir="ltr">
-            Aa
-          </p>
-          <p className="bc-caption">Inter · {t("Heading and body")}</p>
-          <p className="bc-type-arabic" lang="ar" dir="rtl">
-            ناس أولاً
-          </p>
-          <p className="bc-caption">
-            IBM Plex Sans Arabic · {t("Arabic type")}
-          </p>
-        </article>
-        <article className="bc-card">
-          <h3>{t("In an email")}</h3>
-          <div className="bc-email" style={brandVars(brand.primary)}>
-            <p className="bc-email-brand" dir="auto">
-              {brand.name}
-            </p>
-            <p className="bc-email-headline" dir="auto">
-              {offer ?? description ?? brand.name}
-            </p>
-            <span className="bc-email-button">{t("Learn more")}</span>
-          </div>
-          <p className="bc-caption">
-            {t("Preview built from your brand and approved offer")}
-          </p>
-        </article>
-      </div>
-
       {editing && (
         <section className="bc-update" aria-label={t("Update brand")}>
           <h2>{t("Bring your brand into Caravan")}</h2>
@@ -260,6 +203,63 @@ export function BrandBook({
           </div>
         </section>
       )}
+
+      <div className="bc-board" data-ai-target="brand-board">
+        <article className="bc-card bc-hero" style={brandVars(brand.primary)}>
+          <h2 dir="auto">{brand.name}</h2>
+          <p dir="auto">{tagline}</p>
+        </article>
+        <article className="bc-card">
+          <h3>{t("Color palette")}</h3>
+          <ul className="bc-palette">
+            {[
+              [t("Primary"), brand.primary],
+              [t("Accent"), brand.accent],
+            ]
+              .filter(([, color]) => isHex(color))
+              .map(([label, color]) => (
+                <li key={label}>
+                  <span
+                    className="bc-swatch"
+                    style={{ background: color }}
+                    aria-hidden
+                  />
+                  <span className="bc-swatch-label">{label}</span>
+                  <bdi className="mono bc-swatch-hex">{color}</bdi>
+                </li>
+              ))}
+          </ul>
+          <p className="bc-caption">{t("Primary and supporting colors")}</p>
+        </article>
+        <article className="bc-card">
+          <h3>{t("Typography")}</h3>
+          <p className="bc-type-latin" lang="en" dir="ltr">
+            Aa
+          </p>
+          <p className="bc-caption">Inter · {t("Heading and body")}</p>
+          <p className="bc-type-arabic" lang="ar" dir="rtl">
+            ناس أولاً
+          </p>
+          <p className="bc-caption">
+            IBM Plex Sans Arabic · {t("Arabic type")}
+          </p>
+        </article>
+        <article className="bc-card">
+          <h3>{t("In an email")}</h3>
+          <div className="bc-email" style={brandVars(brand.primary)}>
+            <p className="bc-email-brand" dir="auto">
+              {brand.name}
+            </p>
+            <p className="bc-email-headline" dir="auto">
+              {offer ?? description ?? brand.name}
+            </p>
+            <span className="bc-email-button">{t("Learn more")}</span>
+          </div>
+          <p className="bc-caption">
+            {t("Preview built from your brand and approved offer")}
+          </p>
+        </article>
+      </div>
 
       {reading && (
         <LoadingState

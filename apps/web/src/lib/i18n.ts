@@ -806,14 +806,18 @@ export const AR: Record<string, string> = {
     "مالك مساحة العمل وحده يستطيع حفظ سياق الشركة",
   "A4 profile built only from your approved offer and references with recorded permission.":
     "ملف بحجم A4 مبني فقط على عرضك المعتمد والمراجع المسجّل إذنها",
-  "In holdout test: asset vs no asset":
-    "ضمن اختبار المقارنة: بالملف أو بدونه",
+  "Holdout available":
+    "مجموعة المقارنة متاحة",
+  "With profile":
+    "مع ملف القدرات",
+  "Without profile":
+    "بدون ملف القدرات",
   "English":
     "English",
   "Arabic (RTL)":
     "العربية (من اليمين لليسار)",
-  "About one in five sequences goes out without the profile so the effect can be measured. No lift is claimed from a single run.":
-    "يخرج نحو تسلسل من كل خمسة بدون الملف لقياس أثره. لا نزعم تحسنًا من تشغيل واحد.",
+  "Use a holdout group when you want to compare sequences with this profile to sequences without it. The comparison is optional; a single run does not establish a lift.":
+    "استخدم مجموعة مقارنة عندما تريد مقارنة تسلسلات تستخدم هذا الملف بأخرى لا تستخدمه. المقارنة اختيارية؛ ولا تكفي تجربة واحدة لإثبات التحسّن.",
   "No capability profile yet":
     "لا يوجد ملف قدرات بعد",
   "Create one in English or Arabic. You review it before anything is attached to a draft.":
@@ -868,8 +872,8 @@ export const AR: Record<string, string> = {
     "اختر حزمة العمل ثم أكّد ما يجوز لنبيل قوله",
   "Workflow pack":
     "حزمة العمل",
-  "Packs are data: questions, maturity bands, angle keys and rubric defaults. Switching packs keeps your accounts.":
-    "الحزم بيانات: أسئلة وفئات نضج ومفاتيح زوايا وإعدادات معايير. تغيير الحزمة يُبقي حساباتك",
+  "Choose the questions and guidance that fit your business. Switching packs keeps your accounts.":
+    "اختر الأسئلة والإرشادات التي تناسب نشاطك التجاري. تغيير الحزمة يُبقي حساباتك",
   "Only the workspace owner can change the workflow pack.":
     "مالك مساحة العمل وحده يستطيع تغيير حزمة العمل",
   "Hide the comparison":

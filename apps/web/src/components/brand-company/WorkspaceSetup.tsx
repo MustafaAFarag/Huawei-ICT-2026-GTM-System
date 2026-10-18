@@ -174,7 +174,7 @@ export function WorkspaceSetup({
           </div>
           <p className="bc-caption">
             {t(
-              "Packs are data: questions, maturity bands, angle keys and rubric defaults. Switching packs keeps your accounts.",
+              "Choose the questions and guidance that fit your business. Switching packs keeps your accounts.",
             )}
           </p>
           {!isOwner && (

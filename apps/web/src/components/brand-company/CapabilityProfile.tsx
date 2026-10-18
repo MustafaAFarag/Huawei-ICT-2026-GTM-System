@@ -19,6 +19,21 @@ export function CapabilityProfile() {
   const profiles = data.assets.filter(
     (a) => a.template === "capability-profile" && !a.prospectId,
   );
+  const assignmentCounts = (assetId: string) => {
+    const draftIds = new Set(
+      data.drafts
+        .filter((draft) => draft.assetId === assetId)
+        .map((draft) => draft.id),
+    );
+    const assigned = data.sequences.filter(
+      (sequence) => sequence.draftId && draftIds.has(sequence.draftId),
+    );
+    return {
+      withProfile: assigned.filter((sequence) => !sequence.holdout).length,
+      withoutProfile: assigned.filter((sequence) => sequence.holdout).length,
+      total: assigned.length,
+    };
+  };
   const blocked = !canWrite || !hasOffer;
   const create = (lang: ToolRequest["language"]) =>
     action(async () => {
@@ -50,13 +65,6 @@ export function CapabilityProfile() {
         )}
       </p>
       <div className="badge-row">
-        <span
-          title={t(
-            "Ships with an asset-vs-no-asset holdout: a share of sequences go out without this profile.",
-          )}
-        >
-          <Badge tone="info">{t("In holdout test: asset vs no asset")}</Badge>
-        </span>
         <Badge tone="neutral" dot={false}>
           {t("English")}
         </Badge>
@@ -66,41 +74,51 @@ export function CapabilityProfile() {
       </div>
       <p className="bc-caption">
         {t(
-          "About one in five sequences goes out without the profile so the effect can be measured. No lift is claimed from a single run.",
+          "Use a holdout group when you want to compare sequences with this profile to sequences without it. The comparison is optional; a single run does not establish a lift.",
         )}
       </p>
       {profiles.length ? (
         <ul className="bc-rows">
-          {profiles.map((asset) => (
-            <li key={asset.id}>
-              <span className="bc-row-main">
-                <span className="bc-row-icon" aria-hidden>
-                  <IconFileText size={16} />
+          {profiles.map((asset) => {
+            const assignments = assignmentCounts(asset.id);
+            return (
+              <li key={asset.id}>
+                <span className="bc-row-main">
+                  <span className="bc-row-icon" aria-hidden>
+                    <IconFileText size={16} />
+                  </span>
+                  <span>
+                    <strong dir="auto">{asset.title}</strong>
+                    <bdi className="bc-caption mono">
+                      {asset.language} · v{asset.version ?? 1}
+                    </bdi>
+                  </span>
                 </span>
-                <span>
-                  <strong dir="auto">{asset.title}</strong>
-                  <bdi className="bc-caption mono">
-                    {asset.language} · v{asset.version ?? 1}
-                  </bdi>
-                </span>
-              </span>
-              <span className="bc-row-actions">
-                <span
-                  title={t(
-                    "Ships with an asset-vs-no-asset holdout: a share of sequences go out without this profile.",
+                <span className="bc-row-actions">
+                  {assignments.total === 0 ? (
+                    <Badge tone="neutral" dot={false}>
+                      {t("Holdout available")}
+                    </Badge>
+                  ) : (
+                    <>
+                      <Badge tone="info" dot={false}>
+                        {t("With profile")} <bdi dir="ltr">{assignments.withProfile}</bdi>
+                      </Badge>
+                      <Badge tone="warn" dot={false}>
+                        {t("Without profile")} <bdi dir="ltr">{assignments.withoutProfile}</bdi>
+                      </Badge>
+                    </>
                   )}
-                >
-                  <Badge tone="info">{t("Holdout test")}</Badge>
+                  <Badge tone={asset.approvedAt ? "ok" : "warn"}>
+                    {asset.approvedAt ? t("Approved") : t("Needs review")}
+                  </Badge>
+                  <Button size="sm" onClick={() => openAsset(asset)}>
+                    {t("Open")}
+                  </Button>
                 </span>
-                <Badge tone={asset.approvedAt ? "ok" : "warn"}>
-                  {asset.approvedAt ? t("Approved") : t("Needs review")}
-                </Badge>
-                <Button size="sm" onClick={() => openAsset(asset)}>
-                  {t("Open")}
-                </Button>
-              </span>
-            </li>
-          ))}
+              </li>
+            );
+          })}
         </ul>
       ) : (
         <EmptyState
