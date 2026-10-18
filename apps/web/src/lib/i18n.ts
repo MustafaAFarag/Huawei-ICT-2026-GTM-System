@@ -379,6 +379,54 @@ export const AR: Record<string, string> = {
   "Include simulated": "تضمين التجريبي",
   "Could not load results. Try again.": "تعذّر تحميل النتائج أعد المحاولة",
   "Funnel and discovery": "مسار النتائج والاستكشاف",
+  "A batch counts once it holds a non-simulated sequence.":
+    "تُحتسب الدفعة عندما تحتوي على تسلسل غير تجريبي.",
+  "A first batch has run": "تم تشغيل أول دفعة",
+  "A reply counts as positive only after a person confirms it.":
+    "لا يُحتسب الرد إيجابيًا إلا بعد أن يؤكده شخص.",
+  "Activation": "التفعيل",
+  "Below the minimum sample. No lift is shown.":
+    "أقل من الحد الأدنى للعينة. لا يُعرض أي تحسّن.",
+  "Caravan measures": "مقاييس كارافان",
+  "Confirm positive replies": "تأكيد الردود الإيجابية",
+  "Continue campaign preparation": "متابعة تجهيز الحملة",
+  "Discovery by segment": "الاستكشاف حسب الشريحة",
+  "Each stage counts distinct prospects from the event log.":
+    "تحسب كل مرحلة العملاء المحتملين المختلفين من سجل الأحداث.",
+  "Enough sample": "عينة كافية",
+  "Event sources": "مصادر الأحداث",
+  "Holdout · asset vs no asset": "المجموعة المحجوبة · مع الأصل مقابل بدونه",
+  "Keep the same layout while content loads.":
+    "يبقى التخطيط كما هو أثناء تحميل المحتوى.",
+  "Loading results…": "جارٍ تحميل النتائج…",
+  "Neutral": "محايد",
+  "No batch has run yet": "لم تعمل أي دفعة بعد",
+  "Not positive": "غير إيجابي",
+  "Only reviewers and owners can confirm a reply.":
+    "المراجعون والمالكون فقط يمكنهم تأكيد الرد.",
+  "Positive": "إيجابي",
+  "Prepared → Reviewed → Sent → Replied → Meeting":
+    "مجهّز ← تمت مراجعته ← أُرسل ← تم الرد ← اجتماع",
+  "Reached": "تحقق",
+  "Repeat batch": "دفعة متكررة",
+  "Reply label": "تصنيف الرد",
+  "Reply label saved. The scorecard counts only labels a person confirmed.":
+    "تم حفظ تصنيف الرد. تحتسب بطاقة النتائج التصنيفات التي أكدها شخص فقط.",
+  "Results": "النتائج",
+  "Results will appear after a campaign runs.":
+    "ستظهر النتائج بعد تشغيل حملة.",
+  "Running": "قيد التشغيل",
+  "This workspace has no completed campaign yet. Start with reviewed messages and a ready sender.":
+    "لا توجد حملة مكتملة في مساحة العمل بعد. ابدأ برسائل تمت مراجعتها ومرسل جاهز.",
+  "We couldn’t load the results.": "تعذّر تحميل النتائج.",
+  "We couldn’t load the checklist.": "تعذّر تحميل قائمة التحقق.",
+  "batches with live or imported activity": "دفعات بنشاط فعلي أو مستورد",
+  "hidden by default": "مخفية افتراضيًا",
+  "shown": "معروضة",
+  "simulated sequences": "تسلسلات تجريبية",
+  "to confirm": "بانتظار التأكيد",
+  "vs": "مقابل",
+  "Live": "فعلي",
   "At least one draft is selected": "تم اختيار مسودة واحدة على الأقل",
   "Sender pre-flight passes (P2)": "اجتياز فحص المرسل (P2)",
   "An approved offer exists": "يوجد عرض معتمد",
@@ -528,6 +576,14 @@ export const AR: Record<string, string> = {
   "Run sheet": "ورقة التشغيل",
   "Content language": "لغة المحتوى",
   selected: "محدد",
+  "Change selection": "تغيير الاختيار",
+  "Choose a play": "اختر خطة",
+  "Each action shows its cost before it runs. Nothing is sent from here.":
+    "يعرض كل إجراء تكلفته قبل تشغيله. لا يُرسل شيء من هنا.",
+  "No accounts selected": "لم يتم تحديد حسابات",
+  "Start": "ابدأ",
+  "and": "و",
+  "more": "أخرى",
   "Choose prospects in Accounts to start this play.":
     "اختر عملاء محتملين من «الحسابات» لبدء هذه الخطة.",
   "Open accounts": "فتح الحسابات",
@@ -652,6 +708,17 @@ export const AR: Record<string, string> = {
   "Download PDF": "تنزيل PDF",
   "Close preview": "إغلاق المعاينة",
   // Sequences
+  "All sequences": "كل التسلسلات",
+  "Day": "اليوم",
+  "Export and outcomes": "التصدير والنتائج",
+  "Open account": "فتح الحساب",
+  "Open review queue": "فتح قائمة المراجعة",
+  "Prepared sequences stay paused until their sending requirements are satisfied.":
+    "تبقى التسلسلات المجهّزة متوقفة حتى تُستوفى متطلبات إرسالها.",
+  "Sequence detail": "تفاصيل التسلسل",
+  "Sequence sections": "أقسام التسلسلات",
+  "Touch": "اللمسة",
+  "touches": "لمسات",
   "No sequences prepared yet": "لم تُجهّز أي تسلسلات بعد",
   "Approve every touch, run sender pre-flight, and resolve country and consent holds before preparing a sequence.":
     "اعتمد كل رسالة، وشغّل فحص المرسل، وعالج قيود الدولة والموافقة قبل تجهيز التسلسل.",
@@ -666,6 +733,40 @@ export const AR: Record<string, string> = {
     "تم حظر جهة الاتصال. أُلغيت الرسائل القادمة في كل الخطط.",
   "Record opt-out": "تسجيل إلغاء الاشتراك",
   // Approved-batch export (EXP-01)
+  "An exported batch appears here with its outcomes.":
+    "تظهر الدفعة المصدَّرة هنا مع نتائجها.",
+  "Caravan does not send. Upload this file to your sender.":
+    "كارافان لا يرسل. ارفع هذا الملف إلى مرسلك.",
+  "Company": "الشركة",
+  "Contacts in the holdout get the sequence without the asset.":
+    "جهات الاتصال في المجموعة المحجوبة تتلقى التسلسل بدون الأصل.",
+  "Download row report": "تنزيل تقرير الصفوف",
+  "Every row carries its approval digest. On re-import, rows whose digest does not match are not attached.":
+    "يحمل كل صف بصمة اعتماده. عند إعادة الاستيراد لا تُرفق الصفوف التي لا تطابق بصمتها.",
+  "Excluded automatically": "مستبعد تلقائيًا",
+  "Export unlocks when at least one draft is approved for sending. Caravan does not send; the file goes to your own sender.":
+    "يُفتح التصدير عند اعتماد مسودة واحدة على الأقل للإرسال. كارافان لا يرسل؛ الملف يذهب إلى مرسلك.",
+  "Exported batches": "الدفعات المصدَّرة",
+  "Holdout group (%)": "المجموعة المحجوبة (%)",
+  "Import results": "نتائج الاستيراد",
+  "Nothing to export yet": "لا شيء للتصدير بعد",
+  "Open batch scorecard": "فتح بطاقة نتائج الدفعة",
+  "Rows are matched by approval digest or email. A row that does not match the export is never attached.":
+    "تُطابق الصفوف ببصمة الاعتماد أو البريد. لا يُرفق أي صف لا يطابق التصدير.",
+  "Select all approved drafts": "تحديد كل المسودات المعتمدة",
+  "Sending, unsubscribes and bounces happen in your sender. Bring results back with the outcomes upload so they attach to the batch.":
+    "الإرسال وإلغاء الاشتراك والارتداد تحدث في مرسلك. أعد النتائج برفع ملف النتائج لتُرفق بالدفعة.",
+  "Status": "الحالة",
+  "We couldn’t load the exports.": "تعذّر تحميل التصديرات.",
+  "approved, basis-cleared": "معتمدة وأساسها القانوني مكتمل",
+  "awaiting review · not included": "بانتظار المراجعة · غير مضمّنة",
+  "held · excluded": "محجوزة · مستبعدة",
+  "ready and waiting for review": "جاهزة وبانتظار المراجعة",
+  "rows": "صفوف",
+  "rows in file": "صفوف في الملف",
+  "rows need attention": "صفوف تحتاج إلى انتباه",
+  "Not attached": "غير مرفق",
+  "Needs a fix": "يحتاج إلى تصحيح",
   "Approved-batch export": "تصدير الدفعة المعتمدة",
   "For your own sender · nothing is sent from here":
     "للمرسل الخاص بك · لا يُرسل شيء من هنا",
