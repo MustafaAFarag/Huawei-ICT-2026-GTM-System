@@ -64,6 +64,9 @@ export const AR: Record<string, string> = {
   "Capability profile": "ملف القدرات",
   "Create a capability profile for ": "أنشئ ملف قدرات لـ ",
   "Holdout test": "اختبار المقارنة",
+  "Holdout available": "مجموعة المقارنة متاحة",
+  "With profile": "مع ملف القدرات",
+  "Without profile": "بدون ملف القدرات",
   "Ships with an asset-vs-no-asset holdout: a share of sequences go out without this profile.":
     "يأتي مع اختبار مقارنة بمادة وبدون مادة: جزء من التسلسلات يُرسل بدون هذا الملف.",
   "Gmail clips above 102 KB": "Gmail يقص الرسائل الأكبر من 102 كيلوبايت",
@@ -143,6 +146,54 @@ export const AR: Record<string, string> = {
   account: "حساب",
   accounts: "حسابات",
   Deliverables: "المخرجات",
+  "You have read-only access to deliverables. Ask a workspace owner or editor to create or revise one.":
+    "صلاحيتك للمخرجات هي العرض فقط. اطلب من مالك مساحة العمل أو أحد المحررين إنشاء مخرج أو تعديله.",
+  Create: "إنشاء",
+  "Clear filters": "مسح عوامل التصفية",
+  Previous: "السابق",
+  Next: "التالي",
+  Title: "العنوان",
+  of: "من",
+  Edit: "تعديل",
+  "Try again": "أعد المحاولة",
+  "Create a deliverable": "إنشاء مخرج",
+  "Choose the format. Nabil will use your current brand.":
+    "اختر الصيغة. سيستخدم نبيل علامتك الحالية.",
+  "What should this achieve?": "ما الهدف من هذا المخرج؟",
+  "Audience or account": "الجمهور أو الحساب",
+  "Uses your reviewed company facts and approved offer.":
+    "يستخدم معلومات شركتك التي راجعتها وعرضك المعتمد.",
+  "Create with Nabil": "إنشاء مع نبيل",
+  "Search deliverables": "البحث في المخرجات",
+  "Search deliverables…": "ابحث في المخرجات…",
+  "Sort deliverables": "ترتيب المخرجات",
+  "Recently updated": "الأحدث أولًا",
+  "No matching deliverables": "لا توجد مخرجات مطابقة",
+  "Your first deliverable starts with an idea.": "أول مخرج لك يبدأ بفكرة.",
+  "Try another search or format.": "جرّب بحثًا أو صيغة أخرى.",
+  "Choose an email, carousel, flipbook or document. Nabil uses your brand and saves the result here.":
+    "اختر بريدًا أو شرائح أو كتابًا أو مستندًا. يستخدم نبيل علامتك ويحفظ النتيجة هنا.",
+  Showing: "عرض",
+  deliverables: "مخرجات",
+  Document: "مستند",
+  Carousel: "شرائح",
+  "Document preview": "معاينة المستند",
+  "Loading preview…": "جارٍ تحميل المعاينة…",
+  "Preview details could not load": "تعذّر تحميل تفاصيل المعاينة",
+  "You can still view the deliverable. Retry to load page counts and compatibility checks.":
+    "يمكنك عرض المخرج. أعد المحاولة لتحميل عدد الصفحات وفحوص التوافق.",
+  "Deliverable view": "عرض المخرج",
+  "Spread view": "عرض الصفحتين",
+  "Fit to page": "ملاءمة الصفحة",
+  "Describe the change. Each revision is saved as a new draft.":
+    "صف التغيير. يُحفظ كل تعديل كمسودة جديدة.",
+  "Your change": "التغيير المطلوب",
+  "Apply change": "تطبيق التغيير",
+  "Revise this deliverable": "عدّل هذا المخرج",
+  "Preview uses your saved brand version.":
+    "تستخدم المعاينة نسخة علامتك المحفوظة.",
+  "View brand book": "عرض دليل العلامة",
+  "Version history": "سجل النسخ",
   "Every document, email and carousel Nabil prepared, filed by account.":
     "كل مستند وبريد وشرائح جهّزها نبيل، مرتبة حسب الحساب.",
   "Arabic (Egypt)": "العربية (مصر)",
@@ -688,7 +739,6 @@ export const AR: Record<string, string> = {
   Filters: "الفلاتر",
   "Triage: All": "التصنيف: الكل",
   "Country: All": "الدولة: الكل",
-  "Clear filters": "مسح الفلاتر",
   "Clear selection": "إلغاء التحديد",
   "Select accounts": "تحديد حسابات",
   "Prepare outreach": "تجهيز التواصل",
@@ -696,15 +746,12 @@ export const AR: Record<string, string> = {
   "Accounts assigned to you appear here.": "الحسابات المسندة إليك تظهر هنا.",
   Status: "الحالة",
   Select: "تحديد",
-  Showing: "عرض",
-  of: "من",
   "across all pages": "عبر كل الصفحات",
   Dropped: "مستبعد",
   Excluded: "مستثنى",
   Held: "معلّق",
   Client: "عميل",
   "Not set": "غير محددة",
-  Previous: "السابق",
   Close: "إغلاق",
   Import: "استيراد",
   Saved: "تم الحفظ",
@@ -980,7 +1027,6 @@ export const AR: Record<string, string> = {
   "Editing creates a new version that needs approval again.":
     "التعديل ينشئ نسخة جديدة تحتاج اعتمادًا من جديد.",
   "Review next draft": "راجع المسودة التالية",
-  "Next": "التالي",
   "Campaign readiness": "جاهزية الحملة",
   "Revise the draft message for ": "راجع صياغة رسالة المسودة لـ ",
   "Reviewer access": "صلاحية المراجعة",
@@ -1205,12 +1251,6 @@ export const AR: Record<string, string> = {
     "مالك مساحة العمل وحده يستطيع حفظ سياق الشركة",
   "A4 profile built only from your approved offer and references with recorded permission.":
     "ملف بحجم A4 مبني فقط على عرضك المعتمد والمراجع المسجّل إذنها",
-  "Holdout available":
-    "مجموعة المقارنة متاحة",
-  "With profile":
-    "مع ملف القدرات",
-  "Without profile":
-    "بدون ملف القدرات",
   "Arabic (RTL)":
     "العربية (من اليمين لليسار)",
   "Use a holdout group when you want to compare sequences with this profile to sequences without it. The comparison is optional; a single run does not establish a lift.":
@@ -1241,8 +1281,6 @@ export const AR: Record<string, string> = {
     "بُعد النضج",
   "Rubric defaults":
     "الإعدادات الافتراضية للمعايير",
-  "Title":
-    "المسمى",
   "size":
     "الحجم",
   "website":
