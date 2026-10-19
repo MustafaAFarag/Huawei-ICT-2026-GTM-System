@@ -21,9 +21,10 @@ test("assistant runs requested work immediately with inline progress and no appr
   await page.getByLabel("Workspace", { exact: true }).selectOption(ws);
   await page.getByRole("button", { name: "Accounts", exact: true }).click();
   await page.getByRole("row").nth(1).getByRole("checkbox").check();
-  const runsBefore = (
-    await (await context.request.get(`/api/workspaces/${ws}`)).json()
-  ).runs.length;
+  const threadsBefore = await (
+    await context.request.get(`/api/workspaces/${ws}/threads`)
+  ).json();
+  const threadIdsBefore = new Set(threadsBefore.map((thread: any) => thread.id));
   await page.getByRole("button", { name: "Ask Nabil" }).click();
   await page.locator("#launcher-input").fill("Draft messages for this account");
   await page.getByRole("button", { name: "Send", exact: true }).click();
@@ -33,23 +34,48 @@ test("assistant runs requested work immediately with inline progress and no appr
   ).toHaveCount(0);
   await expect(page.getByRole("dialog")).toHaveCount(0);
   await expect(page.locator(".home-runlog, .run-log")).toHaveCount(0);
+  let createdThread: any;
   await expect
     .poll(async () => {
-      const state = await (
-        await context.request.get(`/api/workspaces/${ws}`)
+      const threads = await (
+        await context.request.get(`/api/workspaces/${ws}/threads`)
       ).json();
-      return state.runs.length;
+      createdThread = threads.find((thread: any) => !threadIdsBefore.has(thread.id));
+      return createdThread?.id;
     })
-    .toBeGreaterThan(runsBefore);
+    .toBeTruthy();
+  let request: any;
+  let response: any;
+  await expect
+    .poll(async () => {
+      const messages = await (
+        await context.request.get(
+          `/api/workspaces/${ws}/threads/${createdThread.id}/messages`,
+        )
+      ).json();
+      request = messages.find(
+        (message: any) =>
+          message.role === "user" &&
+          message.content === "Draft messages for this account",
+      );
+      response = messages.find(
+        (message: any) =>
+          message.role === "assistant" &&
+          message.runId &&
+          message.context?.tool === "draft_messages",
+      );
+      return Boolean(request && response);
+    })
+    .toBe(true);
+  expect(request.context.prospectIds).toHaveLength(1);
+  expect(response.runId).toBeTruthy();
+  expect(response.context.prospectIds).toEqual(request.context.prospectIds);
   await expect(page.locator("#launcher-input")).toBeEnabled();
   await page.reload();
   await page.getByRole("button", { name: "Ask Nabil" }).click();
-  // The run is attached to the saved conversation, so its status survives navigation.
-  const threads = await (
-    await context.request.get(`/api/workspaces/${ws}/threads`)
-  ).json();
-  await page.goto(`/?c=${threads[0].id}`);
-  await expect(page.locator(".chat-run-progress")).toBeVisible();
+  // The run is attached to the saved conversation, so its completed status survives navigation.
+  await page.goto(`/?c=${createdThread.id}`);
+  await expect(page.locator(".chat-run-progress")).toContainText("Completed");
 });
 
 test("voice dictation endpoint validates audio and returns a transcript", async ({

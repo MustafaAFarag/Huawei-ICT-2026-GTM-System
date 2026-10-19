@@ -155,15 +155,19 @@ test("triage, discovery, consent references and SDR PDF in both interface direct
         exact: true,
       }),
     ).toBeVisible();
-    await page.screenshot({
-      path: `.local/gtm-${language}-mobile.png`,
-      fullPage: true,
-    });
+    if (process.env.E2E_CAPTURE_SCREENSHOTS === "1") {
+      await page.screenshot({
+        path: `.local/gtm-${language}-mobile.png`,
+        fullPage: true,
+      });
+    }
     await page.setViewportSize({ width: 1440, height: 1000 });
-    await page.screenshot({
-      path: `.local/gtm-${language}-desktop.png`,
-      fullPage: true,
-    });
+    if (process.env.E2E_CAPTURE_SCREENSHOTS === "1") {
+      await page.screenshot({
+        path: `.local/gtm-${language}-desktop.png`,
+        fullPage: true,
+      });
+    }
   }
   expect(pageErrors).toEqual([]);
 });

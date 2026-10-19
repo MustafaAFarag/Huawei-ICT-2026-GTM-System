@@ -82,7 +82,7 @@ test("research brief exports the saved source record and holds unsaved edits", a
     .first()
     .getByRole("button", { name: "Open", exact: true })
     .click();
-  await page.getByRole("button", { name: "Sources", exact: true }).click();
+  await page.getByRole("button", { name: /^Sources(?:\s+\d+)?$/ }).click();
   await page.getByLabel("Brief language", { exact: true }).selectOption("ar");
   const download = page.waitForEvent("download");
   await page
@@ -337,9 +337,11 @@ test("import history groups filename revisions and shows changed fields after re
   if (await hide.isVisible()) await hide.click();
   await page.getByRole("button", { name: "Accounts", exact: true }).click();
   await page.getByRole("button", { name: "Import history", exact: true }).click();
-  await page
+  const versionTwo = page
     .getByRole("button", { name: new RegExp(`^View import: ${filename}`) })
-    .click();
+    .filter({ hasText: "Version 2" });
+  await expect(versionTwo).toHaveCount(1);
+  await versionTwo.click();
   const details = page.getByLabel("Import details", { exact: true });
   await expect(details).toContainText("Founder");
   await expect(details).toContainText("Finance Director");
@@ -349,7 +351,9 @@ test("import history groups filename revisions and shows changed fields after re
   await page.getByRole("button", { name: "Accounts", exact: true }).click();
   await page.getByRole("button", { name: "Import history", exact: true }).click();
   await expect(
-    page.getByRole("button", { name: new RegExp(`^View import: ${filename}`) }),
+    page
+      .getByRole("button", { name: new RegExp(`^View import: ${filename}`) })
+      .filter({ hasText: "Version 2" }),
   ).toBeVisible();
 });
 

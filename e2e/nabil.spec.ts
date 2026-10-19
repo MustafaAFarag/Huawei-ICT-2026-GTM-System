@@ -213,8 +213,14 @@ test("deliverables open in the canvas: carousel slides, email widths and a page-
 
   await page.goto("/?s=Asset+Studio");
   const canvas = page.locator(".artifact-canvas");
-  await page.getByRole("tab", { name: /Carousels/ }).click();
-  await page.locator(".row").first().click();
+  const deliverables = page.getByRole("region", { name: "Deliverables" });
+  await deliverables.getByRole("button", { name: "Carousels", exact: true }).click();
+  await deliverables
+    .getByRole("listitem")
+    .filter({ hasText: "Instagram carousel" })
+    .first()
+    .getByRole("button")
+    .click();
   await expect(canvas.locator(".slide-controls")).toContainText(
     `1/${meta.pages}`,
   );
@@ -231,8 +237,13 @@ test("deliverables open in the canvas: carousel slides, email widths and a page-
   expect(zip.headers()["content-type"]).toContain("application/zip");
   await canvas.getByRole("button", { name: "Close preview" }).click();
 
-  await page.getByRole("tab", { name: /Emails/ }).click();
-  await page.locator(".row").first().click();
+  await deliverables.getByRole("button", { name: "Emails", exact: true }).click();
+  await deliverables
+    .getByRole("listitem")
+    .filter({ hasText: "HTML email" })
+    .first()
+    .getByRole("button")
+    .click();
   await expect(canvas.locator(".email-frame")).toHaveCSS("width", "600px");
   await canvas.getByRole("button", { name: "Phone width" }).click();
   await expect(canvas.locator(".email-frame")).toHaveCSS("width", "375px");
@@ -243,8 +254,13 @@ test("deliverables open in the canvas: carousel slides, email widths and a page-
   expect(html).not.toMatch(/src=["']data:/);
   await canvas.getByRole("button", { name: "Close preview" }).click();
 
-  await page.getByRole("tab", { name: /Flipbooks/ }).click();
-  await page.locator(".row").first().click();
+  await deliverables.getByRole("button", { name: "Flipbooks", exact: true }).click();
+  await deliverables
+    .getByRole("listitem")
+    .filter({ hasText: "Flipbook" })
+    .first()
+    .getByRole("button")
+    .click();
   await expect(canvas.locator("iframe")).toHaveAttribute(
     "sandbox",
     "allow-scripts",
@@ -258,7 +274,9 @@ test("deliverables open in the canvas: carousel slides, email widths and a page-
   ).headers()["content-security-policy"];
   expect(csp).toContain("sandbox allow-scripts");
   expect(csp).not.toContain("allow-same-origin");
-  await page.screenshot({ path: ".local/ui-refinement/flipbook-canvas.png" });
+  if (process.env.E2E_CAPTURE_SCREENSHOTS === "1") {
+    await page.screenshot({ path: ".local/ui-refinement/flipbook-canvas.png" });
+  }
 });
 
 test("an immediate deliverable opens beside chat and long titles fit in both directions", async ({
@@ -331,9 +349,11 @@ test("an immediate deliverable opens beside chat and long titles fit in both dir
           () => document.documentElement.scrollWidth <= innerWidth,
         ),
       ).toBe(true);
-      await page.screenshot({
-        path: `.local/ui-refinement/immediate-${language}-${width}.png`,
-      });
+      if (process.env.E2E_CAPTURE_SCREENSHOTS === "1") {
+        await page.screenshot({
+          path: `.local/ui-refinement/immediate-${language}-${width}.png`,
+        });
+      }
     }
     await page.goto("/?s=Accounts");
     await expect(page.locator(".accounts-table, table").first()).toBeVisible();

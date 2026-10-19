@@ -103,7 +103,9 @@ test("four plays, bilingual asset, approval invalidation, suppression and worksp
   await page.getByLabel("Communication basis").selectOption("consent");
   await page.getByLabel("Consent time").fill("2026-10-13T12:00");
   await page.getByRole("button", { name: "Save policy" }).click();
-  await expect(page.getByRole("status")).toContainText("Policy saved");
+  await expect(
+    page.getByRole("status").filter({ hasText: "Policy saved" }),
+  ).toContainText("Policy saved");
   // A consent basis needs recorded evidence before any contact (CMP-02); the dialog records it.
   await page.getByRole("button", { name: "Record basis evidence" }).click();
   const dialog = page.getByRole("dialog");
@@ -112,7 +114,27 @@ test("four plays, bilingual asset, approval invalidation, suppression and worksp
     .fill("Synthetic signed opt-in form, demo record 001");
   await dialog.getByLabel("Date", { exact: true }).fill("2026-10-13");
   await dialog.getByRole("button", { name: "Save evidence" }).click();
-  await expect(page.getByRole("status")).toContainText("Basis evidence recorded");
+  await expect(dialog).toContainText("Synthetic signed opt-in form, demo record 001");
+  let recordedBasisEvidence: any;
+  await expect
+    .poll(async () => {
+      const stateAfterBasisEvidence = await (
+        await context.request.get(base)
+      ).json();
+      recordedBasisEvidence = stateAfterBasisEvidence.prospects
+        .find((current: any) => current.id === prospect.id)
+        .basisEvidence.find(
+          (item: any) =>
+            item.source === "Synthetic signed opt-in form, demo record 001",
+        );
+      return Boolean(recordedBasisEvidence);
+    })
+    .toBe(true);
+  expect(recordedBasisEvidence).toMatchObject({
+    date: "2026-10-13",
+    type: "consent",
+    source: "Synthetic signed opt-in form, demo record 001",
+  });
   await page.locator(".sidebar").getByRole("button", { name: "Campaigns", exact: true }).click();
   async function runUi(tool: ToolName, play: string) {
     await page.getByRole("button", { name: new RegExp(`^${play} `) }).click();
@@ -184,9 +206,14 @@ test("four plays, bilingual asset, approval invalidation, suppression and worksp
     (await context.request.get(`${base}/assets/${asset.id}/png`)).status(),
   ).toBe(409);
   await page.getByRole("button", { name: "Deliverables", exact: true }).click();
-  // Deliverables is a list; a row opens the canvas with the sandboxed preview.
-  const row = page.locator(".row").filter({ hasText: companyName }).first();
-  await row.click();
+  // The Deliverables list opens the selected asset in the sandboxed preview.
+  const offerCard = page
+    .getByRole("region", { name: "Deliverables" })
+    .getByRole("listitem")
+    .filter({ hasText: companyName })
+    .filter({ hasText: "Offer one-pager" })
+    .first();
+  await offerCard.getByRole("button").click();
   const canvas = page.locator(".artifact-canvas");
   const frame = page.frameLocator(".artifact-canvas iframe");
   const previewResponse = await context.request.get(
