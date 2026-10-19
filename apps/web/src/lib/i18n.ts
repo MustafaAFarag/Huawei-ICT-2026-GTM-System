@@ -759,6 +759,9 @@ export const AR: Record<string, string> = {
   Today: "اليوم",
   // Import task view and history
   "Import steps": "خطوات الاستيراد",
+  Upload: "الرفع",
+  "Map columns": "مطابقة الأعمدة",
+  "Review outcomes": "مراجعة النتائج",
   "Choose a CSV or XLSX file.": "اختر ملف CSV أو XLSX.",
   "This file is over 5 MB. Split it and import the parts.":
     "حجم الملف أكبر من 5 ميغابايت. قسّمه واستورد الأجزاء.",
