@@ -1,3 +1,16 @@
+## Current — UI simplification + live AI (21 October 2026, unattended)
+
+Goal: owner feedback on 21 Oct. Done = each item is visible on 3140, typecheck and build pass, E2E passes after adaptation, and the work is committed and merged into local main. Stop: no push, deploy or outreach. Live Azure model calls are now allowed (owner: "lets use real AI model calls").
+
+- [x] Sign-in: wordmark where the mark is the C ("aravan") instead of the full-word lockup.
+- [x] Home: only headline, input and starter chips, centred. Removed the subtitle, ranking note, resume list, purpose line and the fixture note.
+- [x] Search: inline sidebar input above New chat; ⌘K focuses it; no modal; conversations searchable.
+- [x] Width: --content-max 1204→1680px; content side padding 36→20px.
+- [x] API/worker on 4140 restarted with MODEL_MODE=live (PROVIDER_MODE stays fixture; no sends). Real chat reply verified in 6 s. Logs `.local/verification-20261019/{api,worker}-live.log`. E2E needs fixture mode: restart with gate-env defaults before running it.
+- [x] Build ok; E2E 23/23 (first run 19/23 because the Twenty CRM containers had stopped; restarted them, and the 4 failures passed on rerun); EN/AR desktop/phone checks; committed to main.
+
+---
+
 ## Current — v3.2 integration resume (19 October 2026)
 
 Goal: finish the logo, A1–A8 and exported Figma UI redesign.

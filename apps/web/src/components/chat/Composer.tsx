@@ -263,13 +263,9 @@ export function Composer({
           )}
         </div>
       </div>
-      {variant !== "compact" && (
+      {variant === "dock" && (
         <p className="composer-note muted">
-          {data.modelFixture
-            ? t("Fixture assistant · no model call is made.")
-            : t(
-                "Nabil proposes actions. Spending stays within your caps; nothing is sent without your approval. 1 credit per reply.",
-              )}
+          {t("Nothing is sent without your approval.")}
         </p>
       )}
     </form>

@@ -1,15 +1,12 @@
 "use client";
 import { useEffect, useState, type ReactNode } from "react";
-import { IconChevronRight, IconFileText, IconShieldCheck } from "@revenue/ui";
 import { usePrefs } from "../../lib/prefs";
 import type { Asset } from "../../lib/types";
 import { Nabil, useNabilMood } from "../nabil/Nabil";
 import type { Proposal } from "../Modals";
-import { Badge, Button, EmptyState } from "../primitives";
-import { useWorkspace } from "../workspace-context";
 import { useChat } from "./controller";
 import { Composer } from "./Composer";
-import { Conversation, DeliverableCard } from "./Conversation";
+import { Conversation } from "./Conversation";
 import "../../styles/pages/home.css";
 
 const STARTERS = [
@@ -50,7 +47,6 @@ export function Home({
   canvas?: ReactNode;
 }) {
   const { t } = usePrefs();
-  const { data, setTab } = useWorkspace();
   const chat = useChat();
   const mood = useNabilMood(chat.activity);
   const [prefill, setPrefill] = useState<{ text: string; key: number } | null>(
@@ -61,12 +57,6 @@ export function Home({
     if (initialPrefill) setPrefill(initialPrefill);
   }, [initialPrefill]);
   const empty = !chat.threadId && !chat.live && !chat.messages.length;
-  const recentAssets = [...data.assets]
-    .sort((a, b) => (b.createdAt ?? "").localeCompare(a.createdAt ?? ""))
-    .slice(0, 2);
-  const pending = data.drafts.filter(
-    (draft) => draft.approvedVersion !== draft.version,
-  ).length;
   const start = (text: string) =>
     setPrefill({ text: t(text), key: Date.now() });
 
@@ -76,11 +66,6 @@ export function Home({
         <div className="home-hero">
           <Nabil mood={mood} size={48} className="home-avatar" />
           <h1 id="home-title">{t("What would you like to prepare?")}</h1>
-          <p className="home-sub">
-            {t(
-              "Turn the accounts you already work into reviewed Arabic/English follow-ups and company profiles, with every outcome and every hold recorded in your CRM.",
-            )}
-          </p>
         </div>
         <Composer
           variant="hero"
@@ -125,67 +110,6 @@ export function Home({
             </div>
           )}
         </div>
-        <p className="home-ranking-note">
-          <IconShieldCheck size={18} aria-hidden />
-          <span>
-            {t(
-              "Rank my accounts orders accounts you already saved, using your rubric. Ranking does not search for new companies, enrich contacts or send email.",
-            )}
-          </span>
-        </p>
-        <section className="home-resume" aria-labelledby="home-resume-title">
-          <h2 id="home-resume-title">{t("Pick up where you left off")}</h2>
-          {pending > 0 && (
-            <button
-              type="button"
-              className="home-review-row"
-              onClick={() => setTab("Review queue")}
-            >
-              <IconFileText size={20} aria-hidden />
-              <span>
-                <strong>{t("Review your follow-ups")}</strong>
-                <span className="muted small">
-                  <bdi>{pending}</bdi> {t("drafts to review")}
-                </span>
-              </span>
-              <Badge tone="warn" dot={false}>
-                {t("Needs review")}
-              </Badge>
-              <IconChevronRight
-                className="home-directional"
-                size={18}
-                aria-hidden
-              />
-            </button>
-          )}
-          {recentAssets.map((asset) => (
-            <DeliverableCard
-              key={asset.id}
-              asset={asset}
-              fallbackTitle={asset.title}
-              template={asset.template}
-              onOpen={() => onOpenAsset(asset)}
-            />
-          ))}
-          {!pending && !recentAssets.length && (
-            <EmptyState
-              title={t("Your next piece of work starts here")}
-              text={t(
-                "Ask Nabil to prepare a follow-up or company profile. Saved work will appear here.",
-              )}
-              action={
-                <Button size="sm" onClick={() => start(STARTERS[0].text)}>
-                  {t("Draft follow-ups")}
-                </Button>
-              }
-            />
-          )}
-        </section>
-        <p className="home-purpose">
-          {t(
-            "Caravan is an AI GTM workspace where small B2B services teams research, qualify, follow up and record named accounts in English and Arabic, with a person approving every send.",
-          )}
-        </p>
       </section>
     );
 

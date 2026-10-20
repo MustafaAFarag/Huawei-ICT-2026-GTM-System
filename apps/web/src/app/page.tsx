@@ -18,7 +18,7 @@ import {
   PageTabs,
 } from "../components/primitives";
 import { Sidebar, Topbar } from "../components/Shell";
-import { CommandPalette } from "../components/CommandPalette";
+import { SIDEBAR_SEARCH_ID } from "../components/SidebarSearch";
 import { CostModal, type Proposal } from "../components/Modals";
 import { ArtifactCanvas } from "../components/ArtifactCanvas";
 import { SignIn } from "../components/SignIn";
@@ -93,7 +93,6 @@ export default function Page() {
     [error, setError] = useState(""),
     [notice, setNotice] = useState(""),
     [launcherOpen, setLauncherOpen] = useState(false),
-    [paletteOpen, setPaletteOpen] = useState(false),
     [collapsed, setCollapsed] = useState(false),
     [navOpen, setNavOpen] = useState(false);
   const [exportFocusKey, setExportFocusKey] = useState(0);
@@ -122,6 +121,8 @@ export default function Page() {
     activeWorkspace.current = ws;
   }, [ws]);
   const viewRef = useRef(view);
+  const collapsedRef = useRef(collapsed);
+  collapsedRef.current = collapsed;
   viewRef.current = view;
   const refresh = useCallback(async () => {
     if (!ws) return;
@@ -368,13 +369,31 @@ export default function Page() {
     const timer = setTimeout(() => setNotice(""), 6000);
     return () => clearTimeout(timer);
   }, [notice]);
-  // ⌘K / Ctrl+K opens the palette; "g" then a digit jumps to a screen.
+  // Focus the sidebar search: open the drawer on narrow screens, expand the rail when collapsed.
+  const focusSearch = useCallback(() => {
+    if (window.matchMedia("(max-width: 960px)").matches) setNavOpen(true);
+    else if (collapsedRef.current) {
+      setCollapsed(false);
+      localStorage.setItem("revenue-sidebar", "open");
+    }
+    // Two frames: the expanded sidebar must be laid out before the input can take focus.
+    requestAnimationFrame(() =>
+      requestAnimationFrame(() => {
+        const el = document.getElementById(SIDEBAR_SEARCH_ID);
+        if (el instanceof HTMLInputElement) {
+          el.focus({ preventScroll: true });
+          el.select();
+        }
+      }),
+    );
+  }, []);
+  // ⌘K / Ctrl+K focuses the sidebar search; "g" then a digit jumps to a screen.
   useEffect(() => {
     let pendingG = 0;
     const onKey = (event: KeyboardEvent) => {
       if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") {
         event.preventDefault();
-        setPaletteOpen((open) => !open);
+        focusSearch();
         return;
       }
       const target = event.target as HTMLElement;
@@ -396,7 +415,7 @@ export default function Page() {
     };
     document.addEventListener("keydown", onKey);
     return () => document.removeEventListener("keydown", onKey);
-  }, [setTab]);
+  }, [setTab, focusSearch]);
   const action = useCallback(
     async (fn: () => Promise<unknown>, success?: string) => {
       setBusy(true);
@@ -548,7 +567,7 @@ export default function Page() {
       </main>
     );
   if (authState === "signin") return <SignIn onSignedIn={loadMe} />;
-  const modalOpen = Boolean(proposal || paletteOpen);
+  const modalOpen = Boolean(proposal);
   const currentAsset = preview
     ? (data?.assets.find((asset) => asset.id === preview.id) ?? preview)
     : null;
@@ -590,7 +609,23 @@ export default function Page() {
             onWorkspace={setWs}
             data={data}
             userName={userName}
-            onPalette={() => setPaletteOpen(true)}
+            searchTabs={TABS}
+            onPlay={(id) => {
+              setPlay(id);
+              setTab("Plays");
+            }}
+            onProspect={(p) => {
+              setViewState("Accounts");
+              setPreview(null);
+              setProspect(p);
+              setNavOpen(false);
+            }}
+            onToggleChat={() => {
+              setNavOpen(false);
+              if (viewRef.current === "Home") focusComposer();
+              else setLauncherOpen(true);
+            }}
+            onExpandSearch={focusSearch}
             threads={chat.threads}
             threadId={chat.threadId}
             onThread={(id) => {
@@ -811,26 +846,6 @@ export default function Page() {
             onApprove={() => void launch()}
           />
         )}
-        <CommandPalette
-          open={paletteOpen}
-          onClose={() => setPaletteOpen(false)}
-          tabs={TABS}
-          onTab={setTab}
-          onPlay={(id) => {
-            setPlay(id);
-            setTab("Plays");
-          }}
-          onProspect={(p) => {
-            setViewState("Accounts");
-            setPreview(null);
-            setProspect(p);
-          }}
-          onToggleChat={() => {
-            if (viewRef.current === "Home") focusComposer();
-            else setLauncherOpen(true);
-          }}
-          data={data}
-        />
       </div>
     </ChatProvider>
   );

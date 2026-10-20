@@ -18,7 +18,7 @@ export function SignIn({ onSignedIn }: { onSignedIn: () => Promise<void> }) {
   return (
     <main className="signin">
       <section className="signin-hero" aria-hidden>
-        <Logo variant="lockup" animated />
+        <Logo variant="wordmark" animated />
         <div className="signin-copy">
           <p className="eyebrow">{t("Go-to-market command center")}</p>
           <p className="signin-display">

@@ -57,8 +57,7 @@ export const AR: Record<string, string> = {
   "Edit with Nabil": "تعديل مع نبيل",
   "Email preview": "معاينة البريد",
   "Rank my accounts": "رتّب حساباتي",
-  "Fixture assistant · no model call is made.":
-    "مساعد تجريبي · لا يتم استدعاء أي نموذج.",
+  "Nothing is sent without your approval.": "لا يُرسَل شيء دون موافقتك.",
   Flipbook: "كتيّب تفاعلي",
   "Flipbook preview": "معاينة الكتيّب",
   "Capability profile": "ملف القدرات",
@@ -1565,4 +1564,5 @@ export const AR: Record<string, string> = {
   "Signing in…": "جارٍ تسجيل الدخول…",
   "Demo accounts are provisioned by the workspace owner.":
     "حسابات العرض ينشئها مالك مساحة العمل.",
+  Conversations: "المحادثات",
 };

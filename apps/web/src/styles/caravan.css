@@ -493,14 +493,14 @@
   font-weight: 500;
 }
 .content-alert {
-  padding: var(--space-3) 36px 0;
+  padding: var(--space-3) var(--space-20) 0;
 }
 .content {
   flex: 1 0 auto;
   inline-size: 100%;
   max-inline-size: var(--content-max);
   margin-inline: auto;
-  padding: var(--space-5) 36px var(--space-20);
+  padding: var(--space-5) var(--space-20) var(--space-20);
 }
 .is-home .main {
   overflow: hidden;

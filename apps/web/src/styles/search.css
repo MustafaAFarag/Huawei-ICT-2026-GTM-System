@@ -1,0 +1,132 @@
+/* Inline sidebar search (components/SidebarSearch.tsx). Logical properties throughout so it
+   mirrors in RTL; colours come from the shared tokens so both themes work. */
+.search-field {
+  position: relative;
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: var(--space-2);
+  block-size: 40px;
+  padding-inline: var(--space-3);
+  border-radius: var(--radius-control);
+  background: var(--bg);
+  box-shadow: var(--key);
+  color: var(--text-3);
+  transition:
+    box-shadow var(--fast) var(--ease),
+    background var(--fast) var(--ease);
+}
+.search-field:hover {
+  box-shadow: var(--key-raised);
+}
+.search-field:focus-within {
+  box-shadow: 0 0 0 1px var(--text-3);
+}
+.search-field .search-icon {
+  flex: none;
+  stroke-width: 1.6;
+}
+.search-field input {
+  flex: 1;
+  min-inline-size: 0;
+  block-size: 100%;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  box-shadow: none;
+  color: var(--text);
+  font-size: var(--text-md);
+  text-overflow: ellipsis;
+}
+.search-field input::placeholder {
+  color: var(--text-4);
+}
+/* The ⌘K hint gives way once the field is in use. */
+.search-field:focus-within .kbd {
+  display: none;
+}
+@media (max-width: 960px) {
+  /* Touch drawer: no keyboard hint. */
+  .search-field .kbd {
+    display: none;
+  }
+}
+@media (max-height: 820px) {
+  .search-field {
+    block-size: 36px;
+  }
+}
+
+/* Icon-only trigger, shown only when the wide-screen rail is collapsed. */
+.sidebar .nav .search-collapsed {
+  display: none;
+}
+@media (min-width: 961px) {
+  .sidebar-collapsed .search-field {
+    display: none;
+  }
+  .sidebar-collapsed .sidebar .nav .search-collapsed {
+    display: flex;
+  }
+}
+
+/* Results popover: portalled to <body>, fixed under the input (top/start/width set inline). */
+.search-pop {
+  position: fixed;
+  z-index: 80;
+  display: flex;
+  min-inline-size: 0;
+  max-inline-size: calc(100vw - 16px);
+  overflow: hidden;
+  border-radius: var(--radius-card);
+  background: var(--surface);
+  box-shadow: var(--shadow-pop);
+  animation: rise-in var(--fast) var(--ease);
+}
+.search-list {
+  flex: 1;
+  min-inline-size: 0;
+  margin: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 6px;
+  list-style: none;
+  scrollbar-width: thin;
+}
+.search-group {
+  padding: 10px 10px 6px;
+}
+.search-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  block-size: 38px;
+  padding-inline: 10px;
+  border-radius: var(--radius-control);
+  color: var(--text-2);
+  font-size: var(--text-sm);
+  cursor: pointer;
+}
+.search-item > .truncate {
+  flex: 1;
+  min-inline-size: 0;
+}
+.search-item[aria-selected="true"] {
+  background: var(--surface-3);
+  color: var(--text);
+}
+.search-item-icon {
+  display: inline-flex;
+  flex: none;
+  color: var(--text-3);
+}
+.search-empty {
+  padding: var(--space-5);
+  text-align: center;
+}
+@media (prefers-reduced-motion: reduce) {
+  .search-pop {
+    animation: none;
+  }
+}

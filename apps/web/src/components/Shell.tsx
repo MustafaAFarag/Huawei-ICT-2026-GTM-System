@@ -11,19 +11,19 @@ import {
   IconPalette,
   IconPlayerPlay,
   IconPlus,
-  IconSearch,
   IconSettings,
   IconSun,
   IconTrash,
   IconUsers,
 } from "@revenue/ui";
-import { Kbd } from "./primitives";
+import type { ToolRequest } from "@revenue/contracts";
+import { SidebarSearch } from "./SidebarSearch";
 import {
   CAMPAIGN_VIEWS,
   TAB_LABELS,
   type Tab,
 } from "./workspace-context";
-import type { Dashboard, Membership, Thread } from "../lib/types";
+import type { Dashboard, Membership, Prospect, Thread } from "../lib/types";
 import { usePrefs } from "../lib/prefs";
 import { Logo } from "./brand/Logo";
 
@@ -74,7 +74,11 @@ export function Sidebar({
   data,
   userName,
   onSignOut,
-  onPalette,
+  searchTabs,
+  onPlay,
+  onProspect,
+  onToggleChat,
+  onExpandSearch,
   threads,
   threadId,
   onThread,
@@ -91,7 +95,11 @@ export function Sidebar({
   data: Dashboard | null;
   userName: string;
   onSignOut: () => void;
-  onPalette: () => void;
+  searchTabs: readonly Tab[];
+  onPlay: (play: ToolRequest["play"]) => void;
+  onProspect: (prospect: Prospect) => void;
+  onToggleChat: () => void;
+  onExpandSearch: () => void;
   threads: Thread[];
   threadId: string | null;
   onThread: (id: string) => void;
@@ -158,6 +166,17 @@ export function Sidebar({
         <IconChevronDown size={16} aria-hidden className="workspace-chevron" />
       </label>
       <nav className="nav" aria-label={t("Main navigation")}>
+        <SidebarSearch
+          tabs={searchTabs}
+          onTab={onTab}
+          onPlay={onPlay}
+          onProspect={onProspect}
+          onToggleChat={onToggleChat}
+          onExpand={onExpandSearch}
+          data={data}
+          threads={threads}
+          onThread={onThread}
+        />
         <button
           type="button"
           className={`new-chat ${view === "Home" && !threadId ? "active" : ""}`}
@@ -167,15 +186,6 @@ export function Sidebar({
         >
           <IconPlus size={18} />
           <span className="nav-label">{t("New chat")}</span>
-        </button>
-        <button
-          type="button"
-          onClick={onPalette}
-          title={collapsed ? t("Search") : undefined}
-        >
-          <IconSearch size={18} />
-          <span className="nav-label">{t("Search")}</span>
-          <Kbd>⌘K</Kbd>
         </button>
         {NAV_TABS.map(navButton)}
       </nav>
