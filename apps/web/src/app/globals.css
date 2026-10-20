@@ -682,44 +682,31 @@ span.tone-ai {
   overflow: hidden;
   padding: var(--space-7);
   border-inline-end: 1px solid var(--line);
+  /* Scrims keep the copy readable over the route artwork. */
+  --hero-art: url("/signin/hero-dark.webp");
+  --hero-scrim-side: to right;
   background:
-    radial-gradient(
-      70% 55% at 20% 20%,
-      rgba(255, 99, 99, 0.22),
-      transparent 70%
+    linear-gradient(
+      var(--hero-scrim-side),
+      color-mix(in srgb, var(--bg) 92%, transparent) 0%,
+      color-mix(in srgb, var(--bg) 70%, transparent) 50%,
+      transparent 85%
     ),
-    radial-gradient(
-      60% 60% at 90% 90%,
-      rgba(20, 60, 163, 0.35),
-      transparent 70%
+    linear-gradient(
+      to bottom,
+      var(--bg) 0%,
+      transparent 30%,
+      transparent 80%,
+      var(--bg) 100%
     ),
+    var(--hero-art) center bottom / cover no-repeat,
     var(--bg);
+}
+[dir="rtl"] .signin-hero {
+  --hero-scrim-side: to left;
 }
 [data-theme="light"] .signin-hero {
-  background:
-    radial-gradient(
-      70% 55% at 20% 20%,
-      rgba(229, 72, 77, 0.12),
-      transparent 70%
-    ),
-    radial-gradient(
-      60% 60% at 90% 90%,
-      rgba(11, 107, 184, 0.12),
-      transparent 70%
-    ),
-    var(--bg);
-}
-.signin-hero::after {
-  position: absolute;
-  inset: 0;
-  background-image:
-    linear-gradient(var(--line) 1px, transparent 1px),
-    linear-gradient(90deg, var(--line) 1px, transparent 1px);
-  background-size: 48px 48px;
-  content: "";
-  mask-image: radial-gradient(70% 70% at 40% 40%, black, transparent);
-  opacity: 0.35;
-  pointer-events: none;
+  --hero-art: url("/signin/hero-light.webp");
 }
 .signin-copy {
   position: relative;
@@ -1754,6 +1741,10 @@ tbody tr.selected {
 @media (max-width: 640px) {
   .signin {
     grid-template-columns: minmax(0, 1fr);
+  }
+  .signin-hero,
+  [dir="rtl"] .signin-hero {
+    --hero-scrim-side: to top;
   }
   .signin-hero {
     min-height: 260px;
