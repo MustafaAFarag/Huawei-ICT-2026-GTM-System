@@ -119,38 +119,40 @@ export function Launcher({
                 <p dir="auto">
                   {t("Ask about this screen, or tell me what to prepare.")}
                 </p>
-                {contextualAccounts.length > 0 && (
-                  <Button
-                    type="button"
-                    variant="ai"
-                    className="launcher-quick-action"
-                    disabled={
-                      !workspace.canWrite ||
-                      chat.streaming ||
-                      chat.loadingMessages
-                    }
-                    onClick={() => {
-                      const prospectIds = contextualAccounts.map(
-                        (prospect) => prospect.id,
-                      );
-                      const companies = contextualAccounts.map(
-                        (prospect) => prospect.snapshot.company,
-                      );
-                      workspace.startNabil({
-                        prompt: `${t("Draft a follow-up for")} ${companies.join(", ")}.`,
-                        surface: "launcher",
-                        context: {
-                          prospectIds,
-                          activeProspectId:
-                            workspace.activeProspectId ?? prospectIds[0],
-                        },
-                      });
-                    }}
-                  >
-                    {t("Draft follow-up")}
-                  </Button>
-                )}
               </div>
+            </div>
+          )}
+          {contextualAccounts.length > 0 && (
+            <div className="launcher-contextual-actions">
+              <Button
+                type="button"
+                variant="ai"
+                className="launcher-quick-action"
+                disabled={
+                  !workspace.canWrite ||
+                  chat.streaming ||
+                  chat.loadingMessages
+                }
+                onClick={() => {
+                  const prospectIds = contextualAccounts.map(
+                    (prospect) => prospect.id,
+                  );
+                  const companies = contextualAccounts.map(
+                    (prospect) => prospect.snapshot.company,
+                  );
+                  workspace.startNabil({
+                    prompt: `${t("Draft a follow-up for")} ${companies.join(", ")}.`,
+                    surface: "launcher",
+                    context: {
+                      prospectIds,
+                      activeProspectId:
+                        workspace.activeProspectId ?? prospectIds[0],
+                    },
+                  });
+                }}
+              >
+                {t("Draft follow-up")}
+              </Button>
             </div>
           )}
           <div className="launcher-dock">

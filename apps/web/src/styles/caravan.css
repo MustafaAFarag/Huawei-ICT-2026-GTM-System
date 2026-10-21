@@ -1322,6 +1322,11 @@
 .launcher-empty-content p {
   margin: 0;
 }
+.launcher-contextual-actions {
+  display: flex;
+  justify-content: center;
+  padding: 8px 10px 0;
+}
 .launcher-quick-action {
   min-block-size: 44px;
 }
