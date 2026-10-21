@@ -498,9 +498,11 @@ test("A5/A4: approved batch CSV and imported outcomes reconcile to its scorecard
       expect(afterRestore.workspace.planLimits).toEqual(before.workspace.planLimits);
       expect(afterRestore.budgets.find((item: any) => !item.userId)?.cap ?? null)
         .toBe(originalWorkspaceBudget?.cap ?? null);
+      // Budget rows have no stable order; compare caps per member.
+      const byUser = (a: { userId: string }, b: { userId: string }) => a.userId.localeCompare(b.userId);
       expect(afterRestore.budgets.filter((item: any) => item.userId)
-        .map((item: any) => ({ userId: item.userId, cap: item.cap })))
-        .toEqual(originalMemberCaps);
+        .map((item: any) => ({ userId: item.userId, cap: item.cap })).sort(byUser))
+        .toEqual([...originalMemberCaps].sort(byUser));
     } catch (cleanupError) {
       if (bodyFailed) {
         console.error("A5/A4 fixture settings restore failed after the test body failed:", cleanupError);

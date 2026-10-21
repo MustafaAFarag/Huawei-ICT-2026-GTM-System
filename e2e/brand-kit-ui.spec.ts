@@ -289,7 +289,7 @@ test("account Nabil keeps the current conversation and labels client imagery as 
   expect(threadId).toMatch(/\S/);
   if (!threadId) throw new Error("The home prompt did not create a thread");
   await expect(
-    page.getByText(homePrompt, { exact: true }).last(),
+    page.getByText(homePrompt, { exact: true }).filter({ visible: true }).last(),
   ).toBeVisible();
   await expect
     .poll(async () => {
@@ -320,7 +320,7 @@ test("account Nabil keeps the current conversation and labels client imagery as 
     page.getByRole("navigation", { name: "Account detail" }),
   ).toBeVisible();
   await expect(
-    page.getByText(homePrompt, { exact: true }).last(),
+    page.getByText(homePrompt, { exact: true }).filter({ visible: true }).last(),
   ).toBeVisible();
   await ensureClientBrandLabel(page);
 
@@ -398,9 +398,9 @@ test("account Nabil keeps the current conversation and labels client imagery as 
   expect(typeof payload.content).toBe("string");
   const content = (payload.content as string).trim();
   expect(content.length).toBeGreaterThan(0);
-  await expect(page.getByText(content, { exact: true }).last()).toBeVisible();
+  await expect(page.getByText(content, { exact: true }).filter({ visible: true }).last()).toBeVisible();
   await expect(
-    page.getByText(homePrompt, { exact: true }).last(),
+    page.getByText(homePrompt, { exact: true }).filter({ visible: true }).last(),
   ).toBeVisible();
   await expect
     .poll(async () => {
