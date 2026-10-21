@@ -3,6 +3,7 @@ import { createContext, useContext } from "react";
 import type { ToolName, ToolRequest } from "@revenue/contracts";
 import type { Dashboard, Prospect } from "../lib/types";
 import type { Proposal } from "./Modals";
+import type { TurnContext } from "./chat/controller";
 
 export const TABS = [
   "Plays",
@@ -15,6 +16,11 @@ export const TABS = [
 ] as const;
 export type Tab = (typeof TABS)[number];
 export type View = "Home" | Tab;
+export type NabilStartRequest = {
+  prompt: string;
+  surface: "home" | "launcher";
+  context?: Partial<TurnContext>;
+};
 // Sequences is not in the sidebar: it is a tab of the Campaigns page, next to Plays.
 // The sidebar highlights Campaigns for both ids.
 export const CAMPAIGN_VIEWS: readonly Tab[] = ["Plays", "Sequences"];
@@ -56,6 +62,8 @@ export type WorkspaceValue = {
   openAsset: (asset: import("../lib/types").Asset) => void;
   // Starts a new conversation on the home page with the composer prefilled.
   askNabil: (prefill: string) => void;
+  // Sends a captured request immediately, either on Home or in the open launcher.
+  startNabil: (request: NabilStartRequest) => void;
   setProspect: (prospect: Prospect | null) => void;
   setActiveRun: (id: string | null) => void;
   showProposal: (proposal: Proposal) => void;

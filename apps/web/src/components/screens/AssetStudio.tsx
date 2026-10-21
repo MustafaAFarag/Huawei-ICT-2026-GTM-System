@@ -43,6 +43,7 @@ const GROUPS = [
     match: (t: string) => t === "flipbook",
   },
 ] as const;
+type ContentLanguage = "en" | "ar-EG" | "ar-Gulf";
 
 function when(date: string | undefined, language: string) {
   if (!date) return "";
@@ -63,7 +64,7 @@ function when(date: string | undefined, language: string) {
 
 // Deliverables (Linear-style list): everything Nabil prepared, filed by account and format.
 export function AssetStudio({ onPreview }: { onPreview: (a: Asset) => void }) {
-  const { data, askNabil, canWrite, busy } = useWorkspace();
+  const { data, startNabil, canWrite, busy } = useWorkspace();
   const { t, language } = usePrefs();
   const [group, setGroup] = useState<(typeof GROUPS)[number]["id"]>("all");
   const [search, setSearch] = useState("");
@@ -72,7 +73,8 @@ export function AssetStudio({ onPreview }: { onPreview: (a: Asset) => void }) {
   const [creating, setCreating] = useState(false);
   const [template, setTemplate] = useState<AssetTemplate>("linkedin-carousel");
   const [goal, setGoal] = useState("");
-  const [contentLanguage, setContentLanguage] = useState("en");
+  const [contentLanguage, setContentLanguage] =
+    useState<ContentLanguage>("en");
   const [account, setAccount] = useState("");
   const rows = useMemo(
     () =>
@@ -134,9 +136,16 @@ export function AssetStudio({ onPreview }: { onPreview: (a: Asset) => void }) {
             if (!canWrite || busy || !goal.trim()) return;
             const company = data.prospects.find((p) => p.id === account)
               ?.snapshot.company;
-            askNabil(
-              `${t("Create a deliverable")}: ${ASSET_FORMATS[template].label} (${template}). ${t("What should this achieve?")}: ${goal.trim()}. ${t("Content language")}: ${contentLanguage}. ${t("Audience or account")}: ${company || t("Brand-level")}${account ? ` (${account})` : ""}.`,
-            );
+            startNabil({
+              prompt: `${t("Create a deliverable")}: ${ASSET_FORMATS[template].label} (${template}). ${t("What should this achieve?")}: ${goal.trim()}. ${t("Content language")}: ${contentLanguage}. ${t("Audience or account")}: ${company || t("Brand-level")}${account ? ` (${account})` : ""}.`,
+              surface: "home",
+              context: {
+                prospectIds: account ? [account] : [],
+                activeProspectId: account || undefined,
+                activeAssetId: undefined,
+                language: contentLanguage,
+              },
+            });
           }}
         >
           <div
@@ -204,7 +213,15 @@ export function AssetStudio({ onPreview }: { onPreview: (a: Asset) => void }) {
             <Field label={t("Content language")}>
               <Select
                 value={contentLanguage}
-                onChange={(event) => setContentLanguage(event.target.value)}
+                onChange={(event) => {
+                  const value = event.target.value;
+                  if (
+                    value === "en" ||
+                    value === "ar-EG" ||
+                    value === "ar-Gulf"
+                  )
+                    setContentLanguage(value);
+                }}
               >
                 {["en", "ar-EG", "ar-Gulf"].map((value) => (
                   <option value={value} key={value}>

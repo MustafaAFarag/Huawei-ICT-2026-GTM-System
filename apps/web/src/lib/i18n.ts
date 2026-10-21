@@ -52,6 +52,8 @@ export const AR: Record<string, string> = {
   "Desktop width": "عرض سطح المكتب",
   "Phone width": "عرض الهاتف",
   "Draft · needs review": "مسودة · تحتاج مراجعة",
+  "Draft follow-up": "اكتب رسالة متابعة",
+  "Draft a follow-up for": "اكتب رسالة متابعة لـ",
   "Draft outreach": "كتابة تواصل",
   Editing: "قيد التعديل",
   "Edit with Nabil": "تعديل مع نبيل",

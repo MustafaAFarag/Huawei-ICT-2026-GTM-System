@@ -57,7 +57,7 @@ export type ChatController = {
   quote: Proposal | null;
   meta: { model: string; live: boolean } | null;
   activity: ChatActivity;
-  send: (content: string) => Promise<void>;
+  send: (content: string, context?: TurnContext) => Promise<void>;
   stop: () => void;
   retry: () => void;
   newChat: () => void;
@@ -109,9 +109,13 @@ export function useChatController({
   const [recording, setRecording] = useState(false);
   const [celebratedAt, setCelebratedAt] = useState(0);
   const [lastActiveAt, setLastActiveAt] = useState(() => Date.now());
-  const abort = useRef<AbortController | null>(null);
+  const activeRequest = useRef<{
+    controller: AbortController;
+    workspaceId: string;
+  } | null>(null);
   const threadRef = useRef<string | null>(null);
   const wsRef = useRef(ws);
+  wsRef.current = ws;
   const handlers = useRef({
     context,
     onQuote,
@@ -130,7 +134,11 @@ export function useChatController({
     onSettled,
     t,
   };
-  const lastSent = useRef("");
+  const lastSent = useRef<{
+    text: string;
+    workspaceId: string;
+    context: TurnContext;
+  } | null>(null);
 
   useEffect(() => {
     threadRef.current = threadId;
@@ -160,7 +168,9 @@ export function useChatController({
   // A workspace change resets every conversation view.
   useEffect(() => {
     wsRef.current = ws;
-    abort.current?.abort();
+    activeRequest.current?.controller.abort();
+    activeRequest.current = null;
+    lastSent.current = null;
     threadRef.current = null;
     setThreadId(null);
     setThreads([]);
@@ -176,8 +186,10 @@ export function useChatController({
 
   const openThread = useCallback(
     (id: string | null) => {
-      if (id === threadRef.current) return;
-      abort.current?.abort();
+      if (id === threadRef.current && id !== null) return;
+      activeRequest.current?.controller.abort();
+      activeRequest.current = null;
+      setStreaming(false);
       threadRef.current = id;
       setThreadId(id);
       setLive(null);
@@ -212,10 +224,18 @@ export function useChatController({
   }, [loadThreads, loadMessages]);
 
   const send = useCallback(
-    async (content: string) => {
+    async (content: string, contextSnapshot?: TurnContext) => {
       const text = content.trim();
-      if (!text || streaming || !ws) return;
-      lastSent.current = text;
+      if (!text || activeRequest.current || !ws) return;
+      const controller = new AbortController();
+      const request = { controller, workspaceId: ws };
+      activeRequest.current = request;
+      const providedContext = contextSnapshot ?? handlers.current.context();
+      const sentContext: TurnContext = {
+        ...providedContext,
+        prospectIds: [...providedContext.prospectIds],
+      };
+      lastSent.current = { text, workspaceId: ws, context: sentContext };
       setLastActiveAt(Date.now());
       setStreaming(true);
       setQuote(null);
@@ -224,8 +244,6 @@ export function useChatController({
         ...rows,
         { id: `local-${Date.now()}`, role: "user", content: text },
       ]);
-      const controller = new AbortController();
-      abort.current = controller;
       const startedIn = ws;
       try {
         const response = await fetch(`/api/workspaces/${ws}/chat/stream`, {
@@ -234,7 +252,7 @@ export function useChatController({
           body: JSON.stringify({
             content: text,
             threadId: threadRef.current ?? undefined,
-            context: handlers.current.context(),
+            context: sentContext,
           }),
           signal: controller.signal,
         });
@@ -258,7 +276,11 @@ export function useChatController({
             const line = frame.split("\n").find((l) => l.startsWith("data: "));
             if (!line) continue;
             const event = JSON.parse(line.slice(6)) as StreamEvent;
-            if (wsRef.current !== startedIn) return;
+            if (
+              wsRef.current !== startedIn ||
+              activeRequest.current !== request
+            )
+              return;
             if (event.type === "thread") {
               if (threadRef.current !== event.id) {
                 threadRef.current = event.id;
@@ -314,35 +336,63 @@ export function useChatController({
           }
         }
       } catch (error) {
-        if ((error as Error).name !== "AbortError")
+        if (
+          activeRequest.current === request &&
+          (error as Error).name !== "AbortError"
+        )
           setLive((l) => ({
             text: l?.text ?? "",
             tools: l?.tools ?? [],
             error: (error as Error).message,
           }));
       } finally {
-        setStreaming(false);
-        setLastActiveAt(Date.now());
-        if (wsRef.current === startedIn) {
+        if (
+          activeRequest.current === request &&
+          wsRef.current === startedIn &&
+          request.workspaceId === startedIn
+        ) {
           try {
             await Promise.all([loadMessages(threadRef.current), loadThreads()]);
+            if (activeRequest.current !== request) return;
             setLive((l) =>
               l?.error ? { text: "", tools: [], error: l.error } : null,
             );
           } catch {
             /* keep the streamed text if history cannot reload */
           }
+          if (activeRequest.current !== request) return;
           handlers.current.onSettled();
+        }
+        if (
+          activeRequest.current === request &&
+          wsRef.current === startedIn
+        ) {
+          activeRequest.current = null;
+          setStreaming(false);
+          setLastActiveAt(Date.now());
         }
       }
     },
-    [streaming, ws, loadMessages, loadThreads],
+    [ws, loadMessages, loadThreads],
   );
 
-  const stop = useCallback(() => abort.current?.abort(), []);
+  const stop = useCallback(() => {
+    const request = activeRequest.current;
+    if (!request) return;
+    activeRequest.current = null;
+    request.controller.abort();
+    setStreaming(false);
+    setLive((turn) =>
+      turn && (turn.text || turn.tools.length) ? turn : null,
+    );
+    setLastActiveAt(Date.now());
+    handlers.current.onSettled();
+  }, []);
   const retry = useCallback(() => {
-    if (lastSent.current) void send(lastSent.current);
-  }, [send]);
+    const previous = lastSent.current;
+    if (previous?.workspaceId === ws)
+      void send(previous.text, previous.context);
+  }, [send, ws]);
   const newChat = useCallback(() => openThread(null), [openThread]);
 
   const archive = useCallback(

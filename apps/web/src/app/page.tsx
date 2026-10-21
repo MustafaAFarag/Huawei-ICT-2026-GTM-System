@@ -30,8 +30,13 @@ import {
   type Tab,
   type View,
   type WorkspaceValue,
+  type NabilStartRequest,
 } from "../components/workspace-context";
-import { ChatProvider, useChatController } from "../components/chat/controller";
+import {
+  ChatProvider,
+  useChatController,
+  type TurnContext,
+} from "../components/chat/controller";
 import { Home } from "../components/chat/Home";
 import { Launcher } from "../components/chat/Launcher";
 import { Plays } from "../components/screens/Plays";
@@ -114,6 +119,14 @@ export default function Page() {
     text: string;
     key: number;
   } | null>(null);
+  const startNabilInFlight = useRef<{
+    workspaceId: string;
+    token: object;
+  } | null>(null);
+  useEffect(() => {
+    if (startNabilInFlight.current?.workspaceId !== ws)
+      startNabilInFlight.current = null;
+  }, [ws]);
   const [preview, setPreview] = useState<Asset | null>(null),
     [prospect, setProspect] = useState<Prospect | null>(null);
   const activeWorkspace = useRef(ws);
@@ -260,6 +273,51 @@ export default function Page() {
     },
     onSettled: () => void refresh().catch(() => {}),
   });
+
+  const startNabil = useCallback(
+    (request: NabilStartRequest) => {
+      const prompt = request.prompt.trim();
+      if (
+        !prompt ||
+        startNabilInFlight.current?.workspaceId === ws ||
+        !ws ||
+        authState !== "ready" ||
+        !data ||
+        !["owner", "operator"].includes(data.role)
+      )
+        return;
+      const startToken = {};
+      startNabilInFlight.current = { workspaceId: ws, token: startToken };
+
+      // Capture the active screen, account, asset, selection and language before
+      // Home navigation clears the active account and asset from the shell.
+      const current = contextRef.current;
+      const context: TurnContext = {
+        play: current.play,
+        prospectIds: [...current.selected],
+        language:
+          current.chatLanguage === "auto" ? undefined : current.chatLanguage,
+        uiLanguage,
+        screen: current.view,
+        activeProspectId: current.prospect?.id,
+        activeAssetId: current.preview?.id,
+        ...request.context,
+      };
+      context.prospectIds = [...context.prospectIds];
+      setSelected(() => [...context.prospectIds]);
+
+      if (request.surface === "home") {
+        setLauncherOpen(false);
+        setView("Home");
+        chat.newChat();
+      }
+      void chat.send(prompt, context).finally(() => {
+        if (startNabilInFlight.current?.token === startToken)
+          startNabilInFlight.current = null;
+      });
+    },
+    [authState, chat.newChat, chat.send, data, setView, uiLanguage, ws],
+  );
 
   const loadMe = async () => {
     try {
@@ -529,6 +587,7 @@ export default function Page() {
               chat.newChat();
               setHomePrefill({ text, key: Date.now() });
             },
+            startNabil,
             setProspect,
             setActiveRun,
             showProposal: setProposal,
@@ -552,6 +611,7 @@ export default function Page() {
       openSequencesExport,
       exportFocusKey,
       openAsset,
+      startNabil,
       setView,
       chat.newChat,
       action,

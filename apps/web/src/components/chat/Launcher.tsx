@@ -5,6 +5,8 @@ import { usePrefs } from "../../lib/prefs";
 import type { Asset } from "../../lib/types";
 import { Nabil, useNabilMood } from "../nabil/Nabil";
 import type { Proposal } from "../Modals";
+import { Button } from "../primitives";
+import { useWorkspace } from "../workspace-context";
 import { useChat } from "./controller";
 import { Composer } from "./Composer";
 import { Conversation } from "./Conversation";
@@ -25,11 +27,21 @@ export function Launcher({
   onOpenAsset: (asset: Asset) => void;
 }) {
   const { t } = usePrefs();
+  const workspace = useWorkspace();
   const chat = useChat();
   const mood = useNabilMood(chat.activity, !open);
   const bubble = useRef<HTMLButtonElement>(null);
   const panel = useRef<HTMLDivElement>(null);
   const wasOpen = useRef(open);
+  const contextualAccountIds = Array.from(
+    new Set([
+      ...(workspace.activeProspectId ? [workspace.activeProspectId] : []),
+      ...workspace.selected,
+    ]),
+  );
+  const contextualAccounts = workspace.data.prospects.filter((prospect) =>
+    contextualAccountIds.includes(prospect.id),
+  );
 
   useEffect(() => {
     if (open)
@@ -103,9 +115,42 @@ export function Launcher({
             <Conversation compact onQuote={onQuote} onOpenAsset={onOpenAsset} />
           ) : (
             <div className="launcher-empty">
-              <p dir="auto">
-                {t("Ask about this screen, or tell me what to prepare.")}
-              </p>
+              <div className="launcher-empty-content">
+                <p dir="auto">
+                  {t("Ask about this screen, or tell me what to prepare.")}
+                </p>
+                {contextualAccounts.length > 0 && (
+                  <Button
+                    type="button"
+                    variant="ai"
+                    className="launcher-quick-action"
+                    disabled={
+                      !workspace.canWrite ||
+                      chat.streaming ||
+                      chat.loadingMessages
+                    }
+                    onClick={() => {
+                      const prospectIds = contextualAccounts.map(
+                        (prospect) => prospect.id,
+                      );
+                      const companies = contextualAccounts.map(
+                        (prospect) => prospect.snapshot.company,
+                      );
+                      workspace.startNabil({
+                        prompt: `${t("Draft a follow-up for")} ${companies.join(", ")}.`,
+                        surface: "launcher",
+                        context: {
+                          prospectIds,
+                          activeProspectId:
+                            workspace.activeProspectId ?? prospectIds[0],
+                        },
+                      });
+                    }}
+                  >
+                    {t("Draft follow-up")}
+                  </Button>
+                )}
+              </div>
             </div>
           )}
           <div className="launcher-dock">

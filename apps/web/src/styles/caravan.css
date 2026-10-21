@@ -1313,6 +1313,18 @@
   font-size: var(--text-sm);
   text-align: center;
 }
+.launcher-empty-content {
+  display: grid;
+  justify-items: center;
+  gap: 12px;
+  max-inline-size: 280px;
+}
+.launcher-empty-content p {
+  margin: 0;
+}
+.launcher-quick-action {
+  min-block-size: 44px;
+}
 .launcher-dock {
   padding: 8px;
   border-block-start: 1px solid var(--line);
