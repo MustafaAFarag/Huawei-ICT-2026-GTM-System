@@ -260,7 +260,7 @@ test("account Nabil keeps the current conversation and labels client imagery as 
   page,
   context,
 }) => {
-  await page.goto("/?s=Plays");
+  await page.goto("/");
   const target = (await fixtureMemberships(context)).find(
     ({ client }) => client.brandName === "Sarafa Pay",
   )!;
@@ -326,7 +326,8 @@ test("account Nabil keeps the current conversation and labels client imagery as 
 
   const accountImages = await page.getByRole("img").evaluateAll((images) =>
     images.map((image) => ({
-      src: (image as HTMLImageElement).src,
+      // Named role="img" elements such as the logo are not <img> and have no src.
+      src: (image as HTMLImageElement).src ?? "",
       alt: image.getAttribute("alt") ?? "",
     })),
   );
@@ -365,7 +366,7 @@ test("account Nabil keeps the current conversation and labels client imagery as 
   const panelSources = await panel
     .getByRole("img")
     .evaluateAll((images) =>
-      images.map((image) => (image as HTMLImageElement).src),
+      images.map((image) => (image as HTMLImageElement).src ?? ""),
     );
   expect(
     panelSources.some((src) =>
@@ -448,7 +449,7 @@ test("Arabic phone layout keeps the gallery usable and failed brand media has a 
   );
   await page.reload();
   await expect(
-    page.getByRole("heading", { name: "Brand & company", exact: true }),
+    page.getByRole("heading", { name: "العلامة والشركة", exact: true }),
   ).toBeVisible();
   await expect
     .poll(() => page.evaluate(() => document.documentElement.dir))

@@ -1,5 +1,6 @@
 import type {
   BasisEvidence,
+  Brand,
   Evidence,
   Pack,
   ProspectSnapshot,
@@ -91,7 +92,7 @@ export type Dashboard = {
       angles?: Record<string, string>;
       segments?: Record<string, string>;
     };
-    brand: { name: string; website: string; primary: string; accent: string };
+    brand: Brand;
     offers: { id: string; text: string; approved: boolean }[];
     preflight: Record<string, unknown>;
   };

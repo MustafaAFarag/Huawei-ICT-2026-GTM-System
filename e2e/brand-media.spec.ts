@@ -368,8 +368,10 @@ test("saved company media serves private image bytes only in its workspace", asy
     );
     expect(unknown.status()).toBe(404);
 
+    // Playwright applies the config's storageState to new request contexts, so clear it.
     const anonymous = await playwright.request.newContext({
       baseURL: process.env.TEST_BASE_URL,
+      storageState: { cookies: [], origins: [] },
     });
     try {
       const unauthenticated = await anonymous.get(

@@ -5,6 +5,7 @@ import { usePrefs } from "../../lib/prefs";
 import type { Asset } from "../../lib/types";
 import { Nabil, useNabilMood } from "../nabil/Nabil";
 import type { Proposal } from "../Modals";
+import { BrandContext } from "../brand-company/BrandMedia";
 import { Button } from "../primitives";
 import { useWorkspace } from "../workspace-context";
 import { useChat } from "./controller";
@@ -122,6 +123,7 @@ export function Launcher({
               </div>
             </div>
           )}
+          {contextualAccounts.length > 0 && <BrandContext compact />}
           {contextualAccounts.length > 0 && (
             <div className="launcher-contextual-actions">
               <Button
