@@ -29,6 +29,7 @@
     "build": "tsc",
     "typecheck": "tsc --noEmit",
     "seed": "tsx scripts/seed.ts",
+    "brand-kits:import": "tsx src/brand-kit-import-cli.ts",
     "test": "vitest run"
   }
 }

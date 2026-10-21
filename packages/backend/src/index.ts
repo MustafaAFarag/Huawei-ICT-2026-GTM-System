@@ -10,6 +10,8 @@ export * from "./storage.js";
 export * from "./vault.js";
 export * from "./public-web.js";
 export * from "./workspace.js";
+export * from "./brand-media.js";
+export * from "./brand-kit-import.js";
 export * from "./workflows.js";
 export * from "./queue.js";
 export * from "./mcp.js";
