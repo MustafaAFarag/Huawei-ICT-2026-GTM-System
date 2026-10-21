@@ -1,0 +1,170 @@
+{
+  "version": 1,
+  "kits": [
+    {
+      "id": "sarafa-pay",
+      "workspaceName": "Mirqab · Fintech client (KSA)",
+      "brandName": "Sarafa Pay",
+      "primary": "#123c69",
+      "accent": "#2bb3a3",
+      "palette": [
+        "#123c69",
+        "#2bb3a3",
+        "#f5f8fb",
+        "#17212b"
+      ],
+      "visualDirection": "Precise, high-trust merchant finance: navy structure, teal settlement path, clean editorial whitespace, and tactile business scenes.",
+      "photoDirection": "Natural Riyadh small-business payment and finance moments; deep navy and restrained teal cues; abstract unreadable screens; never imply real customers or metrics.",
+      "logo": {
+        "file": "sarafa-pay/logo.svg",
+        "alt": "Sarafa Pay wordmark with original teal settlement-path icon"
+      },
+      "mark": {
+        "file": "sarafa-pay/mark.svg",
+        "alt": "Original teal settlement-path mark on navy"
+      },
+      "gallery": [
+        {
+          "id": "sarafa-merchant-hero",
+          "file": "sarafa-pay/merchant-hero.webp",
+          "alt": "Illustrative Saudi small-business merchant and colleague reviewing a tablet in a modern boutique and parcel workspace",
+          "role": "hero",
+          "provenance": "generated",
+          "prompt": "Premium editorial Saudi small-business merchant man and female colleague reviewing a tablet in a modern boutique and parcel workspace; natural daylight; restrained navy and teal; quiet negative space at left; no text, logos, watermarks or legible personal data; landscape 3:2.",
+          "generator": "Codex Skylink built-in image_gen",
+          "sourceId": "exec-e2caea33-b835-4777-84ad-558c6c56bdb2"
+        },
+        {
+          "id": "sarafa-reconciliation-desk",
+          "file": "sarafa-pay/merchant-reconciliation.webp",
+          "alt": "Illustrative small-business operator reviewing a payment reconciliation dashboard",
+          "role": "detail",
+          "provenance": "generated",
+          "prompt": "Generate one photorealistic-natural editorial business photograph for an illustrative demo brand kit. Scene: close, oblique view of a small-business finance operator reviewing a digital payment reconciliation dashboard on a laptop at a tidy modern office desk, hands visible but no readable personal data. Deep navy and restrained teal accents from ambient reflected light and office details. Natural morning window light, real material texture, candid moment, sophisticated B2B fintech editorial photography, landscape 3:2 framing, clear subject with subtle quiet space around it. The laptop UI must be abstract and unreadable: no text, no numbers, no logos, no customer names, no legible PII, no watermark. One photo only, no collage, no borders, no graphic overlay. Intended as supporting gallery photography for a fictional demo company, not evidence about a real customer.",
+          "generator": "Codex Skylink built-in image_gen",
+          "sourceId": "exec-33a20591-f2b0-49b0-ad40-df057c38f104"
+        },
+        {
+          "id": "sarafa-cafe-terminal-detail",
+          "file": "sarafa-pay/merchant-product-detail.webp",
+          "alt": "Illustrative merchant checking a contactless terminal at an independent café",
+          "role": "supporting",
+          "provenance": "generated",
+          "prompt": "Generate one photorealistic-natural editorial business photograph for an illustrative fictional fintech demo brand. Scene: close three-quarter view of a merchant carefully checking a contactless payment terminal beside a laptop at an independent café counter in Riyadh, hands and equipment in focus, customer faces absent. Contemporary warm stone-and-wood interior, restrained deep navy and teal details. Candid natural daylight, tactile real-world surfaces, elegant B2B fintech editorial quality, landscape 3:2 crop, room to breathe. Terminal screen and laptop must be abstract and fully unreadable: no numbers, text, PII, bank details, card numbers, logos, or watermark. No graphic overlay, no collage. This is demo brand imagery, not evidence of a real customer.",
+          "generator": "Codex Skylink built-in image_gen",
+          "sourceId": "exec-9bb69694-e862-4b10-9f3c-d13de898f50b"
+        }
+      ]
+    },
+    {
+      "id": "wasla-express",
+      "workspaceName": "Mirqab · Logistics client (Egypt)",
+      "brandName": "Wasla Express",
+      "primary": "#f2c94c",
+      "accent": "#1d1d1f",
+      "palette": [
+        "#f2c94c",
+        "#1d1d1f",
+        "#f7f4ed",
+        "#77716a"
+      ],
+      "visualDirection": "Dependable urban operations: a clear saffron route signal, ink-black structure, warm Cairo material palette, and practical editorial framing.",
+      "photoDirection": "Unbranded Cairo parcel handoff, sorting workflow, and city van in candid documentary scenes; avoid readable signage, labels, or vehicle identity.",
+      "logo": {
+        "file": "wasla-express/logo.svg",
+        "alt": "Wasla Express wordmark with original saffron parcel-route icon"
+      },
+      "mark": {
+        "file": "wasla-express/mark.svg",
+        "alt": "Original parcel-route mark on saffron"
+      },
+      "gallery": [
+        {
+          "id": "wasla-cairo-parcel-handoff",
+          "file": "wasla-express/urban-parcel-handoff.webp",
+          "alt": "Illustrative unbranded courier handing a parcel to a Cairo shop owner",
+          "role": "hero",
+          "provenance": "generated",
+          "prompt": "Generate one photorealistic-natural editorial business photograph for an illustrative Egyptian logistics demo brand. Scene: a courier in a plain unbranded jacket handing a small unmarked parcel to a shop owner at a Cairo neighborhood storefront, natural respectful interaction, no staged handshake, candid mid-action. Subtle saffron-yellow and ink-black accents on neutral warm city tones, older Cairo street textures with a glimpse of modern city life, no readable signs. Late-afternoon natural light, documentary editorial photography, landscape 3:2 frame, varied medium-wide crop with clear environmental context. No logos, no text, no labels, no watermark, no package branding, no plate numbers, no collage or overlay. Illustrative demo image, not a factual customer scene.",
+          "generator": "Codex Skylink built-in image_gen",
+          "sourceId": "exec-1a6d0cc5-1f0b-4cd7-9f51-ff4d90446d37"
+        },
+        {
+          "id": "wasla-sorting-hub",
+          "file": "wasla-express/sorting-hub.webp",
+          "alt": "Illustrative staff sorting unmarked parcels in a Cairo delivery hub",
+          "role": "detail",
+          "provenance": "generated",
+          "prompt": "Generate one photorealistic-natural editorial photograph for an illustrative fictional Egyptian logistics demo brand. Scene: a small urban parcel-sorting hub in Cairo, two workers in plain unbranded workwear arranging clean unmarked cartons on a waist-high sorting table, shelving and roller belt visible, no staged poses. Saffron-yellow labels are not allowed; use one subtle saffron strap or vest accent against ink-dark workwear and neutral concrete. Practical industrial light with a natural window edge, tactile cardboard and real surfaces, candid documentary quality, landscape 3:2 composition, medium-wide angle showing organized workflow. Every parcel and surface must be unmarked and without readable text, codes, addresses, numbers, logos, watermark, or in-image graphics. One photo, no collage. Demo brand imagery only.",
+          "generator": "Codex Skylink built-in image_gen",
+          "sourceId": "exec-2729894e-0699-4ba1-8fcb-f87ebc076e96"
+        },
+        {
+          "id": "wasla-city-route-van",
+          "file": "wasla-express/city-route-van.webp",
+          "alt": "Illustrative unbranded delivery van and courier on a Cairo street",
+          "role": "supporting",
+          "provenance": "generated",
+          "prompt": "Generate one photorealistic-natural editorial photograph for a fictional Egyptian delivery-service demo brand. Scene: a compact clean unbranded delivery van moving slowly along a Cairo side street with an adult courier beside the open rear preparing an unmarked parcel for the next stop; lived-in buildings, palms or distant urban landmark silhouettes establish Cairo without readable signs. No customer interaction. Subtle saffron accent on the courier's plain jacket against ink and warm stone colors. Bright but soft morning daylight, documentary commercial photography, landscape 3:2 framing, wide contextual crop with vehicle and street legible. No logos, writing, delivery labels, license-plate characters, watermark, or graphic overlays. One image, not a collage; illustrative demo imagery, not a real company fleet.",
+          "generator": "Codex Skylink built-in image_gen",
+          "sourceId": "exec-519c3b19-1563-4d3c-8a63-13b3b34ac0c6"
+        }
+      ]
+    },
+    {
+      "id": "ruwad-learning",
+      "workspaceName": "Mirqab · EdTech client (UAE)",
+      "brandName": "Ruwad Learning",
+      "primary": "#3b1f5c",
+      "accent": "#f2994a",
+      "palette": [
+        "#3b1f5c",
+        "#f2994a",
+        "#f0f6ff",
+        "#25212a"
+      ],
+      "visualDirection": "Warm, modern professional learning: plum anchors, muted orange progress cues, chalk-blue whitespace, and a humanist editorial feel.",
+      "photoDirection": "Adult MENA professionals in Abu Dhabi workplace learning, with candid peer support and focused desk detail; never show children or imply a specific real customer.",
+      "logo": {
+        "file": "ruwad-learning/logo.svg",
+        "alt": "Ruwad Learning wordmark with original open-book and rising-path icon"
+      },
+      "mark": {
+        "file": "ruwad-learning/mark.svg",
+        "alt": "Original open-book and learning-path mark on plum"
+      },
+      "gallery": [
+        {
+          "id": "ruwad-workplace-workshop",
+          "file": "ruwad-learning/workshop-hero.webp",
+          "alt": "Illustrative adult professionals taking part in a UAE workplace-learning workshop",
+          "role": "hero",
+          "provenance": "generated",
+          "prompt": "Generate one photorealistic-natural editorial photograph for an illustrative UAE corporate-learning demo brand. Scene: a small group of adult MENA professionals collaborating in a facilitated workplace learning workshop in a modern Abu Dhabi training room, a woman facilitator at a whiteboard with only abstract unreadable marks, participants listening and exchanging ideas naturally. No staged handshake; candid inclusive body language. Warm plum and muted orange visual accents in clothing or room furnishings against chalk-white and pale blue surfaces. Soft daylight, real fabric and skin texture, confident calm editorial style, landscape 3:2, wide hero composition with breathing room. Adults only; no children, no university setting. No legible text, logos, company marks, watermark, or graphic overlay. One image only, illustrative demo imagery.",
+          "generator": "Codex Skylink built-in image_gen",
+          "sourceId": "exec-cc864400-1a60-457a-88a5-e884df005d06"
+        },
+        {
+          "id": "ruwad-learner-desk-detail",
+          "file": "ruwad-learning/learner-desk-detail.webp",
+          "alt": "Illustrative adult learner annotating a workbook beside a tablet",
+          "role": "detail",
+          "provenance": "generated",
+          "prompt": "Generate one photorealistic-natural editorial photograph for a fictional UAE corporate-learning demo brand. Scene: tight overhead three-quarter detail of an adult professional's hands annotating a paper workbook beside a tablet and pen at a shared office learning table; only the hands, workbook edge, tablet, and subtle tea glass visible, no face. Plum notebook cover and one muted orange detail on a chalk-white table, soft pale-blue daylight. Tactile paper, honest desk texture, uncluttered, thoughtful modern learning mood, landscape 3:2 crop with clear negative space. Workbook and tablet screens must contain only abstract unreadable marks and shapes; no text, numbers, logos, watermark, or graphic overlay. Adults' workplace context, not school. One image only, illustrative brand image.",
+          "generator": "Codex Skylink built-in image_gen",
+          "sourceId": "exec-12e9ac30-f251-47a3-9c1a-8771db9ff5dc"
+        },
+        {
+          "id": "ruwad-peer-coaching",
+          "file": "ruwad-learning/peer-coaching.webp",
+          "alt": "Illustrative adult colleagues sharing a peer-coaching conversation in Abu Dhabi",
+          "role": "supporting",
+          "provenance": "generated",
+          "prompt": "Generate one photorealistic-natural editorial photograph for a fictional UAE corporate-learning demo brand. Scene: two adult MENA colleagues in a quiet peer-coaching moment at a bright Abu Dhabi office lounge table, one listening closely while the other explains a point with a relaxed hand gesture; natural conversation, no staged handshake, no one facing camera. Professional modest contemporary attire, adult participants only, no children or university context. Plum and restrained muted orange details against pale chalk-blue/white architecture; soft daylight, authentic expressions and tactile materials, candid premium editorial style, landscape 3:2 medium-wide crop. Laptop screen and papers are blank or abstract with no legible text, numbers, logos, watermark, or graphic overlay. One single photo, no collage, illustrative demo imagery rather than a real customer testimonial.",
+          "generator": "Codex Skylink built-in image_gen",
+          "sourceId": "exec-997c88b3-dae3-44bd-ae47-36ae08452345"
+        }
+      ]
+    }
+  ]
+}
