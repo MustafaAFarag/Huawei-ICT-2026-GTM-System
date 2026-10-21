@@ -1,5 +1,6 @@
 import { test, expect } from "@playwright/test";
 import { randomUUID } from "node:crypto";
+import { selectWorkspace } from "./workspace";
 
 // Workspace state with at least one account. A freshly seeded database has none in
 // Revenue Demo B, so import one synthetic account and the specs no longer depend on run order.
@@ -66,7 +67,7 @@ test("research brief exports the saved source record and holds unsaved edits", a
       )
     ).status(),
   ).toBe(404);
-  await page.getByLabel("Workspace", { exact: true }).selectOption(ws);
+  await selectWorkspace(page, ws);
   const hide = page.getByRole("button", {
     name: "Hide assistant",
     exact: true,
@@ -111,7 +112,7 @@ test("call logging supports manual review and discards stale AI suggestions", as
   ).workspace.id;
   const state = await accountState(context, ws);
   const prospect = state.prospects.find((p: any) => !p.excluded);
-  await page.getByLabel("Workspace", { exact: true }).selectOption(ws);
+  await selectWorkspace(page, ws);
   const hide = page.getByRole("button", {
     name: "Hide assistant",
     exact: true,
@@ -239,7 +240,7 @@ test("interview guides show bilingual questions and export PDFs without inventin
   expect(
     after.prospects.find((p: any) => p.id === prospect.id).snapshot,
   ).toEqual(prospect.snapshot);
-  await page.getByLabel("Workspace", { exact: true }).selectOption(ws);
+  await selectWorkspace(page, ws);
   const hide = page.getByRole("button", {
     name: "Hide assistant",
     exact: true,
@@ -329,7 +330,7 @@ test("import history groups filename revisions and shows changed fields after re
       await context.request.get(`/api/workspaces/${other}/imports/${second.id}`)
     ).status(),
   ).toBe(404);
-  await page.getByLabel("Workspace", { exact: true }).selectOption(ws);
+  await selectWorkspace(page, ws);
   const hide = page.getByRole("button", {
     name: "Hide assistant",
     exact: true,
@@ -370,7 +371,7 @@ test("recurring plays persist a due review and require cost approval before exec
     await context.request.get(`/api/workspaces/${ws}`)
   ).json();
   const prospect = before.prospects.find((p: any) => !p.excluded);
-  await page.getByLabel("Workspace", { exact: true }).selectOption(ws);
+  await selectWorkspace(page, ws);
   const hide = page.getByRole("button", {
     name: "Hide assistant",
     exact: true,

@@ -1,4 +1,5 @@
 import { test, expect, type Page, type BrowserContext } from "@playwright/test";
+import { selectWorkspace } from "./workspace";
 
 // Caravan shell with Nabil: chat-first home, threads, floating launcher and the deliverable
 // canvas. Runs against MODEL_MODE=fixture (deterministic assistant and deliverables).
@@ -13,7 +14,7 @@ async function workspace(
   const me = await (await context.request.get("/api/me")).json();
   const ws = me.workspaces.find((m: any) => m.workspace.name === name).workspace
     .id;
-  await page.getByLabel("Workspace", { exact: true }).selectOption(ws);
+  await selectWorkspace(page, ws);
   await expect(page.locator(".topbar")).toContainText(name);
   const data = await (
     await context.request.get(`/api/workspaces/${ws}`)

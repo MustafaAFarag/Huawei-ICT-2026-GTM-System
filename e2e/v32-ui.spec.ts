@@ -1,5 +1,6 @@
 import { test, expect, type BrowserContext, type Page } from "@playwright/test";
 import { randomUUID } from "node:crypto";
+import { selectWorkspace, expectWorkspace } from "./workspace";
 
 // Keep the working browser runs text-only. Final review captures are taken separately.
 test.use({
@@ -22,9 +23,7 @@ async function workspace(page: Page, context: BrowserContext) {
   );
   expect(membership, "The synthetic Qimam People workspace must be seeded").toBeTruthy();
   const ws = membership.workspace.id as string;
-  const workspacePicker = page.getByLabel("Workspace", { exact: true });
-  await workspacePicker.selectOption(ws);
-  await expect(workspacePicker).toHaveValue(ws);
+  await selectWorkspace(page, ws);
   const hide = page.getByRole("button", { name: "Hide assistant", exact: true });
   if (await hide.isVisible()) await hide.click();
   return { ws, base: `/api/workspaces/${ws}`, me };
@@ -150,7 +149,7 @@ test("A3: country and basis holds stay visible until an explicit evidence save, 
   const { base, ws, me } = await workspace(page, context);
   const [missing, saudi] = await importAccounts(context, base);
   await page.reload();
-  await expect(page.getByLabel("Workspace", { exact: true })).toHaveValue(ws);
+  await expectWorkspace(page, ws);
   await openAccount(page, missing);
   await accountTab(page, "Fit & policy");
   await expect(page.getByLabel("Country", { exact: true })).toHaveValue("");
@@ -218,7 +217,7 @@ test("A2: generic discovery saves without HR setup and stays usable on an Arabic
   try {
     const [account] = await importAccounts(context, base, 1);
     await page.reload();
-    await expect(page.getByLabel("Workspace", { exact: true })).toHaveValue(ws);
+    await expectWorkspace(page, ws);
     await openAccount(page, account);
     await accountTab(page, "Discovery");
     await expect(page.getByLabel(/HR setup|payroll/i)).toHaveCount(0);
@@ -379,7 +378,7 @@ test("A5/A4: approved batch CSV and imported outcomes reconcile to its scorecard
     const [eligible, unapproved] = await importAccounts(context, base);
     // Imports use the API; refresh the app's account list before selecting those records.
     await page.reload();
-    await expect(page.getByLabel("Workspace", { exact: true })).toHaveValue(ws);
+    await expectWorkspace(page, ws);
     for (const account of [eligible, unapproved]) {
       await openAccount(page, account);
       await accountTab(page, "Sources");

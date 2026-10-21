@@ -601,6 +601,7 @@ export const AR: Record<string, string> = {
   "Company context": "سياق الشركة",
   Settings: "الإعدادات",
   Workspace: "مساحة العمل",
+  Workspaces: "مساحات العمل",
   "Search or run…": "ابحث أو نفّذ…",
   "AI credits": "رصيد الذكاء الاصطناعي",
   plan: "خطة",

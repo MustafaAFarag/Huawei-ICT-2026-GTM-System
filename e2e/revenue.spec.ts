@@ -2,6 +2,7 @@ import { test, expect, type Page } from "@playwright/test";
 import { readFile } from "node:fs/promises";
 import { randomUUID } from "node:crypto";
 import type { ToolName } from "@revenue/contracts";
+import { selectWorkspace, expectWorkspace } from "./workspace";
 const companyName = `Synthetic Test Lab ${randomUUID()
   .replace(/[0-9-]/g, "")
   .slice(0, 10)}`;
@@ -27,7 +28,7 @@ test("four plays, bilingual asset, approval invalidation, suppression and worksp
     (m: any) => m.workspace.name === "Revenue Demo B",
   ).workspace.id;
   const base = `/api/workspaces/${a}`;
-  await page.getByLabel("Workspace", { exact: true }).selectOption(a);
+  await selectWorkspace(page, a);
   expect(
     (
       await context.request.patch(base, {
@@ -538,7 +539,7 @@ test("a delayed previous-workspace response cannot replace the selected workspac
   const b = me.workspaces.find(
     (m: any) => m.workspace.name === "Revenue Demo B",
   ).workspace.id;
-  await page.getByLabel("Workspace", { exact: true }).selectOption(b);
+  await selectWorkspace(page, b);
   await expect(page.locator(".topbar")).toContainText("Revenue Demo B");
   let release!: () => void;
   let captured!: () => void;
@@ -555,9 +556,9 @@ test("a delayed previous-workspace response cannot replace the selected workspac
     await route.fulfill({ response });
   });
   try {
-    await page.getByLabel("Workspace", { exact: true }).selectOption(a);
+    await selectWorkspace(page, a);
     await intercepted;
-    await page.getByLabel("Workspace", { exact: true }).selectOption(b);
+    await selectWorkspace(page, b);
     await expect(page.locator(".topbar")).toContainText("Revenue Demo B");
     const completed = page.waitForResponse((response) =>
       response.url().endsWith(`/api/workspaces/${a}`),
@@ -571,7 +572,7 @@ test("a delayed previous-workspace response cannot replace the selected workspac
         ),
     );
     await expect(page.locator(".topbar")).toContainText("Revenue Demo B");
-    await expect(page.getByLabel("Workspace", { exact: true })).toHaveValue(b);
+    await expectWorkspace(page, b);
   } finally {
     release();
     await page.unroute(`**/api/workspaces/${a}`);

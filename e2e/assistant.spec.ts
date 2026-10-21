@@ -1,5 +1,6 @@
 import { test, expect, type Page } from "@playwright/test";
 import { randomUUID } from "node:crypto";
+import { selectWorkspace } from "./workspace";
 
 // Runs against the fixture assistant (MODEL_MODE not live) and the seeded demo workspaces.
 async function login(page: Page) {
@@ -18,7 +19,7 @@ test("assistant runs requested work immediately with inline progress and no appr
   const me = await (await context.request.get("/api/me")).json();
   const ws = me.workspaces.find((m: any) => m.workspace.name === "Qimam People")
     .workspace.id;
-  await page.getByLabel("Workspace", { exact: true }).selectOption(ws);
+  await selectWorkspace(page, ws);
   await page.getByRole("button", { name: "Accounts", exact: true }).click();
   await page.getByRole("row").nth(1).getByRole("checkbox").check();
   const threadsBefore = await (
@@ -131,7 +132,7 @@ test("free tier hard-stops at its export quota and the plan cap is visible", asy
   });
   expect(run.status()).toBe(403);
   expect((await run.json()).message).toMatch(/quota|cap/);
-  await page.getByLabel("Workspace", { exact: true }).selectOption(ws);
+  await selectWorkspace(page, ws);
   await expect(page.locator(".topbar")).toContainText("Nour Studio");
   await page.getByRole("button", { name: "Settings", exact: true }).click();
   await page

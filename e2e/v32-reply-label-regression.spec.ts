@@ -1,4 +1,5 @@
 import { test, expect, type BrowserContext, type Page, type Request } from "@playwright/test";
+import { selectWorkspace } from "./workspace";
 
 test.use({
   screenshot: "off",
@@ -17,9 +18,7 @@ async function selectQimamWorkspace(page: Page, context: BrowserContext) {
   );
   expect(membership, "The synthetic Qimam People workspace must be available").toBeTruthy();
   const ws = membership.workspace.id as string;
-  const picker = page.getByLabel("Workspace", { exact: true });
-  await picker.selectOption(ws);
-  await expect(picker).toHaveValue(ws);
+  await selectWorkspace(page, ws);
   const hide = page.getByRole("button", { name: "Hide assistant", exact: true });
   if (await hide.isVisible()) await hide.click();
   return { ws, base: `/api/workspaces/${ws}` };

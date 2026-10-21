@@ -2,7 +2,6 @@
 import { useEffect, useState, type ComponentType } from "react";
 import {
   IconChecklist,
-  IconChevronDown,
   IconClock,
   IconFileText,
   IconLayoutSidebar,
@@ -18,6 +17,7 @@ import {
 } from "@revenue/ui";
 import type { ToolRequest } from "@revenue/contracts";
 import { SidebarSearch } from "./SidebarSearch";
+import { WorkspaceSwitcher } from "./WorkspaceSwitcher";
 import {
   CAMPAIGN_VIEWS,
   TAB_LABELS,
@@ -150,21 +150,11 @@ export function Sidebar({
           <Wordmark />
         </button>
       </div>
-      <label className="workspace-picker">
-        <span className="sr-only">{t("Workspace")}</span>
-        <select
-          aria-label={t("Workspace")}
-          value={ws}
-          onChange={(e) => onWorkspace(e.target.value)}
-        >
-          {memberships.map((m) => (
-            <option key={m.workspace.id} value={m.workspace.id}>
-              {m.workspace.name}
-            </option>
-          ))}
-        </select>
-        <IconChevronDown size={16} aria-hidden className="workspace-chevron" />
-      </label>
+      <WorkspaceSwitcher
+        memberships={memberships}
+        ws={ws}
+        onWorkspace={onWorkspace}
+      />
       <nav className="nav" aria-label={t("Main navigation")}>
         <SidebarSearch
           tabs={searchTabs}

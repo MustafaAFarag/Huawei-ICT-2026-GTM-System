@@ -1,4 +1,5 @@
 import { test, expect } from "@playwright/test";
+import { selectWorkspace } from "./workspace";
 
 test("triage, discovery, consent references and SDR PDF in both interface directions", async ({
   page,
@@ -15,7 +16,7 @@ test("triage, discovery, consent references and SDR PDF in both interface direct
   const workspace = me.workspaces.find(
     (m: any) => m.workspace.name === "Revenue Demo A",
   ).workspace.id;
-  await page.getByLabel("Workspace", { exact: true }).selectOption(workspace);
+  await selectWorkspace(page, workspace);
   const dashboard = await (
     await context.request.get(`/api/workspaces/${workspace}`)
   ).json();
