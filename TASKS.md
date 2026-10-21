@@ -1,3 +1,18 @@
+## Current — visual company kits + immediate creation (21 October 2026)
+
+Goal: give three demo companies distinct reusable logos, palettes and generated photo galleries; automatically apply available brand assets to playbooks, flipbooks, carousels and other deliverables; make Create with Nabil and account assistant shortcuts start immediately; enrich account/assistant surfaces with truthful visual context.
+Done: three saved company kits with generated images in the project, brand assets included in real generated outputs, one-click creation begins in the intended chat without a second Send, EN/AR desktop/phone verification and relevant tests/build/typecheck pass; reviewed focused commits merged into local main.
+Stop: no push/deploy/outreach; no reset/seed or modification of unrelated sample CSV/ZIP/MP4 or original Claude checkouts. Live Azure use was authorized on21October; requested image generation is authorized via Codex Skylink. Keep sender providers fixture-only. Test stacks must use fixture models and an isolated queue for full backend tests.
+
+- [ ] Inspect current media/render/action contracts and choose three company directions (default: Mirqab fintech/logistics/education clients; optional owner preference pending).
+- [ ] Generate actual project-bound logo/photo assets for those three companies; persist palettes and gallery direction using the existing brand model where possible. Other companies retain existing identities; support reusable media consistently rather than fabricating real customer photos.
+- [ ] Wire brand media into new generated content and make immediate creation reliable from Deliverables and the account assistant, with duplicate-submit protection and visible pending/error states.
+- [ ] Verify rendered outputs and UI in EN/AR desktop/phone, audit own diff, commit/merge locally, remove only newly merged owned checkouts while keeping branches.
+
+Decisions: reference Canva/Dribbble/Pinterest/Refero for visual principles, not copied third-party brand artwork; generated images must be identified as generated brand imagery, never factual evidence about a prospect. No new billing, provider or image-generation platform is implied by reusable saved assets.
+
+---
+
 ## Current — UI simplification + live AI (21 October 2026, unattended)
 
 Goal: owner feedback on 21 Oct. Done = each item is visible on 3140, typecheck and build pass, E2E passes after adaptation, and the work is committed and merged into local main. Stop: no push, deploy or outreach. Live Azure model calls are now allowed (owner: "lets use real AI model calls").
