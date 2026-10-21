@@ -17,7 +17,7 @@ type WorkspaceState = {
 };
 
 type ChatPayload = {
-  message: string;
+  content: string;
   context: { prospectIds?: string[]; [key: string]: unknown };
 };
 
@@ -204,9 +204,9 @@ test("Deliverables creation starts one Arabic phone turn with its selected accou
   expect(threadId).toBeTruthy();
   await expect(page.locator(".msg-user").filter({ hasText: marker })).toBeVisible();
   expect(submissions).toHaveLength(1);
-  expect(submissions[0]!.body.message).toContain(brief);
-  expect(submissions[0]!.body.message).toContain("ar-EG");
-  expect(submissions[0]!.body.message).toContain("Tirun Cloud");
+  expect(submissions[0]!.body.content).toContain(brief);
+  expect(submissions[0]!.body.content).toContain("ar-EG");
+  expect(submissions[0]!.body.content).toContain("Tirun Cloud");
   expect(submissions[0]!.body.context.prospectIds).toEqual([selectedAudience.id]);
   await expectOnePersistedUserMessage(context, workspaceId, threadId!, marker);
 });
@@ -233,7 +233,7 @@ test("English creation double click starts once and reload does not replay the t
   expect(threadId).toBeTruthy();
   await expect(page.locator(".msg-user").filter({ hasText: marker })).toBeVisible();
   expect(submissions).toHaveLength(1);
-  expect(submissions[0]!.body.message).toContain(brief);
+  expect(submissions[0]!.body.content).toContain(brief);
   await expectOnePersistedUserMessage(context, workspaceId, threadId!, marker);
 
   await page.reload();
@@ -270,7 +270,7 @@ test("account assistant Draft follow-up starts one turn for the active account",
     .toBe(1);
   expect(submissions).toHaveLength(1);
   expect(submissions[0]!.body.context.prospectIds).toEqual([activeAccount.id]);
-  expect(String(submissions[0]!.body.message)).toMatch(/follow.?up/i);
+  expect(submissions[0]!.body.content).toMatch(/follow.?up/i);
   await expect(assistant.locator(".msg-user").last()).toContainText(/follow.?up/i);
 });
 
