@@ -52,6 +52,8 @@ export const AR: Record<string, string> = {
   "Desktop width": "عرض سطح المكتب",
   "Phone width": "عرض الهاتف",
   "Draft · needs review": "مسودة · تحتاج مراجعة",
+  "Draft follow-up": "اكتب رسالة متابعة",
+  "Draft a follow-up for": "اكتب رسالة متابعة لـ",
   "Draft outreach": "كتابة تواصل",
   Editing: "قيد التعديل",
   "Edit with Nabil": "تعديل مع نبيل",
@@ -1566,4 +1568,18 @@ export const AR: Record<string, string> = {
   "Demo accounts are provisioned by the workspace owner.":
     "حسابات العرض ينشئها مالك مساحة العمل.",
   Conversations: "المحادثات",
+  // Saved visual brand kit
+  "Client brand gallery": "معرض صور علامة العميل",
+  "Client brand context": "سياق علامة العميل",
+  "Our own brand imagery for drafts. It does not show this account.":
+    "صور علامتنا للمسودات. لا تعرض هذا الحساب.",
+  "Logo and mark": "الشعار والرمز",
+  "Saved with this client's brand kit": "محفوظ ضمن هوية علامة هذا العميل",
+  "Imagery for this client's deliverables, not their prospects.":
+    "صور مخصصة لمخرجات هذا العميل، وليست لحساباته المستهدفة.",
+  "Visual direction": "الاتجاه البصري",
+  "Palette color": "لون من اللوحة",
+  "Workspace name saved.": "تم حفظ اسم مساحة العمل.",
+  "Brand details are up to date. No changes to save.":
+    "تفاصيل العلامة محدّثة. لا توجد تغييرات للحفظ.",
 };

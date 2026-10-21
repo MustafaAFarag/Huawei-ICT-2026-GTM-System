@@ -1,7 +1,21 @@
 import { z } from "zod";
 import { injectFonts } from "../asset-template.js";
 import { normalizeAssetBidi } from "../asset-bidi.js";
-import { arabic, esc, fontStack, palette, sourceLine, type FormatContext } from "./shared.js";
+import {
+  brandRenderHero,
+  brandRenderLogo,
+  brandRenderSupporting,
+} from "../brand-media.js";
+import {
+  arabic,
+  esc,
+  fontStack,
+  palette,
+  renderBrandImage,
+  sourceLine,
+  type BrandRenderMedia,
+  type FormatContext,
+} from "./shared.js";
 
 // Capability profile (PRD v3.2 A6 / STU-09): a brand-level company profile on A4 pages, plus
 // an optional account-tailored cover. The model writes only a title, a tagline, a short intro
@@ -77,6 +91,10 @@ h2{margin:0 0 8px;font:600 12px/1.3 "Geist Mono",ui-monospace,monospace;letter-s
 html[dir=rtl] h2{font-family:${fontStack(context.language)};letter-spacing:0;font-size:14px}
 p{margin:0}
 .tagline{font-size:18px;line-height:1.45;color:${c.body}}
+.profile-brand-logo{display:inline-block;max-width:190px;height:48px;padding:6px 10px;border-radius:10px;background:#fff;object-fit:contain;vertical-align:middle}
+.profile-brand-image{position:relative;width:100%;height:132px;margin:4px 0 0;overflow:hidden;border-radius:12px;background:${c.tint}}
+.profile-brand-image img{display:block;width:100%;height:100%;object-fit:cover}
+.profile-brand-image figcaption{position:absolute;inset-inline-start:10px;bottom:8px;padding:4px 8px;border-radius:99px;background:rgba(8,12,16,.72);color:#fff;font-size:10px}
 .prepared{font-size:14px;opacity:.9}
 .cover-foot{display:grid;gap:14px}
 .cover-fact{padding:14px 18px;border-inline-start:3px solid ${c.accent};background:rgba(255,255,255,.1);font-size:15px}
@@ -99,7 +117,11 @@ bdi{unicode-bidi:isolate}
 `;
 }
 
-export function renderCapabilityProfile(content: ProfileContent, context: FormatContext) {
+export function renderCapabilityProfile(
+  content: ProfileContent,
+  context: FormatContext,
+  media?: BrandRenderMedia,
+) {
   requireProfileInputs(context);
   const rtl = arabic(context.language);
   const L = (en: string, ar: string) => (rtl ? ar : en);
@@ -113,14 +135,27 @@ export function renderCapabilityProfile(content: ProfileContent, context: Format
     `اختبار المقارنة: ${holdout}٪ من التسلسلات تُرسل بدون الملف`,
   )}</p>`;
   const refs = context.references ?? [];
+  const logo = brandRenderLogo(media);
+  const hero = brandRenderHero(media);
+  const supporting = brandRenderSupporting(media);
+  const coverImage = renderBrandImage(
+    account ? hero : undefined,
+    context.language,
+    "profile-brand-image",
+  );
+  const profileImage = renderBrandImage(
+    !account ? supporting[0] ?? hero : undefined,
+    context.language,
+    "profile-brand-image",
+  );
   const total = account ? 2 : 1;
   let index = 0;
   const folio = () =>
     `<footer class="folio"><span>${site ? `<bdi dir="ltr">${esc(site)}</bdi> · ` : ""}${brand}</span><span>${L("Page", "صفحة")} <bdi dir="ltr">${++index} / ${total}</bdi></span></footer>`;
   const cover = account
-    ? `<section class="page cover" data-page="cover"><div class="pg"><p class="eyebrow">${brand}</p><div><h1>${esc(content.coverHeadline ?? fixtureProfileContent(context).coverHeadline ?? content.title)}</h1></div><div class="cover-foot"><p class="prepared">${L("Prepared for", "مُعدّ لـ")} <bdi>${esc(account)}</bdi></p>${fact ? `<p class="cover-fact">${esc(fact.claim)}<span class="src">${sourceLine(fact, context.language)}</span></p>` : ""}<p class="meta"><bdi dir="ltr">${esc(context.date)}</bdi></p></div></div>${badge}${folio()}</section>`
+    ? `<section class="page cover" data-page="cover"><div class="pg"><p class="eyebrow profile-brand">${logo ? `<img class="profile-brand-logo" src="${esc(logo.dataUri)}" alt="${esc(logo.alt)}" data-brand-render-media="1">` : ""}<span>${brand}</span></p><div><h1>${esc(content.coverHeadline ?? fixtureProfileContent(context).coverHeadline ?? content.title)}</h1></div>${coverImage}<div class="cover-foot"><p class="prepared">${L("Prepared for", "مُعدّ لـ")} <bdi>${esc(account)}</bdi></p>${fact ? `<p class="cover-fact">${esc(fact.claim)}<span class="src">${sourceLine(fact, context.language)}</span></p>` : ""}<p class="meta"><bdi dir="ltr">${esc(context.date)}</bdi></p></div></div>${badge}${folio()}</section>`
     : "";
-  const profile = `<section class="page profile" data-page="profile"><div class="pg"><p class="eyebrow">${brand} · ${L("Capability profile", "ملف القدرات")}</p><h1>${esc(content.title)}</h1>${content.tagline ? `<p class="tagline">${esc(content.tagline)}</p>` : ""}<div><h2>${L("What we run", "ما نقدّمه")}</h2><ul class="services">${context.offers!.map((o) => `<li>${esc(o)}</li>`).join("")}</ul></div>${content.intro ? `<div><h2>${L("About us", "عنّا")}</h2><p>${esc(content.intro)}</p></div>` : ""}${refs.length ? `<div class="proof"><h2>${L("Teams that work with us", "فرق تعمل معنا")}</h2><ul>${refs.map((r) => `<li>${esc(r)}</li>`).join("")}</ul><p class="note">${L("Named with their recorded consent.", "مذكورة بموافقتها المسجّلة.")}</p></div>` : ""}<p class="trust">${L("Every claim comes from the approved offer and proof. Nothing outside approved proof appears.", "كل ما هو مذكور مصدره العرض والإثبات المعتمدان. لا يظهر أي شيء خارج الإثبات المعتمد.")}</p></div>${account ? "" : badge}${folio()}</section>`;
+  const profile = `<section class="page profile" data-page="profile"><div class="pg"><p class="eyebrow profile-brand">${logo ? `<img class="profile-brand-logo" src="${esc(logo.dataUri)}" alt="${esc(logo.alt)}" data-brand-render-media="1">` : ""}<span>${brand} · ${L("Capability profile", "ملف القدرات")}</span></p><h1>${esc(content.title)}</h1>${content.tagline ? `<p class="tagline">${esc(content.tagline)}</p>` : ""}${profileImage}<div><h2>${L("What we run", "ما نقدّمه")}</h2><ul class="services">${context.offers!.map((o) => `<li>${esc(o)}</li>`).join("")}</ul></div>${content.intro ? `<div><h2>${L("About us", "عنّا")}</h2><p>${esc(content.intro)}</p></div>` : ""}${refs.length ? `<div class="proof"><h2>${L("Teams that work with us", "فرق تعمل معنا")}</h2><ul>${refs.map((r) => `<li>${esc(r)}</li>`).join("")}</ul><p class="note">${L("Named with their recorded consent.", "مذكورة بموافقتها المسجّلة.")}</p></div>` : ""}<p class="trust">${L("Every claim comes from the approved offer and proof. Nothing outside approved proof appears.", "كل ما هو مذكور مصدره العرض والإثبات المعتمدان. لا يظهر أي شيء خارج الإثبات المعتمد.")}</p></div>${account ? "" : badge}${folio()}</section>`;
   const html = injectFonts(`<!doctype html>
 <html lang="${rtl ? "ar" : "en"}" dir="${rtl ? "rtl" : "ltr"}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${esc(content.title)}</title>
 <style>${css(context)}</style></head><body>${cover}${profile}</body></html>`);

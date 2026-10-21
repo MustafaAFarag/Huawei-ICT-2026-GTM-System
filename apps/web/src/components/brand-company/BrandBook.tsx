@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import "../../styles/pages/accounts.css";
 import { IconGlobe, IconPalette, IconSparkles } from "./icons";
 import {
   Badge,
@@ -9,10 +10,12 @@ import {
   Input,
   LoadingState,
 } from "../primitives";
+import { Modal } from "../accounts/Modal";
 import { useWorkspace } from "../workspace-context";
 import { usePrefs } from "../../lib/prefs";
 import { client } from "../../lib/client";
 import { brandVars, isHex } from "./color";
+import { BrandImage } from "./BrandMedia";
 
 export type BrandProposal = {
   name: string;
@@ -43,9 +46,20 @@ export function BrandBook({
   const [editing, setEditing] = useState(false);
   const isOwner = data.role === "owner";
   const canResearch = ["owner", "operator"].includes(data.role);
-  const brand = data.workspace.brand as typeof data.workspace.brand & {
-    logo?: string;
-  };
+  const brand = data.workspace.brand;
+  const kit = brand.media;
+  const kitPrimary = kit?.logo ?? kit?.mark;
+  const kitMark = kit?.logo && kit.mark ? kit.mark : undefined;
+  const gallery = kit?.gallery ?? [];
+  const palette = (brand.palette ?? []).filter(
+    (color) =>
+      ![brand.primary, brand.accent].some(
+        (base) => base.toLowerCase() === color.toLowerCase(),
+      ),
+  );
+  const direction = [brand.visualDirection, brand.photoDirection].filter(
+    (text, index, all): text is string => Boolean(text) && all.indexOf(text) === index,
+  );
   const offer = data.workspace.offers.find((o) => o.approved)?.text;
   const description = data.workspace.company.description;
   const tagline = description || hostOf(brand.website);
@@ -65,22 +79,22 @@ export function BrandBook({
           </Button>
           <Button
             variant="primary"
-            aria-expanded={editing}
-            onClick={() => setEditing((open) => !open)}
+            aria-haspopup="dialog"
+            onClick={() => setEditing(true)}
           >
-            {editing ? t("Close") : t("Update brand")}
+            {t("Update brand")}
           </Button>
         </div>
       </div>
 
       {editing && (
-        <section className="bc-update" aria-label={t("Update brand")}>
-          <h2>{t("Bring your brand into Caravan")}</h2>
-          <p className="bc-lead">
-            {t(
-              "You review the proposed brand before it is used in new deliverables.",
-            )}
-          </p>
+        <Modal
+          title={t("Bring your brand into Caravan")}
+          subtitle={t(
+            "You review the proposed brand before it is used in new deliverables.",
+          )}
+          onClose={() => setEditing(false)}
+        >
           <div className="bc-update-grid">
             <form
               className="bc-option"
@@ -134,23 +148,45 @@ export function BrandBook({
               onSubmit={(e) => {
                 e.preventDefault();
                 const f = new FormData(e.currentTarget);
+                const name = String(f.get("name"));
+                const brandName = String(f.get("brand"));
+                const website = String(f.get("website"));
+                const primary = String(f.get("primary"));
+                // Send only what changed. Media is never sent, so the saved kit survives.
+                const nameChanged = name !== data.workspace.name;
+                const brandChanged =
+                  brandName !== brand.name ||
+                  website !== brand.website ||
+                  primary.toLowerCase() !== brand.primary.toLowerCase();
+                let saved = false;
                 void action(
-                  () =>
-                    client.workspace(ws, "", {
-                      method: "PATCH",
-                      body: JSON.stringify({
-                        name: f.get("name"),
-                        brand: {
-                          name: f.get("brand"),
-                          website: f.get("website"),
-                          primary: f.get("primary"),
-                          accent: brand.accent || "#6B7365",
-                          ...(brand.logo ? { logo: brand.logo } : {}),
-                        },
-                      }),
-                    }),
-                  t("Brand kit saved. Existing approvals were invalidated."),
-                );
+                  async () => {
+                    if (nameChanged || brandChanged)
+                      await client.workspace(ws, "", {
+                        method: "PATCH",
+                        body: JSON.stringify({
+                          ...(nameChanged ? { name } : {}),
+                          ...(brandChanged
+                            ? {
+                                brand: {
+                                  name: brandName,
+                                  website,
+                                  primary,
+                                  accent: brand.accent,
+                                  ...(brand.logo ? { logo: brand.logo } : {}),
+                                },
+                              }
+                            : {}),
+                        }),
+                      });
+                    saved = true;
+                  },
+                  brandChanged
+                    ? t("Brand kit saved. Existing approvals were invalidated.")
+                    : nameChanged
+                      ? t("Workspace name saved.")
+                      : t("Brand details are up to date. No changes to save."),
+                ).then(() => saved && setEditing(false));
               }}
             >
               <span className="bc-option-icon" aria-hidden>
@@ -201,7 +237,7 @@ export function BrandBook({
               </div>
             </form>
           </div>
-        </section>
+        </Modal>
       )}
 
       <div className="bc-board" data-ai-target="brand-board">
@@ -215,10 +251,11 @@ export function BrandBook({
             {[
               [t("Primary"), brand.primary],
               [t("Accent"), brand.accent],
+              ...palette.map((color) => [t("Palette color"), color]),
             ]
               .filter(([, color]) => isHex(color))
               .map(([label, color]) => (
-                <li key={label}>
+                <li key={`${label}${color}`}>
                   <span
                     className="bc-swatch"
                     style={{ background: color }}
@@ -259,7 +296,43 @@ export function BrandBook({
             {t("Preview built from your brand and approved offer")}
           </p>
         </article>
+        {kitPrimary && (
+          <article className="bc-card">
+            <h3>{kitMark ? t("Logo and mark") : t("Logo")}</h3>
+            <div className="bc-logos">
+              <BrandImage media={kitPrimary} className="is-logo" />
+              {kitMark && <BrandImage media={kitMark} className="is-logo" />}
+            </div>
+            <p className="bc-caption">{t("Saved with this client's brand kit")}</p>
+          </article>
+        )}
+        {direction.length > 0 && (
+          <article className="bc-card">
+            <h3>{t("Visual direction")}</h3>
+            {direction.map((text) => (
+              <p key={text} className="bc-direction" dir="auto">
+                {text}
+              </p>
+            ))}
+          </article>
+        )}
       </div>
+
+      {gallery.length > 0 && (
+        <section className="bc-card bc-gallery" aria-label={t("Client brand gallery")}>
+          <h3>{t("Client brand gallery")}</h3>
+          <ul className="bc-gallery-grid">
+            {gallery.map((media) => (
+              <li key={media.id}>
+                <BrandImage media={media} className="is-gallery" />
+              </li>
+            ))}
+          </ul>
+          <p className="bc-caption">
+            {t("Imagery for this client's deliverables, not their prospects.")}
+          </p>
+        </section>
+      )}
 
       {reading && (
         <LoadingState

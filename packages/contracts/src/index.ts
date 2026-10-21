@@ -68,13 +68,132 @@ export type Touch = {
   body: string;
   evidenceIds: string[];
 };
-export type Brand = {
-  name: string;
-  primary: string;
-  accent: string;
-  website: string;
-  logo?: string;
+const brandHexColorSchema = z.string().regex(/^#[\da-f]{6}$/i);
+export const brandMediaMimeTypeSchema = z.enum([
+  "image/png",
+  "image/jpeg",
+  "image/webp",
+  "image/svg+xml",
+]);
+export const brandMediaRoleSchema = z.enum([
+  "logo",
+  "mark",
+  "hero",
+  "detail",
+  "supporting",
+]);
+export const brandMediaProvenanceSchema = z.enum([
+  "generated",
+  "uploaded",
+  "extracted",
+]);
+export const brandMediaIdSchema = z
+  .string()
+  .min(1)
+  .max(80)
+  .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/);
+export const brandMediaKeySchema = z
+  .string()
+  .min(1)
+  .max(200)
+  .regex(/^brand-[a-z0-9]+(?:-[a-z0-9]+)*-[a-z0-9][a-z0-9.-]*$/)
+  .refine((key) => !key.includes(".."), "Invalid brand media key.");
+export const brandMediaRefSchema = z.object({
+  id: brandMediaIdSchema,
+  key: brandMediaKeySchema,
+  mimeType: brandMediaMimeTypeSchema,
+  alt: z.string().trim().min(4).max(300),
+  role: brandMediaRoleSchema,
+  provenance: brandMediaProvenanceSchema,
+});
+export type BrandMediaRef = z.infer<typeof brandMediaRefSchema>;
+
+const brandMediaFields = {
+  logo: brandMediaRefSchema.optional(),
+  mark: brandMediaRefSchema.optional(),
 };
+const validateBrandMedia = (
+  media: {
+    logo?: BrandMediaRef;
+    mark?: BrandMediaRef;
+    gallery?: BrandMediaRef[];
+  },
+  context: z.RefinementCtx,
+) => {
+  for (const reference of media.gallery ?? []) {
+    if (reference.mimeType === "image/svg+xml")
+      context.addIssue({
+        code: "custom",
+        path: ["gallery"],
+        message: "Gallery media must be a raster image.",
+      });
+  }
+  const references = [
+    ...(media.logo ? [media.logo] : []),
+    ...(media.mark ? [media.mark] : []),
+    ...(media.gallery ?? []),
+  ];
+  const ids = new Set<string>();
+  const keys = new Set<string>();
+  for (const reference of references) {
+    if (ids.has(reference.id))
+      context.addIssue({
+        code: "custom",
+        path: ["gallery"],
+        message: "Brand media IDs must be unique.",
+      });
+    if (keys.has(reference.key))
+      context.addIssue({
+        code: "custom",
+        path: ["gallery"],
+        message: "Brand media keys must be unique.",
+      });
+    ids.add(reference.id);
+    keys.add(reference.key);
+  }
+};
+
+export const brandMediaSchema = z
+  .object({
+    ...brandMediaFields,
+    gallery: z.array(brandMediaRefSchema).max(12),
+  })
+  .superRefine(validateBrandMedia);
+const brandMediaPatchSchema = z
+  .object({
+    ...brandMediaFields,
+    gallery: z.array(brandMediaRefSchema).max(12).optional(),
+  })
+  .superRefine(validateBrandMedia);
+
+const brandBaseSchema = z.object({
+  name: z.string().trim().min(1).max(100),
+  primary: brandHexColorSchema,
+  accent: brandHexColorSchema,
+  website: z.url(),
+  // Keep the legacy HTTPS logo URL field usable by existing renderers.
+  logo: z.url().optional(),
+});
+const brandVisualFields = {
+  palette: z.array(brandHexColorSchema).min(1).max(12).optional(),
+  visualDirection: z.string().trim().min(1).max(2000).optional(),
+  photoDirection: z.string().trim().min(1).max(2000).optional(),
+};
+export const brandSchema = brandBaseSchema
+  .extend({
+    ...brandVisualFields,
+    media: brandMediaSchema.optional(),
+  })
+  .passthrough();
+export type Brand = z.infer<typeof brandSchema>;
+
+// Settings sends the existing four base fields, while newer visual fields are optional.
+// The backend merges omitted media and directions with persisted values.
+export const brandSettingsPatchSchema = brandBaseSchema.extend({
+  ...brandVisualFields,
+  media: brandMediaPatchSchema.optional(),
+});
+export type BrandSettingsPatch = z.infer<typeof brandSettingsPatchSchema>;
 export type Preflight = {
   mailbox: string;
   spf: boolean;

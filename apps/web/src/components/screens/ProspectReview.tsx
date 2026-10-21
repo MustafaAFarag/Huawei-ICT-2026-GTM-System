@@ -23,6 +23,7 @@ import { useWorkspace } from "../workspace-context";
 import { usePrefs } from "../../lib/prefs";
 import type { Prospect } from "../../lib/types";
 import { CallLog } from "../CallLog";
+import { BrandContext } from "../brand-company/BrandMedia";
 import { DiscoveryPanel, TriagePanel } from "../ProspectPanels";
 import { ResearchBrief } from "../ResearchBrief";
 import { BasisEvidenceDialog } from "../accounts/PolicyDialogs";
@@ -143,6 +144,7 @@ export function ProspectReview({ prospect }: { prospect: Prospect }) {
       {tab === "overview" && (
         <section className="acct-pane" aria-label={t("Overview")}>
           <h2>{t("What matters before you reach out")}</h2>
+          <BrandContext />
           <div className="acct-card">
             {facts && <p dir="auto">{facts}</p>}
             <p className="acct-next-step" dir="auto">

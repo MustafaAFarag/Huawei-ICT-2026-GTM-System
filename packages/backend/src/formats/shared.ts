@@ -2,6 +2,7 @@ import type { Brand, Evidence, ProspectSnapshot } from "@revenue/contracts";
 import { hex, onColor } from "../asset-template.js";
 import { numbers } from "../asset-quality.js";
 import { escapeHtml } from "../policy.js";
+import type { BrandRenderImage, BrandRenderMedia } from "../brand-media.js";
 
 // Shared inputs and checks for model-written deliverables. The model writes content JSON;
 // trusted templates own all markup, so layout rules (Gmail, Outlook, slide sizes, RTL)
@@ -24,6 +25,20 @@ export type FormatContext = {
 
 export const esc = escapeHtml;
 export const arabic = (language: string) => language !== "en";
+
+export function renderBrandImage(
+  image: BrandRenderImage | undefined,
+  language: string,
+  className: string,
+) {
+  if (!image) return "";
+  const label = arabic(language)
+    ? "صور توضيحية للعلامة"
+    : "Illustrative brand imagery";
+  return `<figure class="${className}" data-brand-render-media="1"><img src="${esc(image.dataUri)}" alt="${esc(image.alt)}" data-brand-render-media="1"><figcaption>${label}</figcaption></figure>`;
+}
+
+export type { BrandRenderMedia };
 
 export function mix(color: string, target: string, amount: number) {
   const channel = (value: string, i: number) => parseInt(value.slice(i, i + 2), 16);

@@ -479,6 +479,113 @@
   border-color: var(--ok);
 }
 
+/* Saved visual kit: logo, mark, gallery and the client brand context shown elsewhere */
+.bc-media {
+  display: block;
+  inline-size: 100%;
+  min-inline-size: 0;
+  border-radius: var(--radius-control);
+  background: var(--surface-2);
+  box-shadow: var(--key);
+  object-fit: cover;
+}
+.bc-media.is-failed {
+  display: grid;
+  place-items: center;
+  min-block-size: 64px;
+  padding: var(--space-2);
+  color: var(--text-3);
+  font-size: var(--text-sm);
+  line-height: 18px;
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+.bc-logos {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(96px, 1fr));
+  gap: var(--space-3);
+}
+.bc-media.is-logo {
+  aspect-ratio: 1;
+  object-fit: contain;
+  padding: var(--space-3);
+  background: var(--bg);
+}
+.bc-gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 200px), 1fr));
+  gap: var(--space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.bc-gallery-grid li {
+  min-inline-size: 0;
+}
+.bc-media.is-gallery {
+  aspect-ratio: 4 / 3;
+}
+.bc-media.is-gallery.is-failed {
+  min-block-size: 0;
+}
+.bc-direction {
+  margin: 0;
+  color: var(--text-2);
+  font-size: var(--text-md);
+  line-height: 22px;
+  overflow-wrap: anywhere;
+}
+.bc-context {
+  display: grid;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border-radius: var(--radius-card);
+  background: var(--surface);
+  box-shadow: var(--key);
+}
+.bc-context-title {
+  margin: 0;
+  color: var(--text);
+  font-size: var(--text-md);
+  font-weight: 600;
+}
+.bc-context-images {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 96px));
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.bc-context-images li {
+  min-inline-size: 0;
+}
+.bc-context-images .bc-media {
+  aspect-ratio: 1;
+}
+.bc-context-images .bc-media.is-failed {
+  min-block-size: 0;
+  font-size: var(--text-xs);
+  overflow: hidden;
+}
+.bc-context.is-compact {
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  margin-inline: var(--space-3);
+  padding: var(--space-2) var(--space-3);
+  box-shadow: none;
+  background: var(--surface-2);
+}
+.bc-context.is-compact .bc-context-images {
+  grid-template-columns: repeat(2, 40px);
+}
+.acct-detail .bc-context {
+  max-inline-size: 780px;
+}
+.acct-modal .bc-update-grid {
+  grid-template-columns: minmax(0, 1fr);
+}
+
 @media (max-width: 1100px) {
   .bc-board {
     grid-template-columns: repeat(2, minmax(0, 1fr));

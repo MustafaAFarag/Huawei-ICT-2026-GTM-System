@@ -1,13 +1,20 @@
 import { z } from "zod";
 import { injectFonts } from "../asset-template.js";
 import {
+  brandRenderHero,
+  brandRenderLogo,
+  brandRenderSupporting,
+} from "../brand-media.js";
+import {
   arabic,
   esc,
   factById,
   fontStack,
   host,
   palette,
+  renderBrandImage,
   sourceLine,
+  type BrandRenderMedia,
   type FormatContext,
 } from "./shared.js";
 
@@ -52,6 +59,7 @@ export function renderCarousel(
   content: CarouselContent,
   context: FormatContext,
   platform: "instagram" | "linkedin",
+  media?: BrandRenderMedia,
 ) {
   const c = palette(context.brand);
   const rtl = arabic(context.language);
@@ -64,11 +72,32 @@ export function renderCarousel(
         ? host(context.brand.website)
         : context.brand.name;
   const next = rtl ? "←" : "→";
+  const logo = brandRenderLogo(media);
+  const hero = brandRenderHero(media);
+  const supporting = brandRenderSupporting(media);
   const slides = content.slides
     .map((s, index) => {
       const n = index + 1;
       const dark = s.kind === "hook" || s.kind === "cta";
       const fact = factById(context, s.sourceId);
+      const copyLength =
+        s.heading.length +
+        (s.body?.length ?? 0) +
+        (s.bullets ?? []).join("").length +
+        (s.quote?.text.length ?? 0) +
+        (s.stat?.label.length ?? 0);
+      const dense = copyLength > 150;
+      const image =
+        index === 0
+          ? hero
+          : s.kind !== "cta" && index % 2 === 1 && supporting.length
+            ? supporting[Math.floor(index / 2) % supporting.length]
+            : undefined;
+      const visual = renderBrandImage(
+        image,
+        context.language,
+        `slide-image${index === 0 ? " hero-image" : ""}`,
+      );
       const progress = Array.from(
         { length: total },
         (_, i) => `<i class="${i === index ? "on" : ""}"></i>`,
@@ -85,9 +114,9 @@ export function renderCarousel(
                 : s.kind === "hook"
                   ? `<h1>${esc(s.heading)}</h1>${s.body ? `<p class="body">${esc(s.body)}</p>` : ""}`
                   : `<p class="num"><bdi dir="ltr">${String(n - 1).padStart(2, "0")}</bdi></p><h2>${esc(s.heading)}</h2>${s.body ? `<p class="body">${esc(s.body)}</p>` : ""}`;
-      return `<section class="slide ${dark ? "dark" : ""} kind-${s.kind}" data-slide="${n}">
-<header><span class="brand">${esc(context.brand.name)}</span>${s.kicker ? `<span class="kicker">${esc(s.kicker)}</span>` : ""}</header>
-<div class="main">${inner}</div>
+      return `<section class="slide ${dark ? "dark" : ""} ${dense ? "dense" : ""} kind-${s.kind}" data-slide="${n}">
+<header><span class="brand${logo ? " with-logo" : ""}">${logo ? `<img class="brand-logo" src="${esc(logo.dataUri)}" alt="${esc(logo.alt)}" data-brand-render-media="1">` : ""}<span>${esc(context.brand.name)}</span></span>${s.kicker ? `<span class="kicker">${esc(s.kicker)}</span>` : ""}</header>
+<div class="main">${inner}${visual}</div>
 <footer><span class="handle"><bdi dir="ltr">${esc(handle)}</bdi></span>${fact ? `<span class="src">${sourceLine(fact, context.language)}</span>` : ""}<span class="progress">${progress}</span><span class="count"><bdi dir="ltr">${n}/${total}</bdi>${s.kind === "hook" && platform === "instagram" ? ` ${next}` : ""}</span></footer>
 </section>`;
     })
@@ -103,9 +132,27 @@ body{font-family:${fontStack(context.language)};-webkit-font-smoothing:antialias
 .slide .brand{display:flex;align-items:center;gap:14px}
 .slide .brand::before{content:"";width:22px;height:22px;border-radius:6px;background:${c.accent}}
 .slide.dark .brand::before{background:${c.onPrimary};opacity:.9}
+.slide .brand.with-logo::before{display:none}
+.brand-logo{width:auto;max-width:150px;height:48px;padding:6px 10px;border-radius:10px;background:#fff;object-fit:contain}
 .slide .kicker{padding:10px 20px;border-radius:999px;background:${c.tint};color:${c.primary};font-size:26px}
 .slide.dark .kicker{background:${c.deep};color:${c.onPrimary}}
-.main{flex:1;display:flex;flex-direction:column;justify-content:center;gap:36px}
+.main{flex:1;min-height:0;display:flex;flex-direction:column;justify-content:center;gap:36px}
+.slide-image{position:relative;flex:none;width:100%;height:clamp(130px,14vw,176px);margin:0;overflow:hidden;border-radius:24px;background:${c.tint}}
+.slide-image.hero-image{height:194px}
+.slide-image img{display:block;width:100%;height:100%;object-fit:cover}
+.slide-image figcaption{position:absolute;inset-inline-start:14px;bottom:12px;padding:6px 10px;border-radius:999px;background:rgba(8,12,16,.72);color:#fff;font-size:17px;line-height:1.3}
+.slide.dense .main{gap:20px}
+.slide.dense h1{font-size:clamp(54px,7.4vw,80px);line-height:1.05;letter-spacing:-.02em}
+.slide.dense h2{font-size:60px;line-height:1.05}
+.slide.dense h2.big{font-size:76px}
+.slide.dense .body{font-size:38px;line-height:1.25}
+.slide.dense ul{gap:18px}
+.slide.dense li{grid-template-columns:54px 1fr;gap:18px;font-size:40px;line-height:1.2}
+.slide.dense .stat{font-size:174px}
+.slide.dense blockquote{font-size:52px;line-height:1.16}
+.slide.dense .pill{padding:16px 32px;font-size:34px}
+.slide.dense .slide-image{height:142px}
+.slide.dense .slide-image.hero-image{height:158px}
 h1{margin:0;font-size:104px;line-height:1.02;letter-spacing:-.03em;font-weight:700}
 h2{margin:0;font-size:72px;line-height:1.08;letter-spacing:-.02em;font-weight:700}
 h2.big{font-size:92px}
