@@ -216,6 +216,12 @@ test("English creation double click starts once and reload does not replay the t
   context,
 }) => {
   const { workspaceId } = await requireFixtureWorkspace(page, context);
+  await page.getByRole("button", { name: "Accounts", exact: true }).click();
+  await page.getByText("Hisham Haddad", { exact: true }).click();
+  await expect(
+    page.getByRole("heading", { name: "Tirun Cloud", exact: true }),
+  ).toBeVisible();
+
   const marker = `English desktop handoff ${crypto.randomUUID()}`;
   const brief = `Prepare a concise English follow-up email. ${marker}.`;
   const submissions = captureChatSubmissions(page);
@@ -234,6 +240,7 @@ test("English creation double click starts once and reload does not replay the t
   await expect(page.locator(".msg-user").filter({ hasText: marker })).toBeVisible();
   expect(submissions).toHaveLength(1);
   expect(submissions[0]!.body.content).toContain(brief);
+  expect(submissions[0]!.body.context.prospectIds).toEqual([]);
   await expectOnePersistedUserMessage(context, workspaceId, threadId!, marker);
 
   await page.reload();
@@ -300,7 +307,15 @@ test("failed creation reports an error, keeps controls usable, and never reports
   await page.getByRole("button", { name: "Create with Nabil", exact: true }).click();
 
   await expect.poll(() => failedRequests, { timeout: 5_000 }).toBe(1);
-  await expect(page.getByRole("alert")).toBeVisible();
+  await expect(
+    page.getByRole("heading", {
+      name: "Nabil couldn’t finish this reply.",
+      exact: true,
+    }),
+  ).toBeVisible();
+  await expect(
+    page.getByText("The fixture request failed.", { exact: true }),
+  ).toBeVisible();
   await expect(page.locator("#assistant-input")).toBeEnabled();
   await page.locator("#assistant-input").fill("Retry the follow-up after the error.");
   await expect(page.getByRole("button", { name: "Send", exact: true })).toBeEnabled();
