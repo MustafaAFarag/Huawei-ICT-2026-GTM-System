@@ -28,7 +28,12 @@ import {
   requireProfileInputs,
   type ProfileContent,
 } from "./capability-profile.js";
-import { arabic, checkContent, type FormatContext } from "./shared.js";
+import {
+  arabic,
+  checkContent,
+  type FormatContext,
+  type BrandRenderMedia,
+} from "./shared.js";
 
 export * from "./shared.js";
 export { lintGmail, lintOutlook } from "./email.js";
@@ -81,22 +86,32 @@ export function promptFor(template: ContentFormat) {
   );
 }
 
-export function renderContent(template: ContentFormat, content: unknown, context: FormatContext): Generated {
+export function renderContent(
+  template: ContentFormat,
+  content: unknown,
+  context: FormatContext,
+  media?: BrandRenderMedia,
+): Generated {
   if (template === "email-gmail" || template === "email-outlook") {
     const html = renderEmail(content as EmailContent, context, template === "email-gmail" ? "gmail" : "outlook");
     return { html, content, pages: 1 };
   }
   if (template === "flipbook") {
     const book = content as FlipbookContent;
-    const html = renderFlipbook(book, context);
-    return { html, printHtml: renderFlipbookPrint(book, context), content, pages: flipbookPageCount(html) };
+    const html = renderFlipbook(book, context, media);
+    return { html, printHtml: renderFlipbookPrint(book, context, media), content, pages: flipbookPageCount(html) };
   }
   if (template === "capability-profile") {
-    const html = renderCapabilityProfile(content as ProfileContent, context);
+    const html = renderCapabilityProfile(content as ProfileContent, context, media);
     return { html, content, pages: profilePageCount(html) };
   }
   const carousel = normalizeCarousel(content as CarouselContent);
-  const html = renderCarousel(carousel, context, template === "instagram-carousel" ? "instagram" : "linkedin");
+  const html = renderCarousel(
+    carousel,
+    context,
+    template === "instagram-carousel" ? "instagram" : "linkedin",
+    media,
+  );
   return { html, content: carousel, pages: slideCount(html) };
 }
 
@@ -166,6 +181,7 @@ export async function generateDeliverable(
   template: ContentFormat,
   context: FormatContext,
   options: { instructions?: string; slides?: number; previous?: unknown },
+  resolveRenderMedia?: () => Promise<BrandRenderMedia>,
 ): Promise<Generated> {
   const spec = ASSET_FORMATS[template];
   if (template === "capability-profile") requireProfileInputs(context);
@@ -224,7 +240,12 @@ export async function generateDeliverable(
         `The ${spec.label.toLowerCase()} draft failed validation: ${(lastError as Error)?.message ?? "no usable response"}`,
       );
   }
-  return renderContent(template, content, context);
+  // Resolve private bytes after model generation; this value never joins context or prompts.
+  const media =
+    !template.startsWith("email") && resolveRenderMedia
+      ? await resolveRenderMedia()
+      : undefined;
+  return renderContent(template, content, context, media);
 }
 
 export function lintFor(template: string, html: string): LintItem[] {

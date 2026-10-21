@@ -1,8 +1,191 @@
 import { readFileSync } from "node:fs";
 import { createRequire } from "node:module";
+import {
+  parse,
+  serialize,
+  type DefaultTreeAdapterMap,
+} from "parse5";
 import type { Brand, Evidence, ProspectSnapshot } from "@revenue/contracts";
+import {
+  brandRenderHero,
+  brandRenderLogo,
+  type BrandRenderMedia,
+} from "./brand-media.js";
 import { normalizeAssetBidi } from "./asset-bidi.js";
 import { escapeHtml } from "./policy.js";
+
+type HtmlNode = DefaultTreeAdapterMap["node"];
+type HtmlElement = DefaultTreeAdapterMap["element"];
+type HtmlChild = DefaultTreeAdapterMap["childNode"];
+type HtmlParent = DefaultTreeAdapterMap["parentNode"];
+type HtmlText = Extract<HtmlNode, { nodeName: "#text" }>;
+const isElement = (node: HtmlNode): node is HtmlElement => "tagName" in node;
+const attribute = (node: HtmlElement, name: string) =>
+  node.attrs.find((item) => item.name === name)?.value;
+const classes = (node: HtmlElement) =>
+  (attribute(node, "class") ?? "").split(/\s+/).filter(Boolean);
+const hasClass = (node: HtmlElement, name: string) => classes(node).includes(name);
+function htmlElement(tagName: string, attrs: [string, string][]): HtmlElement {
+  return {
+    nodeName: tagName,
+    tagName,
+    namespaceURI: "http://www.w3.org/1999/xhtml" as HtmlElement["namespaceURI"],
+    attrs: attrs.map(([name, value]) => ({ name, value })),
+    childNodes: [],
+    parentNode: null,
+  };
+}
+
+function htmlText(value: string, parentNode: HtmlParent): HtmlText {
+  return { nodeName: "#text", value, parentNode };
+}
+
+function append(parent: HtmlElement, child: HtmlChild) {
+  child.parentNode = parent;
+  parent.childNodes.push(child);
+}
+
+function walk(root: HtmlNode, visit: (element: HtmlElement) => void) {
+  if (isElement(root)) visit(root);
+  if ("childNodes" in root)
+    root.childNodes.forEach((child) => walk(child, visit));
+}
+
+function firstElement(root: HtmlNode, predicate: (element: HtmlElement) => boolean) {
+  let found: HtmlElement | undefined;
+  walk(root, (element) => {
+    if (!found && predicate(element)) found = element;
+  });
+  return found;
+}
+
+function imageNode(image: NonNullable<ReturnType<typeof brandRenderLogo>>) {
+  return htmlElement("img", [
+    ["src", image.dataUri],
+    ["alt", image.alt],
+    ["class", "brand-kit-logo"],
+    ["data-brand-render-media", "1"],
+  ]);
+}
+
+function figureNode(
+  image: NonNullable<ReturnType<typeof brandRenderHero>>,
+  language: string,
+) {
+  const figure = htmlElement("figure", [
+    ["class", "brand-kit-visual"],
+    ["data-brand-render-media", "1"],
+  ]);
+  append(figure, imageNodeForPhoto(image));
+  const caption = htmlElement("figcaption", []);
+  append(
+    caption,
+    htmlText(
+      language === "en"
+        ? "Illustrative brand imagery"
+        : "صور توضيحية للعلامة",
+      caption,
+    ),
+  );
+  append(figure, caption);
+  return figure;
+}
+
+function imageNodeForPhoto(image: NonNullable<ReturnType<typeof brandRenderHero>>) {
+  return htmlElement("img", [
+    ["src", image.dataUri],
+    ["alt", image.alt],
+    ["data-brand-render-media", "1"],
+  ]);
+}
+
+function documentElement(document: HtmlNode, tag: string) {
+  return firstElement(document, (element) => element.tagName === tag);
+}
+
+// Saved brand pixels are removed before a model is given an older artifact to revise.
+export function stripBrandRenderMedia(html: string) {
+  const document = parse(html);
+  const strip = (node: HtmlNode) => {
+    if (!("childNodes" in node)) return;
+    node.childNodes = node.childNodes.filter(
+      (child) =>
+        !isElement(child) ||
+        (attribute(child, "data-brand-render-media") !== "1" &&
+          !(child.tagName === "style" &&
+            attribute(child, "data-brand-media-css") === "1")),
+    );
+    node.childNodes.forEach(strip);
+  };
+  strip(document);
+  return serialize(document);
+}
+
+export function embedBrandMediaInAssetHtml(
+  html: string,
+  media: BrandRenderMedia,
+  language: string,
+) {
+  const logo = brandRenderLogo(media);
+  const hero = brandRenderHero(media);
+  if (!logo && !hero) return html;
+
+  const document = parse(stripBrandRenderMedia(html));
+  const root = documentElement(document, "html");
+  const head = documentElement(document, "head");
+  const body = documentElement(document, "body");
+  if (!root || !head || !body) return html;
+
+  const style = htmlElement("style", [["data-brand-media-css", "1"]]);
+  append(
+    style,
+    htmlText(
+      `.brand-kit-logo{display:inline-block;width:auto;max-width:180px;height:42px;padding:5px 8px;border-radius:8px;background:#fff;object-fit:contain;vertical-align:middle}.brand-kit-visual{position:relative;width:100%;height:170px;max-height:23vh;margin:16px 0;overflow:hidden;border-radius:10px;background:#f3f4f5}.brand-kit-visual img{display:block;width:100%;height:100%;object-fit:cover}.brand-kit-visual figcaption{position:absolute;inset-inline-start:10px;bottom:8px;padding:4px 8px;border-radius:99px;background:rgba(8,12,16,.72);color:#fff;font:500 10px/1.4 Arial,sans-serif}@media(max-width:520px){.brand-kit-visual{height:130px}}`,
+      style,
+    ),
+  );
+  append(head, style);
+
+  if (logo) {
+    const brand = firstElement(document, (element) => hasClass(element, "brand"));
+    if (brand) {
+      const placeholder = brand.childNodes.findIndex(
+        (child) => isElement(child) && child.tagName === "i",
+      );
+      if (placeholder >= 0) brand.childNodes.splice(placeholder, 1);
+      const image = imageNode(logo);
+      image.parentNode = brand;
+      brand.childNodes.unshift(image);
+    } else {
+      const header = firstElement(document, (element) => element.tagName === "header");
+      const image = imageNode(logo);
+      image.parentNode = header ?? body;
+      (header ?? body).childNodes.unshift(image);
+    }
+  }
+
+  if (hero) {
+    const figure = figureNode(hero, language);
+    const heroContainer = firstElement(document, (element) => hasClass(element, "hero"));
+    if (heroContainer) {
+      const heading = heroContainer.childNodes.findIndex(
+        (child) => isElement(child) && child.tagName === "h1",
+      );
+      figure.parentNode = heroContainer;
+      heroContainer.childNodes.splice(heading < 0 ? 0 : heading, 0, figure);
+    } else {
+      const heading = firstElement(document, (element) => element.tagName === "h1");
+      const parent = heading?.parentNode && "childNodes" in heading.parentNode
+        ? heading.parentNode
+        : body;
+      const at = heading ? parent.childNodes.indexOf(heading) + 1 : 0;
+      figure.parentNode = parent;
+      parent.childNodes.splice(at, 0, figure);
+    }
+  }
+
+  return normalizeAssetBidi(serialize(document), language);
+}
 
 // Print tokens follow design-systems/revenue/DESIGN.md §8. Fonts are embedded because
 // previews are sandboxed and PDF rendering blocks every network request.

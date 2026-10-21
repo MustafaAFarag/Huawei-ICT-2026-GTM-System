@@ -3,6 +3,7 @@ import {
   brandSchema,
   brandMediaIdSchema,
   type Brand,
+  type BrandMediaRef,
   type BrandSettingsPatch,
 } from "@revenue/contracts";
 import type { Actor } from "@revenue/contracts";
@@ -68,6 +69,75 @@ function isMissingStoredMedia(error: unknown): boolean {
   )
     return true;
   return "statusCode" in error && error.statusCode === 404;
+}
+
+export type BrandRenderImage = {
+  dataUri: string;
+  alt: string;
+  role: BrandMediaRef["role"];
+  provenance: BrandMediaRef["provenance"];
+};
+
+// Bytes are resolved into a render-only value. Brand and prompt context keep only refs.
+export type BrandRenderMedia = {
+  logo?: BrandRenderImage;
+  mark?: BrandRenderImage;
+  gallery: BrandRenderImage[];
+};
+
+async function resolveReference(
+  workspaceId: string,
+  reference: BrandMediaRef | undefined,
+  storage: Storage,
+): Promise<BrandRenderImage | undefined> {
+  if (!reference) return undefined;
+  try {
+    const bytes = await storage.get(workspaceId, reference.key);
+    return {
+      dataUri: `data:${reference.mimeType};base64,${bytes.toString("base64")}`,
+      alt: reference.alt,
+      role: reference.role,
+      provenance: reference.provenance,
+    };
+  } catch (error) {
+    if (isMissingStoredMedia(error)) return undefined;
+    throw error;
+  }
+}
+
+export async function resolveBrandRenderMedia(
+  workspaceId: string,
+  rawBrand: unknown,
+  storage = new Storage(),
+): Promise<BrandRenderMedia> {
+  const brand = brandSchema.parse(rawBrand);
+  const media = brand.media;
+  if (!media) return { gallery: [] };
+
+  const [logo, mark, ...gallery] = await Promise.all([
+    resolveReference(workspaceId, media.logo, storage),
+    resolveReference(workspaceId, media.mark, storage),
+    ...(media.gallery ?? []).map((reference) =>
+      resolveReference(workspaceId, reference, storage),
+    ),
+  ]);
+  return {
+    ...(logo ? { logo } : {}),
+    ...(mark ? { mark } : {}),
+    gallery: gallery.filter((image): image is BrandRenderImage => !!image),
+  };
+}
+
+export const brandRenderLogo = (media?: BrandRenderMedia) =>
+  media?.logo ?? media?.mark;
+
+export function brandRenderHero(media?: BrandRenderMedia) {
+  return media?.gallery.find((image) => image.role === "hero") ?? media?.gallery[0];
+}
+
+export function brandRenderSupporting(media?: BrandRenderMedia) {
+  const hero = brandRenderHero(media);
+  return media?.gallery.filter((image) => image !== hero) ?? [];
 }
 
 export class BrandMediaService {

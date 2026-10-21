@@ -3,13 +3,20 @@ import { createRequire } from "node:module";
 import { z } from "zod";
 import { injectFonts } from "../asset-template.js";
 import {
+  brandRenderHero,
+  brandRenderLogo,
+  brandRenderSupporting,
+} from "../brand-media.js";
+import {
   arabic,
   esc,
   factById,
   fontStack,
   palette,
+  renderBrandImage,
   safeUrl,
   sourceLine,
+  type BrandRenderMedia,
   type FormatContext,
 } from "./shared.js";
 
@@ -65,8 +72,15 @@ const paragraphs = (text = "") =>
     .map((p) => `<p>${esc(p.trim())}</p>`)
     .join("");
 
-export function flipbookPages(content: FlipbookContent, context: FormatContext) {
+export function flipbookPages(
+  content: FlipbookContent,
+  context: FormatContext,
+  media?: BrandRenderMedia,
+) {
   const rtl = arabic(context.language);
+  const logo = brandRenderLogo(media);
+  const hero = brandRenderHero(media);
+  const supporting = brandRenderSupporting(media);
   const pages = content.pages[0]?.kind === "cover"
     ? content.pages
     : [{ kind: "cover" as const, heading: content.title, body: content.subtitle }, ...content.pages];
@@ -75,9 +89,20 @@ export function flipbookPages(content: FlipbookContent, context: FormatContext) 
     const source = fact
       ? `<p class="source"><a href="${esc(fact.url)}">${sourceLine(fact, context.language)}</a></p>`
       : "";
+    const image =
+      p.kind === "cover"
+        ? hero
+        : index % 2 === 1 && supporting.length
+          ? supporting[Math.floor(index / 2) % supporting.length]
+          : undefined;
+    const visual = renderBrandImage(
+      image,
+      context.language,
+      `book-image${p.kind === "cover" ? " cover-image" : ""}`,
+    );
     const folio = `<footer class="folio"><span>${esc(context.brand.name)}</span><bdi dir="ltr">${index + 1}</bdi></footer>`;
     if (p.kind === "cover")
-      return `<div class="page cover"><div class="pg"><p class="brand">${esc(context.brand.name)}</p><div class="cover-body">${p.kicker ? `<p class="kicker">${esc(p.kicker)}</p>` : ""}<h1>${esc(p.heading || content.title)}</h1>${p.body || content.subtitle ? `<p class="lede">${esc(p.body ?? content.subtitle ?? "")}</p>` : ""}</div><p class="meta">${context.snapshot ? `${rtl ? "مُعد لـ" : "Prepared for"} <bdi>${esc(context.snapshot.company)}</bdi> · ` : ""}<bdi dir="ltr">${esc(context.date)}</bdi></p></div></div>`;
+      return `<div class="page cover"><div class="pg"><p class="brand${logo ? " with-logo" : ""}">${logo ? `<img class="book-brand-logo" src="${esc(logo.dataUri)}" alt="${esc(logo.alt)}" data-brand-render-media="1">` : ""}<span>${esc(context.brand.name)}</span></p><div class="cover-body">${p.kicker ? `<p class="kicker">${esc(p.kicker)}</p>` : ""}<h1>${esc(p.heading || content.title)}</h1>${p.body || content.subtitle ? `<p class="lede">${esc(p.body ?? content.subtitle ?? "")}</p>` : ""}</div>${visual}<p class="meta">${context.snapshot ? `${rtl ? "مُعد لـ" : "Prepared for"} <bdi>${esc(context.snapshot.company)}</bdi> · ` : ""}<bdi dir="ltr">${esc(context.date)}</bdi></p></div></div>`;
     const head = `${p.kicker ? `<p class="kicker">${esc(p.kicker)}</p>` : ""}<h2>${esc(p.heading)}</h2>`;
     let body = "";
     if (p.kind === "stats")
@@ -99,7 +124,7 @@ export function flipbookPages(content: FlipbookContent, context: FormatContext) 
     else if (p.kind === "cta")
       body = `${paragraphs(p.body)}${p.cta ? `<a class="button" href="${esc(safeUrl(p.cta.url, context))}">${esc(p.cta.label)}</a>` : ""}<p class="site"><bdi dir="ltr">${esc(context.brand.website.replace(/^https?:\/\//, ""))}</bdi></p>`;
     else body = `<div class="prose">${paragraphs(p.body)}</div>`;
-    return `<div class="page ${p.kind === "cta" || p.kind === "quote" ? "deep" : ""} kind-${p.kind}"><div class="pg">${head}${body}${source}${folio}</div></div>`;
+    return `<div class="page ${p.kind === "cta" || p.kind === "quote" ? "deep" : ""} kind-${p.kind}"><div class="pg">${head}${body}${visual}${source}${folio}</div></div>`;
   });
   return rendered;
 }
@@ -115,6 +140,12 @@ body{font-family:${fontStack(context.language)};color:${c.ink};-webkit-font-smoo
 .page.cover .pg,.page.deep .pg{color:${c.onPrimary}}
 .page.cover,.page.deep{background:${c.primary}}
 .brand{margin:0;font-weight:700;font-size:2.4cqw;letter-spacing:.02em}
+.book-brand-logo{display:inline-block;max-width:22cqw;height:7cqw;padding:1cqw 1.5cqw;border-radius:1.2cqw;background:#fff;object-fit:contain;vertical-align:middle}
+.brand.with-logo{display:flex;align-items:center;gap:2cqw}
+.book-image{position:relative;flex:none;width:100%;height:18cqw;margin:0;overflow:hidden;border-radius:2cqw;background:${c.tint}}
+.book-image.cover-image{height:25cqw}
+.book-image img{display:block;width:100%;height:100%;object-fit:cover}
+.book-image figcaption{position:absolute;inset-inline-start:1.5cqw;bottom:1.2cqw;padding:.5cqw 1cqw;border-radius:99cqw;background:rgba(8,12,16,.72);color:#fff;font-size:1.5cqw}
 .cover-body{flex:1;display:flex;flex-direction:column;justify-content:center;gap:3cqw}
 h1{margin:0;font-size:8.6cqw;line-height:1.02;letter-spacing:-.03em;color:inherit}
 h2{margin:0;font-size:5.6cqw;line-height:1.08;letter-spacing:-.02em;color:${c.ink}}
@@ -145,7 +176,11 @@ blockquote{margin:2cqw 0 0;font-size:4.6cqw;line-height:1.25;font-weight:600;col
 }
 
 // Static pages, one A4 sheet each: the PDF export and the print view.
-export function renderFlipbookPrint(content: FlipbookContent, context: FormatContext) {
+export function renderFlipbookPrint(
+  content: FlipbookContent,
+  context: FormatContext,
+  media?: BrandRenderMedia,
+) {
   const rtl = arabic(context.language);
   return injectFonts(`<!doctype html>
 <html lang="${rtl ? "ar" : "en"}" dir="${rtl ? "rtl" : "ltr"}"><head><meta charset="utf-8"><title>${esc(content.title)}</title>
@@ -153,14 +188,18 @@ export function renderFlipbookPrint(content: FlipbookContent, context: FormatCon
 @page{size:A4;margin:0}
 body{background:#fff}
 .page{width:210mm;height:297mm;page-break-after:always;break-after:page}
-</style></head><body>${flipbookPages(content, context).join("")}</body></html>`);
+</style></head><body>${flipbookPages(content, context, media).join("")}</body></html>`);
 }
 
 // Interactive book: a self-contained HTML file with the page-flip runtime inlined.
-export function renderFlipbook(content: FlipbookContent, context: FormatContext) {
+export function renderFlipbook(
+  content: FlipbookContent,
+  context: FormatContext,
+  media?: BrandRenderMedia,
+) {
   const rtl = arabic(context.language);
   const c = palette(context.brand);
-  const pages = flipbookPages(content, context);
+  const pages = flipbookPages(content, context, media);
   return injectFonts(`<!doctype html>
 <html lang="${rtl ? "ar" : "en"}" dir="${rtl ? "rtl" : "ltr"}"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">

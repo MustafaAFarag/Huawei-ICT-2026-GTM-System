@@ -44,7 +44,14 @@ import {
   type ContentFormat,
 } from "./formats/index.js";
 import { WorkspaceService } from "./workspace.js";
-import { brandBasisWithoutVisualMetadata } from "./brand-media.js";
+import {
+  brandBasisWithoutVisualMetadata,
+  resolveBrandRenderMedia,
+} from "./brand-media.js";
+import {
+  embedBrandMediaInAssetHtml,
+  stripBrandRenderMedia,
+} from "./asset-template.js";
 import { promptVersions } from "./agent/prompts.js";
 import { chatModelId } from "./agent/provider.js";
 
@@ -504,7 +511,7 @@ export class WorkflowService {
       instructions: input.message,
       slides: input.slides,
       previous,
-    });
+    }, () => resolveBrandRenderMedia(workspace.id, workspace.brand, this.storage));
     const assetId = randomUUID();
     const htmlKey = `${assetId}.html`;
     await this.storage.put(workspace.id, htmlKey, Buffer.from(generated.html), "text/html");
@@ -1056,27 +1063,38 @@ export class WorkflowService {
                 "Approve an offer before generating its one-pager.",
               );
             await chargeAttempt(6);
+            const sourceHtml = input.sourceAssetId
+              ? (
+                  await this.storage.get(
+                    workspace.id,
+                    (
+                      await db.asset.findFirstOrThrow({
+                        where: {
+                          id: input.sourceAssetId,
+                          workspaceId: workspace.id,
+                        },
+                      })
+                    ).htmlKey,
+                  )
+                ).toString("utf8")
+              : undefined;
             const generated = await new OpenDesign(workspace).generate(
               input.template,
               snapshot,
               evidence,
               input.language,
               input.message,
-              input.sourceAssetId
-                ? (
-                    await this.storage.get(
-                      workspace.id,
-                      (
-                        await db.asset.findFirstOrThrow({
-                          where: {
-                            id: input.sourceAssetId,
-                            workspaceId: workspace.id,
-                          },
-                        })
-                      ).htmlKey,
-                    )
-                  ).toString("utf8")
-                : undefined,
+              sourceHtml ? stripBrandRenderMedia(sourceHtml) : undefined,
+            );
+            const renderMedia = await resolveBrandRenderMedia(
+              workspace.id,
+              workspace.brand,
+              this.storage,
+            );
+            generated.html = embedBrandMediaInAssetHtml(
+              generated.html,
+              renderMedia,
+              input.language,
             );
             const assetId = randomUUID();
             const htmlKey = `${assetId}.html`,
