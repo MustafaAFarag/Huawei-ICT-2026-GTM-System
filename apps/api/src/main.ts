@@ -41,6 +41,7 @@ import {
   json,
   config,
   WorkspaceService,
+  BrandMediaService,
   RubricService,
   WorkflowService,
   Storage,
@@ -84,6 +85,7 @@ const schedules = new ScheduleService();
 const threads = new ThreadService();
 const rubrics = new RubricService();
 const workspaceService = new WorkspaceService(),
+  brandMediaService = new BrandMediaService(),
   workflows = new WorkflowService(),
   storage = new Storage();
 @Catch()
@@ -130,6 +132,22 @@ class ApiController {
     @Param("workspaceId") id: string,
   ) {
     return workspaceService.dashboard(await actorFor(req.headers, id));
+  }
+  @Get("workspaces/:workspaceId/brand/media/:mediaId") async brandMedia(
+    @Req() req: Request,
+    @Param("workspaceId") workspaceId: string,
+    @Param("mediaId") mediaId: string,
+    @Res() response: Response,
+  ) {
+    const actor = await actorFor(req.headers, workspaceId);
+    const media = await brandMediaService.read(actor, mediaId);
+    response.status(200);
+    response.setHeader("Content-Type", media.mimeType);
+    response.setHeader("Cache-Control", "private, max-age=300");
+    response.setHeader("X-Content-Type-Options", "nosniff");
+    if (media.mimeType === "image/svg+xml")
+      response.setHeader("Content-Security-Policy", "default-src 'none'; sandbox");
+    response.send(media.bytes);
   }
   @Patch("workspaces/:workspaceId") async configure(
     @Req() req: Request,

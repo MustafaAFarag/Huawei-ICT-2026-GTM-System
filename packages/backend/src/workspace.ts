@@ -1,4 +1,5 @@
 import { BadRequestException, NotFoundException } from "@nestjs/common";
+import { isDeepStrictEqual } from "node:util";
 import { z } from "zod";
 import ExcelJS from "exceljs";
 import { parse as parseCsv } from "csv-parse/sync";
@@ -10,6 +11,7 @@ import type {
   Touch,
 } from "@revenue/contracts";
 import {
+  brandSettingsPatchSchema,
   COUNTRIES,
   PACK_IDS,
   PLANS,
@@ -20,6 +22,10 @@ import {
   packFor,
 } from "@revenue/contracts";
 import { db, json, serializable } from "./database.js";
+import {
+  brandBasisWithoutVisualMetadata,
+  mergeBrandSettings,
+} from "./brand-media.js";
 import { assertRole, digest, month, validateEvidence } from "./policy.js";
 import { Crm } from "./providers.js";
 
@@ -209,15 +215,7 @@ export class WorkspaceService {
               .optional(),
           })
           .optional(),
-        brand: z
-          .object({
-            name: z.string().min(1).max(100),
-            primary: z.string().regex(/^#[\da-f]{6}$/i),
-            accent: z.string().regex(/^#[\da-f]{6}$/i),
-            website: z.url(),
-            logo: z.url().optional(),
-          })
-          .optional(),
+        brand: brandSettingsPatchSchema.optional(),
         offers: z
           .array(
             z.object({
@@ -252,17 +250,36 @@ export class WorkspaceService {
       })
       .parse(value);
     return serializable(async (tx) => {
-      const { cap, memberCaps, ...data } = input;
+      const { cap, memberCaps, brand: brandPatch, ...data } = input;
       // Company context is merged so partial saves keep angles, references and segments.
-      if (data.company) {
-        const current = await tx.workspace.findUniqueOrThrow({
-          where: { id: actor.workspaceId },
-        });
+      const current =
+        data.company || brandPatch
+          ? await tx.workspace.findUniqueOrThrow({
+              where: { id: actor.workspaceId },
+              select: { company: true, brand: true },
+            })
+          : undefined;
+      if (data.company && current) {
         data.company = { ...(current.company as object), ...data.company };
       }
+      const brand =
+        brandPatch && current
+          ? mergeBrandSettings(current.brand, brandPatch)
+          : undefined;
+      const legacyBrandChanged =
+        brandPatch &&
+        current &&
+        !isDeepStrictEqual(
+          brandBasisWithoutVisualMetadata(current.brand),
+          brandBasisWithoutVisualMetadata(brand),
+        );
+      const updateData = {
+        ...data,
+        ...(brand ? { brand: json(brand) } : {}),
+      };
       const updated = await tx.workspace.update({
         where: { id: actor.workspaceId },
-        data,
+        data: updateData,
       });
       if (cap !== undefined)
         await tx.budget.upsert({
@@ -298,7 +315,7 @@ export class WorkspaceService {
         });
       }
       // Context changes invalidate approvals and queued execution in one transaction.
-      if (input.company || input.offers || input.brand) {
+      if (input.company || input.offers || legacyBrandChanged) {
         await tx.asset.updateMany({
           where: { workspaceId: actor.workspaceId },
           data: { approvedAt: null, approvedBy: null },

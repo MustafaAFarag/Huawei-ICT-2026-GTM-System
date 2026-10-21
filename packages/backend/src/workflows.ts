@@ -44,6 +44,7 @@ import {
   type ContentFormat,
 } from "./formats/index.js";
 import { WorkspaceService } from "./workspace.js";
+import { brandBasisWithoutVisualMetadata } from "./brand-media.js";
 import { promptVersions } from "./agent/prompts.js";
 import { chatModelId } from "./agent/provider.js";
 
@@ -1306,7 +1307,7 @@ export function workspaceBasis(workspace: {
   return {
     offers: (workspace.offers as { approved: boolean }[]).filter((o) => o.approved),
     company: workspace.company,
-    brand: workspace.brand,
+    brand: brandBasisWithoutVisualMetadata(workspace.brand),
   };
 }
 export const workspaceBasisDigest = (
