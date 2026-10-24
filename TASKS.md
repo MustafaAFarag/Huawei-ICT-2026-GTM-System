@@ -1,3 +1,17 @@
+## Current — designed deliverables, slice E: premium identity (24 October 2026)
+
+Spec: `docs/superpowers/specs/2026-10-24-designed-deliverables-design.md` (owner approved the 8 Claude calls on 24 Oct).
+Goal: new identity for Sarafa Pay / Wasla Express / Ruwad Learning: 3 logo symbol options each, fonts, 4-role palettes with tints, ~16 generated images each, do/don't direction.
+Done (this step): 9 symbol options shown to the owner; library, palettes, fonts and direction generated in parallel. Logo lockups and anything using the logo wait for the owner's picks.
+Stop: no push/deploy/outreach, no subagents (owner, 24 Oct); images via Codex Skylink image_gen only; don't touch samples/*.csv, FlipBook.html, the mp4, strobi-avatar.zip.
+
+- [x] Symbol options: 3 per company generated (Sarafa B, Wasla C regenerated once), shown at https://claude.ai/artifact/PFtKoTBn3zuNbWFWiN6tuE. Originals + prompts in `.local/brand-kit-source-v2/`. **Waiting on owner picks.**
+- [x] Palettes (4 roles, OKLab tints 50–900), fonts (Readex Pro, Rubik, Alexandria, Cairo, Tajawal @fontsource 5.3.0 in backend + web), direction text: `scripts/brand-kits/{kits,tints}.mjs`. Arabic brand names are drafts (native check open).
+- [ ] Image library: 48 prompts running via Codex Skylink (`.local/brand-kit-source-v2/library.tsv`)
+- [ ] Owner picks symbols → lockups (light/dark/symbol, 2×/3×) → manifest v2
+
+---
+
 ## Current — workspace logos + trimmed demo list (24 October 2026)
 
 - [x] Workspace picker shows each workspace's saved kit mark (initials when none); `/api/me` returns only `mark {id, alt}`. API/web typecheck and production build pass; browser check: 4/4 marks load.
