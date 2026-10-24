@@ -2,13 +2,16 @@
 
 Spec: `docs/superpowers/specs/2026-10-24-designed-deliverables-design.md` (owner approved the 8 Claude calls on 24 Oct).
 Goal: new identity for Sarafa Pay / Wasla Express / Ruwad Learning: 3 logo symbol options each, fonts, 4-role palettes with tints, ~16 generated images each, do/don't direction.
-Done (this step): 9 symbol options shown to the owner; library, palettes, fonts and direction generated in parallel. Logo lockups and anything using the logo wait for the owner's picks.
+Done: kit assets committed, manifest v2 imported into the 3 workspaces, typecheck + touched tests pass, merged to local main. Owner picks (24 Oct): Sarafa B, Wasla A, Ruwad A.
 Stop: no push/deploy/outreach, no subagents (owner, 24 Oct); images via Codex Skylink image_gen only; don't touch samples/*.csv, FlipBook.html, the mp4, strobi-avatar.zip.
 
 - [x] Symbol options: 3 per company generated (Sarafa B, Wasla C regenerated once), shown at https://claude.ai/artifact/PFtKoTBn3zuNbWFWiN6tuE. Originals + prompts in `.local/brand-kit-source-v2/`. **Waiting on owner picks.**
 - [x] Palettes (4 roles, OKLab tints 50–900), fonts (Readex Pro, Rubik, Alexandria, Cairo, Tajawal @fontsource 5.3.0 in backend + web), direction text: `scripts/brand-kits/{kits,tints}.mjs`. Arabic brand names are drafts (native check open).
-- [ ] Image library: 48 prompts running via Codex Skylink (`.local/brand-kit-source-v2/library.tsv`)
-- [ ] Owner picks symbols → lockups (light/dark/symbol, 2×/3×) → manifest v2
+- [ ] Image library: 43/48 generated and reviewed (Sarafa 16, Wasla 16, Ruwad 11), originals in `.local/brand-kit-source-v2/library/`. 5 Ruwad (3 textures, 2 covers) hit the Codex Skylink usage limit; auto-retry queued for 25 Oct 00:36.
+- [x] Lockups (EN/AR × light/dark + symbol/symbol-dark, 2×/3× PNG) built offline by `scripts/brand-kits/build-assets.mjs`; manifest v2 (palette roles + tints, fonts, direction, logo variants, gallery roles hero/photo/texture/cover + tags) matched by workspace id. Contracts accept new roles, gallery ≤24, `media.variants`, `nameAr`, `fonts`, `paletteRoles`, `direction` (all excluded from approval digests). **ce8d7f9**, merged to local main **4663aea**.
+  - Import applied to `revenue_resume_20261019` (brand name now plain "Sarafa Pay" etc.); pre-import brands in `.local/verification-20261024-brand-v2/brand-kits-before.json`. API 4140 restarted (log `.local/verification-20261024/api-brand-v2.log`); web needs no rebuild.
+  - Verified: all-package typecheck; backend tests formats/capability-profile/asset-quality/asset-bidi/png-export 33/33; render media resolves for all 3 (logo PNG, 16/16/11 images); Brand page 19/19 images load (`.local/verification-20261025-brand-v2/brand-en-desktop.png`).
+  - Open: 5 Ruwad images (texture-plum/shapes/dots, cover-learner/desk) wait on the Codex retry; then rerun build-assets + `pnpm brand-kits:import --apply`. Renderer " (client)" stripping (call #2) and use of dark variants/kit fonts land with slice A/B renderers.
 
 ---
 
