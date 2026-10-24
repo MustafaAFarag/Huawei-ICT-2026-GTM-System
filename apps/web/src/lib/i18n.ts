@@ -1451,6 +1451,8 @@ export const AR: Record<string, string> = {
   Cancelled: "تم الإلغاء",
   "Working…": "جاري التجهيز…",
   "Could not finish": "لم يكتمل التجهيز",
+  "Your company and offer don't mention HR. The B2B services pack will ask questions that fit better.":
+    "وصف الشركة والعرض لا يذكران الموارد البشرية. باقة خدمات الشركات تطرح أسئلة أنسب لنشاطك.",
   "You can keep chatting while this is prepared.":
     "تقدر تكمل المحادثة أثناء التجهيز.",
   "Saved in your workspace.": "تم الحفظ في مساحة العمل.",

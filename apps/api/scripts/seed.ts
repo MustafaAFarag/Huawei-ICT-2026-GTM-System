@@ -158,6 +158,7 @@ async function seedWorkspace(
     crmBinding: spec.crmBinding,
     assetBinding: spec.crmBinding,
     timezone: spec.timezone,
+    pack: spec.pack ?? "hr-services",
     company: json(company),
     brand: json(spec.brand),
     offers: json(spec.offers),

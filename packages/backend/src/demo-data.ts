@@ -78,6 +78,8 @@ export type DemoWorkspace = {
   crmBinding: "A" | "B";
   parentKey?: string;
   timezone: string;
+  // Workflow pack; defaults to hr-services. Non-HR clients use the generic B2B pack.
+  pack?: "hr-services" | "generic";
   company: Record<string, unknown>;
   brand: { name: string; primary: string; accent: string; website: string };
   offers: { id: string; text: string; approved: boolean }[];
@@ -513,6 +515,7 @@ export function generateDemo(seed = DEMO_SEED): DemoWorkspace[] {
         crmBinding: "B",
         parentKey: "mirqab",
         timezone: "Asia/Riyadh",
+        pack: "generic",
         company: {
           description: "Agency client: a Saudi B2B payments API for marketplaces.",
           icp: "Saudi marketplaces and e-commerce platforms with 20–300 staff",
@@ -546,6 +549,7 @@ export function generateDemo(seed = DEMO_SEED): DemoWorkspace[] {
         crmBinding: "B",
         parentKey: "mirqab",
         timezone: "Africa/Cairo",
+        pack: "generic",
         company: {
           description: "Agency client: an Egyptian last-mile delivery company for SMEs.",
           icp: "Egyptian online shops and pharmacies with their own delivery problems",
@@ -579,6 +583,7 @@ export function generateDemo(seed = DEMO_SEED): DemoWorkspace[] {
         crmBinding: "B",
         parentKey: "mirqab",
         timezone: "Asia/Dubai",
+        pack: "generic",
         company: {
           description: "Agency client: a UAE corporate-learning platform.",
           icp: "UAE companies with 50–500 staff and an L&D budget",

@@ -115,6 +115,12 @@ export function WorkspaceSetup({
     },
   ];
   const ready = checks.every((c) => c.ok);
+  // The HR pack asks payroll and hiring questions; warn when the business says nothing about HR.
+  const packMismatch =
+    current === "hr-services" &&
+    ![data.workspace.company.description, ...offers.map((o) => o.text)].some(
+      (text) => text && HR_WORDING.test(text),
+    );
   const choose = (id: PackId) => {
     if (id === current) return;
     void action(
@@ -177,6 +183,13 @@ export function WorkspaceSetup({
               "Choose the questions and guidance that fit your business. Switching packs keeps your accounts.",
             )}
           </p>
+          {packMismatch && (
+            <p className="bc-caption bc-warning" role="status">
+              {t(
+                "Your company and offer don't mention HR. The B2B services pack will ask questions that fit better.",
+              )}
+            </p>
+          )}
           {!isOwner && (
             <p className="bc-caption">
               {t("Only the workspace owner can change the workflow pack.")}

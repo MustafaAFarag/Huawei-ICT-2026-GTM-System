@@ -88,11 +88,15 @@ export function Messaging({
           )}
           defaultChecked={offers[0]?.approved}
         />
-        <Check
-          name="licence"
-          label={t("Egypt electronic marketing licence recorded")}
-          defaultChecked={data.workspace.company.marketingLicence}
-        />
+        {/* The Egyptian licence applies only when the workspace contacts Egyptian accounts. */}
+        {(data.workspace.company.marketingLicence ||
+          data.prospects.some((p) => p.country === "EG")) && (
+          <Check
+            name="licence"
+            label={t("Egypt electronic marketing licence recorded")}
+            defaultChecked={data.workspace.company.marketingLicence}
+          />
+        )}
         {!isOwner && (
           <p className="bc-caption">
             {t("Only the workspace owner can save company context.")}

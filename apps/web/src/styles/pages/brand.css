@@ -30,6 +30,12 @@
   font-size: var(--text-sm);
   line-height: 18px;
 }
+.bc-caption.bc-warning {
+  padding: 8px 10px;
+  border-radius: 6px;
+  background: var(--warn-tint);
+  color: var(--text);
+}
 .bc-kicker {
   margin: 0;
   color: var(--text-3);
