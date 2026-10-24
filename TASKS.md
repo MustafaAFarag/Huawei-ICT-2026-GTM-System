@@ -7,11 +7,12 @@ Stop: no push/deploy/outreach, no subagents (owner, 24 Oct); images via Codex Sk
 
 - [x] Symbol options: 3 per company generated (Sarafa B, Wasla C regenerated once), shown at https://claude.ai/artifact/PFtKoTBn3zuNbWFWiN6tuE. Originals + prompts in `.local/brand-kit-source-v2/`. **Waiting on owner picks.**
 - [x] Palettes (4 roles, OKLab tints 50–900), fonts (Readex Pro, Rubik, Alexandria, Cairo, Tajawal @fontsource 5.3.0 in backend + web), direction text: `scripts/brand-kits/{kits,tints}.mjs`. Arabic brand names are drafts (native check open).
-- [ ] Image library: 43/48 generated and reviewed (Sarafa 16, Wasla 16, Ruwad 11), originals in `.local/brand-kit-source-v2/library/`. 5 Ruwad (3 textures, 2 covers) hit the Codex Skylink usage limit; auto-retry queued for 25 Oct 00:36.
+- [x] Image library: 48/48 generated and reviewed (16 per company; 5 Ruwad retried after the Codex limit reset 25 Oct 00:36), originals in `.local/brand-kit-source-v2/library/`; rebuilt and re-imported (28 files per workspace).
 - [x] Lockups (EN/AR × light/dark + symbol/symbol-dark, 2×/3× PNG) built offline by `scripts/brand-kits/build-assets.mjs`; manifest v2 (palette roles + tints, fonts, direction, logo variants, gallery roles hero/photo/texture/cover + tags) matched by workspace id. Contracts accept new roles, gallery ≤24, `media.variants`, `nameAr`, `fonts`, `paletteRoles`, `direction` (all excluded from approval digests). **ce8d7f9**, merged to local main **4663aea**.
   - Import applied to `revenue_resume_20261019` (brand name now plain "Sarafa Pay" etc.); pre-import brands in `.local/verification-20261024-brand-v2/brand-kits-before.json`. API 4140 restarted (log `.local/verification-20261024/api-brand-v2.log`); web needs no rebuild.
   - Verified: all-package typecheck; backend tests formats/capability-profile/asset-quality/asset-bidi/png-export 33/33; render media resolves for all 3 (logo PNG, 16/16/11 images); Brand page 19/19 images load (`.local/verification-20261025-brand-v2/brand-en-desktop.png`).
-  - Open: 5 Ruwad images (texture-plum/shapes/dots, cover-learner/desk) wait on the Codex retry; then rerun build-assets + `pnpm brand-kits:import --apply`. Renderer " (client)" stripping (call #2) and use of dark variants/kit fonts land with slice A/B renderers.
+  - Two stale workers (pre-v2 schema, same queue) made carousel runs fail with a gallery-role zod error during the stakeholder review; replaced by one fresh worker 25 Oct 00:35 (log `.local/verification-20261024/worker-brand-v2.log`).
+  - Open: renderer " (client)" stripping (call #2) and use of dark variants/kit fonts land with slice A/B renderers.
 
 ---
 

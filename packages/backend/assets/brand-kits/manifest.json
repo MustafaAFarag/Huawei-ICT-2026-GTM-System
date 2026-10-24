@@ -1284,6 +1284,80 @@
           "prompt": "Seamless flat graphic background pattern, edge to edge, no focal object, no text, no letters, no logos, no watermark, no mockup. Soft cream handmade paper texture with subtle fibres and gentle warm shading, calm and tactile. Square 1:1.",
           "generator": "Codex Skylink built-in image_gen",
           "sourceId": "exec-850c6cf4-1507-4375-9693-1f5646dbaa6c"
+        },
+        {
+          "id": "ruwad-texture-plum",
+          "file": "ruwad-learning/texture-plum.webp",
+          "alt": "Illustrative generated brand image: Soft deep plum paper texture with subtle fibres and a faint warm grain.",
+          "role": "texture",
+          "tags": [
+            "texture",
+            "warm and optimistic",
+            "pattern"
+          ],
+          "provenance": "generated",
+          "prompt": "Seamless flat graphic background pattern, edge to edge, no focal object, no text, no letters, no logos, no watermark, no mockup. Soft deep plum #5B2A5E paper texture with subtle fibres and a faint warm grain. Square 1:1.",
+          "generator": "Codex Skylink built-in image_gen",
+          "sourceId": "exec-05fecafc-8383-47d0-9855-f4d7168aaed6"
+        },
+        {
+          "id": "ruwad-texture-shapes",
+          "file": "ruwad-learning/texture-shapes.webp",
+          "alt": "Illustrative generated brand image: Soft overlapping paper-cut organic shapes in apricot , plum and cream , gentle shadows, warm and playful.",
+          "role": "texture",
+          "tags": [
+            "texture",
+            "warm and optimistic",
+            "pattern"
+          ],
+          "provenance": "generated",
+          "prompt": "Seamless flat graphic background pattern, edge to edge, no focal object, no text, no letters, no logos, no watermark, no mockup. Soft overlapping paper-cut organic shapes in apricot #F4A261, plum #5B2A5E and cream #FFF4E6, gentle shadows, warm and playful. Square 1:1.",
+          "generator": "Codex Skylink built-in image_gen",
+          "sourceId": "exec-9d2f1a18-9cc9-4c0d-82cd-4bba8383fc42"
+        },
+        {
+          "id": "ruwad-texture-dots",
+          "file": "ruwad-learning/texture-dots.webp",
+          "alt": "Illustrative generated brand image: Gentle scattered soft dots and short curved strokes in apricot on cream paper texture, airy and optimistic.",
+          "role": "texture",
+          "tags": [
+            "texture",
+            "warm and optimistic",
+            "pattern"
+          ],
+          "provenance": "generated",
+          "prompt": "Seamless flat graphic background pattern, edge to edge, no focal object, no text, no letters, no logos, no watermark, no mockup. Gentle scattered soft dots and short curved strokes in apricot on cream paper texture, airy and optimistic. Square 1:1.",
+          "generator": "Codex Skylink built-in image_gen",
+          "sourceId": "exec-3522243f-3a73-45af-a10a-abfa3f05a182"
+        },
+        {
+          "id": "ruwad-cover-learner",
+          "file": "ruwad-learning/cover-learner.webp",
+          "alt": "Illustrative generated brand image: Portrait of a smiling young Emirati woman holding a notebook in a sunlit studio, warm apricot light, plum background.",
+          "role": "cover",
+          "tags": [
+            "cover",
+            "warm and optimistic",
+            "people"
+          ],
+          "provenance": "generated",
+          "prompt": "Photorealistic natural editorial photograph for a fictional demo brand; candid, real material texture, premium magazine quality. No text, no readable signage, no logos, no numbers, no watermark, no legible screens or personal data, no collage, no border. Square 1:1 composition, strong single subject, space at the bottom third for a headline. Portrait of a smiling young Emirati woman holding a notebook in a sunlit studio, warm apricot light, plum background.",
+          "generator": "Codex Skylink built-in image_gen",
+          "sourceId": "exec-5acfb1b7-ea4f-4376-8b15-4cb475805492"
+        },
+        {
+          "id": "ruwad-cover-desk",
+          "file": "ruwad-learning/cover-desk.webp",
+          "alt": "Illustrative generated brand image: A single open notebook and a cup of tea on a cream desk in warm morning sunlight, plum shadow shapes.",
+          "role": "cover",
+          "tags": [
+            "cover",
+            "warm and optimistic"
+          ],
+          "provenance": "generated",
+          "prompt": "Photorealistic natural editorial photograph for a fictional demo brand; candid, real material texture, premium magazine quality. No text, no readable signage, no logos, no numbers, no watermark, no legible screens or personal data, no collage, no border. Square 1:1 composition, strong single subject, space at the bottom third for a headline. A single open notebook and a cup of tea on a cream desk in warm morning sunlight, plum shadow shapes.",
+          "generator": "Codex Skylink built-in image_gen",
+          "sourceId": "exec-666f4a26-e9cf-40a3-bb3c-42146b8f92eb"
         }
       ]
     }
