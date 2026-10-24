@@ -496,7 +496,8 @@ export const actionTools: Record<ActionToolName, Tool> = {
       prospectIds: ids.optional(),
       language: languages.optional(),
       template: z.enum(assetTemplates).optional(),
-      slides: z.number().int().min(3).max(12).optional(),
+      // Carousels clamp this to their own 3–12 (Instagram 5–10) range; other templates ignore it.
+      slides: z.number().int().min(1).max(30).optional(),
       instructions: z.string().max(1500).optional(),
       sourceAssetId: z.uuid().optional(),
     }),

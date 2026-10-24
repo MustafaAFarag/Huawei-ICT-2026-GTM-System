@@ -329,7 +329,16 @@ export function formatContext(input: {
   const offerText = (o: { text: string; textAr?: string }) => (ar && o.textAr?.trim()) || o.text;
   const description = (ar && company.descriptionAr?.trim()) || company.description;
   return {
-    brand: { ...brand, name: brand.name || input.workspace.name, website: brand.website ?? "" },
+    // Demo data stores names like "Sarafa Pay (client)"; that label never reaches output.
+    brand: {
+      ...brand,
+      name: (
+        (ar && (brand as { nameAr?: string }).nameAr?.trim()) ||
+        brand.name ||
+        input.workspace.name
+      ).replace(/\s*\((?:client|عميل)\)\s*$/i, ""),
+      website: brand.website ?? "",
+    },
     company: [description, company.icp ? `Customers: ${company.icp}` : ""].filter(Boolean).join(" "),
     offer: offers.filter((o) => o.approved).map(offerText)[0],
     offers: offers.filter((o) => o.approved).map(offerText),

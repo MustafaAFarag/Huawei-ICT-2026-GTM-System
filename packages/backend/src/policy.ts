@@ -229,8 +229,20 @@ export function escapeHtml(text: unknown) {
       ]!,
   );
 }
+// Validation failures read as one plain sentence instead of a raw issue dump.
+function validationMessage(error: unknown): string | undefined {
+  if (typeof error !== "object" || error === null || !("issues" in error)) return;
+  const issues = (error as { issues: unknown }).issues;
+  if (!Array.isArray(issues) || !issues.length) return;
+  const first = issues[0] as { path?: unknown[]; message?: string };
+  const field = first.path?.length ? first.path.join(".") : "content";
+  return `The generated ${field} did not pass checks (${first.message ?? "invalid value"}). Try again; if it repeats, simplify the request.`;
+}
+
 export function safeError(error: unknown): string {
-  const message = error instanceof Error ? error.message : "The step failed.";
+  const message =
+    validationMessage(error) ??
+    (error instanceof Error ? error.message : "The step failed.");
   return message
     .replace(/(Bearer\s+)[^\s]+/gi, "$1[redacted]")
     .replace(/([?&](?:api_key|token|key|secret)=)[^&\s]+/gi, "$1[redacted]")

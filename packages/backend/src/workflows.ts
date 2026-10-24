@@ -529,7 +529,6 @@ export class WorkflowService {
         "text/html",
       );
     const label = ASSET_FORMATS[template].label;
-    const subject = snapshot?.company ?? workspace.name;
     const title = `${(generated.content as { title?: string; subject?: string }).title ?? (generated.content as { subject?: string }).subject ?? label}`.slice(0, 120);
     const engine = await new OpenDesign(workspace)
       .save(title, generated.html)
@@ -545,7 +544,8 @@ export class WorkflowService {
         version: source ? source.version + 1 : 1,
         engineVersion: OpenDesign.version,
         engineProjectId: engine,
-        title: `${title} — ${subject}${source ? " · revision" : ""}`,
+        // Brand-level pieces are titled by topic alone; account pieces name the account.
+        title: `${title}${snapshot ? ` — ${snapshot.company}` : ""}${source ? " · revision" : ""}`,
         htmlKey,
         pdfKey: null,
         evidenceDigest: digest(deliverableBasis(template, workspace, prospect?.evidence ?? null)),
