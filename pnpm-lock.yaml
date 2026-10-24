@@ -248,7 +248,22 @@ importers:
       '@fontsource-variable/inter':
         specifier: 5.3.0
         version: 5.3.0
+      '@fontsource/alexandria':
+        specifier: 5.3.0
+        version: 5.3.0
+      '@fontsource/cairo':
+        specifier: 5.3.0
+        version: 5.3.0
       '@fontsource/ibm-plex-sans-arabic':
+        specifier: 5.3.0
+        version: 5.3.0
+      '@fontsource/readex-pro':
+        specifier: 5.3.0
+        version: 5.3.0
+      '@fontsource/rubik':
+        specifier: 5.3.0
+        version: 5.3.0
+      '@fontsource/tajawal':
         specifier: 5.3.0
         version: 5.3.0
       '@revenue/contracts':
@@ -336,7 +351,22 @@ importers:
       '@fontsource-variable/inter':
         specifier: 5.3.0
         version: 5.3.0
+      '@fontsource/alexandria':
+        specifier: 5.3.0
+        version: 5.3.0
+      '@fontsource/cairo':
+        specifier: 5.3.0
+        version: 5.3.0
       '@fontsource/ibm-plex-sans-arabic':
+        specifier: 5.3.0
+        version: 5.3.0
+      '@fontsource/readex-pro':
+        specifier: 5.3.0
+        version: 5.3.0
+      '@fontsource/rubik':
+        specifier: 5.3.0
+        version: 5.3.0
+      '@fontsource/tajawal':
         specifier: 5.3.0
         version: 5.3.0
       '@modelcontextprotocol/sdk':
@@ -1264,8 +1294,23 @@ packages:
   '@fontsource-variable/inter@5.3.0':
     resolution: {integrity: sha512-OupL48va4JNofb97w6NYeF9S7W/kHNKM0Er8Dem5nqi4jeOLrVJDoE8tZEpnMJmtkvNbB1EIPPwHcdkF6b1oUA==}
 
+  '@fontsource/alexandria@5.3.0':
+    resolution: {integrity: sha512-it7vTsYG4pB0G00g49z5bwdMtf41EacTIZQFSxcDRajlV4xrCAz9+0/FMoWo3GD50Ifu5+t6ta22xsmnX5Akwg==}
+
+  '@fontsource/cairo@5.3.0':
+    resolution: {integrity: sha512-MdY6+gee1DVz4eUvx1Dd8Y1f50WcRELRKwKBarYZA3zT8dMhkuTWbcoE1LzezAy97h/9rob87s02NI6L8MaDgA==}
+
   '@fontsource/ibm-plex-sans-arabic@5.3.0':
     resolution: {integrity: sha512-ZZ4g+JDgQY0NqSh4o0MNWU1sHQmtcee1g++aKAwyJvZxnT5y51JXsN1cIXnaQaMd40dcbK6QFYa+Z1LbaiNuqA==}
+
+  '@fontsource/readex-pro@5.3.0':
+    resolution: {integrity: sha512-llvAZL81cEA7kgp9AnhgMRUVsZqb2i5njgLN0uQCNa0+jI8jjscZPOVyiqnUUGvzwmCFhsHw2OBQeF4MyygCXA==}
+
+  '@fontsource/rubik@5.3.0':
+    resolution: {integrity: sha512-Nks2mn7vlE1jZVHuVgoKU2Ejqjvd+GJzLRdraCjo1xc79oo7O6vJ8pcvSfmKPGX3/Ln7nt09XWFzPeu2jWf0xQ==}
+
+  '@fontsource/tajawal@5.3.0':
+    resolution: {integrity: sha512-R2GUdHHAebeZ+CyYvulaSECfZe3BWbNjEWX3TXG0Csnx4RADO/zyqk6Y//NYdSx5n74zRJh9HTvd61mpX/UzZQ==}
 
   '@genql/runtime@2.10.0':
     resolution: {integrity: sha512-hWy4fkHAk0OUW/cmjAOhbE3PnR9YfwaE8DRl5oEf7r9K6Owju8ogTDV3RMkG6Vm57H9xYxI5+am5ImAUbqPH8A==}
@@ -5911,7 +5956,17 @@ snapshots:
 
   '@fontsource-variable/inter@5.3.0': {}
 
+  '@fontsource/alexandria@5.3.0': {}
+
+  '@fontsource/cairo@5.3.0': {}
+
   '@fontsource/ibm-plex-sans-arabic@5.3.0': {}
+
+  '@fontsource/readex-pro@5.3.0': {}
+
+  '@fontsource/rubik@5.3.0': {}
+
+  '@fontsource/tajawal@5.3.0': {}
 
   '@genql/runtime@2.10.0(graphql@16.14.2)':
     dependencies:

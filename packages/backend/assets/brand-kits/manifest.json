@@ -1,168 +1,1289 @@
 {
-  "version": 1,
+  "version": 2,
   "kits": [
     {
       "id": "sarafa-pay",
-      "workspaceName": "Mirqab · Fintech client (KSA)",
+      "workspaceId": "8099320e-1cd4-4546-8f83-46230633158d",
       "brandName": "Sarafa Pay",
-      "primary": "#123c69",
-      "accent": "#2bb3a3",
-      "palette": [
-        "#123c69",
-        "#2bb3a3",
-        "#f5f8fb",
-        "#17212b"
-      ],
-      "visualDirection": "Precise, high-trust merchant finance: navy structure, teal settlement path, clean editorial whitespace, and tactile business scenes.",
-      "photoDirection": "Natural Riyadh small-business payment and finance moments; deep navy and restrained teal cues; abstract unreadable screens; never imply real customers or metrics.",
+      "brandNameAr": "صرافة باي",
+      "mood": "Precise and calm",
+      "palette": {
+        "primary": {
+          "name": "Ink navy",
+          "hex": "#0E2A47",
+          "tints": {
+            "50": "#E9ECEF",
+            "100": "#CFD5DC",
+            "200": "#A1ACB9",
+            "300": "#758598",
+            "400": "#425870",
+            "500": "#0E2A47",
+            "600": "#091F36",
+            "700": "#051526",
+            "800": "#020B18",
+            "900": "#01040B"
+          }
+        },
+        "secondary": {
+          "name": "Mint teal",
+          "hex": "#3CCFB0",
+          "tints": {
+            "50": "#F2FBF8",
+            "100": "#E2F7F0",
+            "200": "#C4EFE2",
+            "300": "#A5E6D4",
+            "400": "#7BDBC2",
+            "500": "#3CCFB0",
+            "600": "#2EA48B",
+            "700": "#207A67",
+            "800": "#135446",
+            "900": "#08342B"
+          }
+        },
+        "tertiary": {
+          "name": "Deep ink",
+          "hex": "#0A1726",
+          "tints": {
+            "50": "#E8EAEC",
+            "100": "#CDD0D4",
+            "200": "#9DA3AA",
+            "300": "#6F7882",
+            "400": "#3C4754",
+            "500": "#0A1726",
+            "600": "#06101C",
+            "700": "#030912",
+            "800": "#010409",
+            "900": "#010204"
+          }
+        },
+        "neutral": {
+          "name": "Cloud",
+          "hex": "#F4F8FA",
+          "tints": {
+            "50": "#FEFEFF",
+            "100": "#FDFEFE",
+            "200": "#FBFCFD",
+            "300": "#F9FBFC",
+            "400": "#F7FAFB",
+            "500": "#F4F8FA",
+            "600": "#C1C5C6",
+            "700": "#919495",
+            "800": "#646667",
+            "900": "#3F4041"
+          }
+        }
+      },
+      "fonts": {
+        "headline": "Readex Pro",
+        "body": "IBM Plex Sans Arabic"
+      },
+      "motif": "Fine-line Saudi geometric pattern",
+      "photography": "Riyadh shopkeepers, terminal and phone close-ups, cool daylight",
+      "direction": {
+        "do": [
+          "Leave lots of white space; let navy carry structure",
+          "Use mint teal only for the one thing to act on",
+          "Keep the star pattern fine and quiet, never behind body text",
+          "Cool daylight photos of real shop moments"
+        ],
+        "dont": [
+          "No gradients, glows or neon fintech effects",
+          "No stock-photo handshakes over coins or cash piles",
+          "No readable screens, card numbers or receipts",
+          "Never put teal text on white for body copy"
+        ]
+      },
+      "symbol": {
+        "option": "sarafa-b",
+        "prompt": "For a Saudi payments brand about exchange: a solid circle (coin) split by one clean diagonal channel into two offset halves that slide past each other, suggesting money changing hands; left half deep ink navy #0E2A47, right half mint teal #3CCFB0. Minimal flat vector logo symbol, centred on pure white, square 1:1, generous padding, crisp edges, at most two colours plus white, no text, no letters, no numbers, no words, no gradients, no shadows, no 3D, no mockup, no border.",
+        "generator": "Codex Skylink built-in image_gen",
+        "sourceId": "exec-1d673b22-287d-4365-ad8e-1a301c1e833e"
+      },
       "logo": {
-        "file": "sarafa-pay/logo.svg",
-        "alt": "Sarafa Pay wordmark with original teal settlement-path icon"
+        "file": "sarafa-pay/lockup-en-light-2x.png",
+        "alt": "Sarafa Pay logo"
       },
       "mark": {
-        "file": "sarafa-pay/mark.svg",
-        "alt": "Original teal settlement-path mark on navy"
+        "file": "sarafa-pay/symbol-2x.png",
+        "alt": "Sarafa Pay symbol"
       },
+      "logoVariants": [
+        {
+          "id": "sarafa-pay-symbol-2x",
+          "file": "sarafa-pay/symbol-2x.png",
+          "alt": "Sarafa Pay symbol",
+          "variant": "symbol",
+          "lang": null,
+          "scale": 2
+        },
+        {
+          "id": "sarafa-pay-symbol-3x",
+          "file": "sarafa-pay/symbol-3x.png",
+          "alt": "Sarafa Pay symbol",
+          "variant": "symbol",
+          "lang": null,
+          "scale": 3
+        },
+        {
+          "id": "sarafa-pay-symbol-dark-2x",
+          "file": "sarafa-pay/symbol-dark-2x.png",
+          "alt": "Sarafa Pay symbol for dark backgrounds",
+          "variant": "symbol-dark",
+          "lang": null,
+          "scale": 2
+        },
+        {
+          "id": "sarafa-pay-symbol-dark-3x",
+          "file": "sarafa-pay/symbol-dark-3x.png",
+          "alt": "Sarafa Pay symbol for dark backgrounds",
+          "variant": "symbol-dark",
+          "lang": null,
+          "scale": 3
+        },
+        {
+          "id": "sarafa-pay-lockup-en-light-2x",
+          "file": "sarafa-pay/lockup-en-light-2x.png",
+          "alt": "Sarafa Pay logo",
+          "variant": "light",
+          "lang": "en",
+          "scale": 2
+        },
+        {
+          "id": "sarafa-pay-lockup-en-light-3x",
+          "file": "sarafa-pay/lockup-en-light-3x.png",
+          "alt": "Sarafa Pay logo",
+          "variant": "light",
+          "lang": "en",
+          "scale": 3
+        },
+        {
+          "id": "sarafa-pay-lockup-en-dark-2x",
+          "file": "sarafa-pay/lockup-en-dark-2x.png",
+          "alt": "Sarafa Pay logo for dark backgrounds",
+          "variant": "dark",
+          "lang": "en",
+          "scale": 2
+        },
+        {
+          "id": "sarafa-pay-lockup-en-dark-3x",
+          "file": "sarafa-pay/lockup-en-dark-3x.png",
+          "alt": "Sarafa Pay logo for dark backgrounds",
+          "variant": "dark",
+          "lang": "en",
+          "scale": 3
+        },
+        {
+          "id": "sarafa-pay-lockup-ar-light-2x",
+          "file": "sarafa-pay/lockup-ar-light-2x.png",
+          "alt": "Sarafa Pay logo in Arabic",
+          "variant": "light",
+          "lang": "ar",
+          "scale": 2
+        },
+        {
+          "id": "sarafa-pay-lockup-ar-light-3x",
+          "file": "sarafa-pay/lockup-ar-light-3x.png",
+          "alt": "Sarafa Pay logo in Arabic",
+          "variant": "light",
+          "lang": "ar",
+          "scale": 3
+        },
+        {
+          "id": "sarafa-pay-lockup-ar-dark-2x",
+          "file": "sarafa-pay/lockup-ar-dark-2x.png",
+          "alt": "Sarafa Pay logo in Arabic for dark backgrounds",
+          "variant": "dark",
+          "lang": "ar",
+          "scale": 2
+        },
+        {
+          "id": "sarafa-pay-lockup-ar-dark-3x",
+          "file": "sarafa-pay/lockup-ar-dark-3x.png",
+          "alt": "Sarafa Pay logo in Arabic for dark backgrounds",
+          "variant": "dark",
+          "lang": "ar",
+          "scale": 3
+        }
+      ],
       "gallery": [
         {
-          "id": "sarafa-merchant-hero",
-          "file": "sarafa-pay/merchant-hero.webp",
-          "alt": "Illustrative Saudi small-business merchant and colleague reviewing a tablet in a modern boutique and parcel workspace",
+          "id": "sarafa-hero-boutique",
+          "file": "sarafa-pay/hero-boutique.webp",
+          "alt": "Illustrative generated brand image: Riyadh boutique owner, a Saudi man in a crisp thobe, smiling as he taps a phone on a slim card terminal at his counter; cool morning daylight; deep navy and mint teal accents in the interior.",
           "role": "hero",
+          "tags": [
+            "hero",
+            "precise and calm",
+            "terminal",
+            "people"
+          ],
           "provenance": "generated",
-          "prompt": "Premium editorial Saudi small-business merchant man and female colleague reviewing a tablet in a modern boutique and parcel workspace; natural daylight; restrained navy and teal; quiet negative space at left; no text, logos, watermarks or legible personal data; landscape 3:2.",
+          "prompt": "Photorealistic natural editorial photograph for a fictional demo brand; candid, real material texture, premium magazine quality. No text, no readable signage, no logos, no numbers, no watermark, no legible screens or personal data, no collage, no border. Wide landscape composition with calm negative space on one side for a headline. Riyadh boutique owner, a Saudi man in a crisp thobe, smiling as he taps a phone on a slim card terminal at his counter; cool morning daylight; deep navy and mint teal accents in the interior.",
           "generator": "Codex Skylink built-in image_gen",
-          "sourceId": "exec-e2caea33-b835-4777-84ad-558c6c56bdb2"
+          "sourceId": "exec-4fcf4ead-6bf1-4355-a469-d2db59061268"
         },
         {
-          "id": "sarafa-reconciliation-desk",
-          "file": "sarafa-pay/merchant-reconciliation.webp",
-          "alt": "Illustrative small-business operator reviewing a payment reconciliation dashboard",
-          "role": "detail",
+          "id": "sarafa-hero-souq",
+          "file": "sarafa-pay/hero-souq.webp",
+          "alt": "Illustrative generated brand image: A modern Riyadh souq-style lane of small shops at blue hour, clean stone, soft cool light, a few shopkeepers in the distance, deep navy sky, subtle teal shop lighting.",
+          "role": "hero",
+          "tags": [
+            "hero",
+            "precise and calm"
+          ],
           "provenance": "generated",
-          "prompt": "Generate one photorealistic-natural editorial business photograph for an illustrative demo brand kit. Scene: close, oblique view of a small-business finance operator reviewing a digital payment reconciliation dashboard on a laptop at a tidy modern office desk, hands visible but no readable personal data. Deep navy and restrained teal accents from ambient reflected light and office details. Natural morning window light, real material texture, candid moment, sophisticated B2B fintech editorial photography, landscape 3:2 framing, clear subject with subtle quiet space around it. The laptop UI must be abstract and unreadable: no text, no numbers, no logos, no customer names, no legible PII, no watermark. One photo only, no collage, no borders, no graphic overlay. Intended as supporting gallery photography for a fictional demo company, not evidence about a real customer.",
+          "prompt": "Photorealistic natural editorial photograph for a fictional demo brand; candid, real material texture, premium magazine quality. No text, no readable signage, no logos, no numbers, no watermark, no legible screens or personal data, no collage, no border. Wide landscape composition with calm negative space on one side for a headline. A modern Riyadh souq-style lane of small shops at blue hour, clean stone, soft cool light, a few shopkeepers in the distance, deep navy sky, subtle teal shop lighting.",
           "generator": "Codex Skylink built-in image_gen",
-          "sourceId": "exec-33a20591-f2b0-49b0-ad40-df057c38f104"
+          "sourceId": "exec-8fe013a7-0a62-4e54-b68d-293263672c29"
         },
         {
-          "id": "sarafa-cafe-terminal-detail",
-          "file": "sarafa-pay/merchant-product-detail.webp",
-          "alt": "Illustrative merchant checking a contactless terminal at an independent café",
-          "role": "supporting",
+          "id": "sarafa-hero-office",
+          "file": "sarafa-pay/hero-office.webp",
+          "alt": "Illustrative generated brand image: A calm Saudi finance operations room: a Saudi woman in an abaya and a male colleague reviewing an abstract chart on a large monitor, cool daylight, white surfaces, navy and teal details.",
+          "role": "hero",
+          "tags": [
+            "hero",
+            "precise and calm",
+            "people"
+          ],
           "provenance": "generated",
-          "prompt": "Generate one photorealistic-natural editorial business photograph for an illustrative fictional fintech demo brand. Scene: close three-quarter view of a merchant carefully checking a contactless payment terminal beside a laptop at an independent café counter in Riyadh, hands and equipment in focus, customer faces absent. Contemporary warm stone-and-wood interior, restrained deep navy and teal details. Candid natural daylight, tactile real-world surfaces, elegant B2B fintech editorial quality, landscape 3:2 crop, room to breathe. Terminal screen and laptop must be abstract and fully unreadable: no numbers, text, PII, bank details, card numbers, logos, or watermark. No graphic overlay, no collage. This is demo brand imagery, not evidence of a real customer.",
+          "prompt": "Photorealistic natural editorial photograph for a fictional demo brand; candid, real material texture, premium magazine quality. No text, no readable signage, no logos, no numbers, no watermark, no legible screens or personal data, no collage, no border. Wide landscape composition with calm negative space on one side for a headline. A calm Saudi finance operations room: a Saudi woman in an abaya and a male colleague reviewing an abstract chart on a large monitor, cool daylight, white surfaces, navy and teal details.",
           "generator": "Codex Skylink built-in image_gen",
-          "sourceId": "exec-9bb69694-e862-4b10-9f3c-d13de898f50b"
+          "sourceId": "exec-9d6da421-2038-4832-bc43-4c39436dfce7"
+        },
+        {
+          "id": "sarafa-hero-tap",
+          "file": "sarafa-pay/hero-tap.webp",
+          "alt": "Illustrative generated brand image: Extreme close-up of a hand holding a phone above a contactless card terminal on a white marble counter, cool daylight, mint teal glow, shallow depth of field.",
+          "role": "hero",
+          "tags": [
+            "hero",
+            "precise and calm",
+            "close-up",
+            "terminal"
+          ],
+          "provenance": "generated",
+          "prompt": "Photorealistic natural editorial photograph for a fictional demo brand; candid, real material texture, premium magazine quality. No text, no readable signage, no logos, no numbers, no watermark, no legible screens or personal data, no collage, no border. Wide landscape composition with calm negative space on one side for a headline. Extreme close-up of a hand holding a phone above a contactless card terminal on a white marble counter, cool daylight, mint teal glow, shallow depth of field.",
+          "generator": "Codex Skylink built-in image_gen",
+          "sourceId": "exec-b2d6d46d-0007-4431-ad6a-92f80d9e7ce4"
+        },
+        {
+          "id": "sarafa-photo-grocer",
+          "file": "sarafa-pay/photo-grocer.webp",
+          "alt": "Illustrative generated brand image: A Saudi grocer at a tidy neighbourhood shop arranging dates beside a small card terminal, cool daylight, navy and teal touches.",
+          "role": "photo",
+          "tags": [
+            "photo",
+            "precise and calm",
+            "terminal"
+          ],
+          "provenance": "generated",
+          "prompt": "Photorealistic natural editorial photograph for a fictional demo brand; candid, real material texture, premium magazine quality. No text, no readable signage, no logos, no numbers, no watermark, no legible screens or personal data, no collage, no border. Landscape 3:2. A Saudi grocer at a tidy neighbourhood shop arranging dates beside a small card terminal, cool daylight, navy and teal touches.",
+          "generator": "Codex Skylink built-in image_gen",
+          "sourceId": "exec-12176840-f80d-4f52-913f-8cc741ddb984"
+        },
+        {
+          "id": "sarafa-photo-cafe",
+          "file": "sarafa-pay/photo-cafe.webp",
+          "alt": "Illustrative generated brand image: A barista in a minimalist Riyadh specialty café handing a cup across the counter while a customer pays by phone, faces turned away, cool light.",
+          "role": "photo",
+          "tags": [
+            "photo",
+            "precise and calm",
+            "people"
+          ],
+          "provenance": "generated",
+          "prompt": "Photorealistic natural editorial photograph for a fictional demo brand; candid, real material texture, premium magazine quality. No text, no readable signage, no logos, no numbers, no watermark, no legible screens or personal data, no collage, no border. Landscape 3:2. A barista in a minimalist Riyadh specialty café handing a cup across the counter while a customer pays by phone, faces turned away, cool light.",
+          "generator": "Codex Skylink built-in image_gen",
+          "sourceId": "exec-505911ac-91a3-4d85-b231-eb82216828ec"
+        },
+        {
+          "id": "sarafa-photo-terminal",
+          "file": "sarafa-pay/photo-terminal.webp",
+          "alt": "Illustrative generated brand image: Product close-up of a slim white card terminal and a phone on a navy fabric surface, crisp cool studio daylight, mint teal reflection, abstract blank screens.",
+          "role": "photo",
+          "tags": [
+            "photo",
+            "precise and calm",
+            "product",
+            "close-up",
+            "terminal"
+          ],
+          "provenance": "generated",
+          "prompt": "Photorealistic natural editorial photograph for a fictional demo brand; candid, real material texture, premium magazine quality. No text, no readable signage, no logos, no numbers, no watermark, no legible screens or personal data, no collage, no border. Landscape 3:2. Product close-up of a slim white card terminal and a phone on a navy fabric surface, crisp cool studio daylight, mint teal reflection, abstract blank screens.",
+          "generator": "Codex Skylink built-in image_gen",
+          "sourceId": "exec-b2300457-6dcd-4698-bea5-d290aac73c30"
+        },
+        {
+          "id": "sarafa-photo-laptop",
+          "file": "sarafa-pay/photo-laptop.webp",
+          "alt": "Illustrative generated brand image: Over-the-shoulder view of a Saudi woman reviewing an abstract dashboard on a laptop in a bright office, unreadable UI, cool daylight.",
+          "role": "photo",
+          "tags": [
+            "photo",
+            "precise and calm",
+            "office",
+            "laptop",
+            "people"
+          ],
+          "provenance": "generated",
+          "prompt": "Photorealistic natural editorial photograph for a fictional demo brand; candid, real material texture, premium magazine quality. No text, no readable signage, no logos, no numbers, no watermark, no legible screens or personal data, no collage, no border. Landscape 3:2. Over-the-shoulder view of a Saudi woman reviewing an abstract dashboard on a laptop in a bright office, unreadable UI, cool daylight.",
+          "generator": "Codex Skylink built-in image_gen",
+          "sourceId": "exec-125e689d-3ff6-4437-b678-bcaf7f509ee5"
+        },
+        {
+          "id": "sarafa-photo-handshake",
+          "file": "sarafa-pay/photo-handshake.webp",
+          "alt": "Illustrative generated brand image: Two Saudi business partners shaking hands across a clean desk in a glass office, soft cool daylight, navy suit tones.",
+          "role": "photo",
+          "tags": [
+            "photo",
+            "precise and calm",
+            "office",
+            "people"
+          ],
+          "provenance": "generated",
+          "prompt": "Photorealistic natural editorial photograph for a fictional demo brand; candid, real material texture, premium magazine quality. No text, no readable signage, no logos, no numbers, no watermark, no legible screens or personal data, no collage, no border. Landscape 3:2. Two Saudi business partners shaking hands across a clean desk in a glass office, soft cool daylight, navy suit tones.",
+          "generator": "Codex Skylink built-in image_gen",
+          "sourceId": "exec-2f3d58e9-6376-43c4-8fd7-f589be0ca708"
+        },
+        {
+          "id": "sarafa-photo-skyline",
+          "file": "sarafa-pay/photo-skyline.webp",
+          "alt": "Illustrative generated brand image: Riyadh business district skyline in early morning haze, cool blue tones, clean architecture, generic towers without recognisable logos.",
+          "role": "photo",
+          "tags": [
+            "photo",
+            "precise and calm"
+          ],
+          "provenance": "generated",
+          "prompt": "Photorealistic natural editorial photograph for a fictional demo brand; candid, real material texture, premium magazine quality. No text, no readable signage, no logos, no numbers, no watermark, no legible screens or personal data, no collage, no border. Landscape 3:2. Riyadh business district skyline in early morning haze, cool blue tones, clean architecture, generic towers without recognisable logos.",
+          "generator": "Codex Skylink built-in image_gen",
+          "sourceId": "exec-799b8bd0-a3f5-4950-9755-1539e82bc3f7"
+        },
+        {
+          "id": "sarafa-texture-khatam",
+          "file": "sarafa-pay/texture-khatam.webp",
+          "alt": "Illustrative generated brand image: Fine thin-line Saudi eight-point star geometric lattice, deep ink navy lines on white, very delicate and calm.",
+          "role": "texture",
+          "tags": [
+            "texture",
+            "precise and calm",
+            "pattern"
+          ],
+          "provenance": "generated",
+          "prompt": "Seamless flat graphic background pattern, edge to edge, no focal object, no text, no letters, no logos, no watermark, no mockup. Fine thin-line Saudi eight-point star geometric lattice, deep ink navy #0E2A47 lines on white, very delicate and calm. Square 1:1.",
+          "generator": "Codex Skylink built-in image_gen",
+          "sourceId": "exec-33830a62-1c0f-4bb4-abe0-be32099b17c7"
+        },
+        {
+          "id": "sarafa-texture-navy",
+          "file": "sarafa-pay/texture-navy.webp",
+          "alt": "Illustrative generated brand image: Fine thin-line Saudi geometric star lattice in mint teal at low contrast on deep ink navy .",
+          "role": "texture",
+          "tags": [
+            "texture",
+            "precise and calm",
+            "pattern"
+          ],
+          "provenance": "generated",
+          "prompt": "Seamless flat graphic background pattern, edge to edge, no focal object, no text, no letters, no logos, no watermark, no mockup. Fine thin-line Saudi geometric star lattice in mint teal #3CCFB0 at low contrast on deep ink navy #0E2A47. Square 1:1.",
+          "generator": "Codex Skylink built-in image_gen",
+          "sourceId": "exec-658be58a-ebd1-4f9a-9ca1-d1f5aa5032ad"
+        },
+        {
+          "id": "sarafa-texture-grid",
+          "file": "sarafa-pay/texture-grid.webp",
+          "alt": "Illustrative generated brand image: Very subtle precise grid of thin diagonal lines forming small diamonds, pale mint on off-white , minimal.",
+          "role": "texture",
+          "tags": [
+            "texture",
+            "precise and calm",
+            "pattern"
+          ],
+          "provenance": "generated",
+          "prompt": "Seamless flat graphic background pattern, edge to edge, no focal object, no text, no letters, no logos, no watermark, no mockup. Very subtle precise grid of thin diagonal lines forming small diamonds, pale mint on off-white #F4F8FA, minimal. Square 1:1.",
+          "generator": "Codex Skylink built-in image_gen",
+          "sourceId": "exec-9a26905a-c538-45e4-84d1-49c3baf7c8b1"
+        },
+        {
+          "id": "sarafa-texture-arc",
+          "file": "sarafa-pay/texture-arc.webp",
+          "alt": "Illustrative generated brand image: Smooth large concentric arcs in deep ink navy with one thin mint teal arc, calm abstract, plenty of empty navy.",
+          "role": "texture",
+          "tags": [
+            "texture",
+            "precise and calm",
+            "pattern"
+          ],
+          "provenance": "generated",
+          "prompt": "Seamless flat graphic background pattern, edge to edge, no focal object, no text, no letters, no logos, no watermark, no mockup. Smooth large concentric arcs in deep ink navy #0E2A47 with one thin mint teal #3CCFB0 arc, calm abstract, plenty of empty navy. Square 1:1.",
+          "generator": "Codex Skylink built-in image_gen",
+          "sourceId": "exec-729c4062-2898-4c5d-b95c-e5e6f43864e6"
+        },
+        {
+          "id": "sarafa-cover-terminal",
+          "file": "sarafa-pay/cover-terminal.webp",
+          "alt": "Illustrative generated brand image: A single card terminal on a deep navy surface lit by a narrow beam of cool daylight, mint teal edge highlight, abstract blank screen.",
+          "role": "cover",
+          "tags": [
+            "cover",
+            "precise and calm",
+            "terminal"
+          ],
+          "provenance": "generated",
+          "prompt": "Photorealistic natural editorial photograph for a fictional demo brand; candid, real material texture, premium magazine quality. No text, no readable signage, no logos, no numbers, no watermark, no legible screens or personal data, no collage, no border. Square 1:1 composition, strong single subject, space at the bottom third for a headline. A single card terminal on a deep navy surface lit by a narrow beam of cool daylight, mint teal edge highlight, abstract blank screen.",
+          "generator": "Codex Skylink built-in image_gen",
+          "sourceId": "exec-da297550-e542-4b8c-b442-6a839c05e948"
+        },
+        {
+          "id": "sarafa-cover-merchant",
+          "file": "sarafa-pay/cover-merchant.webp",
+          "alt": "Illustrative generated brand image: Portrait of a confident young Saudi female shop owner standing in her minimalist boutique doorway, cool daylight, navy and teal palette.",
+          "role": "cover",
+          "tags": [
+            "cover",
+            "precise and calm",
+            "people"
+          ],
+          "provenance": "generated",
+          "prompt": "Photorealistic natural editorial photograph for a fictional demo brand; candid, real material texture, premium magazine quality. No text, no readable signage, no logos, no numbers, no watermark, no legible screens or personal data, no collage, no border. Square 1:1 composition, strong single subject, space at the bottom third for a headline. Portrait of a confident young Saudi female shop owner standing in her minimalist boutique doorway, cool daylight, navy and teal palette.",
+          "generator": "Codex Skylink built-in image_gen",
+          "sourceId": "exec-04c53fb0-7057-4336-b631-76164863056d"
         }
       ]
     },
     {
       "id": "wasla-express",
-      "workspaceName": "Mirqab · Logistics client (Egypt)",
+      "workspaceId": "a14a01ac-902e-49dd-8931-89b85e24f5f5",
       "brandName": "Wasla Express",
-      "primary": "#f2c94c",
-      "accent": "#1d1d1f",
-      "palette": [
-        "#f2c94c",
-        "#1d1d1f",
-        "#f7f4ed",
-        "#77716a"
-      ],
-      "visualDirection": "Dependable urban operations: a clear saffron route signal, ink-black structure, warm Cairo material palette, and practical editorial framing.",
-      "photoDirection": "Unbranded Cairo parcel handoff, sorting workflow, and city van in candid documentary scenes; avoid readable signage, labels, or vehicle identity.",
+      "brandNameAr": "وصلة إكسبريس",
+      "mood": "Bold and fast",
+      "palette": {
+        "primary": {
+          "name": "Saffron",
+          "hex": "#F5B700",
+          "tints": {
+            "50": "#FEFAF0",
+            "100": "#FEF3DE",
+            "200": "#FCE6BC",
+            "300": "#FBDA98",
+            "400": "#F8C968",
+            "500": "#F5B700",
+            "600": "#C29000",
+            "700": "#926C00",
+            "800": "#644900",
+            "900": "#3F2D00"
+          }
+        },
+        "secondary": {
+          "name": "Asphalt",
+          "hex": "#111111",
+          "tints": {
+            "50": "#E9E9E9",
+            "100": "#CECECE",
+            "200": "#9F9F9F",
+            "300": "#737373",
+            "400": "#414141",
+            "500": "#111111",
+            "600": "#0B0B0B",
+            "700": "#060606",
+            "800": "#030303",
+            "900": "#010101"
+          }
+        },
+        "tertiary": {
+          "name": "Dust",
+          "hex": "#7A7268",
+          "tints": {
+            "50": "#F4F3F2",
+            "100": "#E6E4E2",
+            "200": "#CDCAC6",
+            "300": "#B5B0AB",
+            "400": "#98928A",
+            "500": "#7A7268",
+            "600": "#5F5951",
+            "700": "#46413B",
+            "800": "#2E2B26",
+            "900": "#1B1815"
+          }
+        },
+        "neutral": {
+          "name": "Bone",
+          "hex": "#F7F3EA",
+          "tints": {
+            "50": "#FEFEFD",
+            "100": "#FEFDFB",
+            "200": "#FCFBF7",
+            "300": "#FBF9F4",
+            "400": "#F9F6EF",
+            "500": "#F7F3EA",
+            "600": "#C4C1B9",
+            "700": "#93918B",
+            "800": "#65635F",
+            "900": "#403F3C"
+          }
+        }
+      },
+      "fonts": {
+        "headline": "Rubik",
+        "body": "Cairo"
+      },
+      "motif": "Diagonal speed lines",
+      "photography": "Cairo streets, riders, parcels and vans at golden hour",
+      "direction": {
+        "do": [
+          "Big heavy headlines, few words",
+          "Saffron on black for the strongest moments",
+          "Diagonal speed lines lean forward, left to right in English, right to left in Arabic",
+          "Golden-hour motion: riders, vans, parcels in hand"
+        ],
+        "dont": [
+          "No thin or light type in headlines",
+          "No readable plates, signs or shipping labels",
+          "Never set saffron text on white",
+          "No calm, empty studio shots; keep the street energy"
+        ]
+      },
+      "symbol": {
+        "option": "wasla-a",
+        "prompt": "For an Egyptian express delivery company: three bold parallel diagonal speed bars stepping forward to form a sharp right-pointing chevron, strong and fast; saffron yellow #F5B700 bars with one bar in near-black #111111. Minimal flat vector logo symbol, centred on pure white, square 1:1, generous padding, crisp edges, at most two colours plus white, no text, no letters, no numbers, no words, no gradients, no shadows, no 3D, no mockup, no border.",
+        "generator": "Codex Skylink built-in image_gen",
+        "sourceId": "exec-c16ed51d-f5ff-4aef-8ea0-5e5d85e8faf0"
+      },
       "logo": {
-        "file": "wasla-express/logo.svg",
-        "alt": "Wasla Express wordmark with original saffron parcel-route icon"
+        "file": "wasla-express/lockup-en-light-2x.png",
+        "alt": "Wasla Express logo"
       },
       "mark": {
-        "file": "wasla-express/mark.svg",
-        "alt": "Original parcel-route mark on saffron"
+        "file": "wasla-express/symbol-2x.png",
+        "alt": "Wasla Express symbol"
       },
+      "logoVariants": [
+        {
+          "id": "wasla-express-symbol-2x",
+          "file": "wasla-express/symbol-2x.png",
+          "alt": "Wasla Express symbol",
+          "variant": "symbol",
+          "lang": null,
+          "scale": 2
+        },
+        {
+          "id": "wasla-express-symbol-3x",
+          "file": "wasla-express/symbol-3x.png",
+          "alt": "Wasla Express symbol",
+          "variant": "symbol",
+          "lang": null,
+          "scale": 3
+        },
+        {
+          "id": "wasla-express-symbol-dark-2x",
+          "file": "wasla-express/symbol-dark-2x.png",
+          "alt": "Wasla Express symbol for dark backgrounds",
+          "variant": "symbol-dark",
+          "lang": null,
+          "scale": 2
+        },
+        {
+          "id": "wasla-express-symbol-dark-3x",
+          "file": "wasla-express/symbol-dark-3x.png",
+          "alt": "Wasla Express symbol for dark backgrounds",
+          "variant": "symbol-dark",
+          "lang": null,
+          "scale": 3
+        },
+        {
+          "id": "wasla-express-lockup-en-light-2x",
+          "file": "wasla-express/lockup-en-light-2x.png",
+          "alt": "Wasla Express logo",
+          "variant": "light",
+          "lang": "en",
+          "scale": 2
+        },
+        {
+          "id": "wasla-express-lockup-en-light-3x",
+          "file": "wasla-express/lockup-en-light-3x.png",
+          "alt": "Wasla Express logo",
+          "variant": "light",
+          "lang": "en",
+          "scale": 3
+        },
+        {
+          "id": "wasla-express-lockup-en-dark-2x",
+          "file": "wasla-express/lockup-en-dark-2x.png",
+          "alt": "Wasla Express logo for dark backgrounds",
+          "variant": "dark",
+          "lang": "en",
+          "scale": 2
+        },
+        {
+          "id": "wasla-express-lockup-en-dark-3x",
+          "file": "wasla-express/lockup-en-dark-3x.png",
+          "alt": "Wasla Express logo for dark backgrounds",
+          "variant": "dark",
+          "lang": "en",
+          "scale": 3
+        },
+        {
+          "id": "wasla-express-lockup-ar-light-2x",
+          "file": "wasla-express/lockup-ar-light-2x.png",
+          "alt": "Wasla Express logo in Arabic",
+          "variant": "light",
+          "lang": "ar",
+          "scale": 2
+        },
+        {
+          "id": "wasla-express-lockup-ar-light-3x",
+          "file": "wasla-express/lockup-ar-light-3x.png",
+          "alt": "Wasla Express logo in Arabic",
+          "variant": "light",
+          "lang": "ar",
+          "scale": 3
+        },
+        {
+          "id": "wasla-express-lockup-ar-dark-2x",
+          "file": "wasla-express/lockup-ar-dark-2x.png",
+          "alt": "Wasla Express logo in Arabic for dark backgrounds",
+          "variant": "dark",
+          "lang": "ar",
+          "scale": 2
+        },
+        {
+          "id": "wasla-express-lockup-ar-dark-3x",
+          "file": "wasla-express/lockup-ar-dark-3x.png",
+          "alt": "Wasla Express logo in Arabic for dark backgrounds",
+          "variant": "dark",
+          "lang": "ar",
+          "scale": 3
+        }
+      ],
       "gallery": [
         {
-          "id": "wasla-cairo-parcel-handoff",
-          "file": "wasla-express/urban-parcel-handoff.webp",
-          "alt": "Illustrative unbranded courier handing a parcel to a Cairo shop owner",
+          "id": "wasla-hero-rider",
+          "file": "wasla-express/hero-rider.webp",
+          "alt": "Illustrative generated brand image: Cairo delivery rider on a motorbike with an unbranded black and saffron yellow parcel box, motion blur through a busy street at golden hour, warm dust in the air.",
           "role": "hero",
+          "tags": [
+            "hero",
+            "bold and fast",
+            "street",
+            "parcel",
+            "people"
+          ],
           "provenance": "generated",
-          "prompt": "Generate one photorealistic-natural editorial business photograph for an illustrative Egyptian logistics demo brand. Scene: a courier in a plain unbranded jacket handing a small unmarked parcel to a shop owner at a Cairo neighborhood storefront, natural respectful interaction, no staged handshake, candid mid-action. Subtle saffron-yellow and ink-black accents on neutral warm city tones, older Cairo street textures with a glimpse of modern city life, no readable signs. Late-afternoon natural light, documentary editorial photography, landscape 3:2 frame, varied medium-wide crop with clear environmental context. No logos, no text, no labels, no watermark, no package branding, no plate numbers, no collage or overlay. Illustrative demo image, not a factual customer scene.",
+          "prompt": "Photorealistic natural editorial photograph for a fictional demo brand; candid, real material texture, premium magazine quality. No text, no readable signage, no logos, no numbers, no watermark, no legible screens or personal data, no collage, no border. Wide landscape composition with calm negative space on one side for a headline. Cairo delivery rider on a motorbike with an unbranded black and saffron yellow parcel box, motion blur through a busy street at golden hour, warm dust in the air.",
           "generator": "Codex Skylink built-in image_gen",
-          "sourceId": "exec-1a6d0cc5-1f0b-4cd7-9f51-ff4d90446d37"
+          "sourceId": "exec-cae973bb-74e4-4e3c-84a2-8a2782922435"
         },
         {
-          "id": "wasla-sorting-hub",
-          "file": "wasla-express/sorting-hub.webp",
-          "alt": "Illustrative staff sorting unmarked parcels in a Cairo delivery hub",
-          "role": "detail",
+          "id": "wasla-hero-van",
+          "file": "wasla-express/hero-van.webp",
+          "alt": "Illustrative generated brand image: An unbranded black delivery van with a saffron yellow stripe driving across a Cairo bridge over the Nile at golden hour, motion blur, no plates visible.",
+          "role": "hero",
+          "tags": [
+            "hero",
+            "bold and fast"
+          ],
           "provenance": "generated",
-          "prompt": "Generate one photorealistic-natural editorial photograph for an illustrative fictional Egyptian logistics demo brand. Scene: a small urban parcel-sorting hub in Cairo, two workers in plain unbranded workwear arranging clean unmarked cartons on a waist-high sorting table, shelving and roller belt visible, no staged poses. Saffron-yellow labels are not allowed; use one subtle saffron strap or vest accent against ink-dark workwear and neutral concrete. Practical industrial light with a natural window edge, tactile cardboard and real surfaces, candid documentary quality, landscape 3:2 composition, medium-wide angle showing organized workflow. Every parcel and surface must be unmarked and without readable text, codes, addresses, numbers, logos, watermark, or in-image graphics. One photo, no collage. Demo brand imagery only.",
+          "prompt": "Photorealistic natural editorial photograph for a fictional demo brand; candid, real material texture, premium magazine quality. No text, no readable signage, no logos, no numbers, no watermark, no legible screens or personal data, no collage, no border. Wide landscape composition with calm negative space on one side for a headline. An unbranded black delivery van with a saffron yellow stripe driving across a Cairo bridge over the Nile at golden hour, motion blur, no plates visible.",
           "generator": "Codex Skylink built-in image_gen",
-          "sourceId": "exec-2729894e-0699-4ba1-8fcb-f87ebc076e96"
+          "sourceId": "exec-00e7c1c1-c4f6-4b3e-a737-4f62d0caa4bd"
         },
         {
-          "id": "wasla-city-route-van",
-          "file": "wasla-express/city-route-van.webp",
-          "alt": "Illustrative unbranded delivery van and courier on a Cairo street",
-          "role": "supporting",
+          "id": "wasla-hero-hub",
+          "file": "wasla-express/hero-hub.webp",
+          "alt": "Illustrative generated brand image: A large busy parcel sorting hub in Egypt, conveyor belts full of cardboard parcels, workers in black uniforms with yellow vests, warm industrial light.",
+          "role": "hero",
+          "tags": [
+            "hero",
+            "bold and fast",
+            "parcel"
+          ],
           "provenance": "generated",
-          "prompt": "Generate one photorealistic-natural editorial photograph for a fictional Egyptian delivery-service demo brand. Scene: a compact clean unbranded delivery van moving slowly along a Cairo side street with an adult courier beside the open rear preparing an unmarked parcel for the next stop; lived-in buildings, palms or distant urban landmark silhouettes establish Cairo without readable signs. No customer interaction. Subtle saffron accent on the courier's plain jacket against ink and warm stone colors. Bright but soft morning daylight, documentary commercial photography, landscape 3:2 framing, wide contextual crop with vehicle and street legible. No logos, writing, delivery labels, license-plate characters, watermark, or graphic overlays. One image, not a collage; illustrative demo imagery, not a real company fleet.",
+          "prompt": "Photorealistic natural editorial photograph for a fictional demo brand; candid, real material texture, premium magazine quality. No text, no readable signage, no logos, no numbers, no watermark, no legible screens or personal data, no collage, no border. Wide landscape composition with calm negative space on one side for a headline. A large busy parcel sorting hub in Egypt, conveyor belts full of cardboard parcels, workers in black uniforms with yellow vests, warm industrial light.",
           "generator": "Codex Skylink built-in image_gen",
-          "sourceId": "exec-519c3b19-1563-4d3c-8a63-13b3b34ac0c6"
+          "sourceId": "exec-e923dadc-0d60-441c-a1e3-8f05b93f1db5"
+        },
+        {
+          "id": "wasla-hero-doorstep",
+          "file": "wasla-express/hero-doorstep.webp",
+          "alt": "Illustrative generated brand image: An Egyptian courier handing a parcel to a smiling customer at the doorway of a Cairo apartment building, golden hour, warm tones.",
+          "role": "hero",
+          "tags": [
+            "hero",
+            "bold and fast",
+            "parcel",
+            "people"
+          ],
+          "provenance": "generated",
+          "prompt": "Photorealistic natural editorial photograph for a fictional demo brand; candid, real material texture, premium magazine quality. No text, no readable signage, no logos, no numbers, no watermark, no legible screens or personal data, no collage, no border. Wide landscape composition with calm negative space on one side for a headline. An Egyptian courier handing a parcel to a smiling customer at the doorway of a Cairo apartment building, golden hour, warm tones.",
+          "generator": "Codex Skylink built-in image_gen",
+          "sourceId": "exec-9dc063ca-961d-4ff1-ad19-c8e6d6413254"
+        },
+        {
+          "id": "wasla-photo-parcels",
+          "file": "wasla-express/photo-parcels.webp",
+          "alt": "Illustrative generated brand image: Stack of plain cardboard parcels with saffron yellow tape on a black steel cart, warm golden light, no labels readable.",
+          "role": "photo",
+          "tags": [
+            "photo",
+            "bold and fast",
+            "parcel"
+          ],
+          "provenance": "generated",
+          "prompt": "Photorealistic natural editorial photograph for a fictional demo brand; candid, real material texture, premium magazine quality. No text, no readable signage, no logos, no numbers, no watermark, no legible screens or personal data, no collage, no border. Landscape 3:2. Stack of plain cardboard parcels with saffron yellow tape on a black steel cart, warm golden light, no labels readable.",
+          "generator": "Codex Skylink built-in image_gen",
+          "sourceId": "exec-0a1c1607-db27-4c10-836c-52529b28cd19"
+        },
+        {
+          "id": "wasla-photo-scanner",
+          "file": "wasla-express/photo-scanner.webp",
+          "alt": "Illustrative generated brand image: Close-up of a warehouse worker's hands scanning a plain parcel with a handheld scanner, warm light, black and saffron yellow tones.",
+          "role": "photo",
+          "tags": [
+            "photo",
+            "bold and fast",
+            "close-up",
+            "parcel",
+            "people"
+          ],
+          "provenance": "generated",
+          "prompt": "Photorealistic natural editorial photograph for a fictional demo brand; candid, real material texture, premium magazine quality. No text, no readable signage, no logos, no numbers, no watermark, no legible screens or personal data, no collage, no border. Landscape 3:2. Close-up of a warehouse worker's hands scanning a plain parcel with a handheld scanner, warm light, black and saffron yellow tones.",
+          "generator": "Codex Skylink built-in image_gen",
+          "sourceId": "exec-c486d1bb-3c4e-46c1-9cff-8a053a6f7d07"
+        },
+        {
+          "id": "wasla-photo-street",
+          "file": "wasla-express/photo-street.webp",
+          "alt": "Illustrative generated brand image: Busy downtown Cairo street at golden hour with a delivery rider weaving between cars, warm haze, no readable signs.",
+          "role": "photo",
+          "tags": [
+            "photo",
+            "bold and fast",
+            "street",
+            "people"
+          ],
+          "provenance": "generated",
+          "prompt": "Photorealistic natural editorial photograph for a fictional demo brand; candid, real material texture, premium magazine quality. No text, no readable signage, no logos, no numbers, no watermark, no legible screens or personal data, no collage, no border. Landscape 3:2. Busy downtown Cairo street at golden hour with a delivery rider weaving between cars, warm haze, no readable signs.",
+          "generator": "Codex Skylink built-in image_gen",
+          "sourceId": "exec-9cc045d6-d89f-4535-9969-dc6e0f307170"
+        },
+        {
+          "id": "wasla-photo-loading",
+          "file": "wasla-express/photo-loading.webp",
+          "alt": "Illustrative generated brand image: Two Egyptian workers loading parcels into the back of an unbranded black van at dawn, warm light, energetic.",
+          "role": "photo",
+          "tags": [
+            "photo",
+            "bold and fast",
+            "parcel"
+          ],
+          "provenance": "generated",
+          "prompt": "Photorealistic natural editorial photograph for a fictional demo brand; candid, real material texture, premium magazine quality. No text, no readable signage, no logos, no numbers, no watermark, no legible screens or personal data, no collage, no border. Landscape 3:2. Two Egyptian workers loading parcels into the back of an unbranded black van at dawn, warm light, energetic.",
+          "generator": "Codex Skylink built-in image_gen",
+          "sourceId": "exec-d3f0f25d-94bd-46ea-ae76-f99656a0dd69"
+        },
+        {
+          "id": "wasla-photo-dispatcher",
+          "file": "wasla-express/photo-dispatcher.webp",
+          "alt": "Illustrative generated brand image: An Egyptian woman dispatcher at a desk with an abstract route map on a monitor, headset on, warm office light, unreadable UI.",
+          "role": "photo",
+          "tags": [
+            "photo",
+            "bold and fast",
+            "office",
+            "people"
+          ],
+          "provenance": "generated",
+          "prompt": "Photorealistic natural editorial photograph for a fictional demo brand; candid, real material texture, premium magazine quality. No text, no readable signage, no logos, no numbers, no watermark, no legible screens or personal data, no collage, no border. Landscape 3:2. An Egyptian woman dispatcher at a desk with an abstract route map on a monitor, headset on, warm office light, unreadable UI.",
+          "generator": "Codex Skylink built-in image_gen",
+          "sourceId": "exec-d6b036ac-d49a-4018-afe6-7eb48cc6660b"
+        },
+        {
+          "id": "wasla-photo-alley",
+          "file": "wasla-express/photo-alley.webp",
+          "alt": "Illustrative generated brand image: A courier walking fast through a narrow old Cairo alley carrying a parcel, warm golden light on stone walls, motion.",
+          "role": "photo",
+          "tags": [
+            "photo",
+            "bold and fast",
+            "parcel",
+            "people"
+          ],
+          "provenance": "generated",
+          "prompt": "Photorealistic natural editorial photograph for a fictional demo brand; candid, real material texture, premium magazine quality. No text, no readable signage, no logos, no numbers, no watermark, no legible screens or personal data, no collage, no border. Landscape 3:2. A courier walking fast through a narrow old Cairo alley carrying a parcel, warm golden light on stone walls, motion.",
+          "generator": "Codex Skylink built-in image_gen",
+          "sourceId": "exec-0d94ff7d-6649-412e-8231-29145950504e"
+        },
+        {
+          "id": "wasla-texture-speed",
+          "file": "wasla-express/texture-speed.webp",
+          "alt": "Illustrative generated brand image: Bold diagonal speed lines in saffron yellow on near-black , dynamic, evenly spread.",
+          "role": "texture",
+          "tags": [
+            "texture",
+            "bold and fast",
+            "pattern"
+          ],
+          "provenance": "generated",
+          "prompt": "Seamless flat graphic background pattern, edge to edge, no focal object, no text, no letters, no logos, no watermark, no mockup. Bold diagonal speed lines in saffron yellow #F5B700 on near-black #111111, dynamic, evenly spread. Square 1:1.",
+          "generator": "Codex Skylink built-in image_gen",
+          "sourceId": "exec-75ede116-6a08-4025-b7a4-6e5ae7812991"
+        },
+        {
+          "id": "wasla-texture-yellow",
+          "file": "wasla-express/texture-yellow.webp",
+          "alt": "Illustrative generated brand image: Thin diagonal speed lines in near-black on saffron yellow , energetic rhythm.",
+          "role": "texture",
+          "tags": [
+            "texture",
+            "bold and fast",
+            "pattern"
+          ],
+          "provenance": "generated",
+          "prompt": "Seamless flat graphic background pattern, edge to edge, no focal object, no text, no letters, no logos, no watermark, no mockup. Thin diagonal speed lines in near-black #111111 on saffron yellow #F5B700, energetic rhythm. Square 1:1.",
+          "generator": "Codex Skylink built-in image_gen",
+          "sourceId": "exec-55423f12-f0d1-4005-b2a8-ae409d5e575f"
+        },
+        {
+          "id": "wasla-texture-route",
+          "file": "wasla-express/texture-route.webp",
+          "alt": "Illustrative generated brand image: Abstract minimal city route map lines in warm grey on near-black with a few saffron yellow route segments, no labels.",
+          "role": "texture",
+          "tags": [
+            "texture",
+            "bold and fast",
+            "pattern"
+          ],
+          "provenance": "generated",
+          "prompt": "Seamless flat graphic background pattern, edge to edge, no focal object, no text, no letters, no logos, no watermark, no mockup. Abstract minimal city route map lines in warm grey on near-black #111111 with a few saffron yellow route segments, no labels. Square 1:1.",
+          "generator": "Codex Skylink built-in image_gen",
+          "sourceId": "exec-b25b032d-f43f-46db-afea-b577d5925e10"
+        },
+        {
+          "id": "wasla-texture-kraft",
+          "file": "wasla-express/texture-kraft.webp",
+          "alt": "Illustrative generated brand image: Close-up texture of brown kraft cardboard with a single strip of saffron yellow tape running diagonally, flat lay, even light.",
+          "role": "texture",
+          "tags": [
+            "texture",
+            "bold and fast",
+            "pattern",
+            "close-up"
+          ],
+          "provenance": "generated",
+          "prompt": "Seamless flat graphic background pattern, edge to edge, no focal object, no text, no letters, no logos, no watermark, no mockup. Close-up texture of brown kraft cardboard with a single strip of saffron yellow tape running diagonally, flat lay, even light. Square 1:1.",
+          "generator": "Codex Skylink built-in image_gen",
+          "sourceId": "exec-a793aaa1-751b-4140-a9d4-38cc6188c9cd"
+        },
+        {
+          "id": "wasla-cover-box",
+          "file": "wasla-express/cover-box.webp",
+          "alt": "Illustrative generated brand image: A single plain cardboard parcel with saffron yellow tape on a black background, dramatic warm side light.",
+          "role": "cover",
+          "tags": [
+            "cover",
+            "bold and fast",
+            "parcel"
+          ],
+          "provenance": "generated",
+          "prompt": "Photorealistic natural editorial photograph for a fictional demo brand; candid, real material texture, premium magazine quality. No text, no readable signage, no logos, no numbers, no watermark, no legible screens or personal data, no collage, no border. Square 1:1 composition, strong single subject, space at the bottom third for a headline. A single plain cardboard parcel with saffron yellow tape on a black background, dramatic warm side light.",
+          "generator": "Codex Skylink built-in image_gen",
+          "sourceId": "exec-4c0f47a2-649e-4f00-99bb-e85786b81f52"
+        },
+        {
+          "id": "wasla-cover-rider",
+          "file": "wasla-express/cover-rider.webp",
+          "alt": "Illustrative generated brand image: A Cairo delivery rider in a black jacket and yellow helmet looking ahead, golden hour backlight, shallow depth of field.",
+          "role": "cover",
+          "tags": [
+            "cover",
+            "bold and fast",
+            "people"
+          ],
+          "provenance": "generated",
+          "prompt": "Photorealistic natural editorial photograph for a fictional demo brand; candid, real material texture, premium magazine quality. No text, no readable signage, no logos, no numbers, no watermark, no legible screens or personal data, no collage, no border. Square 1:1 composition, strong single subject, space at the bottom third for a headline. A Cairo delivery rider in a black jacket and yellow helmet looking ahead, golden hour backlight, shallow depth of field.",
+          "generator": "Codex Skylink built-in image_gen",
+          "sourceId": "exec-d2633c50-3343-4762-ab6a-7e6b6f621b8b"
         }
       ]
     },
     {
       "id": "ruwad-learning",
-      "workspaceName": "Mirqab · EdTech client (UAE)",
+      "workspaceId": "4b177155-50eb-4aa0-a1b4-998a879d78fe",
       "brandName": "Ruwad Learning",
-      "primary": "#3b1f5c",
-      "accent": "#f2994a",
-      "palette": [
-        "#3b1f5c",
-        "#f2994a",
-        "#f0f6ff",
-        "#25212a"
-      ],
-      "visualDirection": "Warm, modern professional learning: plum anchors, muted orange progress cues, chalk-blue whitespace, and a humanist editorial feel.",
-      "photoDirection": "Adult MENA professionals in Abu Dhabi workplace learning, with candid peer support and focused desk detail; never show children or imply a specific real customer.",
+      "brandNameAr": "رواد للتعلّم",
+      "mood": "Warm and optimistic",
+      "palette": {
+        "primary": {
+          "name": "Plum",
+          "hex": "#5B2A5E",
+          "tints": {
+            "50": "#F1EDF1",
+            "100": "#E0D6E1",
+            "200": "#C2AEC3",
+            "300": "#A587A6",
+            "400": "#815A83",
+            "500": "#5B2A5E",
+            "600": "#461F49",
+            "700": "#331535",
+            "800": "#200B22",
+            "900": "#110412"
+          }
+        },
+        "secondary": {
+          "name": "Apricot",
+          "hex": "#F4A261",
+          "tints": {
+            "50": "#FFF8F3",
+            "100": "#FEEFE3",
+            "200": "#FDDEC8",
+            "300": "#FBCEAC",
+            "400": "#F8B989",
+            "500": "#F4A261",
+            "600": "#C1804B",
+            "700": "#915F37",
+            "800": "#644023",
+            "900": "#3F2613"
+          }
+        },
+        "tertiary": {
+          "name": "Aubergine ink",
+          "hex": "#2A1530",
+          "tints": {
+            "50": "#ECEAED",
+            "100": "#D5D0D6",
+            "200": "#ACA3AF",
+            "300": "#857789",
+            "400": "#58465D",
+            "500": "#2A1530",
+            "600": "#1F0E24",
+            "700": "#150818",
+            "800": "#0B030D",
+            "900": "#040105"
+          }
+        },
+        "neutral": {
+          "name": "Cream",
+          "hex": "#FFF4E6",
+          "tints": {
+            "50": "#FFFEFD",
+            "100": "#FFFDFB",
+            "200": "#FFFBF6",
+            "300": "#FFF9F2",
+            "400": "#FFF7EC",
+            "500": "#FFF4E6",
+            "600": "#CAC1B6",
+            "700": "#989189",
+            "800": "#69645E",
+            "900": "#423F3B"
+          }
+        }
+      },
+      "fonts": {
+        "headline": "Alexandria",
+        "body": "Tajawal"
+      },
+      "motif": "Soft paper textures",
+      "photography": "Young professionals, bright studios, mentoring and laptops",
+      "direction": {
+        "do": [
+          "Cream paper backgrounds with plum type",
+          "Apricot for warmth and highlights, used in small doses",
+          "Rounded, friendly shapes and soft paper cut-outs",
+          "Real learning moments: mentoring, laughing, focused"
+        ],
+        "dont": [
+          "No cold blue corporate tones",
+          "No graduation caps, apples or chalkboard clichés",
+          "No pure white backgrounds; use cream",
+          "No readable screens or certificate text"
+        ]
+      },
+      "symbol": {
+        "option": "ruwad-a",
+        "prompt": "For a UAE edtech company: a warm half-circle rising sun sitting on an open book whose two pages form a soft V; sun in apricot #F4A261, book in deep plum #5B2A5E; rounded friendly shapes. Minimal flat vector logo symbol, centred on pure white, square 1:1, generous padding, crisp edges, at most two colours plus white, no text, no letters, no numbers, no words, no gradients, no shadows, no 3D, no mockup, no border.",
+        "generator": "Codex Skylink built-in image_gen",
+        "sourceId": "exec-bc7e9ce1-1802-4132-9cab-2bbb5e95f651"
+      },
       "logo": {
-        "file": "ruwad-learning/logo.svg",
-        "alt": "Ruwad Learning wordmark with original open-book and rising-path icon"
+        "file": "ruwad-learning/lockup-en-light-2x.png",
+        "alt": "Ruwad Learning logo"
       },
       "mark": {
-        "file": "ruwad-learning/mark.svg",
-        "alt": "Original open-book and learning-path mark on plum"
+        "file": "ruwad-learning/symbol-2x.png",
+        "alt": "Ruwad Learning symbol"
       },
+      "logoVariants": [
+        {
+          "id": "ruwad-learning-symbol-2x",
+          "file": "ruwad-learning/symbol-2x.png",
+          "alt": "Ruwad Learning symbol",
+          "variant": "symbol",
+          "lang": null,
+          "scale": 2
+        },
+        {
+          "id": "ruwad-learning-symbol-3x",
+          "file": "ruwad-learning/symbol-3x.png",
+          "alt": "Ruwad Learning symbol",
+          "variant": "symbol",
+          "lang": null,
+          "scale": 3
+        },
+        {
+          "id": "ruwad-learning-symbol-dark-2x",
+          "file": "ruwad-learning/symbol-dark-2x.png",
+          "alt": "Ruwad Learning symbol for dark backgrounds",
+          "variant": "symbol-dark",
+          "lang": null,
+          "scale": 2
+        },
+        {
+          "id": "ruwad-learning-symbol-dark-3x",
+          "file": "ruwad-learning/symbol-dark-3x.png",
+          "alt": "Ruwad Learning symbol for dark backgrounds",
+          "variant": "symbol-dark",
+          "lang": null,
+          "scale": 3
+        },
+        {
+          "id": "ruwad-learning-lockup-en-light-2x",
+          "file": "ruwad-learning/lockup-en-light-2x.png",
+          "alt": "Ruwad Learning logo",
+          "variant": "light",
+          "lang": "en",
+          "scale": 2
+        },
+        {
+          "id": "ruwad-learning-lockup-en-light-3x",
+          "file": "ruwad-learning/lockup-en-light-3x.png",
+          "alt": "Ruwad Learning logo",
+          "variant": "light",
+          "lang": "en",
+          "scale": 3
+        },
+        {
+          "id": "ruwad-learning-lockup-en-dark-2x",
+          "file": "ruwad-learning/lockup-en-dark-2x.png",
+          "alt": "Ruwad Learning logo for dark backgrounds",
+          "variant": "dark",
+          "lang": "en",
+          "scale": 2
+        },
+        {
+          "id": "ruwad-learning-lockup-en-dark-3x",
+          "file": "ruwad-learning/lockup-en-dark-3x.png",
+          "alt": "Ruwad Learning logo for dark backgrounds",
+          "variant": "dark",
+          "lang": "en",
+          "scale": 3
+        },
+        {
+          "id": "ruwad-learning-lockup-ar-light-2x",
+          "file": "ruwad-learning/lockup-ar-light-2x.png",
+          "alt": "Ruwad Learning logo in Arabic",
+          "variant": "light",
+          "lang": "ar",
+          "scale": 2
+        },
+        {
+          "id": "ruwad-learning-lockup-ar-light-3x",
+          "file": "ruwad-learning/lockup-ar-light-3x.png",
+          "alt": "Ruwad Learning logo in Arabic",
+          "variant": "light",
+          "lang": "ar",
+          "scale": 3
+        },
+        {
+          "id": "ruwad-learning-lockup-ar-dark-2x",
+          "file": "ruwad-learning/lockup-ar-dark-2x.png",
+          "alt": "Ruwad Learning logo in Arabic for dark backgrounds",
+          "variant": "dark",
+          "lang": "ar",
+          "scale": 2
+        },
+        {
+          "id": "ruwad-learning-lockup-ar-dark-3x",
+          "file": "ruwad-learning/lockup-ar-dark-3x.png",
+          "alt": "Ruwad Learning logo in Arabic for dark backgrounds",
+          "variant": "dark",
+          "lang": "ar",
+          "scale": 3
+        }
+      ],
       "gallery": [
         {
-          "id": "ruwad-workplace-workshop",
-          "file": "ruwad-learning/workshop-hero.webp",
-          "alt": "Illustrative adult professionals taking part in a UAE workplace-learning workshop",
+          "id": "ruwad-hero-studio",
+          "file": "ruwad-learning/hero-studio.webp",
+          "alt": "Illustrative generated brand image: Young Emirati and expat professionals in a bright Dubai learning studio, gathered around a laptop and laughing, warm natural light, plum and apricot accents, cream walls.",
           "role": "hero",
+          "tags": [
+            "hero",
+            "warm and optimistic",
+            "laptop",
+            "people"
+          ],
           "provenance": "generated",
-          "prompt": "Generate one photorealistic-natural editorial photograph for an illustrative UAE corporate-learning demo brand. Scene: a small group of adult MENA professionals collaborating in a facilitated workplace learning workshop in a modern Abu Dhabi training room, a woman facilitator at a whiteboard with only abstract unreadable marks, participants listening and exchanging ideas naturally. No staged handshake; candid inclusive body language. Warm plum and muted orange visual accents in clothing or room furnishings against chalk-white and pale blue surfaces. Soft daylight, real fabric and skin texture, confident calm editorial style, landscape 3:2, wide hero composition with breathing room. Adults only; no children, no university setting. No legible text, logos, company marks, watermark, or graphic overlay. One image only, illustrative demo imagery.",
+          "prompt": "Photorealistic natural editorial photograph for a fictional demo brand; candid, real material texture, premium magazine quality. No text, no readable signage, no logos, no numbers, no watermark, no legible screens or personal data, no collage, no border. Wide landscape composition with calm negative space on one side for a headline. Young Emirati and expat professionals in a bright Dubai learning studio, gathered around a laptop and laughing, warm natural light, plum and apricot accents, cream walls.",
           "generator": "Codex Skylink built-in image_gen",
-          "sourceId": "exec-cc864400-1a60-457a-88a5-e884df005d06"
+          "sourceId": "exec-6076fc29-fd0a-4944-916c-e5e36e2b9050"
         },
         {
-          "id": "ruwad-learner-desk-detail",
-          "file": "ruwad-learning/learner-desk-detail.webp",
-          "alt": "Illustrative adult learner annotating a workbook beside a tablet",
-          "role": "detail",
+          "id": "ruwad-hero-mentor",
+          "file": "ruwad-learning/hero-mentor.webp",
+          "alt": "Illustrative generated brand image: A mentor, an Emirati woman in a shayla, coaching a young colleague at a sunlit wooden table with notebooks and a laptop, warm optimistic light.",
+          "role": "hero",
+          "tags": [
+            "hero",
+            "warm and optimistic",
+            "laptop",
+            "people"
+          ],
           "provenance": "generated",
-          "prompt": "Generate one photorealistic-natural editorial photograph for a fictional UAE corporate-learning demo brand. Scene: tight overhead three-quarter detail of an adult professional's hands annotating a paper workbook beside a tablet and pen at a shared office learning table; only the hands, workbook edge, tablet, and subtle tea glass visible, no face. Plum notebook cover and one muted orange detail on a chalk-white table, soft pale-blue daylight. Tactile paper, honest desk texture, uncluttered, thoughtful modern learning mood, landscape 3:2 crop with clear negative space. Workbook and tablet screens must contain only abstract unreadable marks and shapes; no text, numbers, logos, watermark, or graphic overlay. Adults' workplace context, not school. One image only, illustrative brand image.",
+          "prompt": "Photorealistic natural editorial photograph for a fictional demo brand; candid, real material texture, premium magazine quality. No text, no readable signage, no logos, no numbers, no watermark, no legible screens or personal data, no collage, no border. Wide landscape composition with calm negative space on one side for a headline. A mentor, an Emirati woman in a shayla, coaching a young colleague at a sunlit wooden table with notebooks and a laptop, warm optimistic light.",
           "generator": "Codex Skylink built-in image_gen",
-          "sourceId": "exec-12e9ac30-f251-47a3-9c1a-8771db9ff5dc"
+          "sourceId": "exec-7474b515-1702-41f1-9b79-ccb4ebd80528"
         },
         {
-          "id": "ruwad-peer-coaching",
-          "file": "ruwad-learning/peer-coaching.webp",
-          "alt": "Illustrative adult colleagues sharing a peer-coaching conversation in Abu Dhabi",
-          "role": "supporting",
+          "id": "ruwad-hero-workshop",
+          "file": "ruwad-learning/hero-workshop.webp",
+          "alt": "Illustrative generated brand image: A small workshop in a modern Abu Dhabi office, a facilitator at a whiteboard with abstract sticky notes, attentive learners, warm daylight.",
+          "role": "hero",
+          "tags": [
+            "hero",
+            "warm and optimistic",
+            "office",
+            "people"
+          ],
           "provenance": "generated",
-          "prompt": "Generate one photorealistic-natural editorial photograph for a fictional UAE corporate-learning demo brand. Scene: two adult MENA colleagues in a quiet peer-coaching moment at a bright Abu Dhabi office lounge table, one listening closely while the other explains a point with a relaxed hand gesture; natural conversation, no staged handshake, no one facing camera. Professional modest contemporary attire, adult participants only, no children or university context. Plum and restrained muted orange details against pale chalk-blue/white architecture; soft daylight, authentic expressions and tactile materials, candid premium editorial style, landscape 3:2 medium-wide crop. Laptop screen and papers are blank or abstract with no legible text, numbers, logos, watermark, or graphic overlay. One single photo, no collage, illustrative demo imagery rather than a real customer testimonial.",
+          "prompt": "Photorealistic natural editorial photograph for a fictional demo brand; candid, real material texture, premium magazine quality. No text, no readable signage, no logos, no numbers, no watermark, no legible screens or personal data, no collage, no border. Wide landscape composition with calm negative space on one side for a headline. A small workshop in a modern Abu Dhabi office, a facilitator at a whiteboard with abstract sticky notes, attentive learners, warm daylight.",
           "generator": "Codex Skylink built-in image_gen",
-          "sourceId": "exec-997c88b3-dae3-44bd-ae47-36ae08452345"
+          "sourceId": "exec-69266e60-066c-46ba-a075-3abadfbdabb6"
+        },
+        {
+          "id": "ruwad-hero-terrace",
+          "file": "ruwad-learning/hero-terrace.webp",
+          "alt": "Illustrative generated brand image: Two young professionals studying together on a laptop on a sunny office terrace in Dubai, warm afternoon light, cream and apricot tones.",
+          "role": "hero",
+          "tags": [
+            "hero",
+            "warm and optimistic",
+            "office",
+            "laptop",
+            "people"
+          ],
+          "provenance": "generated",
+          "prompt": "Photorealistic natural editorial photograph for a fictional demo brand; candid, real material texture, premium magazine quality. No text, no readable signage, no logos, no numbers, no watermark, no legible screens or personal data, no collage, no border. Wide landscape composition with calm negative space on one side for a headline. Two young professionals studying together on a laptop on a sunny office terrace in Dubai, warm afternoon light, cream and apricot tones.",
+          "generator": "Codex Skylink built-in image_gen",
+          "sourceId": "exec-ec1e73cc-e95c-4483-a75a-4aeb35789368"
+        },
+        {
+          "id": "ruwad-photo-notebook",
+          "file": "ruwad-learning/photo-notebook.webp",
+          "alt": "Illustrative generated brand image: Flat lay of an open notebook, a pen, a coffee cup and a laptop on a cream linen desk, warm daylight, plum and apricot objects.",
+          "role": "photo",
+          "tags": [
+            "photo",
+            "warm and optimistic",
+            "laptop"
+          ],
+          "provenance": "generated",
+          "prompt": "Photorealistic natural editorial photograph for a fictional demo brand; candid, real material texture, premium magazine quality. No text, no readable signage, no logos, no numbers, no watermark, no legible screens or personal data, no collage, no border. Landscape 3:2. Flat lay of an open notebook, a pen, a coffee cup and a laptop on a cream linen desk, warm daylight, plum and apricot objects.",
+          "generator": "Codex Skylink built-in image_gen",
+          "sourceId": "exec-a58f4bbc-227b-4132-9192-e8f970e558a3"
+        },
+        {
+          "id": "ruwad-photo-headphones",
+          "file": "ruwad-learning/photo-headphones.webp",
+          "alt": "Illustrative generated brand image: A young Emirati man with headphones taking an online course on a laptop in a bright café, warm light, unreadable screen.",
+          "role": "photo",
+          "tags": [
+            "photo",
+            "warm and optimistic",
+            "laptop",
+            "people"
+          ],
+          "provenance": "generated",
+          "prompt": "Photorealistic natural editorial photograph for a fictional demo brand; candid, real material texture, premium magazine quality. No text, no readable signage, no logos, no numbers, no watermark, no legible screens or personal data, no collage, no border. Landscape 3:2. A young Emirati man with headphones taking an online course on a laptop in a bright café, warm light, unreadable screen.",
+          "generator": "Codex Skylink built-in image_gen",
+          "sourceId": "exec-5b001351-0616-49b8-a8a9-54511f563be3"
+        },
+        {
+          "id": "ruwad-photo-pair",
+          "file": "ruwad-learning/photo-pair.webp",
+          "alt": "Illustrative generated brand image: Two colleagues pair-learning at a desk, one pointing at the laptop, both smiling, warm studio light.",
+          "role": "photo",
+          "tags": [
+            "photo",
+            "warm and optimistic",
+            "laptop"
+          ],
+          "provenance": "generated",
+          "prompt": "Photorealistic natural editorial photograph for a fictional demo brand; candid, real material texture, premium magazine quality. No text, no readable signage, no logos, no numbers, no watermark, no legible screens or personal data, no collage, no border. Landscape 3:2. Two colleagues pair-learning at a desk, one pointing at the laptop, both smiling, warm studio light.",
+          "generator": "Codex Skylink built-in image_gen",
+          "sourceId": "exec-41697ad1-267a-47a9-a429-6f01a2d74e06"
+        },
+        {
+          "id": "ruwad-photo-certificate",
+          "file": "ruwad-learning/photo-certificate.webp",
+          "alt": "Illustrative generated brand image: A proud young woman holding a blank cream certificate card at a small office celebration, warm light, plum accents, no text.",
+          "role": "photo",
+          "tags": [
+            "photo",
+            "warm and optimistic",
+            "office",
+            "people"
+          ],
+          "provenance": "generated",
+          "prompt": "Photorealistic natural editorial photograph for a fictional demo brand; candid, real material texture, premium magazine quality. No text, no readable signage, no logos, no numbers, no watermark, no legible screens or personal data, no collage, no border. Landscape 3:2. A proud young woman holding a blank cream certificate card at a small office celebration, warm light, plum accents, no text.",
+          "generator": "Codex Skylink built-in image_gen",
+          "sourceId": "exec-6e3cf1e5-9cc2-4cce-9a6d-ddaf0cd4605d"
+        },
+        {
+          "id": "ruwad-photo-classroom",
+          "file": "ruwad-learning/photo-classroom.webp",
+          "alt": "Illustrative generated brand image: A modern corporate training room with cream walls and plum chairs, soft morning light, a few learners seen from behind.",
+          "role": "photo",
+          "tags": [
+            "photo",
+            "warm and optimistic",
+            "people"
+          ],
+          "provenance": "generated",
+          "prompt": "Photorealistic natural editorial photograph for a fictional demo brand; candid, real material texture, premium magazine quality. No text, no readable signage, no logos, no numbers, no watermark, no legible screens or personal data, no collage, no border. Landscape 3:2. A modern corporate training room with cream walls and plum chairs, soft morning light, a few learners seen from behind.",
+          "generator": "Codex Skylink built-in image_gen",
+          "sourceId": "exec-c50fce21-dbb4-4450-876a-e359e151bff0"
+        },
+        {
+          "id": "ruwad-photo-tablet",
+          "file": "ruwad-learning/photo-tablet.webp",
+          "alt": "Illustrative generated brand image: Close-up of hands using a tablet with an abstract colourful course layout, warm daylight, cream background, unreadable UI.",
+          "role": "photo",
+          "tags": [
+            "photo",
+            "warm and optimistic",
+            "close-up"
+          ],
+          "provenance": "generated",
+          "prompt": "Photorealistic natural editorial photograph for a fictional demo brand; candid, real material texture, premium magazine quality. No text, no readable signage, no logos, no numbers, no watermark, no legible screens or personal data, no collage, no border. Landscape 3:2. Close-up of hands using a tablet with an abstract colourful course layout, warm daylight, cream background, unreadable UI.",
+          "generator": "Codex Skylink built-in image_gen",
+          "sourceId": "exec-530857e0-6f20-4608-b26e-051497bddf78"
+        },
+        {
+          "id": "ruwad-texture-paper",
+          "file": "ruwad-learning/texture-paper.webp",
+          "alt": "Illustrative generated brand image: Soft cream handmade paper texture with subtle fibres and gentle warm shading, calm and tactile.",
+          "role": "texture",
+          "tags": [
+            "texture",
+            "warm and optimistic",
+            "pattern"
+          ],
+          "provenance": "generated",
+          "prompt": "Seamless flat graphic background pattern, edge to edge, no focal object, no text, no letters, no logos, no watermark, no mockup. Soft cream handmade paper texture with subtle fibres and gentle warm shading, calm and tactile. Square 1:1.",
+          "generator": "Codex Skylink built-in image_gen",
+          "sourceId": "exec-850c6cf4-1507-4375-9693-1f5646dbaa6c"
         }
       ]
     }
