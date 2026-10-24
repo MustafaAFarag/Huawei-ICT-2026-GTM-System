@@ -119,11 +119,25 @@ class ApiController {
   }
   @Get("me") async me(@Req() req: Request) {
     const user = await sessionUser(req.headers);
+    const memberships = await db.membership.findMany({
+      where: { userId: user.id },
+      include: { workspace: { select: { id: true, name: true, brand: true } } },
+    });
+    // The switcher only needs the saved kit mark, not the whole brand.
     return {
       user,
-      workspaces: await db.membership.findMany({
-        where: { userId: user.id },
-        include: { workspace: { select: { id: true, name: true } } },
+      workspaces: memberships.map(({ workspace: { brand, ...workspace }, ...membership }) => {
+        const mark = (brand as { media?: { mark?: { id?: unknown; alt?: unknown } } } | null)
+          ?.media?.mark;
+        return {
+          ...membership,
+          workspace: {
+            ...workspace,
+            ...(typeof mark?.id === "string" && typeof mark.alt === "string"
+              ? { mark: { id: mark.id, alt: mark.alt } }
+              : {}),
+          },
+        };
       }),
     };
   }

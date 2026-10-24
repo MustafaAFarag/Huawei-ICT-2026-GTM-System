@@ -136,7 +136,7 @@ export type Dashboard = {
 };
 export type Membership = {
   role: string;
-  workspace: { id: string; name: string };
+  workspace: { id: string; name: string; mark?: { id: string; alt: string } };
 };
 export type Chat = {
   id: string;

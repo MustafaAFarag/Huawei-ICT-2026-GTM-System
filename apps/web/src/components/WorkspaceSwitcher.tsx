@@ -11,6 +11,7 @@ import { createPortal } from "react-dom";
 import { IconCheck, IconSelector } from "@revenue/ui";
 import type { Membership } from "../lib/types";
 import { usePrefs } from "../lib/prefs";
+import { brandMediaUrl } from "./brand-company/BrandMedia";
 
 function initials(name: string) {
   return name
@@ -20,6 +21,35 @@ function initials(name: string) {
     .slice(0, 2)
     .map((w) => w[0]?.toUpperCase() ?? "")
     .join("");
+}
+
+// The saved kit mark when the workspace has one; initials otherwise or if it fails to load.
+function WorkspaceAvatar({
+  workspace,
+  small = false,
+}: {
+  workspace?: Membership["workspace"];
+  small?: boolean;
+}) {
+  const [failed, setFailed] = useState(false);
+  useEffect(() => setFailed(false), [workspace?.id, workspace?.mark?.id]);
+  const className = `ws-avatar ${small ? "ws-avatar-sm" : ""}`;
+  if (workspace?.mark && !failed)
+    return (
+      // eslint-disable-next-line @next/next/no-img-element -- private route, not a static asset
+      <img
+        className={`${className} ws-avatar-mark`}
+        src={brandMediaUrl(workspace.id, workspace.mark.id)}
+        alt=""
+        aria-hidden
+        onError={() => setFailed(true)}
+      />
+    );
+  return (
+    <span className={className} aria-hidden>
+      {initials(workspace?.name ?? "")}
+    </span>
+  );
 }
 
 const POP_MIN_WIDTH = 280;
@@ -146,9 +176,7 @@ export function WorkspaceSwitcher({
           }
         }}
       >
-        <span className="ws-avatar" aria-hidden>
-          {initials(current?.workspace.name ?? "")}
-        </span>
+        <WorkspaceAvatar workspace={current?.workspace} />
         <span className="ws-name truncate" dir="auto">
           {current?.workspace.name}
         </span>
@@ -185,16 +213,14 @@ export function WorkspaceSwitcher({
                     key={m.workspace.id}
                     id={`${listId}-${i}`}
                     data-index={i}
-                  data-value={m.workspace.id}
+                    data-value={m.workspace.id}
                     role="option"
                     aria-selected={selected}
                     className={`ws-item ${i === active ? "is-active" : ""}`}
                     onPointerMove={() => setActive(i)}
                     onClick={() => pick(m.workspace.id)}
                   >
-                    <span className="ws-avatar ws-avatar-sm" aria-hidden>
-                      {initials(m.workspace.name)}
-                    </span>
+                    <WorkspaceAvatar workspace={m.workspace} small />
                     <span className="truncate" dir="auto">
                       {m.workspace.name}
                     </span>

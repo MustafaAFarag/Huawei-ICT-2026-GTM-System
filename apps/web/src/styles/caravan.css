@@ -219,6 +219,10 @@
   color: var(--text-2);
   font-size: 10px;
 }
+.ws-avatar-mark {
+  object-fit: cover;
+  background: transparent;
+}
 .ws-pop {
   position: fixed;
   z-index: 80;
