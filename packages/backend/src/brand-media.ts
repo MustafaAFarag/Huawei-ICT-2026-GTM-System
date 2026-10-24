@@ -15,6 +15,10 @@ const visualBrandMetadata = new Set([
   "palette",
   "visualDirection",
   "photoDirection",
+  "nameAr",
+  "fonts",
+  "paletteRoles",
+  "direction",
 ]);
 
 // Keep the original property order: workspace approval digests serialize with JSON.stringify.
@@ -42,6 +46,7 @@ export function mergeBrandSettings(
       ...currentMedia,
       ...patchMedia,
       gallery: patchMedia.gallery ?? currentMedia.gallery,
+      variants: patchMedia.variants ?? currentMedia.variants,
     };
   } else if (
     patchMedia.logo ||
@@ -137,7 +142,9 @@ export function brandRenderHero(media?: BrandRenderMedia) {
 
 export function brandRenderSupporting(media?: BrandRenderMedia) {
   const hero = brandRenderHero(media);
-  return media?.gallery.filter((image) => image !== hero) ?? [];
+  return (
+    media?.gallery.filter((image) => image !== hero && image.role !== "texture") ?? []
+  );
 }
 
 export class BrandMediaService {
@@ -159,6 +166,7 @@ export class BrandMediaService {
       ...(brand.media?.logo ? [brand.media.logo] : []),
       ...(brand.media?.mark ? [brand.media.mark] : []),
       ...(brand.media?.gallery ?? []),
+      ...(brand.media?.variants ?? []),
     ];
     const reference = references.find(({ id }) => id === parsedId.data);
     if (!reference) throw new NotFoundException("Brand media not found.");

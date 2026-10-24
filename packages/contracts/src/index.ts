@@ -81,6 +81,9 @@ export const brandMediaRoleSchema = z.enum([
   "hero",
   "detail",
   "supporting",
+  "photo",
+  "texture",
+  "cover",
 ]);
 export const brandMediaProvenanceSchema = z.enum([
   "generated",
@@ -111,12 +114,15 @@ export type BrandMediaRef = z.infer<typeof brandMediaRefSchema>;
 const brandMediaFields = {
   logo: brandMediaRefSchema.optional(),
   mark: brandMediaRefSchema.optional(),
+  // Raster logo set: light/dark lockups (EN/AR) and symbols at 2x and 3x.
+  variants: z.array(brandMediaRefSchema).max(24).optional(),
 };
 const validateBrandMedia = (
   media: {
     logo?: BrandMediaRef;
     mark?: BrandMediaRef;
     gallery?: BrandMediaRef[];
+    variants?: BrandMediaRef[];
   },
   context: z.RefinementCtx,
 ) => {
@@ -132,6 +138,7 @@ const validateBrandMedia = (
     ...(media.logo ? [media.logo] : []),
     ...(media.mark ? [media.mark] : []),
     ...(media.gallery ?? []),
+    ...(media.variants ?? []),
   ];
   const ids = new Set<string>();
   const keys = new Set<string>();
@@ -156,13 +163,13 @@ const validateBrandMedia = (
 export const brandMediaSchema = z
   .object({
     ...brandMediaFields,
-    gallery: z.array(brandMediaRefSchema).max(12),
+    gallery: z.array(brandMediaRefSchema).max(24),
   })
   .superRefine(validateBrandMedia);
 const brandMediaPatchSchema = z
   .object({
     ...brandMediaFields,
-    gallery: z.array(brandMediaRefSchema).max(12).optional(),
+    gallery: z.array(brandMediaRefSchema).max(24).optional(),
   })
   .superRefine(validateBrandMedia);
 
@@ -178,6 +185,26 @@ const brandVisualFields = {
   palette: z.array(brandHexColorSchema).min(1).max(12).optional(),
   visualDirection: z.string().trim().min(1).max(2000).optional(),
   photoDirection: z.string().trim().min(1).max(2000).optional(),
+  nameAr: z.string().trim().min(1).max(100).optional(),
+  fonts: z
+    .object({ headline: z.string().min(1).max(60), body: z.string().min(1).max(60) })
+    .optional(),
+  paletteRoles: z
+    .record(
+      z.enum(["primary", "secondary", "tertiary", "neutral"]),
+      z.object({
+        name: z.string().min(1).max(40),
+        hex: brandHexColorSchema,
+        tints: z.record(z.string().regex(/^\d{2,3}$/), brandHexColorSchema),
+      }),
+    )
+    .optional(),
+  direction: z
+    .object({
+      do: z.array(z.string().trim().min(1).max(200)).max(8),
+      dont: z.array(z.string().trim().min(1).max(200)).max(8),
+    })
+    .optional(),
 };
 export const brandSchema = brandBaseSchema
   .extend({

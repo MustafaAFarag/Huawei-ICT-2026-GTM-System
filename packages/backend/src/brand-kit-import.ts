@@ -18,88 +18,99 @@ const kitFileSchema = z.object({
   file: z.string().min(1).max(200),
   alt: z.string().trim().min(4).max(300),
 });
+const hex = z.string().regex(/^#[\da-f]{6}$/i);
 const kitGalleryFileSchema = kitFileSchema.extend({
   id: z.string().min(1).max(80),
-  role: z.enum(["hero", "detail", "supporting"]),
+  role: z.enum(["hero", "photo", "texture", "cover"]),
+  tags: z.array(z.string().min(1).max(40)).max(8),
   provenance: z.enum(["generated", "uploaded", "extracted"]),
   prompt: z.string().min(1).max(5000),
   generator: z.string().min(1).max(200),
   sourceId: z.string().min(1).max(100),
 });
+const kitVariantSchema = kitFileSchema.extend({
+  id: z.string().min(1).max(80),
+  variant: z.enum(["light", "dark", "symbol", "symbol-dark"]),
+  lang: z.enum(["en", "ar"]).nullable(),
+  scale: z.union([z.literal(2), z.literal(3)]),
+});
+const paletteRoleSchema = z
+  .object({
+    name: z.string().min(1).max(40),
+    hex,
+    tints: z.record(z.string().regex(/^\d{2,3}$/), hex),
+  })
+  .strict();
 const kitSchema = z
   .object({
     id: z
       .string()
       .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/)
       .max(80),
-    workspaceName: z.string().min(1).max(200),
+    workspaceId: z.uuid(),
     brandName: z.string().min(1).max(100),
-    primary: z.string().regex(/^#[\da-f]{6}$/i),
-    accent: z.string().regex(/^#[\da-f]{6}$/i),
+    brandNameAr: z.string().min(1).max(100),
+    mood: z.string().min(1).max(100),
     palette: z
-      .array(z.string().regex(/^#[\da-f]{6}$/i))
-      .min(1)
-      .max(12),
-    visualDirection: z.string().trim().min(1).max(2000),
-    photoDirection: z.string().trim().min(1).max(2000),
+      .object({
+        primary: paletteRoleSchema,
+        secondary: paletteRoleSchema,
+        tertiary: paletteRoleSchema,
+        neutral: paletteRoleSchema,
+      })
+      .strict(),
+    fonts: z.object({ headline: z.string().min(1), body: z.string().min(1) }).strict(),
+    motif: z.string().min(1).max(200),
+    photography: z.string().min(1).max(500),
+    direction: z
+      .object({
+        do: z.array(z.string().min(1).max(200)).min(1).max(8),
+        dont: z.array(z.string().min(1).max(200)).min(1).max(8),
+      })
+      .strict(),
+    symbol: z
+      .object({
+        option: z.string().min(1),
+        prompt: z.string().min(1).max(5000),
+        generator: z.string().min(1).max(200),
+        sourceId: z.string().min(1).max(100),
+      })
+      .strict(),
     logo: kitFileSchema,
     mark: kitFileSchema,
-    gallery: z.array(kitGalleryFileSchema).length(3),
+    logoVariants: z.array(kitVariantSchema).min(1).max(24),
+    gallery: z.array(kitGalleryFileSchema).min(1).max(24),
   })
   .strict();
 const manifestSchema = z
-  .object({ version: z.literal(1), kits: z.array(kitSchema).length(3) })
+  .object({ version: z.literal(2), kits: z.array(kitSchema).length(3) })
   .strict()
   .superRefine(({ kits }, context) => {
     const ids = new Set<string>();
-    const names = new Set<string>();
+    const workspaces = new Set<string>();
     for (const kit of kits) {
       if (ids.has(kit.id))
         context.addIssue({
           code: "custom",
           message: "Duplicate brand kit ID.",
         });
-      if (names.has(kit.workspaceName))
+      if (workspaces.has(kit.workspaceId))
         context.addIssue({
           code: "custom",
-          message: "Duplicate brand kit workspace name.",
+          message: "Duplicate brand kit workspace.",
         });
       ids.add(kit.id);
-      names.add(kit.workspaceName);
-      if (
-        !kit.palette.some(
-          (color) => color.toLowerCase() === kit.primary.toLowerCase(),
-        )
-      )
-        context.addIssue({
-          code: "custom",
-          path: ["palette"],
-          message: "The palette must include the primary color.",
-        });
-      if (
-        !kit.palette.some(
-          (color) => color.toLowerCase() === kit.accent.toLowerCase(),
-        )
-      )
-        context.addIssue({
-          code: "custom",
-          path: ["palette"],
-          message: "The palette must include the accent color.",
-        });
+      workspaces.add(kit.workspaceId);
     }
   });
 
-const expectedWorkspaceNames = [
-  "Mirqab · Fintech client (KSA)",
-  "Mirqab · Logistics client (Egypt)",
-  "Mirqab · EdTech client (UAE)",
-] as const;
-const expectedWorkspaceNameSet = new Set<string>(expectedWorkspaceNames);
+// The three approved client workspaces, matched by id because the owner renames them.
 const expectedWorkspaceByKitId = new Map<string, string>([
-  ["sarafa-pay", "Mirqab · Fintech client (KSA)"],
-  ["wasla-express", "Mirqab · Logistics client (Egypt)"],
-  ["ruwad-learning", "Mirqab · EdTech client (UAE)"],
+  ["sarafa-pay", "8099320e-1cd4-4546-8f83-46230633158d"],
+  ["wasla-express", "a14a01ac-902e-49dd-8931-89b85e24f5f5"],
+  ["ruwad-learning", "4b177155-50eb-4aa0-a1b4-998a879d78fe"],
 ]);
+const expectedWorkspaceIds = [...expectedWorkspaceByKitId.values()];
 const assetsDirectory = resolve(
   dirname(fileURLToPath(import.meta.url)),
   "../assets/brand-kits",
@@ -124,11 +135,24 @@ type PreparedFile = {
 };
 type PreparedKit = {
   id: string;
-  workspaceName: string;
-  palette: string[];
-  visualDirection: string;
-  photoDirection: string;
-  files: PreparedFile[];
+  workspaceId: string;
+  visual: Pick<
+    Brand,
+    | "name"
+    | "nameAr"
+    | "primary"
+    | "accent"
+    | "palette"
+    | "visualDirection"
+    | "photoDirection"
+    | "fonts"
+    | "paletteRoles"
+    | "direction"
+  >;
+  logo: PreparedFile;
+  mark: PreparedFile;
+  variants: PreparedFile[];
+  gallery: PreparedFile[];
 };
 
 function invalidAsset(message: string): never {
@@ -309,12 +333,9 @@ async function prepareKits(): Promise<PreparedKit[]> {
     await readFile(join(assetsDirectory, "manifest.json"), "utf8"),
   );
   const manifest = manifestSchema.parse(rawManifest);
-  const manifestNames = manifest.kits.map(({ workspaceName }) => workspaceName);
   if (
-    expectedWorkspaceNames.some((name) => !manifestNames.includes(name)) ||
-    manifestNames.some((name) => !expectedWorkspaceNameSet.has(name)) ||
     manifest.kits.some(
-      (kit) => expectedWorkspaceByKitId.get(kit.id) !== kit.workspaceName,
+      (kit) => expectedWorkspaceByKitId.get(kit.id) !== kit.workspaceId,
     )
   )
     throw new Error(
@@ -343,6 +364,22 @@ async function prepareKits(): Promise<PreparedKit[]> {
       "generated",
       false,
     );
+    // The main logo and mark are themselves 2x variants; store each file once.
+    const variants = await Promise.all(
+      kit.logoVariants
+        .filter(({ file }) => file !== kit.logo.file && file !== kit.mark.file)
+        .map((item) =>
+        readKitFile(
+          item.file,
+          kit.id,
+          item.alt,
+          item.id,
+          item.variant.startsWith("symbol") ? "mark" : "logo",
+          "generated",
+          false,
+        ),
+      ),
+    );
     const gallery = await Promise.all(
       kit.gallery.map((item) =>
         readKitFile(
@@ -356,8 +393,7 @@ async function prepareKits(): Promise<PreparedKit[]> {
         ),
       ),
     );
-    const files = [logo, mark, ...gallery];
-    for (const { reference } of files) {
+    for (const { reference } of [logo, mark, ...variants, ...gallery]) {
       if (seenIds.has(reference.id))
         throw new Error(`Duplicate brand media ID: ${reference.id}`);
       if (seenKeys.has(reference.key))
@@ -365,31 +401,40 @@ async function prepareKits(): Promise<PreparedKit[]> {
       seenIds.add(reference.id);
       seenKeys.add(reference.key);
     }
-    brandSchema.parse({
+    const { primary, secondary, tertiary, neutral } = kit.palette;
+    const visual: PreparedKit["visual"] = {
       name: kit.brandName,
-      primary: kit.primary,
-      accent: kit.accent,
+      nameAr: kit.brandNameAr,
+      primary: primary.hex,
+      accent: secondary.hex,
+      palette: [primary.hex, secondary.hex, tertiary.hex, neutral.hex],
+      visualDirection: `${kit.mood}. Motif: ${kit.motif}.`,
+      photoDirection: kit.photography,
+      fonts: kit.fonts,
+      paletteRoles: kit.palette,
+      direction: kit.direction,
+    };
+    brandSchema.parse({
+      ...visual,
       website: "https://example.invalid",
-      palette: kit.palette,
-      visualDirection: kit.visualDirection,
-      photoDirection: kit.photoDirection,
       media: {
         logo: logo.reference,
         mark: mark.reference,
+        variants: variants.map(({ reference }) => reference),
         gallery: gallery.map(({ reference }) => reference),
       },
     });
-    prepared.push({
-      id: kit.id,
-      workspaceName: kit.workspaceName,
-      palette: kit.palette,
-      visualDirection: kit.visualDirection,
-      photoDirection: kit.photoDirection,
-      files,
-    });
+    prepared.push({ id: kit.id, workspaceId: kit.workspaceId, visual, logo, mark, variants, gallery });
   }
   return prepared;
 }
+
+const filesOf = (kit: PreparedKit) => [
+  kit.logo,
+  kit.mark,
+  ...kit.variants,
+  ...kit.gallery,
+];
 
 type ImportTarget = {
   id: string;
@@ -409,7 +454,7 @@ export async function runBrandKitImport(options: {
 }): Promise<BrandKitImportResult> {
   const kits = await prepareKits();
   const targets = await db.workspace.findMany({
-    where: { name: { in: [...expectedWorkspaceNames] } },
+    where: { id: { in: expectedWorkspaceIds } },
     select: { id: true, name: true, brand: true },
   });
   const matchedTargets: Array<{
@@ -418,20 +463,15 @@ export async function runBrandKitImport(options: {
     brand: Brand;
   }> = [];
   for (const kit of kits) {
-    const matches = targets.filter(({ name }) => name === kit.workspaceName);
-    if (matches.length !== 1)
-      throw new Error(
-        `Expected exactly one existing workspace named "${kit.workspaceName}"; found ${matches.length}.`,
-      );
-    const target = matches[0];
-    if (!target) throw new Error(`Workspace missing: ${kit.workspaceName}`);
+    const target = targets.find(({ id }) => id === kit.workspaceId);
+    if (!target) throw new Error(`Workspace missing: ${kit.workspaceId}`);
     matchedTargets.push({
       kit,
       target,
       brand: brandSchema.parse(target.brand),
     });
   }
-  if (matchedTargets.length !== expectedWorkspaceNames.length)
+  if (matchedTargets.length !== expectedWorkspaceIds.length)
     throw new Error(
       "The import target set does not match the three approved workspaces.",
     );
@@ -441,12 +481,12 @@ export async function runBrandKitImport(options: {
     workspaces: matchedTargets.map(({ kit, target }) => ({
       id: target.id,
       name: target.name,
-      files: kit.files.length,
+      files: filesOf(kit).length,
     })),
   };
   if (!options.apply) return result;
 
-  const snapshotDirectory = join(ROOT, ".local", "verification-20261022");
+  const snapshotDirectory = join(ROOT, ".local", "verification-20261024-brand-v2");
   const snapshotPath = join(snapshotDirectory, "brand-kits-before.json");
   await mkdir(snapshotDirectory, { recursive: true });
   const snapshot = JSON.stringify(
@@ -475,7 +515,7 @@ export async function runBrandKitImport(options: {
 
   const storage = options.storage ?? new Storage();
   for (const { kit, target } of matchedTargets)
-    for (const file of kit.files)
+    for (const file of filesOf(kit))
       await storage.put(
         target.id,
         file.reference.key,
@@ -487,24 +527,17 @@ export async function runBrandKitImport(options: {
     for (const { kit, target } of matchedTargets) {
       const current = await transaction.workspace.findUniqueOrThrow({
         where: { id: target.id },
-        select: { name: true, brand: true },
+        select: { brand: true },
       });
-      if (current.name !== kit.workspaceName)
-        throw new Error(`Workspace target changed: ${kit.workspaceName}`);
       const brand = brandSchema.parse(current.brand);
-      const files = kit.files.map(({ reference }) => reference);
       const updatedBrand = brandSchema.parse({
         ...brand,
-        palette: kit.palette,
-        visualDirection: kit.visualDirection,
-        photoDirection: kit.photoDirection,
+        ...kit.visual,
         media: {
-          logo: files.find(({ role }) => role === "logo"),
-          mark: files.find(({ role }) => role === "mark"),
-          gallery: files.filter(
-            ({ role }) =>
-              role === "hero" || role === "detail" || role === "supporting",
-          ),
+          logo: kit.logo.reference,
+          mark: kit.mark.reference,
+          variants: kit.variants.map(({ reference }) => reference),
+          gallery: kit.gallery.map(({ reference }) => reference),
         },
       });
       if (isDeepStrictEqual(updatedBrand, brand)) continue;
