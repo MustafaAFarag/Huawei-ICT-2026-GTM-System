@@ -1,7 +1,7 @@
 ## Current — workspace logos + trimmed demo list (24 October 2026)
 
 - [x] Workspace picker shows each workspace's saved kit mark (initials when none); `/api/me` returns only `mark {id, alt}`. API/web typecheck and production build pass; browser check: 4/4 marks load.
-- [x] Data on `revenue_resume_20261019` (not code): the three Mirqab client workspaces renamed Sarafa Pay / Wasla Express / Ruwad Learning; demo owner removed from the other 7 workspaces (owner's choice). Undo: `.local/verification-20261024/restore-workspaces.sql`. **E2E signs in as the demo owner and uses the old names and Qimam/Revenue Demo — run the restore file before any E2E run.**
+- [x] Data on `revenue_resume_20261019` (not code; **restored by owner 24 Oct**, re-apply with `.local/verification-20261024/apply-workspaces.sql`): the three Mirqab client workspaces renamed Sarafa Pay / Wasla Express / Ruwad Learning; demo owner removed from the other 7 workspaces (owner's choice). Undo: `.local/verification-20261024/restore-workspaces.sql`. **E2E signs in as the demo owner and uses the old names and Qimam/Revenue Demo — run the restore file before any E2E run.**
 
 ---
 
