@@ -1,3 +1,40 @@
+## Current — premium in-app brand books for the 3 workspaces (31 October 2026)
+
+Owner (31 Oct): the Brand book tab of Sarafa Pay / Wasla Express / Ruwad Learning becomes an artistic, premium brand book inside the workspace (we pitch and sell Caravan with it), with new generated artwork. Figma Mounjaro/Foundayo work is a spacing/composition reference only; each brand gets its own book.
+Decision (owner, 31 Oct): Claude writes all code; Codex Skylink only generates images. A full-implementation Codex run was stopped after ~2 min (no code kept).
+Data: owner chose 3-workspace trim again (31 Oct) — `apply-workspaces.sql` re-applied to `revenue_resume_20261019`. Live app: web 3140 / API 4140 (`.local/verification-20261024/env.sh`).
+
+- [x] Figma references saved: `.local/brandbook-refs/`
+- [x] 24 artworks (8 per brand) via Codex image_gen; 1 regenerated (Sarafa poster came out as a planet). Prompts in `.local/brand-kit-source-v2/artbook.tsv` (+ appended to `library.tsv`), contact sheets in `.local/brand-kit-source-v2/review/`
+- [x] Editorial book `apps/web/src/components/brand-company/book/` + `styles/pages/brandbook.css`, art direction from kit data; EN/AR × desktop/phone checked (screens in `.local/verification-20261031-brandbook/`)
+- [x] Gates: all-package typecheck pass; web build pass (2nd run; 1st stops at the Next.js security-upgrade notice); backend formats + capability-profile 25/25; new `e2e/brand-book.spec.ts` 2/2. Pre-existing failures, not touched: `brand-kit-ui.spec.ts` 0/4 (expects old "Mirqab · … client" names), `brand-media.spec.ts` 0/3 (hard-coded auth path `../../../../.local/e2e-auth.json`)
+- [x] Commit 46ae92a fast-forwarded onto `fix/stakeholder-blockers`; kit imported into `revenue_resume_20261019` (gallery 16 → 24 each); worktree removed, branch `feat/brand-book` kept
+- [ ] Open: Arabic book copy is a draft (native check); old brand e2e specs need updating to the renamed workspaces
+
+### Figma drafts, one file per company (31 October 2026)
+Files (owner's drafts, Figma account bentonbenwharjamalev@outlook.com): Sarafa Pay `SSy4WxDLIrws6aTQ7bzHpc`, Wasla Express `t8uCHVxQpVYGWDPaJAgZOi`, Ruwad Learning `OLwRDI0ZpjV853feSoztTa`.
+Pages: 00 Cover · 01 Notes · 02 Foundations (48 colour/shape variables, 6 text styles, logos) · 03 Brand book (11 chapter frames) · 04 Applications (5) · 05 Image library (30).
+Method: live book on 3140 → dom-to-svg (scratchpad `figma/svgcap.mjs`) → SVG import, so text stays editable; images baked with their crops/rounding; pattern art rasterised; fonts/tracking/outlined numbers fixed after import.
+- [x] All pages built in all 3 files; screenshots checked
+- [ ] Sarafa body font: IBM Plex Sans Arabic is not in Figma → IBM Plex Sans / Noto Sans Arabic stand in
+- [ ] Thumbnails: owner right-clicks each `Cover` frame > Set as thumbnail (API cannot)
+
+---
+
+## Current — stakeholder blockers, then slice A (25 October 2026, unattended)
+
+Owner (25 Oct ~00:55): fix the 4 review blockers, then slice A (brand canvas); owner checks tomorrow. Machine shuts down ~04:15. No parallel lane (Lara exhausted; owner chose none). No push/deploy/outreach.
+Done = each blocker reproduced and fixed with a test or a live check on 3140, typecheck/build pass, merged to local main; slice A canvas fits 1440×900 with no scroll, EN/AR × desktop/phone checked.
+Review evidence: `.local/reviews/stakeholder-20261025/`.
+
+- [ ] B1 Deliverables fail: one-pager `slides>=3` zod error; raw errors in chat; capability profile charged and showed nothing; carousel (stale workers, restarted) to retest
+- [ ] B2 Nabil lacks own-company context (offer, ICP); "who to target first" gets no advice
+- [ ] B3 Sarafa fintech workspace runs HR-services pack; warn on pack/offer mismatch
+- [ ] B4 Chat hides results (no inline preview/link); follow-up intent becomes cold first touch
+- [ ] Slice A brand canvas
+
+---
+
 ## Current — designed deliverables, slice E: premium identity (24 October 2026)
 
 Spec: `docs/superpowers/specs/2026-10-24-designed-deliverables-design.md` (owner approved the 8 Claude calls on 24 Oct).
