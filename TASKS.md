@@ -3,7 +3,7 @@
 ## Next — GTM strategy + agent-friendly Caravan research (added 31 October 2026, not started)
 
 Owner (31 Oct): do not compete with Claude / Codex / frontier agents and do not build all the automation ourselves. Everyone already has an agent; make Caravan the app their agent drives (MCP etc.). Study how 2026 startups adopt AI instead of fighting it.
-Done = one report in `docs/research/` with dated sources, answering all 5 items below, ending in a ranked list of what to build in Caravan (with time estimates) for the owner to approve. Stop: research and documentation only. No code, outreach, push or deploy.
+Done = one report in `docs/research/` with dated sources, answering items 1–5 below and passing the item 6 judge, ending in a ranked list of what to build in Caravan (with time estimates) for the owner to approve. Stop: research and documentation only. No code, outreach, push or deploy.
 
 - [ ] 1. GTM strategies for Caravan: positioning, channels, pricing/freemium, open-source/community, launch plan; what fits founder-led MENA teams.
 - [ ] 2. Caravan vs plain Claude / ChatGPT / Codex: what a user can already do with their own agent, and what only Caravan gives (data, workspace memory, designed outputs, approvals, CRM records).
@@ -11,7 +11,9 @@ Done = one report in `docs/research/` with dated sources, answering all 5 items 
 - [ ] 4. How 2026 startups adopt AI rather than compete with it: product patterns (agent as a user, "bring your own agent", MCP-first), real examples.
 - [ ] 5. YC: current Requests for Startups and recent batch companies that are MCP/agent-first; what they ship and how they sell.
 
-Open question for the report: reconcile with memory "push back on thin AI features" (our edge = harness + designed outputs). Likely answer: keep the designed-output harness inside Caravan, and expose it as tools that the user's own agent calls.
+- [ ] 6. Adversarial judge (owner asked for this subagent, 31 Oct): after the draft, one fresh subagent attacks it from the view "Claude/Codex can already do all of this". It must ask, for each claimed selling point: what can a user's own agent not do without Caravan? Is it a harness, a connector/tool for agents, data, or nothing? How does it fit the current state of AI (help the frontier agents, not fight them)? The main session answers every challenge in the report; points that fail are cut. The final selling point is whatever survives, and if nothing survives the report says so.
+
+Open question for the report: the selling point is not decided yet (owner: "I don't know our selling point"). Reconcile with memory "push back on thin AI features" (our edge = harness + designed outputs). Likely answer: keep the designed-output harness inside Caravan, and expose it as tools that the user's own agent calls.
 
 ## Current — premium in-app brand books for the 3 workspaces (31 October 2026)
 
