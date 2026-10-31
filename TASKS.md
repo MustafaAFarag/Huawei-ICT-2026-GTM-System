@@ -1,3 +1,18 @@
+> **Focus:** Caravan, live at http://localhost:3140 (API 4140). Not Bravo6, not the old PRDs. Sessions open in this folder.
+
+## Next — GTM strategy + agent-friendly Caravan research (added 31 October 2026, not started)
+
+Owner (31 Oct): do not compete with Claude / Codex / frontier agents and do not build all the automation ourselves. Everyone already has an agent; make Caravan the app their agent drives (MCP etc.). Study how 2026 startups adopt AI instead of fighting it.
+Done = one report in `docs/research/` with dated sources, answering all 5 items below, ending in a ranked list of what to build in Caravan (with time estimates) for the owner to approve. Stop: research and documentation only. No code, outreach, push or deploy.
+
+- [ ] 1. GTM strategies for Caravan: positioning, channels, pricing/freemium, open-source/community, launch plan; what fits founder-led MENA teams.
+- [ ] 2. Caravan vs plain Claude / ChatGPT / Codex: what a user can already do with their own agent, and what only Caravan gives (data, workspace memory, designed outputs, approvals, CRM records).
+- [ ] 3. Agent-friendly surfaces: MCP server (tools, resources, prompts, OAuth), Claude connectors/directory, Codex/ChatGPT apps, Agent Skills, CLI, public API + OpenAPI, `llms.txt`, docs for agents. Pick which ones Caravan exposes first.
+- [ ] 4. How 2026 startups adopt AI rather than compete with it: product patterns (agent as a user, "bring your own agent", MCP-first), real examples.
+- [ ] 5. YC: current Requests for Startups and recent batch companies that are MCP/agent-first; what they ship and how they sell.
+
+Open question for the report: reconcile with memory "push back on thin AI features" (our edge = harness + designed outputs). Likely answer: keep the designed-output harness inside Caravan, and expose it as tools that the user's own agent calls.
+
 ## Current — premium in-app brand books for the 3 workspaces (31 October 2026)
 
 Owner (31 Oct): the Brand book tab of Sarafa Pay / Wasla Express / Ruwad Learning becomes an artistic, premium brand book inside the workspace (we pitch and sell Caravan with it), with new generated artwork. Figma Mounjaro/Foundayo work is a spacing/composition reference only; each brand gets its own book.
@@ -489,3 +504,42 @@ Decision: preserve the settled Raycast visual direction and unrelated sample CSV
 - [x] Public HTTPS obtained; app health endpoint reachable.
 - [x] Public checks caught and repaired API PDF/chat memory pressure (512 MiB → 1 GiB), required-nullable live draft schema, and blank audio API-version fallback. Local real-model drafting/transcription check and all 33 backend tests pass.
 - [x] Added a harness correction for historical quote claims without a fresh quote; repeat live evaluation and production checks required for the new prompt.
+
+---
+
+## Moved from the workspace TASKS.md (entries dated 6 Oct 2026)
+
+## GTM Campaign Command Center implementation — 2026-10-06
+Goal: implement the supplied GTM plan in a separate product directory, preserving Bravo6.
+Done: persistent local demo; import reconciliation; grounded bilingual drafts and approval invalidation; four editable asset types; channel exports; tenant-scoped simulated events; local acceptance tests and browser review; honest integration/evaluation status.
+Stop: locally verified implementation; no deployment, live campaign, push, or fabricated benchmark.
+- [x] Inspect workspace and current Twenty/OpenDesign documentation.
+- [x] Implement campaign domain and persistent workflow; 44 acceptance/evaluation/request-handler tests pass.
+- [x] Implement review interface and isolated asset renderer; Playwright workflow and AR/EN desktop/phone checks pass.
+- [x] Add Twenty SDK definitions and provider preparation contracts; source structure checked. Live SDK build/install remains blocked.
+- [x] Add evaluation/labeling harness with company-level split; 80 synthetic packs and 480 blank reviewer slots. Evaluator refuses incomplete labels.
+- [x] Expanded client-knowledge checks, handoff documents and own-diff review completed; new isolated product repository committed locally as `fb36496` on `main` (clean working tree; no push).
+Local verification outcome: 48 tests pass; Playwright replays 16 real-domain mutations; six tabs in both directions at desktop/phone widths; independent QR decode and shaped Arabic Chromium print pass. Full native Twenty/OpenDesign/cloud/evaluation integration remains unfinished and explicitly tracked in `gtm-command-center/TASKS.md`. No deployment, outreach or push.
+Decisions: standalone local demonstrator is the available execution path; Twenty integration remains required but cannot be installed here. Template drafting is a transparent baseline. Client workspaces have separate scope; synthetic evidence is visibly labeled.
+Blockers: npm registry resolution fails (`EAI_AGAIN registry.npmjs.org`); Docker socket denied (`permission denied while trying to connect to the docker API`); original campaign artifacts, human labels, cloud accounts and model weights are unavailable.
+
+
+## Revenue Workspace PRD — 2026-10-06
+Goal: document the user's expanded English-only Twenty-based CRM, GTM, sales, marketing and campaign product, with a persistent actionable AI assistant and embedded OpenDesign.
+Done: all discussed feature families specified individually; dependency-aware phases and local/integration acceptance gates; Azure month one and Huawei month two migration; reuse/customization boundaries; reviewed canonical PRD and documentation pointers.
+Stop: documentation only. No application changes, cloud provisioning, deployment, model run or live campaign.
+- [x] Read existing implementation/status and verify primary Twenty/OpenDesign extension/license references.
+- [x] Write complete PRD: 106 individually specified features, assistant action contract, phased gates and cloud migration requirements.
+- [x] Review coverage, internal consistency, links and documentation-only diff; unique/complete feature IDs, Markdown tables, local links and English-only checks pass.
+- [x] Commit PRD in the existing isolated product repository as `dfbd950`; working tree clean; no push.
+Decisions: English-only product; Twenty supplies CRM/UI/design system; OpenDesign is integrated into the assistant; full roadmap included, eight-week plan gated by completed/tested phases; Azure is primary in month one, Huawei migration begins at month two when credits arrive. Prior bilingual/Huawei-first/standalone-demo direction is superseded for future development.
+
+
+## Revenue Workspace PRD connector and cloud correction — 2026-10-06
+Goal: explain and specify CRM/GA4/Clarity connectors; correct schedule to all product phases and December demo on Azure, Huawei only after passing first section and receiving credits.
+Done: reviewed connector capabilities, feature-level requirements, consistent conditional cloud gates and documentation verification.
+Stop: documentation only; no connectors connected, implementation, provisioning, deployment or outreach.
+- [x] Verify official GA4, Clarity and HubSpot API/integration documentation.
+- [x] Update PRD and canonical pointers; 112 features, connector workflow and conditional migration.
+- [x] Document checks pass: 112 unique features, consistent tables/local links, connector coverage and corrected timing; own diff reviewed. Committed locally as `272a71e`; no push.
+Decisions: December 2026 demo on Azure; target all P0–P4 on Azure; H follows qualification and credit activation. Earlier month-two migration assumption is superseded.
