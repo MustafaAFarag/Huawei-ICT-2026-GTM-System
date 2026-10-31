@@ -16,6 +16,7 @@ import { usePrefs } from "../../lib/prefs";
 import { client } from "../../lib/client";
 import { brandVars, isHex } from "./color";
 import { BrandImage } from "./BrandMedia";
+import { BrandBookEditorial } from "./book/BrandBookEditorial";
 
 export type BrandProposal = {
   name: string;
@@ -51,6 +52,8 @@ export function BrandBook({
   const kitPrimary = kit?.logo ?? kit?.mark;
   const kitMark = kit?.logo && kit.mark ? kit.mark : undefined;
   const gallery = kit?.gallery ?? [];
+  // A saved visual kit (roles + imagery) gets the full editorial book; a plain brand keeps the board.
+  const hasKit = Boolean(brand.paletteRoles && kitPrimary && gallery.length);
   const palette = (brand.palette ?? []).filter(
     (color) =>
       ![brand.primary, brand.accent].some(
@@ -58,7 +61,8 @@ export function BrandBook({
       ),
   );
   const direction = [brand.visualDirection, brand.photoDirection].filter(
-    (text, index, all): text is string => Boolean(text) && all.indexOf(text) === index,
+    (text, index, all): text is string =>
+      Boolean(text) && all.indexOf(text) === index,
   );
   const offer = data.workspace.offers.find((o) => o.approved)?.text;
   const description = data.workspace.company.description;
@@ -70,9 +74,7 @@ export function BrandBook({
   return (
     <div className="bc-stack">
       <div className="bc-toolbar">
-        <p className="bc-lead">
-          {t("Your identity, together in one place.")}
-        </p>
+        <p className="bc-lead">{t("Your identity, together in one place.")}</p>
         <div className="button-row">
           <Button variant="secondary" onClick={onMessaging}>
             {t("Messaging")}
@@ -195,7 +197,11 @@ export function BrandBook({
               <h3>{t("Company and brand")}</h3>
               <div className="form-grid two">
                 <Field label={t("Workspace name")}>
-                  <Input name="name" defaultValue={data.workspace.name} required />
+                  <Input
+                    name="name"
+                    defaultValue={data.workspace.name}
+                    required
+                  />
                 </Field>
                 <Field label={t("Brand name")}>
                   <Input name="brand" defaultValue={brand.name} required />
@@ -240,98 +246,116 @@ export function BrandBook({
         </Modal>
       )}
 
-      <div className="bc-board" data-ai-target="brand-board">
-        <article className="bc-card bc-hero" style={brandVars(brand.primary)}>
-          <h2 dir="auto">{brand.name}</h2>
-          <p dir="auto">{tagline}</p>
-        </article>
-        <article className="bc-card">
-          <h3>{t("Color palette")}</h3>
-          <ul className="bc-palette">
-            {[
-              [t("Primary"), brand.primary],
-              [t("Accent"), brand.accent],
-              ...palette.map((color) => [t("Palette color"), color]),
-            ]
-              .filter(([, color]) => isHex(color))
-              .map(([label, color]) => (
-                <li key={`${label}${color}`}>
-                  <span
-                    className="bc-swatch"
-                    style={{ background: color }}
-                    aria-hidden
-                  />
-                  <span className="bc-swatch-label">{label}</span>
-                  <bdi className="mono bc-swatch-hex">{color}</bdi>
-                </li>
-              ))}
-          </ul>
-          <p className="bc-caption">{t("Primary and supporting colors")}</p>
-        </article>
-        <article className="bc-card">
-          <h3>{t("Typography")}</h3>
-          <p className="bc-type-latin" lang="en" dir="ltr">
-            Aa
-          </p>
-          <p className="bc-caption">Inter · {t("Heading and body")}</p>
-          <p className="bc-type-arabic" lang="ar" dir="rtl">
-            ناس أولاً
-          </p>
-          <p className="bc-caption">
-            IBM Plex Sans Arabic · {t("Arabic type")}
-          </p>
-        </article>
-        <article className="bc-card">
-          <h3>{t("In an email")}</h3>
-          <div className="bc-email" style={brandVars(brand.primary)}>
-            <p className="bc-email-brand" dir="auto">
-              {brand.name}
-            </p>
-            <p className="bc-email-headline" dir="auto">
-              {offer ?? description ?? brand.name}
-            </p>
-            <span className="bc-email-button">{t("Learn more")}</span>
-          </div>
-          <p className="bc-caption">
-            {t("Preview built from your brand and approved offer")}
-          </p>
-        </article>
-        {kitPrimary && (
-          <article className="bc-card">
-            <h3>{kitMark ? t("Logo and mark") : t("Logo")}</h3>
-            <div className="bc-logos">
-              <BrandImage media={kitPrimary} className="is-logo" />
-              {kitMark && <BrandImage media={kitMark} className="is-logo" />}
-            </div>
-            <p className="bc-caption">{t("Saved with this client's brand kit")}</p>
-          </article>
-        )}
-        {direction.length > 0 && (
-          <article className="bc-card">
-            <h3>{t("Visual direction")}</h3>
-            {direction.map((text) => (
-              <p key={text} className="bc-direction" dir="auto">
-                {text}
+      {hasKit ? (
+        <BrandBookEditorial />
+      ) : (
+        <>
+          <div className="bc-board" data-ai-target="brand-board">
+            <article
+              className="bc-card bc-hero"
+              style={brandVars(brand.primary)}
+            >
+              <h2 dir="auto">{brand.name}</h2>
+              <p dir="auto">{tagline}</p>
+            </article>
+            <article className="bc-card">
+              <h3>{t("Color palette")}</h3>
+              <ul className="bc-palette">
+                {[
+                  [t("Primary"), brand.primary],
+                  [t("Accent"), brand.accent],
+                  ...palette.map((color) => [t("Palette color"), color]),
+                ]
+                  .filter(([, color]) => isHex(color))
+                  .map(([label, color]) => (
+                    <li key={`${label}${color}`}>
+                      <span
+                        className="bc-swatch"
+                        style={{ background: color }}
+                        aria-hidden
+                      />
+                      <span className="bc-swatch-label">{label}</span>
+                      <bdi className="mono bc-swatch-hex">{color}</bdi>
+                    </li>
+                  ))}
+              </ul>
+              <p className="bc-caption">{t("Primary and supporting colors")}</p>
+            </article>
+            <article className="bc-card">
+              <h3>{t("Typography")}</h3>
+              <p className="bc-type-latin" lang="en" dir="ltr">
+                Aa
               </p>
-            ))}
-          </article>
-        )}
-      </div>
+              <p className="bc-caption">Inter · {t("Heading and body")}</p>
+              <p className="bc-type-arabic" lang="ar" dir="rtl">
+                ناس أولاً
+              </p>
+              <p className="bc-caption">
+                IBM Plex Sans Arabic · {t("Arabic type")}
+              </p>
+            </article>
+            <article className="bc-card">
+              <h3>{t("In an email")}</h3>
+              <div className="bc-email" style={brandVars(brand.primary)}>
+                <p className="bc-email-brand" dir="auto">
+                  {brand.name}
+                </p>
+                <p className="bc-email-headline" dir="auto">
+                  {offer ?? description ?? brand.name}
+                </p>
+                <span className="bc-email-button">{t("Learn more")}</span>
+              </div>
+              <p className="bc-caption">
+                {t("Preview built from your brand and approved offer")}
+              </p>
+            </article>
+            {kitPrimary && (
+              <article className="bc-card">
+                <h3>{kitMark ? t("Logo and mark") : t("Logo")}</h3>
+                <div className="bc-logos">
+                  <BrandImage media={kitPrimary} className="is-logo" />
+                  {kitMark && (
+                    <BrandImage media={kitMark} className="is-logo" />
+                  )}
+                </div>
+                <p className="bc-caption">
+                  {t("Saved with this client's brand kit")}
+                </p>
+              </article>
+            )}
+            {direction.length > 0 && (
+              <article className="bc-card">
+                <h3>{t("Visual direction")}</h3>
+                {direction.map((text) => (
+                  <p key={text} className="bc-direction" dir="auto">
+                    {text}
+                  </p>
+                ))}
+              </article>
+            )}
+          </div>
 
-      {gallery.length > 0 && (
-        <section className="bc-card bc-gallery" aria-label={t("Client brand gallery")}>
-          <h3>{t("Client brand gallery")}</h3>
-          <ul className="bc-gallery-grid">
-            {gallery.map((media) => (
-              <li key={media.id}>
-                <BrandImage media={media} className="is-gallery" />
-              </li>
-            ))}
-          </ul>
-          <p className="bc-caption">
-            {t("Imagery for this client's deliverables, not their prospects.")}
-          </p>
-        </section>
+          {gallery.length > 0 && (
+            <section
+              className="bc-card bc-gallery"
+              aria-label={t("Client brand gallery")}
+            >
+              <h3>{t("Client brand gallery")}</h3>
+              <ul className="bc-gallery-grid">
+                {gallery.map((media) => (
+                  <li key={media.id}>
+                    <BrandImage media={media} className="is-gallery" />
+                  </li>
+                ))}
+              </ul>
+              <p className="bc-caption">
+                {t(
+                  "Imagery for this client's deliverables, not their prospects.",
+                )}
+              </p>
+            </section>
+          )}
+        </>
       )}
 
       {reading && (
@@ -354,7 +378,10 @@ export function BrandBook({
       )}
 
       {proposal && !reading && (
-        <section className="bc-proposal" aria-label={t("Brand kit from website")}>
+        <section
+          className="bc-proposal"
+          aria-label={t("Brand kit from website")}
+        >
           <div className="bc-proposal-head">
             <div>
               <p className="eyebrow">{t("Brand kit from website")}</p>

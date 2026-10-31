@@ -15,6 +15,17 @@ function luminance(hex: string) {
 export const isHex = (value: string | null | undefined): value is string =>
   Boolean(value && /^#[\da-f]{6}$/i.test(value));
 
+// WCAG contrast ratio between two hex colours (1–21).
+export function contrast(a: string, b: string) {
+  const [hi, lo] = [luminance(a), luminance(b)].sort((x, y) => y - x);
+  return (hi + 0.05) / (lo + 0.05);
+}
+
+export function rgbOf(hex: string) {
+  const value = parseInt(hex.slice(1), 16);
+  return [(value >> 16) & 255, (value >> 8) & 255, value & 255].join(" ");
+}
+
 // CSS custom properties for a card painted in a brand colour.
 export function brandVars(color: string | null | undefined): CSSProperties {
   const bg = isHex(color) ? color : undefined;

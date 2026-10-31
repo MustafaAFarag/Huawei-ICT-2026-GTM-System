@@ -450,6 +450,121 @@
           "prompt": "Photorealistic natural editorial photograph for a fictional demo brand; candid, real material texture, premium magazine quality. No text, no readable signage, no logos, no numbers, no watermark, no legible screens or personal data, no collage, no border. Square 1:1 composition, strong single subject, space at the bottom third for a headline. Portrait of a confident young Saudi female shop owner standing in her minimalist boutique doorway, cool daylight, navy and teal palette.",
           "generator": "Codex Skylink built-in image_gen",
           "sourceId": "exec-04c53fb0-7057-4336-b631-76164863056d"
+        },
+        {
+          "id": "sarafa-hero-artcover",
+          "file": "sarafa-pay/hero-artcover.webp",
+          "alt": "Illustrative generated brand image: Art-directed premium brand-identity artwork for a fictional demo brand; museum-quality editorial still, considered asymmetric composition, rich real material detail, subtle film grain. A monumental sculpture of an interlocking fine-line eight-point Saudi",
+          "role": "hero",
+          "tags": [
+            "hero",
+            "precise and calm"
+          ],
+          "provenance": "generated",
+          "prompt": "Art-directed premium brand-identity artwork for a fictional demo brand; museum-quality editorial still, considered asymmetric composition, rich real material detail, subtle film grain. No text, no letters, no logos, no numbers, no watermark, no border, no collage, no UI. Wide landscape 2:1 composition with calm negative space on one side for a headline. A monumental sculpture of an interlocking fine-line eight-point Saudi geometric star in brushed deep navy #0E2A47 anodised metal with thin mint teal #3CCFB0 glass inlays, floating in a calm cloud-grey studio, soft raking daylight, long precise shadows, vast negative space on the left.",
+          "generator": "Codex Skylink built-in image_gen",
+          "sourceId": "exec-a5b9c7ab-0e51-4a9b-84d5-1d787c3ef274"
+        },
+        {
+          "id": "sarafa-texture-artlattice",
+          "file": "sarafa-pay/texture-artlattice.webp",
+          "alt": "Illustrative generated brand image: Art-directed premium brand-identity artwork for a fictional demo brand; museum-quality editorial still, considered asymmetric composition, rich real material detail, subtle film grain. Flat pattern artwork: ultra-fine engraved hairline Saudi geometric la",
+          "role": "texture",
+          "tags": [
+            "texture",
+            "precise and calm",
+            "pattern"
+          ],
+          "provenance": "generated",
+          "prompt": "Art-directed premium brand-identity artwork for a fictional demo brand; museum-quality editorial still, considered asymmetric composition, rich real material detail, subtle film grain. No text, no letters, no logos, no numbers, no watermark, no border, no collage, no UI. Square 1:1. Flat pattern artwork: ultra-fine engraved hairline Saudi geometric lattice on deep navy #0E2A47 paper, hairline mint teal lines, like calm banknote guilloche, even flat lighting, edge to edge.",
+          "generator": "Codex Skylink built-in image_gen",
+          "sourceId": "exec-7c05327b-32b0-4085-8e3b-9d1af398b5cf"
+        },
+        {
+          "id": "sarafa-texture-artrelief",
+          "file": "sarafa-pay/texture-artrelief.webp",
+          "alt": "Illustrative generated brand image: Art-directed premium brand-identity artwork for a fictional demo brand; museum-quality editorial still, considered asymmetric composition, rich real material detail, subtle film grain. Close-up of a cloud-white plaster relief of a precise geometric star ",
+          "role": "texture",
+          "tags": [
+            "texture",
+            "precise and calm",
+            "close-up"
+          ],
+          "provenance": "generated",
+          "prompt": "Art-directed premium brand-identity artwork for a fictional demo brand; museum-quality editorial still, considered asymmetric composition, rich real material detail, subtle film grain. No text, no letters, no logos, no numbers, no watermark, no border, no collage, no UI. Square 1:1. Close-up of a cloud-white plaster relief of a precise geometric star tessellation, low sun casting crisp cool navy-tinted shadows, minimal and architectural, edge to edge.",
+          "generator": "Codex Skylink built-in image_gen",
+          "sourceId": "exec-3d2ccc27-a5b0-4c71-ad0b-294517dea1ca"
+        },
+        {
+          "id": "sarafa-cover-artobject",
+          "file": "sarafa-pay/cover-artobject.webp",
+          "alt": "Illustrative generated brand image: Art-directed premium brand-identity artwork for a fictional demo brand; museum-quality editorial still, considered asymmetric composition, rich real material detail, subtle film grain. Gallery still life: a slim matte deep navy monolith and a mint teal g",
+          "role": "cover",
+          "tags": [
+            "cover",
+            "precise and calm"
+          ],
+          "provenance": "generated",
+          "prompt": "Art-directed premium brand-identity artwork for a fictional demo brand; museum-quality editorial still, considered asymmetric composition, rich real material detail, subtle film grain. No text, no letters, no logos, no numbers, no watermark, no border, no collage, no UI. Square 1:1. Gallery still life: a slim matte deep navy monolith and a mint teal glass disc balanced on pale travertine plinths, soft cool daylight, white gallery wall, precise and calm.",
+          "generator": "Codex Skylink built-in image_gen",
+          "sourceId": "exec-786deaf5-7fe1-4ba5-8786-4799af50cbdb"
+        },
+        {
+          "id": "sarafa-photo-artstill",
+          "file": "sarafa-pay/photo-artstill.webp",
+          "alt": "Illustrative generated brand image: Art-directed premium brand-identity artwork for a fictional demo brand; museum-quality editorial still, considered asymmetric composition, rich real material detail, subtle film grain. Overhead still life on navy linen in a precise grid: navy ceramic til",
+          "role": "photo",
+          "tags": [
+            "photo",
+            "precise and calm"
+          ],
+          "provenance": "generated",
+          "prompt": "Art-directed premium brand-identity artwork for a fictional demo brand; museum-quality editorial still, considered asymmetric composition, rich real material detail, subtle film grain. No text, no letters, no logos, no numbers, no watermark, no border, no collage, no UI. Landscape 3:2. Overhead still life on navy linen in a precise grid: navy ceramic tiles with fine geometric inlay, a mint teal glass cube, a brushed steel ring, a folded cream card embossed with a geometric star, soft daylight.",
+          "generator": "Codex Skylink built-in image_gen",
+          "sourceId": "exec-8b2466da-f2d4-44f5-b1f0-66dacafd156d"
+        },
+        {
+          "id": "sarafa-hero-artscene",
+          "file": "sarafa-pay/hero-artscene.webp",
+          "alt": "Illustrative generated brand image: Riyadh financial-district towers at blue hour seen through a carved geometric mashrabiya screen in the foreground, deep navy sky, mint teal reflections on glass, calm, precise, cinematic.",
+          "role": "hero",
+          "tags": [
+            "hero",
+            "precise and calm"
+          ],
+          "provenance": "generated",
+          "prompt": "Photorealistic natural editorial photograph for a fictional demo brand; candid, real material texture, premium magazine quality. No text, no readable signage, no logos, no numbers, no watermark, no legible screens or personal data, no collage, no border. Wide landscape 2:1 composition with calm negative space on one side for a headline. Riyadh financial-district towers at blue hour seen through a carved geometric mashrabiya screen in the foreground, deep navy sky, mint teal reflections on glass, calm, precise, cinematic.",
+          "generator": "Codex Skylink built-in image_gen",
+          "sourceId": "exec-12afa26d-5e92-46c5-a2e3-a9d36e8d58d7"
+        },
+        {
+          "id": "sarafa-photo-artscene",
+          "file": "sarafa-pay/photo-artscene.webp",
+          "alt": "Illustrative generated brand image: A Najdi mud-brick wall with triangular windows in Diriyah at dawn, cool light, one man in a white thobe walking past, long shadows, deep navy sky.",
+          "role": "photo",
+          "tags": [
+            "photo",
+            "precise and calm",
+            "people"
+          ],
+          "provenance": "generated",
+          "prompt": "Photorealistic natural editorial photograph for a fictional demo brand; candid, real material texture, premium magazine quality. No text, no readable signage, no logos, no numbers, no watermark, no legible screens or personal data, no collage, no border. Landscape 3:2. A Najdi mud-brick wall with triangular windows in Diriyah at dawn, cool light, one man in a white thobe walking past, long shadows, deep navy sky.",
+          "generator": "Codex Skylink built-in image_gen",
+          "sourceId": "exec-e494a879-1160-4a5c-aaa5-37e64170e364"
+        },
+        {
+          "id": "sarafa-cover-artposter",
+          "file": "sarafa-pay/cover-artposter.webp",
+          "alt": "Illustrative generated brand image: Art-directed premium brand-identity artwork for a fictional demo brand; museum-quality editorial still, considered asymmetric composition, rich real material detail, subtle film grain. Flat graphic Swiss-style poster, not a photograph: on a deep ink navy",
+          "role": "cover",
+          "tags": [
+            "cover",
+            "precise and calm"
+          ],
+          "provenance": "generated",
+          "prompt": "Art-directed premium brand-identity artwork for a fictional demo brand; museum-quality editorial still, considered asymmetric composition, rich real material detail, subtle film grain. No text, no letters, no logos, no numbers, no watermark, no border, no collage, no UI. Square 1:1. Flat graphic Swiss-style poster, not a photograph: on a deep ink navy #0A1726 field, a precise grid of small fine-line eight-point Saudi geometric stars drawn in thin navy #1E3A5F lines; one single bold continuous mint teal #3CCFB0 line enters from the lower left and rises in a confident smooth arc to the upper right, passing between the stars. No planets, no moon, no space, no sky, no night stars, no gradients, no glow.",
+          "generator": "Codex Skylink built-in image_gen",
+          "sourceId": "exec-61ed4630-4981-41b2-94f6-fbd516cf9397"
         }
       ]
     },
@@ -905,6 +1020,123 @@
           "prompt": "Photorealistic natural editorial photograph for a fictional demo brand; candid, real material texture, premium magazine quality. No text, no readable signage, no logos, no numbers, no watermark, no legible screens or personal data, no collage, no border. Square 1:1 composition, strong single subject, space at the bottom third for a headline. A Cairo delivery rider in a black jacket and yellow helmet looking ahead, golden hour backlight, shallow depth of field.",
           "generator": "Codex Skylink built-in image_gen",
           "sourceId": "exec-d2633c50-3343-4762-ab6a-7e6b6f621b8b"
+        },
+        {
+          "id": "wasla-hero-artcover",
+          "file": "wasla-express/hero-artcover.webp",
+          "alt": "Illustrative generated brand image: Art-directed premium brand-identity artwork for a fictional demo brand; museum-quality editorial still, considered asymmetric composition, rich real material detail, subtle film grain. A kraft parcel box frozen mid-air, saffron light trails streaking dia",
+          "role": "hero",
+          "tags": [
+            "hero",
+            "bold and fast",
+            "parcel"
+          ],
+          "provenance": "generated",
+          "prompt": "Art-directed premium brand-identity artwork for a fictional demo brand; museum-quality editorial still, considered asymmetric composition, rich real material detail, subtle film grain. No text, no letters, no logos, no numbers, no watermark, no border, no collage, no UI. Wide landscape 2:1 composition with calm negative space on one side for a headline. A kraft parcel box frozen mid-air, saffron #F5B700 light trails streaking diagonally behind it from lower left to upper right, asphalt-black background, high-speed photography, dramatic rim light.",
+          "generator": "Codex Skylink built-in image_gen",
+          "sourceId": "exec-fd8ce18b-7566-4a72-bab2-099507ef7811"
+        },
+        {
+          "id": "wasla-texture-artspeed",
+          "file": "wasla-express/texture-artspeed.webp",
+          "alt": "Illustrative generated brand image: Art-directed premium brand-identity artwork for a fictional demo brand; museum-quality editorial still, considered asymmetric composition, rich real material detail, subtle film grain. Abstract artwork of bold diagonal saffron and bone stripes of varying",
+          "role": "texture",
+          "tags": [
+            "texture",
+            "bold and fast"
+          ],
+          "provenance": "generated",
+          "prompt": "Art-directed premium brand-identity artwork for a fictional demo brand; museum-quality editorial still, considered asymmetric composition, rich real material detail, subtle film grain. No text, no letters, no logos, no numbers, no watermark, no border, no collage, no UI. Square 1:1. Abstract artwork of bold diagonal saffron #F5B700 and bone #F7F3EA stripes of varying width leaning forward on asphalt black, slight screen-print paint texture, sports-poster energy, edge to edge.",
+          "generator": "Codex Skylink built-in image_gen",
+          "sourceId": "exec-afbc5dfb-c50c-42a2-8fcc-f6f1a3dd5d5c"
+        },
+        {
+          "id": "wasla-texture-artasphalt",
+          "file": "wasla-express/texture-artasphalt.webp",
+          "alt": "Illustrative generated brand image: Art-directed premium brand-identity artwork for a fictional demo brand; museum-quality editorial still, considered asymmetric composition, rich real material detail, subtle film grain. Macro of dark asphalt road with the edge of a painted saffron road ma",
+          "role": "texture",
+          "tags": [
+            "texture",
+            "bold and fast"
+          ],
+          "provenance": "generated",
+          "prompt": "Art-directed premium brand-identity artwork for a fictional demo brand; museum-quality editorial still, considered asymmetric composition, rich real material detail, subtle film grain. No text, no letters, no logos, no numbers, no watermark, no border, no collage, no UI. Square 1:1. Macro of dark asphalt road with the edge of a painted saffron road marking, visible grit, golden-hour light raking across, edge to edge.",
+          "generator": "Codex Skylink built-in image_gen",
+          "sourceId": "exec-b1793a6f-4cb0-45ef-853a-5ffe6d89f68d"
+        },
+        {
+          "id": "wasla-cover-artobject",
+          "file": "wasla-express/cover-artobject.webp",
+          "alt": "Illustrative generated brand image: Art-directed premium brand-identity artwork for a fictional demo brand; museum-quality editorial still, considered asymmetric composition, rich real material detail, subtle film grain. Studio product still life: three kraft parcels wrapped with saffron s",
+          "role": "cover",
+          "tags": [
+            "cover",
+            "bold and fast",
+            "product",
+            "parcel"
+          ],
+          "provenance": "generated",
+          "prompt": "Art-directed premium brand-identity artwork for a fictional demo brand; museum-quality editorial still, considered asymmetric composition, rich real material detail, subtle film grain. No text, no letters, no logos, no numbers, no watermark, no border, no collage, no UI. Square 1:1. Studio product still life: three kraft parcels wrapped with saffron strap tape, the top one tilted dynamically, on a glossy black floor with a saffron reflection, hard key light.",
+          "generator": "Codex Skylink built-in image_gen",
+          "sourceId": "exec-2d7f8505-749c-4487-bf91-2c6f4f714edc"
+        },
+        {
+          "id": "wasla-photo-artstill",
+          "file": "wasla-express/photo-artstill.webp",
+          "alt": "Illustrative generated brand image: A saffron delivery helmet and gloves resting on a black scooter seat in golden Cairo light, dust in the air, no logos.",
+          "role": "photo",
+          "tags": [
+            "photo",
+            "bold and fast"
+          ],
+          "provenance": "generated",
+          "prompt": "Photorealistic natural editorial photograph for a fictional demo brand; candid, real material texture, premium magazine quality. No text, no readable signage, no logos, no numbers, no watermark, no legible screens or personal data, no collage, no border. Landscape 3:2. A saffron delivery helmet and gloves resting on a black scooter seat in golden Cairo light, dust in the air, no logos.",
+          "generator": "Codex Skylink built-in image_gen",
+          "sourceId": "exec-4d8582f8-0f8e-4710-b8e0-4bed16631084"
+        },
+        {
+          "id": "wasla-hero-artscene",
+          "file": "wasla-express/hero-artscene.webp",
+          "alt": "Illustrative generated brand image: Long-exposure photograph of a Cairo bridge over the Nile at dusk, saffron traffic light trails streaking diagonally, city silhouette, warm dust haze.",
+          "role": "hero",
+          "tags": [
+            "hero",
+            "bold and fast"
+          ],
+          "provenance": "generated",
+          "prompt": "Photorealistic natural editorial photograph for a fictional demo brand; candid, real material texture, premium magazine quality. No text, no readable signage, no logos, no numbers, no watermark, no legible screens or personal data, no collage, no border. Wide landscape 2:1 composition with calm negative space on one side for a headline. Long-exposure photograph of a Cairo bridge over the Nile at dusk, saffron traffic light trails streaking diagonally, city silhouette, warm dust haze.",
+          "generator": "Codex Skylink built-in image_gen",
+          "sourceId": "exec-0fdc0848-a0a3-4c93-b238-3e41ecc36f84"
+        },
+        {
+          "id": "wasla-photo-artscene",
+          "file": "wasla-express/photo-artscene.webp",
+          "alt": "Illustrative generated brand image: Motion-panned photo of an Egyptian courier on a scooter rushing through a narrow old Cairo street at golden hour, background blurred into streaks, rider sharp in a saffron jacket, no readable signs or plates.",
+          "role": "photo",
+          "tags": [
+            "photo",
+            "bold and fast",
+            "street",
+            "people"
+          ],
+          "provenance": "generated",
+          "prompt": "Photorealistic natural editorial photograph for a fictional demo brand; candid, real material texture, premium magazine quality. No text, no readable signage, no logos, no numbers, no watermark, no legible screens or personal data, no collage, no border. Landscape 3:2. Motion-panned photo of an Egyptian courier on a scooter rushing through a narrow old Cairo street at golden hour, background blurred into streaks, rider sharp in a saffron jacket, no readable signs or plates.",
+          "generator": "Codex Skylink built-in image_gen",
+          "sourceId": "exec-e2ad2c97-e1f1-4633-b75f-b96df5553dfb"
+        },
+        {
+          "id": "wasla-cover-artposter",
+          "file": "wasla-express/cover-artposter.webp",
+          "alt": "Illustrative generated brand image: Art-directed premium brand-identity artwork for a fictional demo brand; museum-quality editorial still, considered asymmetric composition, rich real material detail, subtle film grain. Brutalist sports-poster key visual: one bold saffron chevron built fr",
+          "role": "cover",
+          "tags": [
+            "cover",
+            "bold and fast"
+          ],
+          "provenance": "generated",
+          "prompt": "Art-directed premium brand-identity artwork for a fictional demo brand; museum-quality editorial still, considered asymmetric composition, rich real material detail, subtle film grain. No text, no letters, no logos, no numbers, no watermark, no border, no collage, no UI. Square 1:1. Brutalist sports-poster key visual: one bold saffron chevron built from stacked diagonal bars cutting through an asphalt-black field with dust-grey grain, generous margins.",
+          "generator": "Codex Skylink built-in image_gen",
+          "sourceId": "exec-ba247a1d-3c0d-4fab-a88f-0f30f49368e0"
         }
       ]
     },
@@ -1358,6 +1590,121 @@
           "prompt": "Photorealistic natural editorial photograph for a fictional demo brand; candid, real material texture, premium magazine quality. No text, no readable signage, no logos, no numbers, no watermark, no legible screens or personal data, no collage, no border. Square 1:1 composition, strong single subject, space at the bottom third for a headline. A single open notebook and a cup of tea on a cream desk in warm morning sunlight, plum shadow shapes.",
           "generator": "Codex Skylink built-in image_gen",
           "sourceId": "exec-666f4a26-e9cf-40a3-bb3c-42146b8f92eb"
+        },
+        {
+          "id": "ruwad-hero-artcover",
+          "file": "ruwad-learning/hero-artcover.webp",
+          "alt": "Illustrative generated brand image: Art-directed premium brand-identity artwork for a fictional demo brand; museum-quality editorial still, considered asymmetric composition, rich real material detail, subtle film grain. Layered paper-cut artwork: rolling rounded hills and a rising apricot",
+          "role": "hero",
+          "tags": [
+            "hero",
+            "warm and optimistic"
+          ],
+          "provenance": "generated",
+          "prompt": "Art-directed premium brand-identity artwork for a fictional demo brand; museum-quality editorial still, considered asymmetric composition, rich real material detail, subtle film grain. No text, no letters, no logos, no numbers, no watermark, no border, no collage, no UI. Wide landscape 2:1 composition with calm negative space on one side for a headline. Layered paper-cut artwork: rolling rounded hills and a rising apricot #F4A261 sun made of thick handmade paper layers in plum #5B2A5E, aubergine and cream, soft studio light with gentle shadows between layers, optimistic and tactile.",
+          "generator": "Codex Skylink built-in image_gen",
+          "sourceId": "exec-845b22dc-7e3e-4944-bbb2-467ed8a87a8f"
+        },
+        {
+          "id": "ruwad-texture-artpaper",
+          "file": "ruwad-learning/texture-artpaper.webp",
+          "alt": "Illustrative generated brand image: Art-directed premium brand-identity artwork for a fictional demo brand; museum-quality editorial still, considered asymmetric composition, rich real material detail, subtle film grain. Close-up of cream handmade cotton paper with deckled edges and a few ",
+          "role": "texture",
+          "tags": [
+            "texture",
+            "warm and optimistic",
+            "close-up"
+          ],
+          "provenance": "generated",
+          "prompt": "Art-directed premium brand-identity artwork for a fictional demo brand; museum-quality editorial still, considered asymmetric composition, rich real material detail, subtle film grain. No text, no letters, no logos, no numbers, no watermark, no border, no collage, no UI. Square 1:1. Close-up of cream handmade cotton paper with deckled edges and a few plum and apricot paper circles, soft daylight, fibres visible, edge to edge.",
+          "generator": "Codex Skylink built-in image_gen",
+          "sourceId": "exec-b64ce32d-3f23-40d9-96be-e74efa159175"
+        },
+        {
+          "id": "ruwad-texture-artshapes",
+          "file": "ruwad-learning/texture-artshapes.webp",
+          "alt": "Illustrative generated brand image: Art-directed premium brand-identity artwork for a fictional demo brand; museum-quality editorial still, considered asymmetric composition, rich real material detail, subtle film grain. Flat lay of rounded paper cut-out shapes — circles, arches, pebbles —",
+          "role": "texture",
+          "tags": [
+            "texture",
+            "warm and optimistic"
+          ],
+          "provenance": "generated",
+          "prompt": "Art-directed premium brand-identity artwork for a fictional demo brand; museum-quality editorial still, considered asymmetric composition, rich real material detail, subtle film grain. No text, no letters, no logos, no numbers, no watermark, no border, no collage, no UI. Square 1:1. Flat lay of rounded paper cut-out shapes — circles, arches, pebbles — in plum, apricot and aubergine, playful balanced grid on cream paper, soft shadows.",
+          "generator": "Codex Skylink built-in image_gen",
+          "sourceId": "exec-2eac9e68-ce05-4514-83e6-2a2879df2f5e"
+        },
+        {
+          "id": "ruwad-cover-artobject",
+          "file": "ruwad-learning/cover-artobject.webp",
+          "alt": "Illustrative generated brand image: Art-directed premium brand-identity artwork for a fictional demo brand; museum-quality editorial still, considered asymmetric composition, rich real material detail, subtle film grain. Still life: an open notebook with blank pages from which a sculptural",
+          "role": "cover",
+          "tags": [
+            "cover",
+            "warm and optimistic"
+          ],
+          "provenance": "generated",
+          "prompt": "Art-directed premium brand-identity artwork for a fictional demo brand; museum-quality editorial still, considered asymmetric composition, rich real material detail, subtle film grain. No text, no letters, no logos, no numbers, no watermark, no border, no collage, no UI. Square 1:1. Still life: an open notebook with blank pages from which a sculptural paper-cut arch rises like a pop-up, plum and apricot paper, cream background, warm morning light.",
+          "generator": "Codex Skylink built-in image_gen",
+          "sourceId": "exec-330164ed-3602-40e9-b633-35df373dd48a"
+        },
+        {
+          "id": "ruwad-photo-artstill",
+          "file": "ruwad-learning/photo-artstill.webp",
+          "alt": "Illustrative generated brand image: Art-directed premium brand-identity artwork for a fictional demo brand; museum-quality editorial still, considered asymmetric composition, rich real material detail, subtle film grain. Warm desk still life from above: a plum-glazed ceramic mug, apricot p",
+          "role": "photo",
+          "tags": [
+            "photo",
+            "warm and optimistic"
+          ],
+          "provenance": "generated",
+          "prompt": "Art-directed premium brand-identity artwork for a fictional demo brand; museum-quality editorial still, considered asymmetric composition, rich real material detail, subtle film grain. No text, no letters, no logos, no numbers, no watermark, no border, no collage, no UI. Landscape 3:2. Warm desk still life from above: a plum-glazed ceramic mug, apricot pencils, blank cream index cards, a small plant, morning sun shadows on cream linen.",
+          "generator": "Codex Skylink built-in image_gen",
+          "sourceId": "exec-7aafe6b6-d80e-41eb-b2f3-f9375dc8fad2"
+        },
+        {
+          "id": "ruwad-hero-artscene",
+          "file": "ruwad-learning/hero-artscene.webp",
+          "alt": "Illustrative generated brand image: A bright Dubai design-district learning studio with tall arched windows, warm morning light, a small group of young Emirati and expat professionals in a relaxed workshop circle, plum and apricot furniture accents, candid.",
+          "role": "hero",
+          "tags": [
+            "hero",
+            "warm and optimistic",
+            "people"
+          ],
+          "provenance": "generated",
+          "prompt": "Photorealistic natural editorial photograph for a fictional demo brand; candid, real material texture, premium magazine quality. No text, no readable signage, no logos, no numbers, no watermark, no legible screens or personal data, no collage, no border. Wide landscape 2:1 composition with calm negative space on one side for a headline. A bright Dubai design-district learning studio with tall arched windows, warm morning light, a small group of young Emirati and expat professionals in a relaxed workshop circle, plum and apricot furniture accents, candid.",
+          "generator": "Codex Skylink built-in image_gen",
+          "sourceId": "exec-629b0c2b-0976-4875-b115-1bdc6b18959d"
+        },
+        {
+          "id": "ruwad-photo-artscene",
+          "file": "ruwad-learning/photo-artscene.webp",
+          "alt": "Illustrative generated brand image: A young Emirati woman mentor laughing with a learner beside a large arched window, golden light, soft background, plum and apricot details.",
+          "role": "photo",
+          "tags": [
+            "photo",
+            "warm and optimistic",
+            "people"
+          ],
+          "provenance": "generated",
+          "prompt": "Photorealistic natural editorial photograph for a fictional demo brand; candid, real material texture, premium magazine quality. No text, no readable signage, no logos, no numbers, no watermark, no legible screens or personal data, no collage, no border. Landscape 3:2. A young Emirati woman mentor laughing with a learner beside a large arched window, golden light, soft background, plum and apricot details.",
+          "generator": "Codex Skylink built-in image_gen",
+          "sourceId": "exec-2cf3443b-32ec-402c-83ed-d4036cde052c"
+        },
+        {
+          "id": "ruwad-cover-artposter",
+          "file": "ruwad-learning/cover-artposter.webp",
+          "alt": "Illustrative generated brand image: Art-directed premium brand-identity artwork for a fictional demo brand; museum-quality editorial still, considered asymmetric composition, rich real material detail, subtle film grain. Minimal poster key visual: a staircase of rounded plum paper-cut step",
+          "role": "cover",
+          "tags": [
+            "cover",
+            "warm and optimistic"
+          ],
+          "provenance": "generated",
+          "prompt": "Art-directed premium brand-identity artwork for a fictional demo brand; museum-quality editorial still, considered asymmetric composition, rich real material detail, subtle film grain. No text, no letters, no logos, no numbers, no watermark, no border, no collage, no UI. Square 1:1. Minimal poster key visual: a staircase of rounded plum paper-cut steps ascending toward an apricot paper sun on cream, tactile layered paper, generous margins.",
+          "generator": "Codex Skylink built-in image_gen",
+          "sourceId": "exec-dfdcf33f-7f30-4039-8dc6-389f6202ac1a"
         }
       ]
     }
